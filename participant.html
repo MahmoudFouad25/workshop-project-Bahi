@@ -265,10 +265,10 @@
     ⚠️ هذا النشاط مجهول المصدر (Anonymous) - لن يعرف أحد من كتب ماذا
 </div>
                 
-                <textarea id="challenge-input" placeholder="مثال: مفيش تنسيق واضح بين الأقسام - كل قسم شغال لوحده" maxlength="300"></textarea>
-                <div class="char-counter"><span id="char-count">0</span> / 500</div>
+                <textarea id="challenge-input" placeholder="مثال: مفيش تنسيق واضح بين الأقسام - كل قسم شغال لوحده" maxlength="1000"></textarea>
+                <div class="char-counter"><span id="char-count">0</span> / 1000</div>
                 
-                <div class="timer" id="timer1">⏱️ <span id="time-remaining">5:00</span></div>
+                <div class="timer" id="timer1">⏱️ <span id="time-remaining">10:00</span></div>
                 <div class="participants-count">عدد المشاركين: <span id="participants-count">0</span>/25</div>
                 
                 <button class="btn" id="submit-btn1" disabled>إرسال</button>
@@ -307,7 +307,7 @@
         const timer1 = document.getElementById('timer1');
         
         let timerInterval;
-        let timeLeft = 300; // 5 minutes
+        let timeLeft = 600; // 10 minutes
         
         // Character counter
         challengeInput.addEventListener('input', () => {
