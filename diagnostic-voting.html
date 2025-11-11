@@ -369,3 +369,237 @@
     <script src="config.js"></script>
     
     <!-- JavaScript continues in next part... -->
+
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const loadingState = document.getElementById('loadingState');
+        const votingSection = document.getElementById('votingSection');
+        const submitSection = document.getElementById('submitSection');
+        const successSection = document.getElementById('successSection');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Voting state
+        let analysisResults = null;
+        let selections = {
+            external: [],
+            system: [],
+            internal: []
+        };
+        
+        // Load analysis results
+        loadAnalysisResults();
+        
+        function loadAnalysisResults() {
+            db.collection('workshop_nov11')
+                .doc('diagnostic')
+                .onSnapshot((doc) => {
+                    if (doc.exists && doc.data().analysis_results) {
+                        analysisResults = doc.data().analysis_results;
+                        displayVotingOptions();
+                    } else {
+                        showNoAnalysisMessage();
+                    }
+                });
+        }
+        
+        function showNoAnalysisMessage() {
+            loadingState.innerHTML = `
+                <div style="font-size: 64px; margin-bottom: 20px;">⏳</div>
+                <div style="color: #666; font-size: 20px; font-weight: 600;">لم يتم التحليل بعد</div>
+                <div style="color: #999; font-size: 16px; margin-top: 10px;">
+                    يرجى الانتظار حتى يقوم الكوتش بإجراء التحليل من لوحة التحكم
+                </div>
+            `;
+        }
+        
+        function displayVotingOptions() {
+            // Hide loading
+            loadingState.style.display = 'none';
+            votingSection.classList.add('show');
+            submitSection.style.display = 'block';
+            
+            const categories = analysisResults.categories || {};
+            
+            const categoryConfig = {
+                external: {
+                    icon: '🌍',
+                    title: 'عوامل خارجية (External)',
+                    description: 'أسباب خارج سيطرتنا المباشرة',
+                    class: 'external',
+                    key: 'external'
+                },
+                system: {
+                    icon: '⚙️',
+                    title: 'الأنظمة والعمليات (System)',
+                    description: 'مشاكل في التقنية والعمليات',
+                    class: 'system',
+                    key: 'system'
+                },
+                internal: {
+                    icon: '👥',
+                    title: 'عوامل داخلية (Internal)',
+                    description: 'المهارات والقيادة والتدريب',
+                    class: 'internal',
+                    key: 'internal'
+                }
+            };
+            
+            votingSection.innerHTML = '';
+            
+            // Create voting card for each category
+            Object.keys(categoryConfig).forEach(key => {
+                const config = categoryConfig[key];
+                const causes = categories[key] || [];
+                
+                if (causes.length === 0) return;
+                
+                const card = document.createElement('div');
+                card.className = `category-card ${config.class}`;
+                card.id = `category-${key}`;
+                
+                card.innerHTML = `
+                    <div class="category-header">
+                        <div class="category-icon">${config.icon}</div>
+                        <div class="category-info">
+                            <h2>${config.title}</h2>
+                            <p>${config.description}</p>
+                        </div>
+                        <div class="selection-status" id="status-${key}">
+                            0 / 3 مختارة
+                        </div>
+                    </div>
+                    <div class="causes-grid" id="grid-${key}">
+                        ${causes.map((cause, index) => `
+                            <div class="cause-option" data-category="${key}" data-index="${index}" data-cause="${escapeHtml(cause)}">
+                                <div class="checkbox"></div>
+                                <div class="cause-text">${cause}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                
+                votingSection.appendChild(card);
+            });
+            
+            // Add click listeners
+            document.querySelectorAll('.cause-option').forEach(option => {
+                option.addEventListener('click', () => toggleSelection(option));
+            });
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function toggleSelection(option) {
+            const category = option.dataset.category;
+            const cause = option.dataset.cause;
+            const currentSelections = selections[category];
+            
+            // Check if already selected
+            const index = currentSelections.indexOf(cause);
+            
+            if (index > -1) {
+                // Deselect
+                currentSelections.splice(index, 1);
+                option.classList.remove('selected');
+            } else {
+                // Check if can select more
+                if (currentSelections.length >= 3) {
+                    // Show warning - max 3 selections
+                    showWarning(category);
+                    return;
+                }
+                // Select
+                currentSelections.push(cause);
+                option.classList.add('selected');
+            }
+            
+            // Update status
+            updateStatus(category);
+            
+            // Check if can submit
+            checkCanSubmit();
+        }
+        
+        function showWarning(category) {
+            const statusEl = document.getElementById(`status-${category}`);
+            const originalText = statusEl.textContent;
+            
+            statusEl.style.background = '#f8d7da';
+            statusEl.style.color = '#721c24';
+            statusEl.textContent = '⚠️ الحد الأقصى 3 اختيارات';
+            
+            setTimeout(() => {
+                statusEl.style.background = '#e9ecef';
+                statusEl.style.color = '#666';
+                statusEl.textContent = originalText;
+            }, 2000);
+        }
+        
+        function updateStatus(category) {
+            const count = selections[category].length;
+            const statusEl = document.getElementById(`status-${category}`);
+            
+            statusEl.textContent = `${count} / 3 مختارة`;
+            
+            if (count === 3) {
+                statusEl.classList.add('complete');
+            } else {
+                statusEl.classList.remove('complete');
+            }
+        }
+        
+        function checkCanSubmit() {
+            // Check if all categories have exactly 3 selections
+            const allComplete = 
+                selections.external.length === 3 &&
+                selections.system.length === 3 &&
+                selections.internal.length === 3;
+            
+            submitBtn.disabled = !allComplete;
+        }
+        
+        // Submit vote
+        submitBtn.addEventListener('click', async () => {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+            
+            try {
+                // Save vote to Firestore
+                await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('votes')
+                    .add({
+                        selections: selections,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                
+                // Show success
+                votingSection.style.display = 'none';
+                submitSection.style.display = 'none';
+                successSection.classList.add('show');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في الإرسال. يرجى المحاولة مرة أخرى.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إرسال التصويت';
+            }
+        });
+    </script>
+</body>
+</html>
+
