@@ -590,6 +590,41 @@
                 </div>
             </div>
         </div>
+
+        <!-- Voting Management -->
+        <div class="responses-section" style="margin-top: 30px;">
+            <div class="section-header">
+                <h2>🗳️ إدارة التصويت (80/20)</h2>
+                <div style="display: flex; gap: 15px;">
+                    <span id="votingCount" style="color: #667eea; font-size: 18px; font-weight: 700;">0 مصوّتين</span>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                <!-- Voting Page Link -->
+                <div style="background: #2d2d5f; border-radius: 15px; padding: 25px; border: 2px solid #667eea;">
+                    <h3 style="color: #667eea; margin-bottom: 15px; font-size: 20px;">📱 صفحة التصويت للمشاركين</h3>
+                    <p style="color: #ccc; margin-bottom: 20px; line-height: 1.6;">
+                        شارك هذا الرابط مع المشاركين للتصويت على أهم 3 أسباب من كل فئة
+                    </p>
+                    <button onclick="copyToClipboard('https://workshop-project-bahi.vercel.app/diagnostic-voting.html')" 
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: 600; width: 100%;">
+                        📋 نسخ رابط التصويت
+                    </button>
+                </div>
+                
+                <!-- Results Page Link -->
+                <div style="background: #2d2d5f; border-radius: 15px; padding: 25px; border: 2px solid #28a745;">
+                    <h3 style="color: #28a745; margin-bottom: 15px; font-size: 20px;">📊 نتائج التصويت</h3>
+                    <p style="color: #ccc; margin-bottom: 20px; line-height: 1.6;">
+                        شاهد نتائج التصويت والأسباب الأكثر حصولاً على الأصوات
+                    </p>
+                    <a href="diagnostic-voting-results.html" target="_blank" 
+                       style="display: block; background: #28a745; color: white; text-decoration: none; padding: 12px 25px; border-radius: 25px; text-align: center; font-size: 16px; font-weight: 600;">
+                        🔍 عرض النتائج
+                    </a>
+                </div>
+            </div>
+        </div>
         
         <!-- Responses Section -->
         <div class="responses-section">
@@ -1399,6 +1434,26 @@ resetWorkshopBtn.addEventListener('click', async () => {
             }
             
             return await response.json();
+        }
+
+        // Listen to voting count
+        db.collection('workshop_nov11')
+            .doc('diagnostic')
+            .collection('votes')
+            .onSnapshot((snapshot) => {
+                const votingCount = document.getElementById('votingCount');
+                const count = snapshot.size;
+                votingCount.textContent = `${count} ${count === 1 ? 'مصوّت' : 'مصوّتين'}`;
+            });
+        
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ تم نسخ الرابط!', 'success');
+            }).catch(err => {
+                console.error('Error copying:', err);
+                showToast('❌ فشل النسخ', 'error');
+            });
         }
 
     </script>
