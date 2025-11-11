@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج التحليل - Pre-Mortem Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Loading State */
+        .loading-state {
+            background: white;
+            border-radius: 20px;
+            padding: 80px 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid #f3f3f3;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #666;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .loading-subtext {
+            color: #999;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        /* Summary Stats */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            animation: slideUp 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stat-card .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card.total .value { color: #667eea; }
+        .stat-card.external .value { color: #ffc107; }
+        .stat-card.system .value { color: #dc3545; }
+        .stat-card.internal .value { color: #17a2b8; }
+        
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+        
+        .results-section.show {
+            display: block;
+        }
+        
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .category-card:nth-child(1) { animation-delay: 0.5s; }
+        .category-card:nth-child(2) { animation-delay: 0.6s; }
+        .category-card:nth-child(3) { animation-delay: 0.7s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .category-card.external { border-top: 5px solid #ffc107; }
+        .category-card.system { border-top: 5px solid #dc3545; }
+        .category-card.internal { border-top: 5px solid #17a2b8; }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .category-icon {
+            font-size: 50px;
+        }
+        
+        .category-info {
+            flex: 1;
+        }
+        
+        .category-info h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .category-info p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .category-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        /* Causes List */
+        .causes-section {
+            margin: 25px 0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .causes-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .cause-item {
+            background: #f8f9fa;
+            padding: 18px 20px;
+            border-radius: 10px;
+            border-right: 4px solid #667eea;
+            color: #444;
+            font-size: 16px;
+            line-height: 1.6;
+            transition: all 0.3s;
+        }
+        
+        .cause-item:hover {
+            background: #e9ecef;
+            transform: translateX(-3px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Patterns Section */
+        .patterns-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .patterns-section h3 {
+            color: #856404;
+            margin-bottom: 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .patterns-section ul {
+            padding-right: 25px;
+            color: #856404;
+        }
+        
+        .patterns-section li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        /* Root Cause Section */
+        .root-cause-section {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .root-cause-section h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .root-cause-section p {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        /* Solutions Section */
+        .solutions-section {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .solutions-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .solutions-section ol {
+            padding-right: 25px;
+        }
+        
+        .solutions-section li {
+            margin-bottom: 12px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        /* Overall Insights */
+        .overall-insights {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border: 3px solid #28a745;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
+        }
+        
+        .overall-insights h2 {
+            color: #28a745;
+            font-size: 32px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #28a745;
+        }
+        
+        .insight-block {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-right: 5px solid #667eea;
+        }
+        
+        .insight-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .insight-content {
+            color: #555;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .insight-content ul,
+        .insight-content ol {
+            padding-right: 25px;
+            margin-top: 10px;
+        }
+        
+        .insight-content li {
+            margin-bottom: 10px;
+        }
+        
+        /* Next Steps */
+        .next-steps {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .next-steps h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .next-steps p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .next-steps-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .next-steps-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <span>🔍</span>
+                <span>نتائج التحليل بالذكاء الاصطناعي</span>
+            </h1>
+            <p>تصنيف وتحليل الأسباب - Pre-Mortem Analysis</p>
+            <div class="status-badge" id="statusBadge">● جاري التحميل...</div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري تحليل الأسباب...</div>
+            <div class="loading-subtext">الذكاء الاصطناعي يقوم بتصنيف وتحليل جميع الأسباب</div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+                <div class="stat-card total">
+                    <div class="icon">📊</div>
+                    <div class="value" id="totalCauses">0</div>
+                    <div class="label">إجمالي الأسباب</div>
+                </div>
+                <div class="stat-card external">
+                    <div class="icon">🌍</div>
+                    <div class="value" id="externalCount">0</div>
+                    <div class="label">عوامل خارجية</div>
+                </div>
+                <div class="stat-card system">
+                    <div class="icon">⚙️</div>
+                    <div class="value" id="systemCount">0</div>
+                    <div class="label">أنظمة وعمليات</div>
+                </div>
+                <div class="stat-card internal">
+                    <div class="icon">👥</div>
+                    <div class="value" id="internalCount">0</div>
+                    <div class="label">عوامل داخلية</div>
+                </div>
+            </div>
+
+            <!-- Category Cards -->
+            <div class="category-grid" id="categoryGrid">
+                <!-- Will be filled by JavaScript -->
+            </div>
+
+            <!-- Overall Insights -->
+            <div class="overall-insights" id="overallInsights">
+                <!-- Will be filled by JavaScript -->
+            </div>
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h3>🎯 الخطوة التالية</h3>
+                <p>بعد مراجعة التحليل، سننتقل إلى مرحلة تحديد الأولويات (80/20 Analysis)</p>
+                <a href="diagnostic-voting.html" class="next-steps-btn">
+                    متابعة → التصويت على الأولويات
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <!-- JavaScript continues in next part... -->
+  <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const loadingState = document.getElementById('loadingState');
+        const resultsSection = document.getElementById('resultsSection');
+        const statusBadge = document.getElementById('statusBadge');
+        const categoryGrid = document.getElementById('categoryGrid');
+        const overallInsights = document.getElementById('overallInsights');
+        
+        // Stats elements
+        const totalCauses = document.getElementById('totalCauses');
+        const externalCount = document.getElementById('externalCount');
+        const systemCount = document.getElementById('systemCount');
+        const internalCount = document.getElementById('internalCount');
+        
+        // Check for analysis results
+        checkForAnalysis();
+        
+        function checkForAnalysis() {
+            // Listen to diagnostic analysis results
+            db.collection('workshop_nov11')
+                .doc('diagnostic')
+                .onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        
+                        if (data.analysis_results) {
+                            // Analysis exists - display it
+                            displayResults(data.analysis_results);
+                        } else {
+                            // No analysis yet - show message
+                            showWaitingMessage();
+                        }
+                    } else {
+                        showWaitingMessage();
+                    }
+                });
+        }
+        
+        function showWaitingMessage() {
+            loadingState.innerHTML = `
+                <div style="font-size: 64px; margin-bottom: 20px;">⏳</div>
+                <div class="loading-text">لم يتم التحليل بعد</div>
+                <div class="loading-subtext">انتظر حتى يقوم الكوتش بتشغيل التحليل من لوحة التحكم</div>
+            `;
+            statusBadge.textContent = '● في انتظار التحليل';
+            statusBadge.style.background = '#ffc107';
+        }
+        
+        function displayResults(results) {
+            // Hide loading
+            loadingState.style.display = 'none';
+            resultsSection.classList.add('show');
+            
+            // Update status
+            statusBadge.textContent = '● التحليل جاهز';
+            statusBadge.style.background = '#28a745';
+            
+            // Update stats
+            const categories = results.categories || {};
+            const external = categories.external || [];
+            const system = categories.system || [];
+            const internal = categories.internal || [];
+            
+            const total = external.length + system.length + internal.length;
+            
+            totalCauses.textContent = total;
+            externalCount.textContent = external.length;
+            systemCount.textContent = system.length;
+            internalCount.textContent = internal.length;
+            
+            // Display categories
+            displayCategories(results);
+            
+            // Display overall insights
+            displayOverallInsights(results);
+        }
+        
+        function displayCategories(results) {
+            const categories = results.categories || {};
+            const analysis = results.analysis || {};
+            
+            const categoryConfig = {
+                external: {
+                    icon: '🌍',
+                    title: 'عوامل خارجية (External)',
+                    description: 'أسباب خارج سيطرتنا المباشرة - الاقتصاد، السوق، المنافسين، القوانين',
+                    color: '#ffc107',
+                    class: 'external'
+                },
+                system: {
+                    icon: '⚙️',
+                    title: 'الأنظمة والعمليات (System)',
+                    description: 'مشاكل في التقنية، العمليات، الأنظمة، والـ Processes',
+                    color: '#dc3545',
+                    class: 'system'
+                },
+                internal: {
+                    icon: '👥',
+                    title: 'عوامل داخلية (Internal)',
+                    description: 'المهارات، القيادة، التدريب، الثقافة التنظيمية',
+                    color: '#17a2b8',
+                    class: 'internal'
+                }
+            };
+            
+            categoryGrid.innerHTML = '';
+            
+            // Display each category
+            Object.keys(categoryConfig).forEach(key => {
+                const config = categoryConfig[key];
+                const causes = categories[key] || [];
+                const categoryAnalysis = analysis[key] || {};
+                
+                if (causes.length === 0) return; // Skip empty categories
+                
+                const card = document.createElement('div');
+                card.className = `category-card ${config.class}`;
+                
+                let html = `
+                    <div class="category-header">
+                        <div class="category-icon">${config.icon}</div>
+                        <div class="category-info">
+                            <h2>${config.title}</h2>
+                            <p>${config.description}</p>
+                        </div>
+                        <div class="category-count">${causes.length}</div>
+                    </div>
+                `;
+                
+                // Causes list
+                html += `
+                    <div class="causes-section">
+                        <div class="section-title">
+                            <span>📝</span>
+                            <span>الأسباب المحددة:</span>
+                        </div>
+                        <div class="causes-grid">
+                            ${causes.map(cause => `
+                                <div class="cause-item">• ${cause}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                // Patterns
+                if (categoryAnalysis.patterns && categoryAnalysis.patterns.length > 0) {
+                    html += `
+                        <div class="patterns-section">
+                            <h3>
+                                <span>🔍</span>
+                                <span>الأنماط الملاحظة:</span>
+                            </h3>
+                            <ul>
+                                ${categoryAnalysis.patterns.map(p => `<li>${p}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                // Root Cause
+                if (categoryAnalysis.root_cause) {
+                    html += `
+                        <div class="root-cause-section">
+                            <h3>
+                                <span>🎯</span>
+                                <span>السبب الجذري المحتمل:</span>
+                            </h3>
+                            <p>${categoryAnalysis.root_cause}</p>
+                        </div>
+                    `;
+                }
+                
+                // Solutions
+                if (categoryAnalysis.solutions && categoryAnalysis.solutions.length > 0) {
+                    html += `
+                        <div class="solutions-section">
+                            <h3>
+                                <span>💡</span>
+                                <span>الحلول المقترحة:</span>
+                            </h3>
+                            <ol>
+                                ${categoryAnalysis.solutions.map(s => `<li>${s}</li>`).join('')}
+                            </ol>
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = html;
+                categoryGrid.appendChild(card);
+            });
+        }
+        
+        function displayOverallInsights(results) {
+            const overall = results.overall_insights || {};
+            
+            let html = `
+                <h2>
+                    <span>💡</span>
+                    <span>الرؤية الشاملة</span>
+                </h2>
+            `;
+            
+            // Top category
+            if (overall.dominant_category) {
+                html += `
+                    <div class="insight-block" style="border-right-color: #dc3545;">
+                        <div class="insight-title">
+                            <span>🎯</span>
+                            <span>الفئة الأكثر تأثيراً:</span>
+                        </div>
+                        <div class="insight-content">
+                            ${overall.dominant_category}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Key insights
+            if (overall.key_insights && overall.key_insights.length > 0) {
+                html += `
+                    <div class="insight-block" style="border-right-color: #667eea;">
+                        <div class="insight-title">
+                            <span>🔑</span>
+                            <span>الاستنتاجات الرئيسية:</span>
+                        </div>
+                        <div class="insight-content">
+                            <ul>
+                                ${overall.key_insights.map(i => `<li>${i}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Interconnections
+            if (overall.interconnections) {
+                html += `
+                    <div class="insight-block" style="border-right-color: #ffc107;">
+                        <div class="insight-title">
+                            <span>🔗</span>
+                            <span>الترابط بين الأسباب:</span>
+                        </div>
+                        <div class="insight-content">
+                            ${overall.interconnections}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Priority recommendations
+            if (overall.priority_recommendations && overall.priority_recommendations.length > 0) {
+                html += `
+                    <div class="insight-block" style="border-right-color: #28a745;">
+                        <div class="insight-title">
+                            <span>🚀</span>
+                            <span>توصيات الأولويات:</span>
+                        </div>
+                        <div class="insight-content">
+                            <ol>
+                                ${overall.priority_recommendations.map(r => `<li>${r}</li>`).join('')}
+                            </ol>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Quick wins
+            if (overall.quick_wins && overall.quick_wins.length > 0) {
+                html += `
+                    <div class="insight-block" style="border-right-color: #17a2b8;">
+                        <div class="insight-title">
+                            <span>⚡</span>
+                            <span>إجراءات سريعة (Quick Wins):</span>
+                        </div>
+                        <div class="insight-content">
+                            <ul>
+                                ${overall.quick_wins.map(w => `<li>${w}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            overallInsights.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
