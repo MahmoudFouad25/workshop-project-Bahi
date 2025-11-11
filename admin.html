@@ -491,7 +491,54 @@
     </div>
 
     <!-- Main Container -->
+    
     <div class="container">
+
+        <!-- Workshop Controls -->
+        <div style="background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%); border-radius: 15px; padding: 30px; margin-bottom: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 1px solid #667eea;">
+            <h2 style="color: #667eea; font-size: 28px; margin-bottom: 25px; text-align: center;">
+                🔧 أدوات التحكم في الورشة
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                <!-- Reset Team Building -->
+                <div style="background: #2d2d5f; border-radius: 15px; padding: 30px; border: 2px solid #667eea;">
+                    <h3 style="color: #667eea; font-size: 22px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>👥</span>
+                        <span>إعادة ضبط Team Building</span>
+                    </h3>
+                    <p style="color: #ccc; line-height: 1.6; margin-bottom: 20px; font-size: 15px;">
+                        مسح جميع ردود ونتائج تحليل Team Building فقط. 
+                        <strong style="color: #28a745;">Diagnostic Phase لن يتأثر.</strong>
+                    </p>
+                    <button id="resetTeamBuildingBtn" 
+                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 14px 25px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: 700; width: 100%; transition: all 0.3s;"
+                            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.4)'"
+                            onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        🔄 إعادة ضبط Team Building
+                    </button>
+                </div>
+
+                <!-- Reset Diagnostic Phase -->
+                <div style="background: #2d2d5f; border-radius: 15px; padding: 30px; border: 2px solid #dc3545;">
+                    <h3 style="color: #dc3545; font-size: 22px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>🔍</span>
+                        <span>إعادة ضبط Diagnostic Phase</span>
+                    </h3>
+                    <p style="color: #ccc; line-height: 1.6; margin-bottom: 20px; font-size: 15px;">
+                        مسح جميع بيانات Diagnostic: Pre-Mortem، التصويت، 5 Whys، والتحليلات. 
+                        <strong style="color: #28a745;">Team Building لن يتأثر.</strong>
+                    </p>
+                    <button id="resetDiagnosticBtn" 
+                            style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; padding: 14px 25px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: 700; width: 100%; transition: all 0.3s;"
+                            onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(220, 53, 69, 0.4)'"
+                            onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                        ⚠️ إعادة ضبط Diagnostic Phase
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Control Panel -->
         <div class="control-panel">
     <div class="control-header">
@@ -508,31 +555,7 @@
             🚀 بدء المرحلة
         </button>
         
-        <button id="resetWorkshopBtn" style="
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(220, 53, 69, 0.3);
-            white-space: nowrap;
-        " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 30px rgba(220, 53, 69, 0.5)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 5px 20px rgba(220, 53, 69, 0.3)'">
-            🔄 إعادة ضبط الورشة
-        </button>
-    </div>
-    
-    <div style="margin-top: 15px; padding: 12px; background: #2d2d5f; border-radius: 8px; border-right: 3px solid #ffc107;">
-        <p style="color: #ffc107; font-size: 14px; margin: 0; display: flex; align-items: center; gap: 8px;">
-            <span>⚠️</span>
-            <span><strong>تحذير:</strong> زرار "إعادة ضبط الورشة" سيحذف جميع البيانات التجريبية. استخدمه قبل الورشة الحقيقية فقط!</span>
-        </p>
-    </div>
-</div>
-
+       
         <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -1151,107 +1174,7 @@ loadSavedResults();
             }, 3000);
         }
 
-        // Reset Workshop
-const resetWorkshopBtn = document.getElementById('resetWorkshopBtn');
-
-resetWorkshopBtn.addEventListener('click', async () => {
-    // First confirmation
-    const confirm1 = confirm(
-        '⚠️ تحذير!\n\n' +
-        'هذا الإجراء سيحذف:\n' +
-        '• جميع الردود (Responses)\n' +
-        '• التحليل المحفوظ (Analysis)\n' +
-        '• حالة الجلسة (Session State)\n\n' +
-        'هل أنت متأكد؟'
-    );
-    
-    if (!confirm1) return;
-    
-    // Second confirmation (double check)
-    const confirm2 = confirm(
-        '🔴 تأكيد نهائي!\n\n' +
-        'لن تتمكن من استرجاع البيانات المحذوفة.\n\n' +
-        'اكتب "نعم" في العقل وأكمل إذا كنت متأكداً 100%'
-    );
-    
-    if (!confirm2) return;
-    
-    // Show loading
-    resetWorkshopBtn.disabled = true;
-    resetWorkshopBtn.textContent = '⏳ جاري الحذف...';
-    loadingOverlay.classList.add('show');
-    
-    try {
-        // 1. Delete all responses
-        const responsesSnapshot = await db.collection('workshop_nov11')
-            .doc('team_building')
-            .collection('responses')
-            .get();
-        
-        const deletePromises = [];
-        responsesSnapshot.forEach(doc => {
-            deletePromises.push(doc.ref.delete());
-        });
-        
-        await Promise.all(deletePromises);
-        
-        // 2. Delete clustered results
-        await db.collection('workshop_nov11')
-            .doc('team_building')
-            .set({
-                clustered_results: firebase.firestore.FieldValue.delete(),
-                analysis_timestamp: firebase.firestore.FieldValue.delete(),
-                total_responses: firebase.firestore.FieldValue.delete()
-            }, { merge: true });
-        
-        // 3. Reset session control
-        await db.collection('session_control')
-            .doc('current')
-            .set({
-                phase: 'phase1',
-                active: false,
-                startTime: null
-            });
-        
-        // 4. Clear UI
-        responseList.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
-                <div class="empty-state-text">لا توجد ردود بعد. ابدأ الجلسة لاستقبال الردود.</div>
-            </div>
-        `;
-        
-        clusteredSection.classList.remove('show');
-        categoryGrid.innerHTML = '';
-        
-        // 5. Reset stats
-        totalResponses.textContent = '0';
-        totalParticipants.textContent = '0';
-        completionRate.textContent = '0%';
-        timeElapsed.textContent = '0:00';
-        
-        // 6. Reset buttons
-        clusterBtn.disabled = true;
-        clusterBtn.querySelector('.text').textContent = '🤖 تصنيف تلقائي بالذكاء الاصطناعي';
-        
-        startBtn.textContent = '🚀 بدء المرحلة';
-        startBtn.classList.remove('stop-btn');
-        
-        // 7. Stop timer if running
-        isSessionActive = false;
-        stopTimer();
-        
-        showToast('✅ تم إعادة ضبط الورشة بنجاح!', 'success');
-        
-    } catch (error) {
-        console.error('Error resetting workshop:', error);
-        showToast('❌ حدث خطأ في الحذف: ' + error.message, 'error');
-    } finally {
-        resetWorkshopBtn.disabled = false;
-        resetWorkshopBtn.textContent = '🔄 إعادة ضبط الورشة';
-        loadingOverlay.classList.remove('show');
-    }
-});
+       
 
 // Listen to voting results
         db.collection('workshop_nov11')
@@ -1501,6 +1424,197 @@ resetWorkshopBtn.addEventListener('click', async () => {
                 const count = snapshot.size;
                 whysCount.textContent = `${count} ${count === 1 ? 'تحليل' : 'تحليلات'}`;
             });
+
+                // ═══════════════════════════════════════════════════
+        // Reset Controls
+        // ═══════════════════════════════════════════════════
+        
+        // Reset Team Building Only
+        const resetTeamBuildingBtn = document.getElementById('resetTeamBuildingBtn');
+        
+        resetTeamBuildingBtn.addEventListener('click', async () => {
+            const confirmation = confirm(
+                '⚠️ تحذير!\n\n' +
+                'سيتم حذف جميع بيانات Team Building:\n' +
+                '• جميع الردود\n' +
+                '• نتائج التحليل\n\n' +
+                'لن يتأثر Diagnostic Phase.\n\n' +
+                'هل أنت متأكد من المتابعة؟'
+            );
+
+            if (!confirmation) return;
+
+            const doubleCheck = prompt('للتأكيد، اكتب: DELETE');
+            if (doubleCheck !== 'DELETE') {
+                showToast('❌ تم الإلغاء', 'error');
+                return;
+            }
+
+            loadingOverlay.classList.add('show');
+            resetTeamBuildingBtn.disabled = true;
+            resetTeamBuildingBtn.textContent = '⏳ جاري الحذف...';
+
+            try {
+                // Delete all team building responses
+                const responsesSnapshot = await db.collection('workshop_nov11')
+                    .doc('team_building')
+                    .collection('responses')
+                    .get();
+
+                const batch = db.batch();
+                responsesSnapshot.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+
+                // Clear analysis results
+                batch.update(
+                    db.collection('workshop_nov11').doc('team_building'),
+                    {
+                        clustered_results: firebase.firestore.FieldValue.delete(),
+                        analysis_timestamp: firebase.firestore.FieldValue.delete(),
+                        total_responses: firebase.firestore.FieldValue.delete()
+                    }
+                );
+
+                await batch.commit();
+                
+                // Reset UI
+                responseList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-text">لا توجد ردود بعد. ابدأ الجلسة لاستقبال الردود.</div>
+                    </div>
+                `;
+                
+                clusteredSection.classList.remove('show');
+                categoryGrid.innerHTML = '';
+                
+                clusterBtn.disabled = true;
+                clusterBtn.querySelector('.text').textContent = '🤖 تصنيف تلقائي بالذكاء الاصطناعي';
+
+                showToast('✅ تم إعادة ضبط Team Building بنجاح!', 'success');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ حدث خطأ: ' + error.message, 'error');
+            } finally {
+                loadingOverlay.classList.remove('show');
+                resetTeamBuildingBtn.disabled = false;
+                resetTeamBuildingBtn.textContent = '🔄 إعادة ضبط Team Building';
+            }
+        });
+
+        // Reset Diagnostic Phase Only
+        const resetDiagnosticBtn = document.getElementById('resetDiagnosticBtn');
+        
+        resetDiagnosticBtn.addEventListener('click', async () => {
+            const confirmation = confirm(
+                '⚠️ تحذير شديد!\n\n' +
+                'سيتم حذف جميع بيانات Diagnostic Phase:\n' +
+                '• Pre-Mortem Responses\n' +
+                '• نتائج التصويت (80/20)\n' +
+                '• تحليلات الـ 5 Whys\n' +
+                '• جميع التحليلات بالذكاء الاصطناعي\n\n' +
+                'Team Building لن يتأثر.\n\n' +
+                'هل أنت متأكد من المتابعة؟'
+            );
+
+            if (!confirmation) return;
+
+            const doubleCheck = prompt('للتأكيد النهائي، اكتب: RESET DIAGNOSTIC');
+            if (doubleCheck !== 'RESET DIAGNOSTIC') {
+                showToast('❌ تم الإلغاء', 'error');
+                return;
+            }
+
+            loadingOverlay.classList.add('show');
+            resetDiagnosticBtn.disabled = true;
+            resetDiagnosticBtn.textContent = '⏳ جاري الحذف...';
+
+            try {
+                // Delete Pre-Mortem Responses
+                const premortremSnapshot = await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('premortem_responses')
+                    .get();
+
+                const batch1 = db.batch();
+                premortremSnapshot.forEach(doc => {
+                    batch1.delete(doc.ref);
+                });
+                await batch1.commit();
+
+                console.log('✓ Pre-Mortem responses deleted');
+
+                // Delete Voting Results
+                const votesSnapshot = await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('votes')
+                    .get();
+
+                const batch2 = db.batch();
+                votesSnapshot.forEach(doc => {
+                    batch2.delete(doc.ref);
+                });
+                await batch2.commit();
+
+                console.log('✓ Votes deleted');
+
+                // Delete 5 Whys Responses
+                const whysSnapshot = await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('five_whys')
+                    .get();
+
+                const batch3 = db.batch();
+                whysSnapshot.forEach(doc => {
+                    batch3.delete(doc.ref);
+                });
+                await batch3.commit();
+
+                console.log('✓ 5 Whys responses deleted');
+
+                // Delete 5 Whys Analysis
+                const whysAnalysisSnapshot = await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('five_whys_analysis')
+                    .get();
+
+                const batch4 = db.batch();
+                whysAnalysisSnapshot.forEach(doc => {
+                    batch4.delete(doc.ref);
+                });
+                await batch4.commit();
+
+                console.log('✓ 5 Whys analysis deleted');
+
+                // Clear diagnostic document fields
+                await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .set({
+                        analysis_results: firebase.firestore.FieldValue.delete(),
+                        analysis_timestamp: firebase.firestore.FieldValue.delete()
+                    }, { merge: true });
+
+                console.log('✓ Diagnostic document cleared');
+                
+                // Reset UI counters
+                document.getElementById('premortRemCount').textContent = '0 ردود';
+                document.getElementById('votingCount').textContent = '0 مصوّتين';
+                document.getElementById('whysCount').textContent = '0 تحليلات';
+
+                showToast('✅ تم إعادة ضبط Diagnostic Phase بنجاح!', 'success');
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ حدث خطأ: ' + error.message, 'error');
+            } finally {
+                loadingOverlay.classList.remove('show');
+                resetDiagnosticBtn.disabled = false;
+                resetDiagnosticBtn.textContent = '⚠️ إعادة ضبط Diagnostic Phase';
+            }
+        });
+
 
     </script>
 </body>
