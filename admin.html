@@ -753,48 +753,19 @@
         });
         
        async function clusterWithGemini(responses) {
-    const prompt = `صنف التحديات التالية إلى 5 فئات وارجعلي JSON فقط:
-
-${responses.map((r, i) => `${i+1}. ${r}`).join('\n')}
-
-الفئات:
-- resources (الموارد)
-- coordination (التنسيق)
-- accountability (المتابعة)
-- systems (الأنظمة)
-- planning (التخطيط)
-
-JSON format:
-{"categories": {"resources": [...], "coordination": [...], "accountability": [...], "systems": [...], "planning": [...]}}`;
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://workshop-api.enneagramcompas.repl.co/cluster', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': CLAUDE_API_KEY,
-            'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-            model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 2000,
-            messages: [{role: 'user', content: prompt}]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ responses })
     });
     
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error:', errorText);
-        throw new Error('فشل الاتصال بـ Claude API');
+        throw new Error('فشل الاتصال');
     }
     
-    const data = await response.json();
-    const text = data.content[0].text;
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    
-    if (!jsonMatch) throw new Error('لم يتم العثور على JSON');
-    
-    return JSON.parse(jsonMatch[0]);
+    return await response.json();
 }
+
         
         // Display Clustered Results
         function displayClusteredResults(result) {
