@@ -753,14 +753,18 @@
         });
         
        async function clusterWithGemini(responses) {
-    const response = await fetch('https://workshop-api-enneagramcompas.replit.app/cluster', {
+    const response = await fetch('https://celadon-froyo-00993f.netlify.app/.netlify/functions/cluster', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json' 
+        },
         body: JSON.stringify({ responses })
     });
     
     if (!response.ok) {
-        throw new Error('فشل الاتصال');
+        const errorText = await response.text();
+        console.error('API Error:', errorText);
+        throw new Error('فشل الاتصال بالـ API');
     }
     
     return await response.json();
