@@ -856,63 +856,10 @@ loadSavedResults();
     
     categoryGrid.innerHTML = '';
     
-    // Display Overall Insights First (if available)
-    if (overallInsights.top_category) {
-        const overallCard = document.createElement('div');
-        overallCard.style.cssText = `
-            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
-            border: 2px solid #28a745;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            grid-column: 1 / -1;
-        `;
-        
-        overallCard.innerHTML = `
-            <h3 style="color: #28a745; font-size: 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <span>💡</span>
-                <span>الرؤية الشاملة</span>
-            </h3>
-            
-            <div style="display: grid; gap: 20px;">
-                ${overallInsights.top_category_significance ? `
-                    <div style="background: #2d2d5f; padding: 20px; border-radius: 10px; border-right: 4px solid #ffc107;">
-                        <h4 style="color: #ffc107; margin-bottom: 10px;">🎯 الفئة الأهم:</h4>
-                        <p style="color: #e0e0e0; line-height: 1.6;">${overallInsights.top_category_significance}</p>
-                    </div>
-                ` : ''}
-                
-                ${overallInsights.relationships ? `
-                    <div style="background: #2d2d5f; padding: 20px; border-radius: 10px; border-right: 4px solid #667eea;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">🔗 العلاقات بين الفئات:</h4>
-                        <p style="color: #e0e0e0; line-height: 1.6;">${overallInsights.relationships}</p>
-                    </div>
-                ` : ''}
-                
-                ${overallInsights.priorities && overallInsights.priorities.length > 0 ? `
-                    <div style="background: #2d2d5f; padding: 20px; border-radius: 10px; border-right: 4px solid #dc3545;">
-                        <h4 style="color: #dc3545; margin-bottom: 15px;">🚨 الأولويات:</h4>
-                        <ol style="color: #e0e0e0; line-height: 1.8; padding-right: 20px;">
-                            ${overallInsights.priorities.map(p => `<li>${p}</li>`).join('')}
-                        </ol>
-                    </div>
-                ` : ''}
-                
-                ${overallInsights.quick_wins && overallInsights.quick_wins.length > 0 ? `
-                    <div style="background: #2d2d5f; padding: 20px; border-radius: 10px; border-right: 4px solid #28a745;">
-                        <h4 style="color: #28a745; margin-bottom: 15px;">⚡ إجراءات سريعة (Quick Wins):</h4>
-                        <ul style="color: #e0e0e0; line-height: 1.8; padding-right: 20px;">
-                            ${overallInsights.quick_wins.map(w => `<li>${w}</li>`).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-        
-        categoryGrid.appendChild(overallCard);
-    }
+    // ═══════════════════════════════════════════════════
+    // PART 1: Display Categories FIRST (with details)
+    // ═══════════════════════════════════════════════════
     
-    // Display Categories with Analysis
     Object.keys(categories).forEach(key => {
         const items = categories[key];
         const config = categoryConfig[key];
@@ -929,43 +876,12 @@ loadSavedResults();
                 <div class="category-count">${items.length}</div>
             </div>
             
-            ${categoryAnalysis.percentage ? `
-                <div style="margin: 15px 0; padding: 10px; background: #1e1e3f; border-radius: 8px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span style="color: #999; font-size: 14px;">النسبة من إجمالي التحديات</span>
-                        <span style="color: ${config.color}; font-weight: 700;">${categoryAnalysis.percentage}%</span>
-                    </div>
-                    <div style="background: #2d2d5f; height: 6px; border-radius: 3px; overflow: hidden;">
-                        <div style="background: ${config.color}; height: 100%; width: ${categoryAnalysis.percentage}%;"></div>
-                    </div>
-                </div>
-            ` : ''}
-            
-            ${categoryAnalysis.patterns && categoryAnalysis.patterns.length > 0 ? `
-                <div style="margin: 15px 0; padding: 15px; background: #1e1e3f; border-radius: 8px;">
-                    <h4 style="color: ${config.color}; font-size: 14px; margin-bottom: 10px;">🔍 الأنماط الملاحظة:</h4>
-                    <ul style="color: #e0e0e0; font-size: 14px; line-height: 1.6; padding-right: 20px; margin: 0;">
-                        ${categoryAnalysis.patterns.map(p => `<li>${p}</li>`).join('')}
-                    </ul>
-                </div>
-            ` : ''}
-            
-            ${categoryAnalysis.root_cause ? `
-                <div style="margin: 15px 0; padding: 15px; background: #1e1e3f; border-radius: 8px; border-right: 3px solid ${config.color};">
-                    <h4 style="color: ${config.color}; font-size: 14px; margin-bottom: 8px;">🎯 السبب الجذري المحتمل:</h4>
-                    <p style="color: #e0e0e0; font-size: 14px; line-height: 1.6; margin: 0;">${categoryAnalysis.root_cause}</p>
-                </div>
-            ` : ''}
-            
-            ${categoryAnalysis.impact ? `
-                <div style="margin: 15px 0; padding: 15px; background: #1e1e3f; border-radius: 8px;">
-                    <h4 style="color: #ff6b6b; font-size: 14px; margin-bottom: 8px;">⚠️ التأثير على الأداء:</h4>
-                    <p style="color: #e0e0e0; font-size: 14px; line-height: 1.6; margin: 0;">${categoryAnalysis.impact}</p>
-                </div>
-            ` : ''}
-            
-            <div style="margin: 15px 0;">
-                <h4 style="color: #e0e0e0; font-size: 14px; margin-bottom: 10px;">📝 التحديات:</h4>
+            <!-- 1. التحديات أولاً -->
+            <div style="margin: 20px 0;">
+                <h4 style="color: #e0e0e0; font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <span>📝</span>
+                    <span>التحديات:</span>
+                </h4>
                 <div class="category-items">
                     ${items.map(item => `
                         <div class="category-item">• ${item}</div>
@@ -973,13 +889,62 @@ loadSavedResults();
                 </div>
             </div>
             
+            <!-- 2. النسبة المئوية -->
+            ${categoryAnalysis.percentage ? `
+                <div style="margin: 20px 0; padding: 15px; background: #1e1e3f; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: #999; font-size: 14px;">النسبة من إجمالي التحديات</span>
+                        <span style="color: ${config.color}; font-weight: 700; font-size: 18px;">${categoryAnalysis.percentage}%</span>
+                    </div>
+                    <div style="background: #2d2d5f; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: ${config.color}; height: 100%; width: ${categoryAnalysis.percentage}%; transition: width 1s ease;"></div>
+                    </div>
+                </div>
+            ` : ''}
+            
+            <!-- 3. الأنماط الملاحظة -->
+            ${categoryAnalysis.patterns && categoryAnalysis.patterns.length > 0 ? `
+                <div style="margin: 20px 0; padding: 15px; background: #1e1e3f; border-radius: 8px; border-right: 3px solid ${config.color};">
+                    <h4 style="color: ${config.color}; font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                        <span>🔍</span>
+                        <span>الأنماط الملاحظة:</span>
+                    </h4>
+                    <ul style="color: #e0e0e0; font-size: 14px; line-height: 1.8; padding-right: 20px; margin: 0;">
+                        ${categoryAnalysis.patterns.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            
+            <!-- 4. السبب الجذري المحتمل -->
+            ${categoryAnalysis.root_cause ? `
+                <div style="margin: 20px 0; padding: 15px; background: #2d2d5f; border-radius: 8px; border-right: 3px solid #ffc107;">
+                    <h4 style="color: #ffc107; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <span>🎯</span>
+                        <span>السبب الجذري المحتمل:</span>
+                    </h4>
+                    <p style="color: #e0e0e0; font-size: 14px; line-height: 1.7; margin: 0;">${categoryAnalysis.root_cause}</p>
+                </div>
+            ` : ''}
+            
+            <!-- 5. التأثير على الأداء -->
+            ${categoryAnalysis.impact ? `
+                <div style="margin: 20px 0; padding: 15px; background: #2d2d5f; border-radius: 8px; border-right: 3px solid #ff6b6b;">
+                    <h4 style="color: #ff6b6b; font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                        <span>⚠️</span>
+                        <span>التأثير على الأداء:</span>
+                    </h4>
+                    <p style="color: #e0e0e0; font-size: 14px; line-height: 1.7; margin: 0;">${categoryAnalysis.impact}</p>
+                </div>
+            ` : ''}
+            
+            <!-- 6. التوصيات القابلة للتنفيذ -->
             ${categoryAnalysis.recommendations && categoryAnalysis.recommendations.length > 0 ? `
-                <div style="margin: 15px 0; padding: 15px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 8px;">
-                    <h4 style="color: white; font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <div style="margin: 20px 0; padding: 18px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border-radius: 10px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
+                    <h4 style="color: white; font-size: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                         <span>✅</span>
                         <span>التوصيات القابلة للتنفيذ:</span>
                     </h4>
-                    <ol style="color: white; font-size: 14px; line-height: 1.8; padding-right: 20px; margin: 0;">
+                    <ol style="color: white; font-size: 14px; line-height: 2; padding-right: 20px; margin: 0;">
                         ${categoryAnalysis.recommendations.map(r => `<li>${r}</li>`).join('')}
                     </ol>
                 </div>
@@ -987,6 +952,78 @@ loadSavedResults();
         `;
         categoryGrid.appendChild(card);
     });
+    
+    // ═══════════════════════════════════════════════════
+    // PART 2: Overall Insights LAST (at the end)
+    // ═══════════════════════════════════════════════════
+    
+    if (overallInsights.top_category) {
+        const overallCard = document.createElement('div');
+        overallCard.style.cssText = `
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 35px;
+            margin-top: 40px;
+            grid-column: 1 / -1;
+            box-shadow: 0 10px 40px rgba(40, 167, 69, 0.3);
+        `;
+        
+        overallCard.innerHTML = `
+            <h3 style="color: #28a745; font-size: 28px; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #28a745; padding-bottom: 15px;">
+                <span>💡</span>
+                <span>الرؤية الشاملة</span>
+            </h3>
+            
+            <div style="display: grid; gap: 25px;">
+                ${overallInsights.top_category_significance ? `
+                    <div style="background: #2d2d5f; padding: 25px; border-radius: 12px; border-right: 5px solid #ffc107;">
+                        <h4 style="color: #ffc107; margin-bottom: 12px; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                            <span>🎯</span>
+                            <span>الفئة الأهم:</span>
+                        </h4>
+                        <p style="color: #e0e0e0; line-height: 1.8; font-size: 15px;">${overallInsights.top_category_significance}</p>
+                    </div>
+                ` : ''}
+                
+                ${overallInsights.relationships ? `
+                    <div style="background: #2d2d5f; padding: 25px; border-radius: 12px; border-right: 5px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 12px; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                            <span>🔗</span>
+                            <span>العلاقات بين الفئات:</span>
+                        </h4>
+                        <p style="color: #e0e0e0; line-height: 1.8; font-size: 15px;">${overallInsights.relationships}</p>
+                    </div>
+                ` : ''}
+                
+                ${overallInsights.priorities && overallInsights.priorities.length > 0 ? `
+                    <div style="background: #2d2d5f; padding: 25px; border-radius: 12px; border-right: 5px solid #dc3545;">
+                        <h4 style="color: #dc3545; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                            <span>🚨</span>
+                            <span>الأولويات:</span>
+                        </h4>
+                        <ol style="color: #e0e0e0; line-height: 2; padding-right: 25px; font-size: 15px;">
+                            ${overallInsights.priorities.map(p => `<li style="margin-bottom: 8px;">${p}</li>`).join('')}
+                        </ol>
+                    </div>
+                ` : ''}
+                
+                ${overallInsights.quick_wins && overallInsights.quick_wins.length > 0 ? `
+                    <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);">
+                        <h4 style="color: white; margin-bottom: 15px; font-size: 18px; display: flex; align-items: center; gap: 10px;">
+                            <span>⚡</span>
+                            <span>إجراءات سريعة (Quick Wins):</span>
+                        </h4>
+                        <ul style="color: white; line-height: 2; padding-right: 25px; font-size: 15px;">
+                            ${overallInsights.quick_wins.map(w => `<li style="margin-bottom: 8px;">${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        
+        categoryGrid.appendChild(overallCard);
+    }
     
     clusteredSection.classList.add('show');
     clusteredSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
