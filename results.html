@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج التحليل - ورشة التخطيط الاستراتيجي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Loading State */
+        .loading-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        /* Waiting State */
+        .waiting-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .waiting-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .waiting-text {
+            color: #666;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .waiting-subtext {
+            color: #999;
+            font-size: 16px;
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+        
+        .results-section.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        .category-card:nth-child(1) { animation-delay: 0.1s; }
+        .category-card:nth-child(2) { animation-delay: 0.2s; }
+        .category-card:nth-child(3) { animation-delay: 0.3s; }
+        .category-card:nth-child(4) { animation-delay: 0.4s; }
+        .category-card:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+        
+        .category-card.resources { border-top: 5px solid #667eea; }
+        .category-card.coordination { border-top: 5px solid #28a745; }
+        .category-card.accountability { border-top: 5px solid #ffc107; }
+        .category-card.systems { border-top: 5px solid #dc3545; }
+        .category-card.planning { border-top: 5px solid #17a2b8; }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .category-icon {
+            font-size: 40px;
+        }
+        
+        .category-title h3 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .category-count {
+            background: #667eea;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-right: auto;
+        }
+        
+        .section-block {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-content {
+            color: #555;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .section-content ul,
+        .section-content ol {
+            padding-right: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .challenges-list {
+            display: grid;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .challenge-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 3px solid #667eea;
+            color: #444;
+            font-size: 15px;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .progress-bar-container {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            transition: width 1.5s ease;
+        }
+        
+        .recommendations-box {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            color: white;
+        }
+        
+        .recommendations-box h4 {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .recommendations-box ol {
+            padding-right: 20px;
+        }
+        
+        .recommendations-box li {
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+        
+        /* Overall Insights */
+        .overall-insights {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin-top: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 3px solid #28a745;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+        
+        .overall-insights h2 {
+            color: #28a745;
+            font-size: 28px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #28a745;
+        }
+        
+        .insight-block {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-right: 5px solid #667eea;
+        }
+        
+        .insight-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .insight-content {
+            color: #555;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        .quick-wins-box {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            padding: 25px;
+            border-radius: 12px;
+            color: white;
+            margin-top: 20px;
+        }
+        
+        .quick-wins-box h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .quick-wins-box ul {
+            padding-right: 25px;
+        }
+        
+        .quick-wins-box li {
+            margin-bottom: 12px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>✨ نتائج التحليل بالذكاء الاصطناعي</h1>
+            <p>ورشة التخطيط الاستراتيجي - إدارة جمع التبرعات - صناع الحياة</p>
+            <div class="status-badge" id="statusBadge">● جاري التحميل...</div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري تحميل النتائج...</div>
+        </div>
+
+        <!-- Waiting State -->
+        <div class="waiting-state" id="waitingState" style="display: none;">
+            <div class="waiting-icon">⏳</div>
+            <div class="waiting-text">لم يتم تحليل البيانات بعد</div>
+            <div class="waiting-subtext">انتظر حتى يقوم الكوتش بتشغيل التحليل</div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="category-grid" id="categoryGrid"></div>
+            <div class="overall-insights" id="overallInsights" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const loadingState = document.getElementById('loadingState');
+        const waitingState = document.getElementById('waitingState');
+        const resultsSection = document.getElementById('resultsSection');
+        const categoryGrid = document.getElementById('categoryGrid');
+        const overallInsights = document.getElementById('overallInsights');
+        const statusBadge = document.getElementById('statusBadge');
+        
+        // Listen for results
+        db.collection('workshop_nov11')
+            .doc('team_building')
+            .onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    if (data.clustered_results) {
+                        // Hide loading/waiting
+                        loadingState.style.display = 'none';
+                        waitingState.style.display = 'none';
+                        
+                        // Show results
+                        displayResults(data.clustered_results);
+                        
+                        // Update status
+                        statusBadge.textContent = '● النتائج جاهزة';
+                        statusBadge.style.background = '#28a745';
+                        
+                    } else {
+                        // No results yet
+                        loadingState.style.display = 'none';
+                        waitingState.style.display = 'block';
+                        resultsSection.classList.remove('show');
+                        
+                        statusBadge.textContent = '● في انتظار التحليل';
+                        statusBadge.style.background = '#ffc107';
+                    }
+                } else {
+                    waitingState.style.display = 'block';
+                    loadingState.style.display = 'none';
+                }
+            });
+        
+        function displayResults(result) {
+            const categories = result.categories;
+            const analysis = result.analysis || {};
+            const overallInsightsData = result.overall_insights || {};
+            
+            const categoryConfig = {
+                resources: { icon: '📊', title: 'الموارد (Budget, People, Tools)', color: '#667eea' },
+                coordination: { icon: '🤝', title: 'التنسيق بين الأقسام', color: '#28a745' },
+                accountability: { icon: '📈', title: 'المتابعة والـ Accountability', color: '#ffc107' },
+                systems: { icon: '⚙️', title: 'الأنظمة والـ Processes', color: '#dc3545' },
+                planning: { icon: '🎯', title: 'التخطيط والأهداف', color: '#17a2b8' }
+            };
+            
+            categoryGrid.innerHTML = '';
+            
+            // Display Categories
+            Object.keys(categories).forEach(key => {
+                const items = categories[key];
+                const config = categoryConfig[key];
+                const categoryAnalysis = analysis[key] || {};
+                
+                const card = document.createElement('div');
+                card.className = `category-card ${key}`;
+                
+                let html = `
+                    <div class="category-header">
+                        <div class="category-icon">${config.icon}</div>
+                        <div class="category-title">
+                            <h3>${config.title}</h3>
+                        </div>
+                        <div class="category-count">${items.length}</div>
+                    </div>
+                `;
+                
+                // Challenges
+                html += `
+                    <div class="section-block">
+                        <div class="section-title">📝 التحديات</div>
+                        <div class="challenges-list">
+                            ${items.map(item => `<div class="challenge-item">• ${item}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                // Percentage
+                if (categoryAnalysis.percentage) {
+                    html += `
+                        <div class="section-block">
+                            <div class="section-title">📊 النسبة من إجمالي التحديات</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+                                <span style="font-size: 24px; font-weight: 700; color: ${config.color};">${categoryAnalysis.percentage}%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: ${categoryAnalysis.percentage}%; background: ${config.color};"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Patterns
+                if (categoryAnalysis.patterns && categoryAnalysis.patterns.length > 0) {
+                    html += `
+                        <div class="section-block" style="border-right-color: ${config.color};">
+                            <div class="section-title">🔍 الأنماط الملاحظة</div>
+                            <div class="section-content">
+                                <ul>${categoryAnalysis.patterns.map(p => `<li>${p}</li>`).join('')}</ul>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Root Cause
+                if (categoryAnalysis.root_cause) {
+                    html += `
+                        <div class="section-block" style="border-right-color: #ffc107;">
+                            <div class="section-title">🎯 السبب الجذري المحتمل</div>
+                            <div class="section-content">${categoryAnalysis.root_cause}</div>
+                        </div>
+                    `;
+                }
+                
+                // Impact
+                if (categoryAnalysis.impact) {
+                    html += `
+                        <div class="section-block" style="border-right-color: #ff6b6b;">
+                            <div class="section-title">⚠️ التأثير على الأداء</div>
+                            <div class="section-content">${categoryAnalysis.impact}</div>
+                        </div>
+                    `;
+                }
+                
+                // Recommendations
+                if (categoryAnalysis.recommendations && categoryAnalysis.recommendations.length > 0) {
+                    html += `
+                        <div class="recommendations-box">
+                            <h4>✅ التوصيات القابلة للتنفيذ:</h4>
+                            <ol>${categoryAnalysis.recommendations.map(r => `<li>${r}</li>`).join('')}</ol>
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = html;
+                categoryGrid.appendChild(card);
+            });
+            
+            // Display Overall Insights
+            if (overallInsightsData.top_category) {
+                let insightsHtml = `
+                    <h2><span>💡</span><span>الرؤية الشاملة</span></h2>
+                `;
+                
+                if (overallInsightsData.top_category_significance) {
+                    insightsHtml += `
+                        <div class="insight-block" style="border-right-color: #ffc107;">
+                            <div class="insight-title"><span>🎯</span><span>الفئة الأهم</span></div>
+                            <div class="insight-content">${overallInsightsData.top_category_significance}</div>
+                        </div>
+                    `;
+                }
+                
+                if (overallInsightsData.relationships) {
+                    insightsHtml += `
+                        <div class="insight-block" style="border-right-color: #667eea;">
+                            <div class="insight-title"><span>🔗</span><span>العلاقات بين الفئات</span></div>
+                            <div class="insight-content">${overallInsightsData.relationships}</div>
+                        </div>
+                    `;
+                }
+                
+                if (overallInsightsData.priorities && overallInsightsData.priorities.length > 0) {
+                    insightsHtml += `
+                        <div class="insight-block" style="border-right-color: #dc3545;">
+                            <div class="insight-title"><span>🚨</span><span>الأولويات</span></div>
+                            <div class="insight-content">
+                                <ol>${overallInsightsData.priorities.map(p => `<li>${p}</li>`).join('')}</ol>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (overallInsightsData.quick_wins && overallInsightsData.quick_wins.length > 0) {
+                    insightsHtml += `
+                        <div class="quick-wins-box">
+                            <h4>⚡ إجراءات سريعة (Quick Wins):</h4>
+                            <ul>${overallInsightsData.quick_wins.map(w => `<li>${w}</li>`).join('')}</ul>
+                        </div>
+                    `;
+                }
+                
+                overallInsights.innerHTML = insightsHtml;
+                overallInsights.style.display = 'block';
+            }
+            
+            resultsSection.classList.add('show');
+        }
+    </script>
+</body>
+</html>
