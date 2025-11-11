@@ -10,7 +10,7 @@ const firebaseConfig = {
 };
 
 // Claude API Key
-const CLAUDE_API_KEY = "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";
+const CLAUDE_API_KEY = "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";
 
 // Export
 if (typeof module !== 'undefined' && module.exports) {
