@@ -1,1 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورشة التخطيط الاستراتيجي - صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header .date {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .status-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .status-box.waiting {
+            border: 2px solid #ffc107;
+        }
+        
+        .status-box.active {
+            border: 2px solid #28a745;
+            background: #d4edda;
+        }
+        
+        .status-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .status-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .status-subtext {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .phase-content {
+            display: none;
+        }
+        
+        .phase-content.active {
+            display: block;
+            animation: slideIn 0.3s ease-in;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .question-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-right: 4px solid #667eea;
+        }
+        
+        .question-box h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .question-text {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #856404;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .char-counter {
+            text-align: left;
+            color: #999;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .timer {
+            text-align: center;
+            font-size: 24px;
+            color: #667eea;
+            margin: 15px 0;
+            font-weight: 700;
+        }
+        
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .participants-count {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .success-message .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .success-message h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .success-message p {
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 ورشة التخطيط الاستراتيجي</h1>
+            <p class="date">صناع الحياة - مصر | 11 نوفمبر 2025</p>
+        </div>
+        
+        <!-- Waiting State -->
+        <div id="waitingState" class="status-box waiting">
+            <div class="status-icon">⏳</div>
+            <div class="status-text">الجلسة لم تبدأ بعد...</div>
+            <div class="status-subtext">انتظر تعليمات الميسّر (محمود فؤاد)</div>
+        </div>
+        
+        <!-- Phase 1: Anonymous Challenges -->
+        <div id="phase1" class="phase-content">
+            <div class="question-box">
+                <h3>🎯 المرحلة 1: التحديات الحقيقية</h3>
+                
+                <div class="question-text">
+                    "إيه أكبر تحدي بتواجهه في شغلك - واللي لو اتحل، هيفرق معاك جداً؟"
+                </div>
+                
+                <div class="info-box">
+                    ⚠️ هذا النشاط مجهول المصدر (Anonymous) - لن يعرف أحد من كتب ماذا
+                </div>
+                
+                <textarea id="challenge-input" placeholder="اكتب هنا..." maxlength="500"></textarea>
+                <div class="char-counter"><span id="char-count">0</span> / 500</div>
+                
+                <div class="timer" id="timer1">⏱️ <span id="time-remaining">5:00</span></div>
+                <div class="participants-count">عدد المشاركين: <span id="participants-count">0</span>/25</div>
+                
+                <button class="btn" id="submit-btn1" disabled>إرسال</button>
+            </div>
+            
+            <div id="success1" class="success-message" style="display: none;">
+                <div class="icon">✅</div>
+                <h3>تم الإرسال بنجاح!</h3>
+                <p>شكراً لمشاركتك. انتظر المرحلة التالية...</p>
+            </div>
+        </div>
+    </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const waitingState = document.getElementById('waitingState');
+        const phase1 = document.getElementById('phase1');
+        const challengeInput = document.getElementById('challenge-input');
+        const charCount = document.getElementById('char-count');
+        const submitBtn1 = document.getElementById('submit-btn1');
+        const success1 = document.getElementById('success1');
+        const timeRemaining = document.getElementById('time-remaining');
+        const participantsCount = document.getElementById('participants-count');
+        const timer1 = document.getElementById('timer1');
+        
+        let timerInterval;
+        let timeLeft = 300; // 5 minutes
+        
+        // Character counter
+        challengeInput.addEventListener('input', () => {
+            const length = challengeInput.value.length;
+            charCount.textContent = length;
+            submitBtn1.disabled = length < 10;
+        });
+        
+        // Listen to session control
+        db.collection('session_control').doc('current')
+            .onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    if (data.phase === 'phase1' && data.active) {
+                        waitingState.style.display = 'none';
+                        phase1.classList.add('active');
+                        startTimer();
+                        listenToParticipants();
+                    }
+                }
+            });
+        
+        // Start timer
+        function startTimer() {
+            if (timerInterval) return;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 60) {
+                    timer1.classList.add('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitBtn1.disabled = true;
+                    challengeInput.disabled = true;
+                }
+            }, 1000);
+        }
+        
+        // Listen to participants count
+        function listenToParticipants() {
+            db.collection('workshop_nov11').doc('team_building')
+                .collection('responses')
+                .onSnapshot((snapshot) => {
+                    participantsCount.textContent = snapshot.size;
+                });
+        }
+        
+        // Submit response
+        submitBtn1.addEventListener('click', async () => {
+            const challenge = challengeInput.value.trim();
+            
+            if (challenge.length < 10) {
+                alert('الرجاء كتابة تحدي أطول من 10 أحرف');
+                return;
+            }
+            
+            submitBtn1.disabled = true;
+            submitBtn1.textContent = 'جاري الإرسال...';
+            
+            try {
+                await db.collection('workshop_nov11').doc('team_building')
+                    .collection('responses')
+                    .add({
+                        challenge: challenge,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                
+                // Show success
+                challengeInput.style.display = 'none';
+                document.querySelector('.char-counter').style.display = 'none';
+                submitBtn1.style.display = 'none';
+                success1.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في الإرسال. حاول مرة أخرى.');
+                submitBtn1.disabled = false;
+                submitBtn1.textContent = 'إرسال';
+            }
+        });
+    </script>
+</body>
+</html>
