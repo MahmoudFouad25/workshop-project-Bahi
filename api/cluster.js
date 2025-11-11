@@ -3,30 +3,56 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   
-  const { responses } = req.body;
-  
-  const challenges = responses.map((r, i) => (i+1) + '. ' + r).join('\n');
-  const prompt = 'صنف التحديات إلى 5 فئات وارجع JSON:\n' + challenges + '\nالفئات: resources, coordination, accountability, systems, planning\n{"categories": {"resources": [...], "coordination": [...], "accountability": [...], "systems": [...], "planning": [...]}}';
+  try {
+    const { responses } = req.body;
+    
+    const challengesList = responses.map((r, i) => String(i + 1) + '. ' + r).join('\n');
+    
+    const promptText = 'صنف التحديات إلى 5 فئات وارجع JSON بس:\n\n' + 
+                       challengesList + 
+                       '\n\nالفئات: resources, coordination, accountability, systems, planning\n\n' +
+                       'Format: {"categories": {"resources": [], "coordination": [], "accountability": [], "systems": [], "planning": []}}';
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': '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',
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 2000,
-      messages: [{role: 'user', content: prompt}]
-    })
-  });
-  
-  const data = await response.json();
-  const text = data.content[0].text;
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  
-  res.json(JSON.parse(jsonMatch[0]));
+    const apiResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': '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',
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-5-sonnet-20241022',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: promptText }]
+      })
+    });
+    
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.text();
+      throw new Error('Claude API error: ' + errorData);
+    }
+    
+    const data = await apiResponse.json();
+    const text = data.content[0].text;
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+    
+    const result = JSON.parse(jsonMatch[0]);
+    
+    return res.status(200).json(result);
+    
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ 
+      error: error.message,
+      stack: error.stack 
+    });
+  }
 }
