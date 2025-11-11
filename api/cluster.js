@@ -98,8 +98,8 @@ ${challengesList}
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000, // Increased for detailed analysis
-        temperature: 0.3, // Lower for more consistent analysis
+        max_tokens: 4000,
+        temperature: 0.3,
         messages: [{ 
           role: 'user', 
           content: promptText 
