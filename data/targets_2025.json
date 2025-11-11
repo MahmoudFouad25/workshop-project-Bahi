@@ -1,62 +1,116 @@
 {
   "title": "أهداف إدارة جمع التبرعات 2025 - صناع الحياة مصر",
-  "total_target": 175000000,
-  "total_achieved": 134000000,
-  "gap": 41000000,
+  "total_target": 246691000,
+  "total_achieved": 206246555,
+  "gap": 40444445,
   "currency": "EGP",
   "items": [
     {
-      "id": "regular_donors",
-      "name": "المتبرعين المنتظمين",
-      "target": 45000000,
-      "achieved": 38000000,
+      "id": "call_center_inhouse",
+      "name": "Call Center Inhouse",
+      "target": 42000000,
+      "achieved": 41141917,
       "unit": "EGP",
-      "category": "fundraising"
+      "category": "call_center",
+      "status": "excellent"
     },
     {
-      "id": "corporate_partnerships",
-      "name": "الشراكات المؤسسية",
-      "target": 30000000,
-      "achieved": 22000000,
+      "id": "booths",
+      "name": "Booths",
+      "target": 39050000,
+      "achieved": 38960640,
       "unit": "EGP",
-      "category": "fundraising"
+      "category": "field",
+      "status": "excellent"
     },
     {
-      "id": "ramadan_campaign",
-      "name": "حملة رمضان",
-      "target": 40000000,
-      "achieved": 35000000,
+      "id": "international_partnerships",
+      "name": "International Partnerships",
+      "target": 30300000,
+      "achieved": 38308172,
       "unit": "EGP",
-      "category": "campaigns"
+      "category": "partnerships",
+      "status": "exceeded"
     },
     {
-      "id": "digital_fundraising",
-      "name": "التبرعات الرقمية",
-      "target": 25000000,
-      "achieved": 18000000,
+      "id": "call_center_outsource",
+      "name": "Call Center Outsource",
+      "target": 31411000,
+      "achieved": 23785949,
       "unit": "EGP",
-      "category": "digital"
+      "category": "call_center",
+      "status": "at_risk"
     },
     {
-      "id": "events_fundraising",
-      "name": "الفعاليات والحفلات",
-      "target": 15000000,
-      "achieved": 10000000,
+      "id": "charities",
+      "name": "Charities",
+      "target": 26000000,
+      "achieved": 23262566,
       "unit": "EGP",
-      "category": "events"
+      "category": "partnerships",
+      "status": "good"
     },
     {
-      "id": "major_donors",
-      "name": "المتبرعين الرئيسيين (VIP)",
-      "target": 20000000,
-      "achieved": 11000000,
+      "id": "offices",
+      "name": "Offices",
+      "target": 23550000,
+      "achieved": 14025320,
       "unit": "EGP",
-      "category": "fundraising"
+      "category": "field",
+      "status": "critical"
+    },
+    {
+      "id": "online",
+      "name": "Online",
+      "target": 27000000,
+      "achieved": 11709957,
+      "unit": "EGP",
+      "category": "digital",
+      "status": "critical"
+    },
+    {
+      "id": "local_partnerships",
+      "name": "Local Partnerships & Direct Donations",
+      "target": 18465000,
+      "achieved": 11902690,
+      "unit": "EGP",
+      "category": "partnerships",
+      "status": "at_risk"
+    },
+    {
+      "id": "network",
+      "name": "Network",
+      "target": 5000000,
+      "achieved": 3108344,
+      "unit": "EGP",
+      "category": "field",
+      "status": "at_risk"
+    },
+    {
+      "id": "store",
+      "name": "Store",
+      "target": 3915000,
+      "achieved": 41000,
+      "unit": "EGP",
+      "category": "retail",
+      "status": "catastrophic"
     }
   ],
   "notes": [
     "الأرقام محدثة حتى نهاية أكتوبر 2025",
-    "الفجوة الإجمالية: 41 مليون جنيه (23.4%)",
-    "أكبر فجوة: المتبرعين الرئيسيين (45% تحت المستهدف)"
-  ]
+    "الفجوة الإجمالية: 40.4 مليون جنيه (16.4%)",
+    "أكبر فجوة: Online (15.3 مليون) و Offices (9.5 مليون)",
+    "أكبر نجاح: International Partnerships (تجاوز الهدف بـ 8 مليون)",
+    "أكبر فشل: Store (1% فقط من الهدف)"
+  ],
+  "inkind_donations": {
+    "tickets": 2732,
+    "papers_kg": 5430,
+    "clothes_kg": 38000
+  }
 }
+```
+
+**5. Commit:**
+```
+Update targets with real 2025 data
