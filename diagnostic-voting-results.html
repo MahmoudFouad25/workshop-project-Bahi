@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتائج التصويت - 80/20 Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .stats-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Loading */
+        .loading-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+        
+        .results-section.show {
+            display: block;
+        }
+        
+        /* Category Results */
+        .category-results {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .category-results.external { border-top: 5px solid #ffc107; }
+        .category-results.system { border-top: 5px solid #dc3545; }
+        .category-results.internal { border-top: 5px solid #17a2b8; }
+        
+        .category-results h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Cause Result Item */
+        .cause-result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .cause-result.top3 {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+        }
+        
+        .vote-badge {
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 700;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .cause-result.top3 .vote-badge {
+            background: #28a745;
+        }
+        
+        .cause-text {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .rank-badge {
+            background: #ffc107;
+            color: #856404;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        
+        /* Top 3 Summary */
+        .top3-summary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+        
+        .top3-summary h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .top3-summary ol {
+            padding-right: 25px;
+        }
+        
+        .top3-summary li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        /* Next Steps */
+        .next-steps {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-top: 30px;
+        }
+        
+        .next-steps h2 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        .next-steps p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 نتائج التصويت - 80/20 Analysis</h1>
+            <p>الأسباب الأكثر حصولاً على الأصوات من كل فئة</p>
+            <div class="stats-badge" id="voteCount">0 مصوّت</div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <div style="color: #666; font-size: 18px;">جاري تحميل النتائج...</div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section" id="resultsSection">
+            <!-- Will be filled by JavaScript -->
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps" id="nextSteps" style="display: none;">
+            <h2>🎯 الخطوة التالية</h2>
+            <p>
+                تم تحديد الأسباب ذات الأولوية من كل فئة.
+                <br>
+                في المرحلة التالية، سنقوم بتحليل عميق (5 Whys) لكل سبب من الأسباب التسعة.
+            </p>
+            <a href="diagnostic-5whys.html" class="next-btn">
+                متابعة → تحليل الـ 5 Whys
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const loadingState = document.getElementById('loadingState');
+        const resultsSection = document.getElementById('resultsSection');
+        const nextSteps = document.getElementById('nextSteps');
+        const voteCount = document.getElementById('voteCount');
+        
+        // Load votes and calculate results
+        loadVotingResults();
+        
+        function loadVotingResults() {
+            db.collection('workshop_nov11')
+                .doc('diagnostic')
+                .collection('votes')
+                .onSnapshot((snapshot) => {
+                    const votes = [];
+                    snapshot.forEach(doc => {
+                        votes.push(doc.data());
+                    });
+                    
+                    if (votes.length === 0) {
+                        showNoVotesMessage();
+                        return;
+                    }
+                    
+                    // Update count
+                    voteCount.textContent = `${votes.length} ${votes.length === 1 ? 'مصوّت' : 'مصوّتين'}`;
+                    
+                    // Calculate results
+                    const results = calculateResults(votes);
+                    
+                    // Display results
+                    displayResults(results);
+                });
+        }
+        
+        function showNoVotesMessage() {
+            loadingState.innerHTML = `
+                <div style="font-size: 64px; margin-bottom: 20px;">🗳️</div>
+                <div style="color: #666; font-size: 20px; font-weight: 600;">لم يتم التصويت بعد</div>
+                <div style="color: #999; font-size: 16px; margin-top: 10px;">
+                    انتظر حتى يقوم المشاركون بالتصويت على الأولويات
+                </div>
+            `;
+        }
+        
+        function calculateResults(votes) {
+            const voteCounts = {
+                external: {},
+                system: {},
+                internal: {}
+            };
+            
+            // Count votes for each cause
+            votes.forEach(vote => {
+                const selections = vote.selections;
+                
+                Object.keys(selections).forEach(category => {
+                    selections[category].forEach(cause => {
+                        if (!voteCounts[category][cause]) {
+                            voteCounts[category][cause] = 0;
+                        }
+                        voteCounts[category][cause]++;
+                    });
+                });
+            });
+            
+            // Convert to sorted arrays
+            const results = {};
+            Object.keys(voteCounts).forEach(category => {
+                results[category] = Object.entries(voteCounts[category])
+                    .map(([cause, count]) => ({ cause, count }))
+                    .sort((a, b) => b.count - a.count);
+            });
+            
+            return results;
+        }
+        
+        function displayResults(results) {
+            loadingState.style.display = 'none';
+            resultsSection.classList.add('show');
+            nextSteps.style.display = 'block';
+            
+            const categoryConfig = {
+                external: {
+                    icon: '🌍',
+                    title: 'عوامل خارجية (External)',
+                    class: 'external'
+                },
+                system: {
+                    icon: '⚙️',
+                    title: 'الأنظمة والعمليات (System)',
+                    class: 'system'
+                },
+                internal: {
+                    icon: '👥',
+                    title: 'عوامل داخلية (Internal)',
+                    class: 'internal'
+                }
+            };
+            
+            resultsSection.innerHTML = '';
+            
+            Object.keys(categoryConfig).forEach(key => {
+                const config = categoryConfig[key];
+                const causes = results[key] || [];
+                
+                if (causes.length === 0) return;
+                
+                const card = document.createElement('div');
+                card.className = `category-results ${config.class}`;
+                
+                let html = `
+                    <h2>
+                        <span>${config.icon}</span>
+                        <span>${config.title}</span>
+                    </h2>
+                `;
+                
+                // Display causes sorted by votes
+                causes.forEach((item, index) => {
+                    const isTop3 = index < 3;
+                    html += `
+                        <div class="cause-result ${isTop3 ? 'top3' : ''}">
+                            <div class="vote-badge">${item.count} ${item.count === 1 ? 'صوت' : 'أصوات'}</div>
+                            <div class="cause-text">${item.cause}</div>
+                            ${isTop3 ? `<div class="rank-badge">#${index + 1}</div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                // Top 3 summary
+                const top3 = causes.slice(0, 3);
+                if (top3.length > 0) {
+                    html += `
+                        <div class="top3-summary">
+                            <h3>
+                                <span>🎯</span>
+                                <span>Top 3 - الأولويات للتحليل العميق:</span>
+                            </h3>
+                            <ol>
+                                ${top3.map(item => `
+                                    <li>${item.cause} (${item.count} ${item.count === 1 ? 'صوت' : 'أصوات'})</li>
+                                `).join('')}
+                            </ol>
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = html;
+                resultsSection.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
