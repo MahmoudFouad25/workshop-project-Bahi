@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التصويت على الأولويات - ورشة التخطيط الاستراتيجي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* Voting Section */
+        .voting-section {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .instruction-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .instruction-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .instruction-box p {
+            color: #856404;
+            line-height: 1.6;
+        }
+        
+        .priority-section {
+            margin-bottom: 35px;
+        }
+        
+        .priority-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .priority-1 h3 { color: #dc3545; }
+        .priority-2 h3 { color: #ffc107; }
+        
+        .categories-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .category-option {
+            background: #f8f9fa;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .category-option:hover {
+            background: #e9ecef;
+            transform: translateX(-5px);
+        }
+        
+        .category-option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+        
+        .category-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .category-option.disabled:hover {
+            transform: none;
+        }
+        
+        .category-icon {
+            font-size: 32px;
+            min-width: 40px;
+        }
+        
+        .category-info {
+            flex: 1;
+        }
+        
+        .category-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .category-description {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .radio-indicator {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #ccc;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .category-option.selected .radio-indicator {
+            border-color: white;
+        }
+        
+        .category-option.selected .radio-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            transition: all 0.3s;
+            font-weight: 700;
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(40, 167, 69, 0.5);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        /* Results Section */
+        .results-section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .results-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .results-section h2 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 26px;
+        }
+        
+        .result-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-right: 5px solid #667eea;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .result-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-count {
+            font-size: 20px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .result-bar-container {
+            background: #e0e0e0;
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .result-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+        
+        .result-percentage {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .success-message .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .success-message h3 {
+            color: #155724;
+            margin-bottom: 10px;
+        }
+        
+        .thank-you-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .thank-you-box h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🗳️ التصويت على الأولويات</h1>
+            <p>بناءً على التحليل السابق، ساعدنا في تحديد الأولويات التي يجب التركيز عليها</p>
+        </div>
+
+        <!-- Voting Section -->
+        <div class="voting-section" id="votingSection">
+            <div class="instruction-box">
+                <h3>📋 التعليمات</h3>
+                <p>من فضلك اختر <strong>أهم فئتين</strong> تعتقد أنه يجب التركيز عليهما في المرحلة القادمة. اختر الأولوية الأولى ثم الأولوية الثانية.</p>
+            </div>
+
+            <!-- Priority 1 -->
+            <div class="priority-section priority-1">
+                <h3>🥇 الأولوية الأولى (الأهم)</h3>
+                <div class="categories-grid" id="priority1Grid">
+                    <!-- Will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Priority 2 -->
+            <div class="priority-section priority-2">
+                <h3>🥈 الأولوية الثانية</h3>
+                <div class="categories-grid" id="priority2Grid">
+                    <!-- Will be filled by JavaScript -->
+                </div>
+            </div>
+
+            <button class="submit-btn" id="submitVoteBtn" disabled>
+                إرسال التصويت
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="success-message">
+                <div class="icon">✅</div>
+                <h3>شكراً لمشاركتك!</h3>
+                <p>تم تسجيل صوتك بنجاح</p>
+            </div>
+
+            <h2>📊 النتائج المباشرة</h2>
+            <div id="resultsContainer"></div>
+
+            <div class="thank-you-box">
+                <h3>🙏 شكراً لك</h3>
+                <p>رأيك مهم لنا وسيساعدنا في تحديد أولويات العمل في المرحلة القادمة</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const votingSection = document.getElementById('votingSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const priority1Grid = document.getElementById('priority1Grid');
+        const priority2Grid = document.getElementById('priority2Grid');
+        const submitVoteBtn = document.getElementById('submitVoteBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        
+        // Categories
+        const categories = {
+            resources: { icon: '📊', name: 'الموارد', desc: 'Budget, People, Tools' },
+            coordination: { icon: '🤝', name: 'التنسيق بين الأقسام', desc: 'التعاون والتواصل' },
+            accountability: { icon: '📈', name: 'المتابعة والـ Accountability', desc: 'القياس والمساءلة' },
+            systems: { icon: '⚙️', name: 'الأنظمة والـ Processes', desc: 'التقنية والعمليات' },
+            planning: { icon: '🎯', name: 'التخطيط والأهداف', desc: 'الاستراتيجية والتخطيط' }
+        };
+        
+        let selectedPriority1 = null;
+        let selectedPriority2 = null;
+        
+        // Check if already voted
+        const hasVoted = localStorage.getItem('voted_workshop_nov11');
+        
+        if (hasVoted) {
+            showResults();
+        } else {
+            renderCategories();
+        }
+        
+        function renderCategories() {
+            Object.keys(categories).forEach(key => {
+                const category = categories[key];
+                
+                // Priority 1
+                const option1 = createCategoryOption(key, category, 1);
+                priority1Grid.appendChild(option1);
+                
+                // Priority 2
+                const option2 = createCategoryOption(key, category, 2);
+                priority2Grid.appendChild(option2);
+            });
+        }
+        
+        function createCategoryOption(key, category, priority) {
+            const div = document.createElement('div');
+            div.className = 'category-option';
+            div.dataset.category = key;
+            div.dataset.priority = priority;
+            
+            div.innerHTML = `
+                <div class="category-icon">${category.icon}</div>
+                <div class="category-info">
+                    <div class="category-name">${category.name}</div>
+                    <div class="category-description">${category.desc}</div>
+                </div>
+                <div class="radio-indicator"></div>
+            `;
+            
+            div.addEventListener('click', () => selectCategory(key, priority, div));
+            
+            return div;
+        }
+        
+        function selectCategory(key, priority, element) {
+            if (element.classList.contains('disabled')) return;
+            
+            if (priority === 1) {
+                // Deselect all priority 1
+                document.querySelectorAll('[data-priority="1"]').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // Select this one
+                element.classList.add('selected');
+                selectedPriority1 = key;
+                
+                // Update priority 2 options
+                updatePriority2Options();
+                
+            } else {
+                // Deselect all priority 2
+                document.querySelectorAll('[data-priority="2"]').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                // Select this one
+                element.classList.add('selected');
+                selectedPriority2 = key;
+            }
+            
+            // Enable submit if both selected
+            submitVoteBtn.disabled = !(selectedPriority1 && selectedPriority2);
+        }
+        
+        function updatePriority2Options() {
+            document.querySelectorAll('[data-priority="2"]').forEach(el => {
+                const category = el.dataset.category;
+                
+                if (category === selectedPriority1) {
+                    el.classList.add('disabled');
+                    if (el.classList.contains('selected')) {
+                        el.classList.remove('selected');
+                        selectedPriority2 = null;
+                    }
+                } else {
+                    el.classList.remove('disabled');
+                }
+            });
+            
+            submitVoteBtn.disabled = !(selectedPriority1 && selectedPriority2);
+        }
+        
+        // Submit Vote
+        submitVoteBtn.addEventListener('click', async () => {
+            if (!selectedPriority1 || !selectedPriority2) return;
+            
+            submitVoteBtn.disabled = true;
+            submitVoteBtn.textContent = 'جاري الإرسال...';
+            
+            try {
+                await db.collection('workshop_nov11')
+                    .doc('team_building')
+                    .collection('votes')
+                    .add({
+                        priority_1: selectedPriority1,
+                        priority_2: selectedPriority2,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                
+                // Mark as voted
+                localStorage.setItem('voted_workshop_nov11', 'true');
+                
+                // Show results
+                showResults();
+                
+            } catch (error) {
+                console.error('Error submitting vote:', error);
+                alert('حدث خطأ في الإرسال. حاول مرة أخرى.');
+                submitVoteBtn.disabled = false;
+                submitVoteBtn.textContent = 'إرسال التصويت';
+            }
+        });
+        
+        function showResults() {
+            votingSection.style.display = 'none';
+            resultsSection.classList.add('show');
+            
+            // Listen to votes
+            db.collection('workshop_nov11')
+                .doc('team_building')
+                .collection('votes')
+                .onSnapshot((snapshot) => {
+                    const votes = {
+                        resources: 0,
+                        coordination: 0,
+                        accountability: 0,
+                        systems: 0,
+                        planning: 0
+                    };
+                    
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        votes[data.priority_1] = (votes[data.priority_1] || 0) + 2; // Priority 1 = 2 points
+                        votes[data.priority_2] = (votes[data.priority_2] || 0) + 1; // Priority 2 = 1 point
+                    });
+                    
+                    displayResults(votes, snapshot.size);
+                });
+        }
+        
+        function displayResults(votes, totalVoters) {
+            const maxVotes = Math.max(...Object.values(votes));
+            const totalPoints = Object.values(votes).reduce((a, b) => a + b, 0);
+            
+            // Sort by votes
+            const sorted = Object.entries(votes).sort((a, b) => b[1] - a[1]);
+            
+            resultsContainer.innerHTML = '';
+            
+            sorted.forEach(([key, count]) => {
+                const category = categories[key];
+                const percentage = totalPoints > 0 ? Math.round((count / totalPoints) * 100) : 0;
+                
+                const item = document.createElement('div');
+                item.className = 'result-item';
+                item.innerHTML = `
+                    <div class="result-header">
+                        <div class="result-name">
+                            <span>${category.icon}</span>
+                            <span>${category.name}</span>
+                        </div>
+                        <div class="result-count">${count} نقطة</div>
+                    </div>
+                    <div class="result-bar-container">
+                        <div class="result-bar" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="result-percentage">${percentage}% من إجمالي النقاط</div>
+                `;
+                resultsContainer.appendChild(item);
+            });
+        }
+    </script>
+</body>
+</html>
