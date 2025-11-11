@@ -9,10 +9,11 @@ const firebaseConfig = {
   measurementId: "G-8JYKNDE51B"
 };
 
-// Gemini API Key
-const GEMINI_API_KEY = "AIzaSyBxVNmc29MjWqSm4QAyLocDMjvkLim7bus";
+// Claude API Key
+const CLAUDE_API_KEY = "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";
 
 // Export
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { firebaseConfig, GEMINI_API_KEY };
+  module.exports = { firebaseConfig, CLAUDE_API_KEY };
 }
+
