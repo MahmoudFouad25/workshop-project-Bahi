@@ -752,9 +752,8 @@
             }
         });
         
-        // Gemini API Call
-        async function clusterWithGemini(responses) {
-            const prompt = `قم بتصنيف التحديات التالية إلى 5 فئات رئيسية:
+       async function clusterWithGemini(responses) {
+    const prompt = `قم بتصنيف التحديات التالية إلى 5 فئات رئيسية:
 
 ${responses.map((r, i) => `${i+1}. ${r}`).join('\n')}
 
@@ -776,38 +775,40 @@ ${responses.map((r, i) => `${i+1}. ${r}`).join('\n')}
   }
 }`;
 
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: prompt
-                            }]
-                        }]
-                    })
-                }
-            );
-            
-            if (!response.ok) {
-                throw new Error('فشل الاتصال بـ Gemini API');
-            }
-            
-            const data = await response.json();
-            const text = data.candidates[0].content.parts[0].text;
-            
-            // Extract JSON from response
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (!jsonMatch) {
-                throw new Error('لم يتم العثور على JSON في الاستجابة');
-            }
-            
-            return JSON.parse(jsonMatch[0]);
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }]
+            })
         }
+    );
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error:', errorText);
+        throw new Error('فشل الاتصال بـ Gemini API');
+    }
+    
+    const data = await response.json();
+    const text = data.candidates[0].content.parts[0].text;
+    
+    // Extract JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+        throw new Error('لم يتم العثور على JSON في الاستجابة');
+    }
+    
+    return JSON.parse(jsonMatch[0]);
+}
         
         // Display Clustered Results
         function displayClusteredResults(result) {
