@@ -557,6 +557,20 @@
             </div>
         </div>
 
+<!-- Voting Results -->
+        <div class="responses-section" style="margin-top: 30px;">
+            <div class="section-header">
+                <h2>🗳️ نتائج التصويت</h2>
+                <span id="totalVotes" style="color: #667eea; font-size: 18px; font-weight: 700;">0 صوت</span>
+            </div>
+            <div id="votingResults" style="display: grid; gap: 15px;">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🗳️</div>
+                    <div class="empty-state-text">لم يتم التصويت بعد</div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Responses Section -->
         <div class="responses-section">
             <div class="section-header">
@@ -1148,6 +1162,86 @@ resetWorkshopBtn.addEventListener('click', async () => {
     }
 });
 
+// Listen to voting results
+        db.collection('workshop_nov11')
+            .doc('team_building')
+            .collection('votes')
+            .onSnapshot((snapshot) => {
+                const votingResults = document.getElementById('votingResults');
+                const totalVotes = document.getElementById('totalVotes');
+                
+                if (snapshot.size === 0) {
+                    votingResults.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🗳️</div>
+                            <div class="empty-state-text">لم يتم التصويت بعد</div>
+                        </div>
+                    `;
+                    totalVotes.textContent = '0 صوت';
+                    return;
+                }
+                
+                const votes = {
+                    resources: 0,
+                    coordination: 0,
+                    accountability: 0,
+                    systems: 0,
+                    planning: 0
+                };
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    votes[data.priority_1] = (votes[data.priority_1] || 0) + 2;
+                    votes[data.priority_2] = (votes[data.priority_2] || 0) + 1;
+                });
+                
+                totalVotes.textContent = `${snapshot.size} صوت`;
+                
+                const categories = {
+                    resources: { icon: '📊', name: 'الموارد' },
+                    coordination: { icon: '🤝', name: 'التنسيق' },
+                    accountability: { icon: '📈', name: 'المتابعة' },
+                    systems: { icon: '⚙️', name: 'الأنظمة' },
+                    planning: { icon: '🎯', name: 'التخطيط' }
+                };
+                
+                const totalPoints = Object.values(votes).reduce((a, b) => a + b, 0);
+                const sorted = Object.entries(votes).sort((a, b) => b[1] - a[1]);
+                
+                votingResults.innerHTML = '';
+                
+                sorted.forEach(([key, count], index) => {
+                    const category = categories[key];
+                    const percentage = totalPoints > 0 ? Math.round((count / totalPoints) * 100) : 0;
+                    
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+                    
+                    const item = document.createElement('div');
+                    item.style.cssText = `
+                        background: #2d2d5f;
+                        border-radius: 10px;
+                        padding: 20px;
+                        border-right: 4px solid ${index === 0 ? '#ffc107' : index === 1 ? '#c0c0c0' : '#cd7f32'};
+                    `;
+                    
+                    item.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 24px;">${medal}</span>
+                                <span style="font-size: 20px;">${category.icon}</span>
+                                <span style="color: #e0e0e0; font-size: 18px; font-weight: 600;">${category.name}</span>
+                            </div>
+                            <span style="color: #667eea; font-size: 20px; font-weight: 700;">${count} نقطة</span>
+                        </div>
+                        <div style="background: #1e1e3f; height: 10px; border-radius: 5px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); height: 100%; width: ${percentage}%; transition: width 1s ease;"></div>
+                        </div>
+                        <div style="text-align: center; color: #999; font-size: 14px; margin-top: 8px;">${percentage}% من النقاط</div>
+                    `;
+                    
+                    votingResults.appendChild(item);
+                });
+            });
     </script>
 </body>
 </html>
