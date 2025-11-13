@@ -54,79 +54,60 @@ export default async function handler(req, res) {
 }
 
 async function analyzeWithClaude(causesText, apiKey) {
-    const prompt = `أنت خبير في تحليل المؤسسات الخيرية وتحديد الأسباب الجذرية للمشاكل.
+    const prompt = `You are an expert analyst specializing in charity organizations and root cause analysis.
 
-لديك قائمة بالأسباب المحتملة لفشل بنود مختلفة من أهداف جمع التبرعات، تم جمعها من تمرين Pre-Mortem مع فريق صناع الحياة مصر.
+CRITICAL INSTRUCTIONS:
+1. Respond ONLY with valid JSON
+2. Do NOT use markdown code blocks (no backticks)
+3. Do NOT add any text before or after the JSON
+4. Start directly with { and end with }
 
-**مهمتك:**
-
-1. **تصنيف الأسباب** إلى 3 فئات رئيسية:
-   - **External (خارجية)**: أسباب خارج سيطرة المؤسسة مباشرة - مثل الاقتصاد، السوق، المنافسين، القوانين، الظروف السياسية
-   - **System (أنظمة وعمليات)**: مشاكل في التقنية، العمليات، الأنظمة، الـ Processes، البنية التحتية
-   - **Internal (داخلية)**: مشاكل داخلية مثل المهارات، القيادة، التدريب، الثقافة التنظيمية، الموارد البشرية
-
-2. **تحليل كل فئة** واستخراج:
-   - الأنماط المشتركة (patterns)
-   - السبب الجذري المحتمل (root cause)
-   - حلول مقترحة (solutions)
-
-3. **استنتاجات شاملة** تتضمن:
-   - الفئة الأكثر تأثيراً
-   - استنتاجات رئيسية
-   - الترابط بين الأسباب
-   - توصيات الأولويات
-   - إجراءات سريعة (quick wins)
-
-**الأسباب المطلوب تحليلها:**
+TASK:
+Analyze these failure causes from a Pre-Mortem exercise for a fundraising campaign in Egypt:
 
 ${causesText}
 
-**تنبيهات مهمة:**
-- كن دقيقاً في التصنيف - بعض الأسباب قد تكون مختلطة، لكن ضعها في الفئة الأنسب
-- استخدم اللغة العربية الواضحة والمباشرة
-- كن عملياً في الحلول المقترحة
-- احذر من الأسباب المكررة - اجمعها معاً
+CATEGORIES:
+- external: Factors outside direct control (economy, market, competitors, laws)
+- system: Issues with technology, processes, systems, infrastructure
+- internal: Internal issues (skills, leadership, training, organizational culture)
 
-**الرد المطلوب - اتبع هذه القواعد بدقة:**
-
-1. أرسل JSON فقط - لا نص قبله ولا بعده
-2. لا تستخدم markdown code blocks
-3. ابدأ مباشرة بعلامة { واختم بعلامة }
-4. استخدم هذا الهيكل بالضبط:
+REQUIRED JSON FORMAT (respond with this exact structure):
 
 {
   "categories": {
-    "external": ["السبب 1", "السبب 2"],
-    "system": ["السبب 1", "السبب 2"],
-    "internal": ["السبب 1", "السبب 2"]
+    "external": ["cause 1", "cause 2"],
+    "system": ["cause 1", "cause 2"],
+    "internal": ["cause 1", "cause 2"]
   },
   "analysis": {
     "external": {
-      "patterns": ["نمط 1", "نمط 2"],
-      "root_cause": "السبب الجذري المحتمل",
-      "solutions": ["حل 1", "حل 2"]
+      "patterns": ["pattern 1", "pattern 2"],
+      "root_cause": "root cause text",
+      "solutions": ["solution 1", "solution 2"]
     },
     "system": {
-      "patterns": [],
-      "root_cause": "",
-      "solutions": []
+      "patterns": ["pattern 1"],
+      "root_cause": "root cause text",
+      "solutions": ["solution 1"]
     },
     "internal": {
-      "patterns": [],
-      "root_cause": "",
-      "solutions": []
+      "patterns": ["pattern 1"],
+      "root_cause": "root cause text",
+      "solutions": ["solution 1"]
     }
   },
   "overall_insights": {
-    "dominant_category": "النص الذي يشرح الفئة الأكثر تأثيراً ولماذا",
-    "key_insights": ["استنتاج رئيسي 1", "استنتاج رئيسي 2"],
-    "interconnections": "كيف ترتبط الأسباب ببعضها",
-    "priority_recommendations": ["توصية الأولوية 1", "توصية الأولوية 2"],
-    "quick_wins": ["إجراء سريع 1", "إجراء سريع 2"]
+    "dominant_category": "analysis text in Arabic",
+    "key_insights": ["insight 1 in Arabic", "insight 2 in Arabic"],
+    "interconnections": "text in Arabic",
+    "priority_recommendations": ["recommendation 1 in Arabic", "recommendation 2 in Arabic"],
+    "quick_wins": ["quick win 1 in Arabic", "quick win 2 in Arabic"]
   }
 }
 
-ابدأ الآن - JSON فقط:`;
+IMPORTANT: Write all text content in Arabic, but respond ONLY with the JSON - no other text.`;
+    
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
