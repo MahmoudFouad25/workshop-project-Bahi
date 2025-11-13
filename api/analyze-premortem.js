@@ -156,34 +156,72 @@ ${causesText}
     const data = await response.json();
     const claudeResponse = data.content[0].text;
 
-    console.log('Claude response received:', claudeResponse.substring(0, 200));
+   console.log('=== FULL RAW RESPONSE ===');
+    console.log(claudeResponse);
+    console.log('=== END RAW RESPONSE ===');
+    console.log('Response length:', claudeResponse.length);
+    console.log('Response type:', typeof claudeResponse);
 
     // ═══════════════════════════════════════════════════
-    // Enhanced Response Cleaning
+    // SUPER ENHANCED Response Cleaning
     // ═══════════════════════════════════════════════════
     let cleanedResponse = claudeResponse.trim();
     
-    // Remove markdown code blocks
+    console.log('Step 1: After trim, length:', cleanedResponse.length);
+    
+    // Remove markdown code blocks (all variations)
     cleanedResponse = cleanedResponse.replace(/```json\s*/gi, '');
+    cleanedResponse = cleanedResponse.replace(/```javascript\s*/gi, '');
+    cleanedResponse = cleanedResponse.replace(/```js\s*/gi, '');
     cleanedResponse = cleanedResponse.replace(/```\s*/g, '');
     
-    // Remove any leading text before first {
+    console.log('Step 2: After removing markdown, length:', cleanedResponse.length);
+    console.log('First 100 chars:', cleanedResponse.substring(0, 100));
+    
+    // Find first {
     const firstBrace = cleanedResponse.indexOf('{');
+    console.log('Step 3: First { found at position:', firstBrace);
+    
+    if (firstBrace === -1) {
+        console.error('CRITICAL: No opening brace { found in response!');
+        console.error('Full cleaned response:', cleanedResponse);
+        throw new Error('Response does not contain JSON object - no opening brace found');
+    }
+    
     if (firstBrace > 0) {
+        console.log('Removing text before first {:', cleanedResponse.substring(0, firstBrace));
         cleanedResponse = cleanedResponse.substring(firstBrace);
     }
     
-    // Remove any trailing text after last }
+    // Find last }
     const lastBrace = cleanedResponse.lastIndexOf('}');
-    if (lastBrace !== -1 && lastBrace < cleanedResponse.length - 1) {
+    console.log('Step 4: Last } found at position:', lastBrace);
+    
+    if (lastBrace === -1) {
+        console.error('CRITICAL: No closing brace } found in response!');
+        console.error('Full cleaned response:', cleanedResponse);
+        throw new Error('Response does not contain complete JSON object - no closing brace found');
+    }
+    
+    if (lastBrace < cleanedResponse.length - 1) {
+        console.log('Removing text after last }:', cleanedResponse.substring(lastBrace + 1));
         cleanedResponse = cleanedResponse.substring(0, lastBrace + 1);
     }
+    
+    // Fix smart quotes
+    cleanedResponse = cleanedResponse.replace(/[\u201C\u201D]/g, '"');
+    cleanedResponse = cleanedResponse.replace(/[\u2018\u2019]/g, "'");
     
     // Final trim
     cleanedResponse = cleanedResponse.trim();
     
-    console.log('Cleaned response preview:', cleanedResponse.substring(0, 100) + '...');
-
+    console.log('=== FINAL CLEANED RESPONSE ===');
+    console.log(cleanedResponse);
+    console.log('=== END CLEANED RESPONSE ===');
+    console.log('Final length:', cleanedResponse.length);
+    console.log('Starts with {:', cleanedResponse.startsWith('{'));
+    console.log('Ends with }:', cleanedResponse.endsWith('}'));
+    
     // Parse JSON
     let result;
     try {
