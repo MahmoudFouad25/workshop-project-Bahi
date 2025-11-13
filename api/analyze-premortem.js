@@ -118,7 +118,7 @@ IMPORTANT: Write all text content in Arabic, but respond ONLY with the JSON - no
         },
         body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 4000,
+            max_tokens: 8000,
             messages: [
                 {
                     role: 'user',
