@@ -599,6 +599,11 @@
             <div class="section-header">
                 <h2>💀 Pre-Mortem Responses</h2>
                 <div style="display: flex; gap: 15px; align-items: center;">
+                    <button class="cluster-btn" id="autoAnalyzeAllBtn" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                        <span class="spinner"></span>
+                        <span class="text">🤖 تحليل تلقائي شامل - AI 5 Whys</span>
+                    </button>
+                    
                     <span id="premortRemCount" style="color: #667eea; font-size: 18px; font-weight: 700;">0 ردود</span>
                     <button class="cluster-btn" id="analyzePremortemBtn" disabled>
                         <span class="spinner"></span>
@@ -1415,6 +1420,211 @@ loadSavedResults();
             });
         }
 
+        // ═══════════════════════════════════════════════════
+        // Auto Analyze All - 5 Whys
+        // ═══════════════════════════════════════════════════
+        
+        const autoAnalyzeAllBtn = document.getElementById('autoAnalyzeAllBtn');
+        
+        autoAnalyzeAllBtn.addEventListener('click', async () => {
+            const confirmation = confirm(
+                '🤖 تحليل تلقائي شامل\n\n' +
+                'سيقوم الذكاء الاصطناعي بتحليل Top 3 من كل فئة (9 أسباب إجمالي) باستخدام:\n' +
+                '• منهجية الـ 5 Whys\n' +
+                '• Root Cause Analysis\n' +
+                '• Action Items & Solutions\n\n' +
+                'الوقت المتوقع: 2-3 دقائق\n' +
+                'التكلفة التقديرية: $0.50-1.00\n\n' +
+                'هل تريد المتابعة؟'
+            );
+            
+            if (!confirmation) return;
+            
+            autoAnalyzeAllBtn.disabled = true;
+            autoAnalyzeAllBtn.classList.add('loading');
+            autoAnalyzeAllBtn.querySelector('.text').textContent = 'جاري التحليل التلقائي...';
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Get voting results to find Top 3
+                const votesSnapshot = await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('votes')
+                    .get();
+                
+                if (votesSnapshot.empty) {
+                    throw new Error('لم يتم العثور على نتائج التصويت');
+                }
+                
+                // Calculate Top 3 from each category
+                const voteCounts = {
+                    external: {},
+                    system: {},
+                    internal: {}
+                };
+                
+                votesSnapshot.forEach(doc => {
+                    const selections = doc.data().selections;
+                    Object.keys(selections).forEach(category => {
+                        selections[category].forEach(cause => {
+                            if (!voteCounts[category][cause]) {
+                                voteCounts[category][cause] = 0;
+                            }
+                            voteCounts[category][cause]++;
+                        });
+                    });
+                });
+                
+                // Get Top 3 from each
+                const top3ByCat = {};
+                Object.keys(voteCounts).forEach(category => {
+                    top3ByCat[category] = Object.entries(voteCounts[category])
+                        .map(([cause, count]) => ({ cause, count }))
+                        .sort((a, b) => b.count - a.count)
+                        .slice(0, 3);
+                });
+                
+                // Get Team Building context
+                const teamBuildingDoc = await db.collection('workshop_nov11')
+                    .doc('team_building')
+                    .get();
+                
+                let teamBuildingData = null;
+                if (teamBuildingDoc.exists) {
+                    teamBuildingData = teamBuildingDoc.data().clustered_results;
+                }
+                
+                // Analyze all causes
+                const allCauses = [];
+                Object.keys(top3ByCat).forEach(category => {
+                    top3ByCat[category].forEach(item => {
+                        allCauses.push({
+                            cause: item.cause,
+                            category: category,
+                            votes: item.count
+                        });
+                    });
+                });
+                
+                console.log(`Starting analysis of ${allCauses.length} causes...`);
+                
+                let successCount = 0;
+                let failCount = 0;
+                
+                for (let i = 0; i < allCauses.length; i++) {
+                    const causeData = allCauses[i];
+                    
+                    try {
+                        console.log(`Analyzing ${i + 1}/${allCauses.length}: ${causeData.cause.substring(0, 50)}...`);
+                        
+                        // Build context from Team Building
+                        let context = null;
+                        if (teamBuildingData && teamBuildingData.analysis) {
+                            const categoryMapping = {
+                                external: ['resources', 'planning'],
+                                system: ['systems', 'accountability'],
+                                internal: ['coordination', 'accountability', 'resources']
+                            };
+                            
+                            const relatedCategories = categoryMapping[causeData.category] || [];
+                            const firstRelated = relatedCategories[0];
+                            
+                            if (firstRelated && teamBuildingData.analysis[firstRelated]) {
+                                context = {
+                                    patterns: teamBuildingData.analysis[firstRelated].patterns || [],
+                                    root_causes: teamBuildingData.analysis[firstRelated].root_cause || '',
+                                    recommendations: teamBuildingData.analysis[firstRelated].recommendations || []
+                                };
+                            }
+                        }
+                        
+                        // Call API
+                        const result = await fetch('https://workshop-project-bahi.vercel.app/api/analyze-5whys-auto', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                cause: causeData.cause,
+                                category: causeData.category,
+                                team_building_context: context
+                            })
+                        });
+                        
+                        if (!result.ok) {
+                            throw new Error(`API Error: ${result.status}`);
+                        }
+                        
+                        const analysis = await result.json();
+                        
+                        // Save to Firestore
+                        const causeHash = hashCode(causeData.cause);
+                        await db.collection('workshop_nov11')
+                            .doc('diagnostic')
+                            .collection('five_whys_ai')
+                            .doc(`${causeData.category}_${causeHash}`)
+                            .set({
+                                cause: causeData.cause,
+                                category: causeData.category,
+                                votes: causeData.votes,
+                                five_whys: analysis.five_whys,
+                                root_cause: analysis.root_cause,
+                                contributing_factors: analysis.contributing_factors,
+                                action_items: analysis.action_items,
+                                quick_wins: analysis.quick_wins,
+                                long_term_solutions: analysis.long_term_solutions,
+                                success_indicators: analysis.success_indicators,
+                                is_edited: false,
+                                analysis_timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        
+                        successCount++;
+                        console.log(`✓ Success ${successCount}/${allCauses.length}`);
+                        
+                        // Update button text
+                        autoAnalyzeAllBtn.querySelector('.text').textContent = 
+                            `جاري التحليل... (${successCount}/${allCauses.length})`;
+                        
+                    } catch (error) {
+                        failCount++;
+                        console.error(`✗ Failed for cause: ${causeData.cause}`, error);
+                    }
+                }
+                
+                // Done
+                loadingOverlay.classList.remove('show');
+                
+                showToast(
+                    `✅ اكتمل التحليل!\n` +
+                    `نجح: ${successCount}/${allCauses.length}\n` +
+                    `${failCount > 0 ? `فشل: ${failCount}` : ''}`,
+                    successCount === allCauses.length ? 'success' : 'error'
+                );
+                
+                // Open results page
+                setTimeout(() => {
+                    window.open('diagnostic-ai-5whys.html', '_blank');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingOverlay.classList.remove('show');
+                showToast('❌ حدث خطأ: ' + error.message, 'error');
+            } finally {
+                autoAnalyzeAllBtn.disabled = false;
+                autoAnalyzeAllBtn.classList.remove('loading');
+                autoAnalyzeAllBtn.querySelector('.text').textContent = '🤖 تحليل تلقائي شامل - AI 5 Whys';
+            }
+        });
+        
+        // Helper function for hashing
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash);
+        }
         // Listen to 5 Whys count
         db.collection('workshop_nov11')
             .doc('diagnostic')
