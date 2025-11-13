@@ -222,15 +222,27 @@ ${causesText}
     console.log('Starts with {:', cleanedResponse.startsWith('{'));
     console.log('Ends with }:', cleanedResponse.endsWith('}'));
     
-    // Parse JSON
+   // Parse JSON with detailed error reporting
     let result;
     try {
         result = JSON.parse(cleanedResponse);
     } catch (parseError) {
         console.error('JSON Parse Error:', parseError);
         console.error('Response text:', cleanedResponse);
-        throw new Error('Failed to parse Claude response as JSON');
+        
+        // Return detailed error with raw response for debugging
+        throw new Error(JSON.stringify({
+            error: 'Failed to parse Claude response as JSON',
+            parseError: parseError.message,
+            rawResponse: claudeResponse.substring(0, 1000),
+            cleanedResponse: cleanedResponse.substring(0, 1000),
+            responseLength: claudeResponse.length,
+            cleanedLength: cleanedResponse.length,
+            startsWithBrace: cleanedResponse.trim().startsWith('{'),
+            endsWithBrace: cleanedResponse.trim().endsWith('}')
+        }));
     }
+
 
     // Validate structure
     if (!result.categories || !result.analysis || !result.overall_insights) {
