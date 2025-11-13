@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"="content="width=device-width, initial-scale=1.0">
+    <title>نتائج التحليل التلقائي - AI 5 Whys</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .stats-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        /* Loading */
+        .loading-state {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Results */
+        .results-section {
+            display: none;
+        }
+        
+        .results-section.show {
+            display: block;
+        }
+        
+        /* Cause Card */
+        .cause-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .cause-card.external { border-top: 5px solid #ffc107; }
+        .cause-card.system { border-top: 5px solid #dc3545; }
+        .cause-card.internal { border-top: 5px solid #17a2b8; }
+        
+        .cause-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .cause-icon {
+            font-size: 48px;
+        }
+        
+        .cause-info {
+            flex: 1;
+        }
+        
+        .cause-info h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .vote-badge {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* Editable Section */
+        .editable-section {
+            margin: 25px 0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .editable-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        
+        .editable-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .editable-list {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .list-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        
+        .list-item input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+        
+        .list-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .add-item-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .save-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
+        }
+        
+        .reanalyze-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .reanalyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .reanalyze-btn:disabled,
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 10000;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .toast.show {
+            display: flex;
+        }
+        
+        .toast.error {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 نتائج التحليل التلقائي - AI 5 Whys</h1>
+            <p style="color: #666; font-size: 18px;">تحليل الأسباب الجذرية بالذكاء الاصطناعي</p>
+            <div class="stats-badge" id="totalAnalyzed">0 تحليل</div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" id="loadingState">
+            <div class="loading-spinner"></div>
+            <div style="color: #666; font-size: 18px;">جاري تحميل النتائج...</div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section" id="resultsSection">
+            <!-- Will be filled by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span>✅</span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Elements
+        const loadingState = document.getElementById('loadingState');
+        const resultsSection = document.getElementById('resultsSection');
+        const totalAnalyzed = document.getElementById('totalAnalyzed');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        // Load AI analyses
+        loadAIAnalyses();
+        
+        function loadAIAnalyses() {
+            db.collection('workshop_nov11')
+                .doc('diagnostic')
+                .collection('five_whys_ai')
+                .orderBy('analysis_timestamp', 'desc')
+                .onSnapshot((snapshot) => {
+                    if (snapshot.empty) {
+                        showNoAnalysesMessage();
+                        return;
+                    }
+                    
+                    totalAnalyzed.textContent = `${snapshot.size} ${snapshot.size === 1 ? 'تحليل' : 'تحليلات'}`;
+                    
+                    displayAnalyses(snapshot);
+                });
+        }
+        
+        function showNoAnalysesMessage() {
+            loadingState.innerHTML = `
+                <div style="font-size: 64px; margin-bottom: 20px;">🤖</div>
+                <div style="color: #666; font-size: 20px; font-weight: 600;">لم يتم إجراء التحليل التلقائي بعد</div>
+                <div style="color: #999; font-size: 16px; margin-top: 10px;">
+                    اذهب إلى صفحة Admin واضغط على "تحليل تلقائي شامل"
+                </div>
+            `;
+        }
+        
+        function displayAnalyses(snapshot) {
+            loadingState.style.display = 'none';
+            resultsSection.classList.add('show');
+            
+            const categoryConfig = {
+                external: { icon: '🌍', title: 'عوامل خارجية' },
+                system: { icon: '⚙️', title: 'الأنظمة والعمليات' },
+                internal: { icon: '👥', title: 'عوامل داخلية' }
+            };
+            
+            resultsSection.innerHTML = '';
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const config = categoryConfig[data.category];
+                const docId = doc.id;
+                
+                const card = document.createElement('div');
+                card.className = `cause-card ${data.category}`;
+                card.dataset.docId = docId;
+                
+                card.innerHTML = `
+                    <div class="cause-header">
+                        <div class="cause-icon">${config.icon}</div>
+                        <div class="cause-info">
+                            <div style="color: #999; font-size: 14px; margin-bottom: 5px;">${config.title}</div>
+                            <h2>${data.cause}</h2>
+                        </div>
+                        ${data.votes ? `<div class="vote-badge">${data.votes} ${data.votes === 1 ? 'صوت' : 'أصوات'}</div>` : ''}
+                    </div>
+                    
+                    <!-- 5 Whys -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>🔍</span>
+                            <span>تحليل الـ 5 Whys</span>
+                        </div>
+                        ${Object.keys(data.five_whys).map((key, index) => `
+                            <div style="margin-bottom: 15px;">
+                                <label style="display: block; font-weight: 600; color: #555; margin-bottom: 8px;">
+                                    Why ${index + 1} - ${getWhyLabel(index + 1)}
+                                </label>
+                                <textarea class="editable-textarea" data-field="five_whys.${key}">${data.five_whys[key]}</textarea>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Root Cause -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>🎯</span>
+                            <span>السبب الجذري (Root Cause)</span>
+                        </div>
+                        <textarea class="editable-textarea" data-field="root_cause">${data.root_cause}</textarea>
+                    </div>
+                    
+                    <!-- Contributing Factors -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>🔗</span>
+                            <span>العوامل المساهمة</span>
+                        </div>
+                        <div class="editable-list" data-field="contributing_factors">
+                            ${data.contributing_factors.map((item, index) => `
+                                <div class="list-item">
+                                    <input type="text" value="${escapeHtml(item)}" data-index="${index}">
+                                    <button class="remove-btn" onclick="removeListItem(this)">حذف</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="add-item-btn" onclick="addListItem(this, 'contributing_factors')">+ إضافة عامل</button>
+                    </div>
+                    
+                    <!-- Action Items -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>✅</span>
+                            <span>إجراءات العمل (Action Items)</span>
+                        </div>
+                        <div class="editable-list" data-field="action_items">
+                            ${data.action_items.map((item, index) => `
+                                <div class="list-item">
+                                    <input type="text" value="${escapeHtml(item)}" data-index="${index}">
+                                    <button class="remove-btn" onclick="removeListItem(this)">حذف</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="add-item-btn" onclick="addListItem(this, 'action_items')">+ إضافة إجراء</button>
+                    </div>
+                    
+                    <!-- Quick Wins -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>⚡</span>
+                            <span>Quick Wins - إجراءات سريعة</span>
+                        </div>
+                        <div class="editable-list" data-field="quick_wins">
+                            ${data.quick_wins.map((item, index) => `
+                                <div class="list-item">
+                                    <input type="text" value="${escapeHtml(item)}" data-index="${index}">
+                                    <button class="remove-btn" onclick="removeListItem(this)">حذف</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="add-item-btn" onclick="addListItem(this, 'quick_wins')">+ إضافة إجراء سريع</button>
+                    </div>
+                    
+                    <!-- Long-term Solutions -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>🎯</span>
+                            <span>حلول طويلة المدى</span>
+                        </div>
+                        <div class="editable-list" data-field="long_term_solutions">
+                            ${data.long_term_solutions.map((item, index) => `
+                                <div class="list-item">
+                                    <input type="text" value="${escapeHtml(item)}" data-index="${index}">
+                                    <button class="remove-btn" onclick="removeListItem(this)">حذف</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="add-item-btn" onclick="addListItem(this, 'long_term_solutions')">+ إضافة حل</button>
+                    </div>
+                    
+                    <!-- Success Indicators -->
+                    <div class="editable-section">
+                        <div class="section-title">
+                            <span>📊</span>
+                            <span>مؤشرات النجاح</span>
+                        </div>
+                        <div class="editable-list" data-field="success_indicators">
+                            ${data.success_indicators.map((item, index) => `
+                                <div class="list-item">
+                                    <input type="text" value="${escapeHtml(item)}" data-index="${index}">
+                                    <button class="remove-btn" onclick="removeListItem(this)">حذف</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="add-item-btn" onclick="addListItem(this, 'success_indicators')">+ إضافة مؤشر</button>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button class="save-btn" onclick="saveChanges('${docId}')">💾 حفظ التعديلات</button>
+                        <button class="reanalyze-btn" onclick="reanalyze('${docId}', '${escapeForAttribute(data.cause)}', '${data.category}')">🔄 إعادة التحليل</button>
+                    </div>
+                `;
+                
+                resultsSection.appendChild(card);
+            });
+        }
+        
+        function getWhyLabel(num) {
+            const labels = {
+                1: 'لماذا حدث هذا السبب؟',
+                2: 'لماذا حدث ما ذكرته سابقاً؟',
+                3: 'لماذا حدث ما ذكرته سابقاً؟',
+                4: 'لماذا حدث ما ذكرته سابقاً؟',
+                5: 'السبب الجذري الأعمق'
+            };
+            return labels[num] || '';
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        function escapeForAttribute(text) {
+            return text.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+        
+        // Add list item
+        window.addListItem = function(btn, fieldName) {
+            const list = btn.previousElementSibling;
+            const newItem = document.createElement('div');
+            newItem.className = 'list-item';
+            newItem.innerHTML = `
+                <input type="text" value="" placeholder="اكتب هنا..." data-index="${list.children.length}">
+                <button class="remove-btn" onclick="removeListItem(this)">حذف</button>
+            `;
+            list.appendChild(newItem);
+        };
+        
+        // Remove list item
+        window.removeListItem = function(btn) {
+            btn.parentElement.remove();
+        };
+        
+        // Save changes
+        window.saveChanges = async function(docId) {
+            const card = document.querySelector(`[data-doc-id="${docId}"]`);
+            const btn = card.querySelector('.save-btn');
+            
+            btn.disabled = true;
+            btn.textContent = 'جاري الحفظ...';
+            
+            try {
+                // Collect data
+                const updates = {
+                    is_edited: true,
+                    edited_at: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // 5 Whys
+                const fiveWhys = {};
+                card.querySelectorAll('[data-field^="five_whys"]').forEach(textarea => {
+                    const key = textarea.dataset.field.split('.')[1];
+                    fiveWhys[key] = textarea.value.trim();
+                });
+                updates.five_whys = fiveWhys;
+                
+                // Root Cause
+                updates.root_cause = card.querySelector('[data-field="root_cause"]').value.trim();
+                
+                // Lists
+                ['contributing_factors', 'action_items', 'quick_wins', 'long_term_solutions', 'success_indicators'].forEach(field => {
+                    const list = card.querySelector(`[data-field="${field}"]`);
+                    const items = [];
+                    list.querySelectorAll('input').forEach(input => {
+                        const value = input.value.trim();
+                        if (value) items.push(value);
+                    });
+                    updates[field] = items;
+                });
+                
+                // Save to Firestore
+                await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('five_whys_ai')
+                    .doc(docId)
+                    .update(updates);
+                
+                showToast('✅ تم حفظ التعديلات بنجاح!', 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ حدث خطأ في الحفظ', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 حفظ التعديلات';
+            }
+        };
+        
+        // Reanalyze
+        window.reanalyze = async function(docId, cause, category) {
+            const confirmation = confirm(
+                '🔄 إعادة التحليل\n\n' +
+                'سيتم إعادة تحليل هذا السبب بالكامل.\n' +
+                'ملاحظة: سيتم استبدال التحليل الحالي.\n\n' +
+                'هل تريد المتابعة؟'
+            );
+            
+            if (!confirmation) return;
+            
+            const card = document.querySelector(`[data-doc-id="${docId}"]`);
+            const btn = card.querySelector('.reanalyze-btn');
+            
+            btn.disabled = true;
+            btn.textContent = 'جاري إعادة التحليل...';
+            
+            try {
+                // Get Team Building context
+                const teamBuildingDoc = await db.collection('workshop_nov11')
+                    .doc('team_building')
+                    .get();
+                
+                let context = null;
+                if (teamBuildingDoc.exists) {
+                    const teamBuildingData = teamBuildingDoc.data().clustered_results;
+                    
+                    if (teamBuildingData && teamBuildingData.analysis) {
+                        const categoryMapping = {
+                            external: ['resources', 'planning'],
+                            system: ['systems', 'accountability'],
+                            internal: ['coordination', 'accountability', 'resources']
+                        };
+                        
+                        const relatedCategories = categoryMapping[category] || [];
+                        const firstRelated = relatedCategories[0];
+                        
+                        if (firstRelated && teamBuildingData.analysis[firstRelated]) {
+                            context = {
+                                patterns: teamBuildingData.analysis[firstRelated].patterns || [],
+                                root_causes: teamBuildingData.analysis[firstRelated].root_cause || '',
+                                recommendations: teamBuildingData.analysis[firstRelated].recommendations || []
+                            };
+                        }
+                    }
+                }
+                
+                // Call API
+                const result = await fetch('https://workshop-project-bahi.vercel.app/api/analyze-5whys-auto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cause: cause,
+                        category: category,
+                        team_building_context: context
+                    })
+                });
+                
+                if (!result.ok) {
+                    throw new Error('فشل الاتصال بالـ API');
+                }
+                
+                const analysis = await result.json();
+                
+                // Update Firestore
+                await db.collection('workshop_nov11')
+                    .doc('diagnostic')
+                    .collection('five_whys_ai')
+                    .doc(docId)
+                    .update({
+                        five_whys: analysis.five_whys,
+                        root_cause: analysis.root_cause,
+                        contributing_factors: analysis.contributing_factors,
+                        action_items: analysis.action_items,
+                        quick_wins: analysis.quick_wins,
+                        long_term_solutions: analysis.long_term_solutions,
+                        success_indicators: analysis.success_indicators,
+                        is_edited: false,
+                        analysis_timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                
+                showToast('✅ تم إعادة التحليل بنجاح!', 'success');
+                
+                // Reload will happen automatically via onSnapshot
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ حدث خطأ في إعادة التحليل', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 إعادة التحليل';
+            }
+        };
+        
+        function showToast(message, type = 'success') {
+            toast.className = 'toast show';
+            if (type === 'error') {
+                toast.classList.add('error');
+            }
+            toastMessage.textContent = message;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
