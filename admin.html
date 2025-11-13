@@ -1604,15 +1604,18 @@ loadSavedResults();
                     window.open('diagnostic-ai-5whys.html', '_blank');
                 }, 1500);
                 
-            } catch (error) {
-                console.error('Error:', error);
-                loadingOverlay.classList.remove('show');
-                showToast('❌ حدث خطأ: ' + error.message, 'error');
-            } finally {
-                autoAnalyzeAllBtn.disabled = false;
-                autoAnalyzeAllBtn.classList.remove('loading');
-                autoAnalyzeAllBtn.querySelector('.text').textContent = '🤖 تحليل تلقائي شامل - AI 5 Whys';
-            }
+           } catch (error) {
+    console.error('Error:', error);
+    loadingOverlay.classList.remove('show');
+    showToast('❌ حدث خطأ: ' + error.message, 'error');
+} finally {
+    // Always hide loading, even if error
+    loadingOverlay.classList.remove('show');
+    autoAnalyzeAllBtn.disabled = false;
+    autoAnalyzeAllBtn.classList.remove('loading');
+    autoAnalyzeAllBtn.querySelector('.text').textContent = '🤖 تحليل تلقائي شامل - AI 5 Whys';
+}
+
         });
         
         // Helper function for hashing
