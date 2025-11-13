@@ -1,4 +1,4 @@
-// Vercel Serverless Function - Automatic 5 Whys Analysis with Team Building Context
+// Vercel Serverless Function - 5 Whys Analysis with Claude API
 
 export default async function handler(req, res) {
     // CORS headers
@@ -19,10 +19,10 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { cause, category, item_name, team_building_context } = req.body;
+        const { cause, category, responses } = req.body;
 
-        if (!cause || !category) {
-            return res.status(400).json({ error: 'Missing required fields' });
+        if (!cause || !category || !responses || !Array.isArray(responses) || responses.length === 0) {
+            return res.status(400).json({ error: 'Invalid input data' });
         }
 
         // Check for Anthropic API key
@@ -32,17 +32,17 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'API key not configured' });
         }
 
-        console.log(`Auto-analyzing 5 Whys for: ${cause}`);
+        console.log(`Analyzing 5 Whys for cause: ${cause} (${responses.length} responses)`);
 
         // Call Claude API
-        const result = await analyzeWithClaude(cause, category, item_name, team_building_context, apiKey);
+        const result = await analyzeWithClaude(cause, category, responses, apiKey);
 
-        console.log('Auto 5 Whys analysis completed successfully');
+        console.log('5 Whys analysis completed successfully');
 
         return res.status(200).json(result);
 
     } catch (error) {
-        console.error('Error in analyze-5whys-auto:', error);
+        console.error('Error in analyze-5whys:', error);
         return res.status(500).json({ 
             error: 'Analysis failed',
             details: error.message 
@@ -50,85 +50,67 @@ export default async function handler(req, res) {
     }
 }
 
-async function analyzeWithClaude(cause, category, item_name, team_building_context, apiKey) {
+async function analyzeWithClaude(cause, category, responses, apiKey) {
+    // Format responses
+    const responsesText = responses.map((r, i) => `
+تحليل #${i + 1}:
+- Why 1: ${r.why1}
+- Why 2: ${r.why2}
+- Why 3: ${r.why3}
+- Why 4: ${r.why4}
+- Why 5: ${r.why5}
+    `).join('\n---\n');
+
     const categoryNames = {
         external: 'عوامل خارجية (External)',
         system: 'الأنظمة والعمليات (System)',
         internal: 'عوامل داخلية (Internal)'
     };
 
-    // Build context from Team Building if available
-    let contextSection = '';
-    if (team_building_context) {
-        contextSection = `
-**السياق من التحليل السابق (Team Building):**
+    const prompt = `أنت خبير في Root Cause Analysis وتحليل الـ 5 Whys لمشاكل المؤسسات الخيرية.
 
-الأنماط الملاحظة سابقاً:
-${team_building_context.patterns ? team_building_context.patterns.map(p => `• ${p}`).join('\n') : 'غير متوفر'}
-
-الأسباب الجذرية المحتملة:
-${team_building_context.root_causes ? `• ${team_building_context.root_causes}` : 'غير متوفر'}
-
-التوصيات السابقة:
-${team_building_context.recommendations ? team_building_context.recommendations.map(r => `• ${r}`).join('\n') : 'غير متوفر'}
-
----
-`;
-    }
-
-    const prompt = `أنت خبير في Root Cause Analysis باستخدام منهجية الـ 5 Whys.
-
-**السياق العام:**
+**السياق:**
 المؤسسة: صناع الحياة مصر (مؤسسة خيرية)
 الهدف: جمع 41 مليون جنيه في 2025
-${item_name ? `البند المتأثر: ${item_name}` : ''}
-
-${contextSection}
-
-**المشكلة المطلوب تحليلها:**
-السبب: "${cause}"
+المشكلة الأصلية: "${cause}"
 الفئة: ${categoryNames[category]}
+
+**تحليلات الـ 5 Whys من المشاركين:**
+
+${responsesText}
 
 **مهمتك:**
 
-قم بتحليل عميق باستخدام منهجية الـ 5 Whys، ثم استخرج:
+حلل جميع تحليلات الـ 5 Whys أعلاه واستخرج:
 
-1. **الـ 5 Whys:** اسأل "لماذا؟" 5 مرات للوصول للجذر:
-   - Why 1: لماذا حدث هذا السبب؟
-   - Why 2: لماذا حدث ما ذكرته في Why 1؟
-   - Why 3: لماذا حدث ما ذكرته في Why 2؟
-   - Why 4: لماذا حدث ما ذكرته في Why 3؟
-   - Why 5: السبب الجذري الأعمق
+1. **Root Cause (السبب الجذري)**: السبب الأعمق والأساسي الذي إذا حللناه، حلت المشكلة من جذورها. كن محدداً وواضحاً.
 
-2. **Root Cause (السبب الجذري النهائي):** السبب الأساسي الذي إذا حللناه، حلت المشكلة من جذورها.
+2. **Contributing Factors (العوامل المساهمة)**: العوامل الأخرى التي تساهم في المشكلة (2-4 عوامل).
 
-3. **Contributing Factors (عوامل مساهمة):** 2-4 عوامل أخرى تساهم في المشكلة.
+3. **Action Items (إجراءات العمل)**: خطوات عملية محددة وقابلة للتنفيذ لحل السبب الجذري (3-5 إجراءات). كل إجراء يجب أن يكون:
+   - محدد (Specific)
+   - قابل للقياس (Measurable)
+   - واقعي (Achievable)
+   - ذو صلة (Relevant)
+   - محدد بوقت (Time-bound)
 
-4. **Action Items (إجراءات عمل SMART):** 3-5 خطوات محددة وقابلة للتنفيذ.
+4. **Quick Wins (إجراءات سريعة)**: حلول يمكن تنفيذها خلال أسبوع-أسبوعين (2-3 إجراءات).
 
-5. **Quick Wins (حلول سريعة):** 2-3 إجراءات يمكن تنفيذها خلال أسبوع-أسبوعين.
+5. **Long-term Solutions (حلول طويلة المدى)**: تغييرات استراتيجية تحتاج 3-6 شهور (2-3 حلول).
 
-6. **Long-term Solutions (حلول طويلة المدى):** 2-3 تغييرات استراتيجية تحتاج 3-6 شهور.
+6. **Success Indicators (مؤشرات النجاح)**: كيف نعرف أن الحل نجح؟ مؤشرات قابلة للقياس (3-4 مؤشرات).
 
-7. **Success Indicators (مؤشرات نجاح):** 3-4 مؤشرات قابلة للقياس.
-
-**ملاحظات مهمة:**
-- استفد من السياق السابق (إن وُجد) لتعميق التحليل
+**تنبيهات:**
 - كن عملياً - المؤسسة خيرية محدودة الموارد
 - اجعل الحلول قابلة للتطبيق في السياق المصري
+- ركز على التأثير الأكبر
 - استخدم لغة عربية واضحة ومباشرة
 
-**الرد المطلوب - JSON فقط بدون أي نص إضافي:**
+**الرد المطلوب بصيغة JSON فقط (بدون أي نص إضافي):**
 
+\`\`\`json
 {
-  "five_whys": {
-    "why1": "الإجابة على لماذا المرة الأولى",
-    "why2": "الإجابة على لماذا المرة الثانية",
-    "why3": "الإجابة على لماذا المرة الثالثة",
-    "why4": "الإجابة على لماذا المرة الرابعة",
-    "why5": "الإجابة على لماذا المرة الخامسة - السبب الجذري الأولي"
-  },
-  "root_cause": "السبب الجذري النهائي المركّز والواضح",
+  "root_cause": "السبب الجذري الأساسي بوضوح",
   "contributing_factors": [
     "عامل مساهم 1",
     "عامل مساهم 2"
@@ -150,8 +132,9 @@ ${contextSection}
     "مؤشر نجاح قابل للقياس 2"
   ]
 }
+\`\`\`
 
-ابدأ الآن - JSON فقط:`;
+**مهم جداً:** رد فقط بالـ JSON - لا تضع أي نص قبله أو بعده.`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -162,8 +145,7 @@ ${contextSection}
         },
         body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 8000,
-            temperature: 0.7,
+            max_tokens: 3000,
             messages: [
                 {
                     role: 'user',
@@ -180,42 +162,28 @@ ${contextSection}
     }
 
     const data = await response.json();
-    let claudeResponse = data.content[0].text;
+    const claudeResponse = data.content[0].text;
 
-    console.log('Claude response received, length:', claudeResponse.length);
+    console.log('Claude response received:', claudeResponse.substring(0, 200));
 
-    // Enhanced cleaning
-    claudeResponse = claudeResponse.trim();
-    claudeResponse = claudeResponse.replace(/```json\s*/gi, '');
-    claudeResponse = claudeResponse.replace(/```javascript\s*/gi, '');
-    claudeResponse = claudeResponse.replace(/```\s*/g, '');
-    
-    const firstBrace = claudeResponse.indexOf('{');
-    if (firstBrace > 0) {
-        claudeResponse = claudeResponse.substring(firstBrace);
-    }
-    
-    const lastBrace = claudeResponse.lastIndexOf('}');
-    if (lastBrace !== -1 && lastBrace < claudeResponse.length - 1) {
-        claudeResponse = claudeResponse.substring(0, lastBrace + 1);
-    }
-    
-    claudeResponse = claudeResponse.replace(/[\u201C\u201D]/g, '"');
-    claudeResponse = claudeResponse.replace(/[\u2018\u2019]/g, "'");
-    claudeResponse = claudeResponse.trim();
+    // Clean up response
+    let cleanedResponse = claudeResponse.trim();
+    cleanedResponse = cleanedResponse.replace(/```json\s*/g, '');
+    cleanedResponse = cleanedResponse.replace(/```\s*/g, '');
+    cleanedResponse = cleanedResponse.trim();
 
     // Parse JSON
     let result;
     try {
-        result = JSON.parse(claudeResponse);
+        result = JSON.parse(cleanedResponse);
     } catch (parseError) {
         console.error('JSON Parse Error:', parseError);
-        console.error('Response preview:', claudeResponse.substring(0, 500));
+        console.error('Response text:', cleanedResponse);
         throw new Error('Failed to parse Claude response as JSON');
     }
 
     // Validate structure
-    if (!result.five_whys || !result.root_cause || !result.action_items) {
+    if (!result.root_cause || !result.action_items) {
         console.error('Invalid structure:', result);
         throw new Error('Invalid response structure from Claude');
     }
