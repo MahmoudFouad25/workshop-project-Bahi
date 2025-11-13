@@ -87,35 +87,24 @@ ${causesText}
 - كن عملياً في الحلول المقترحة
 - احذر من الأسباب المكررة - اجمعها معاً
 
-**الرد المطلوب بصيغة JSON فقط (بدون أي نص إضافي):**
+**الرد المطلوب - اتبع هذه القواعد بدقة:**
 
-\`\`\`json
+1. أرسل JSON فقط - لا نص قبله ولا بعده
+2. لا تستخدم markdown code blocks مثل ```json
+3. ابدأ مباشرة بـ { واختم بـ }
+4. استخدم هذا الهيكل بالضبط:
+
 {
   "categories": {
-    "external": [
-      "السبب 1",
-      "السبب 2"
-    ],
-    "system": [
-      "السبب 1",
-      "السبب 2"
-    ],
-    "internal": [
-      "السبب 1",
-      "السبب 2"
-    ]
+    "external": ["السبب 1", "السبب 2"],
+    "system": ["السبب 1", "السبب 2"],
+    "internal": ["السبب 1", "السبب 2"]
   },
   "analysis": {
     "external": {
-      "patterns": [
-        "نمط 1",
-        "نمط 2"
-      ],
+      "patterns": ["نمط 1", "نمط 2"],
       "root_cause": "السبب الجذري المحتمل",
-      "solutions": [
-        "حل 1",
-        "حل 2"
-      ]
+      "solutions": ["حل 1", "حل 2"]
     },
     "system": {
       "patterns": [],
@@ -130,24 +119,14 @@ ${causesText}
   },
   "overall_insights": {
     "dominant_category": "النص الذي يشرح الفئة الأكثر تأثيراً ولماذا",
-    "key_insights": [
-      "استنتاج رئيسي 1",
-      "استنتاج رئيسي 2"
-    ],
+    "key_insights": ["استنتاج رئيسي 1", "استنتاج رئيسي 2"],
     "interconnections": "كيف ترتبط الأسباب ببعضها",
-    "priority_recommendations": [
-      "توصية الأولوية 1",
-      "توصية الأولوية 2"
-    ],
-    "quick_wins": [
-      "إجراء سريع 1",
-      "إجراء سريع 2"
-    ]
+    "priority_recommendations": ["توصية الأولوية 1", "توصية الأولوية 2"],
+    "quick_wins": ["إجراء سريع 1", "إجراء سريع 2"]
   }
 }
-\`\`\`
 
-**مهم جداً:** رد فقط بالـ JSON - لا تضع أي نص قبله أو بعده.`;
+ابدأ الآن - JSON فقط:`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -179,11 +158,31 @@ ${causesText}
 
     console.log('Claude response received:', claudeResponse.substring(0, 200));
 
-    // Clean up response - remove markdown code blocks if present
+    // ═══════════════════════════════════════════════════
+    // Enhanced Response Cleaning
+    // ═══════════════════════════════════════════════════
     let cleanedResponse = claudeResponse.trim();
-    cleanedResponse = cleanedResponse.replace(/```json\s*/g, '');
+    
+    // Remove markdown code blocks
+    cleanedResponse = cleanedResponse.replace(/```json\s*/gi, '');
     cleanedResponse = cleanedResponse.replace(/```\s*/g, '');
+    
+    // Remove any leading text before first {
+    const firstBrace = cleanedResponse.indexOf('{');
+    if (firstBrace > 0) {
+        cleanedResponse = cleanedResponse.substring(firstBrace);
+    }
+    
+    // Remove any trailing text after last }
+    const lastBrace = cleanedResponse.lastIndexOf('}');
+    if (lastBrace !== -1 && lastBrace < cleanedResponse.length - 1) {
+        cleanedResponse = cleanedResponse.substring(0, lastBrace + 1);
+    }
+    
+    // Final trim
     cleanedResponse = cleanedResponse.trim();
+    
+    console.log('Cleaned response preview:', cleanedResponse.substring(0, 100) + '...');
 
     // Parse JSON
     let result;
