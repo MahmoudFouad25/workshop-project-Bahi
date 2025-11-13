@@ -513,9 +513,8 @@
                     
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <button class="save-btn" onclick="saveChanges('${docId}')">💾 حفظ التعديلات</button>
-                        <button class="reanalyze-btn" onclick="reanalyze('${docId}', '${escapeForAttribute(data.cause)}', '${data.category}')">🔄 إعادة التحليل</button>
-                    </div>
+    <button class="save-btn" onclick="saveChanges('${docId}')" style="width: 100%;">💾 حفظ التعديلات</button>
+</div>
                 `;
                 
                 resultsSection.appendChild(card);
@@ -620,99 +619,7 @@
             }
         };
         
-        // Reanalyze
-        window.reanalyze = async function(docId, cause, category) {
-            const confirmation = confirm(
-                '🔄 إعادة التحليل\n\n' +
-                'سيتم إعادة تحليل هذا السبب بالكامل.\n' +
-                'ملاحظة: سيتم استبدال التحليل الحالي.\n\n' +
-                'هل تريد المتابعة؟'
-            );
-            
-            if (!confirmation) return;
-            
-            const card = document.querySelector(`[data-doc-id="${docId}"]`);
-            const btn = card.querySelector('.reanalyze-btn');
-            
-            btn.disabled = true;
-            btn.textContent = 'جاري إعادة التحليل...';
-            
-            try {
-                // Get Team Building context
-                const teamBuildingDoc = await db.collection('workshop_nov11')
-                    .doc('team_building')
-                    .get();
-                
-                let context = null;
-                if (teamBuildingDoc.exists) {
-                    const teamBuildingData = teamBuildingDoc.data().clustered_results;
-                    
-                    if (teamBuildingData && teamBuildingData.analysis) {
-                        const categoryMapping = {
-                            external: ['resources', 'planning'],
-                            system: ['systems', 'accountability'],
-                            internal: ['coordination', 'accountability', 'resources']
-                        };
-                        
-                        const relatedCategories = categoryMapping[category] || [];
-                        const firstRelated = relatedCategories[0];
-                        
-                        if (firstRelated && teamBuildingData.analysis[firstRelated]) {
-                            context = {
-                                patterns: teamBuildingData.analysis[firstRelated].patterns || [],
-                                root_causes: teamBuildingData.analysis[firstRelated].root_cause || '',
-                                recommendations: teamBuildingData.analysis[firstRelated].recommendations || []
-                            };
-                        }
-                    }
-                }
-                
-                // Call API
-                const result = await fetch('https://workshop-project-bahi.vercel.app/api/analyze-5whys-auto', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        cause: cause,
-                        category: category,
-                        team_building_context: context
-                    })
-                });
-                
-                if (!result.ok) {
-                    throw new Error('فشل الاتصال بالـ API');
-                }
-                
-                const analysis = await result.json();
-                
-                // Update Firestore
-                await db.collection('workshop_nov11')
-                    .doc('diagnostic')
-                    .collection('five_whys_ai')
-                    .doc(docId)
-                    .update({
-                        five_whys: analysis.five_whys,
-                        root_cause: analysis.root_cause,
-                        contributing_factors: analysis.contributing_factors,
-                        action_items: analysis.action_items,
-                        quick_wins: analysis.quick_wins,
-                        long_term_solutions: analysis.long_term_solutions,
-                        success_indicators: analysis.success_indicators,
-                        is_edited: false,
-                        analysis_timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                
-                showToast('✅ تم إعادة التحليل بنجاح!', 'success');
-                
-                // Reload will happen automatically via onSnapshot
-                
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('❌ حدث خطأ في إعادة التحليل', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '🔄 إعادة التحليل';
-            }
-        };
+       
         
         function showToast(message, type = 'success') {
             toast.className = 'toast show';
