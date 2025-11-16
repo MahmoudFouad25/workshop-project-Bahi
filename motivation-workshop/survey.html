@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استطلاع الرضا الوظيفي - صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .time-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        /* Survey Card */
+        .survey-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .survey-card.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .section-header h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .section-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Question */
+        .question {
+            margin-bottom: 35px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        
+        /* Options */
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            position: relative;
+        }
+        
+        .option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .option label {
+            display: block;
+            padding: 18px 25px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .option label:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Scale Options (1-10) */
+        .scale-options {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+        
+        .scale-options .option label {
+            text-align: center;
+            padding: 15px 10px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        /* Textarea */
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .char-count {
+            text-align: left;
+            color: #999;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-prev {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .btn-prev:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .btn-submit:hover:not(:disabled) {
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+        
+        /* Success */
+        .success-card {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .success-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .success-card h2 {
+            color: #28a745;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .success-card p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #333;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .survey-card {
+                padding: 30px 20px;
+            }
+            
+            .scale-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 استطلاع الرضا الوظيفي</h1>
+            <p><strong>صناع الحياة - مصر</strong></p>
+            <p>نحن نهتم برأيك! هذا الاستطلاع مجهول تماماً، وهدفه تحسين بيئة عملنا معاً.</p>
+            <div class="time-badge">⏱️ الوقت المقدر: 5-7 دقائق</div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span>التقدم</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Department Selection (Page 0) -->
+        <div class="survey-card active" id="page-0">
+            <div class="section-header">
+                <h2>🏢 القسم</h2>
+                <p>اختر القسم الذي تعمل فيه</p>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">
+                    أنا أعمل في قسم:
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="department" id="dept-1" value="المنافذ">
+                        <label for="dept-1">المنافذ</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="department" id="dept-2" value="الكول سنتر">
+                        <label for="dept-2">الكول سنتر</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="department" id="dept-3" value="التحصيل">
+                        <label for="dept-3">التحصيل</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="department" id="dept-4" value="الإدارة المركزية">
+                        <label for="dept-4">الإدارة المركزية</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-next" id="start-btn" disabled>ابدأ الاستطلاع</button>
+            </div>
+        </div>
+
+        <!-- Section 1: General Satisfaction (Page 1) -->
+        <div class="survey-card" id="page-1">
+            <div class="section-header">
+                <h2>القسم 1: الرضا العام</h2>
+                <p>3 أسئلة</p>
+            </div>
+            
+            <!-- Q1 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">1</span>
+                    من 1 إلى 10، ما مدى رضاك عن عملك في صناع الحياة؟
+                </div>
+                <div class="options scale-options">
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-1" value="1">
+                        <label for="q1-1">1</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-2" value="2">
+                        <label for="q1-2">2</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-3" value="3">
+                        <label for="q1-3">3</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-4" value="4">
+                        <label for="q1-4">4</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-5" value="5">
+                        <label for="q1-5">5</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-6" value="6">
+                        <label for="q1-6">6</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-7" value="7">
+                        <label for="q1-7">7</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-8" value="8">
+                        <label for="q1-8">8</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-9" value="9">
+                        <label for="q1-9">9</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q1" id="q1-10" value="10">
+                        <label for="q1-10">10</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q2 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">2</span>
+                    هل تفخر بالعمل في صناع الحياة؟
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2-1" value="نعم، جداً">
+                        <label for="q2-1">نعم، جداً</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2-2" value="نعم، إلى حد ما">
+                        <label for="q2-2">نعم، إلى حد ما</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2-3" value="محايد">
+                        <label for="q2-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2-4" value="لا، ليس كثيراً">
+                        <label for="q2-4">لا، ليس كثيراً</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q2" id="q2-5" value="لا، إطلاقاً">
+                        <label for="q2-5">لا، إطلاقاً</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q3 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">3</span>
+                    هل ستوصي صديقاً بالعمل في صناع الحياة؟
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3-1" value="بالتأكيد نعم (9-10)">
+                        <label for="q3-1">بالتأكيد نعم (9-10)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3-2" value="على الأرجح نعم (7-8)">
+                        <label for="q3-2">على الأرجح نعم (7-8)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3-3" value="محايد (5-6)">
+                        <label for="q3-3">محايد (5-6)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3-4" value="على الأرجح لا (3-4)">
+                        <label for="q3-4">على الأرجح لا (3-4)</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q3" id="q3-5" value="بالتأكيد لا (0-2)">
+                        <label for="q3-5">بالتأكيد لا (0-2)</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-next" disabled>التالي →</button>
+            </div>
+        </div>
+
+        <!-- Section 2: Leadership (Page 2) -->
+        <div class="survey-card" id="page-2">
+            <div class="section-header">
+                <h2>القسم 2: القيادة والإدارة</h2>
+                <p>3 أسئلة</p>
+            </div>
+            
+            <!-- Q4 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">4</span>
+                    مديرك المباشر يدعمك ويوجهك بشكل جيد
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4-1" value="أوافق بشدة">
+                        <label for="q4-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4-2" value="أوافق">
+                        <label for="q4-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4-3" value="محايد">
+                        <label for="q4-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4-4" value="لا أوافق">
+                        <label for="q4-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q4" id="q4-5" value="لا أوافق بشدة">
+                        <label for="q4-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q5 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">5</span>
+                    الإدارة العليا تهتم برفاهية الموظفين
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5-1" value="أوافق بشدة">
+                        <label for="q5-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5-2" value="أوافق">
+                        <label for="q5-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5-3" value="محايد">
+                        <label for="q5-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5-4" value="لا أوافق">
+                        <label for="q5-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q5" id="q5-5" value="لا أوافق بشدة">
+                        <label for="q5-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q6 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">6</span>
+                    التواصل من القيادة واضح وشفاف
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6-1" value="أوافق بشدة">
+                        <label for="q6-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6-2" value="أوافق">
+                        <label for="q6-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6-3" value="محايد">
+                        <label for="q6-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6-4" value="لا أوافق">
+                        <label for="q6-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q6" id="q6-5" value="لا أوافق بشدة">
+                        <label for="q6-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-next" disabled>التالي →</button>
+            </div>
+        </div>
+
+        <!-- Section 3: Development (Page 3) -->
+        <div class="survey-card" id="page-3">
+            <div class="section-header">
+                <h2>القسم 3: التطوير والنمو</h2>
+                <p>3 أسئلة</p>
+            </div>
+            
+            <!-- Q7 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">7</span>
+                    أرى مستقبلاً مهنياً واضحاً لي في صناع الحياة
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q7" id="q7-1" value="أوافق بشدة">
+                        <label for="q7-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" id="q7-2" value="أوافق">
+                        <label for="q7-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" id="q7-3" value="محايد">
+                        <label for="q7-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" id="q7-4" value="لا أوافق">
+                        <label for="q7-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q7" id="q7-5" value="لا أوافق بشدة">
+                        <label for="q7-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q8 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">8</span>
+                    أحصل على فرص كافية للتطوير والتدريب
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q8" id="q8-1" value="أوافق بشدة">
+                        <label for="q8-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" id="q8-2" value="أوافق">
+                        <label for="q8-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" id="q8-3" value="محايد">
+                        <label for="q8-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" id="q8-4" value="لا أوافق">
+                        <label for="q8-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q8" id="q8-5" value="لا أوافق بشدة">
+                        <label for="q8-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q9 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">9</span>
+                    هناك فرص واضحة للترقي
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q9" id="q9-1" value="أوافق بشدة">
+                        <label for="q9-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" id="q9-2" value="أوافق">
+                        <label for="q9-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" id="q9-3" value="محايد">
+                        <label for="q9-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" id="q9-4" value="لا أوافق">
+                        <label for="q9-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q9" id="q9-5" value="لا أوافق بشدة">
+                        <label for="q9-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-next" disabled>التالي →</button>
+            </div>
+        </div>
+
+        <!-- Section 4: Recognition (Page 4) -->
+        <div class="survey-card" id="page-4">
+            <div class="section-header">
+                <h2>القسم 4: التقدير والمكافآت</h2>
+                <p>3 أسئلة</p>
+            </div>
+            
+            <!-- Q10 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">10</span>
+                    أشعر بالتقدير لمجهودي في العمل
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q10" id="q10-1" value="أوافق بشدة">
+                        <label for="q10-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" id="q10-2" value="أوافق">
+                        <label for="q10-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" id="q10-3" value="محايد">
+                        <label for="q10-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" id="q10-4" value="لا أوافق">
+                        <label for="q10-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q10" id="q10-5" value="لا أوافق بشدة">
+                        <label for="q10-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q11 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">11</span>
+                    راتبي عادل مقارنة بمجهودي ومسؤولياتي
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11-1" value="أوافق بشدة">
+                        <label for="q11-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11-2" value="أوافق">
+                        <label for="q11-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11-3" value="محايد">
+                        <label for="q11-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11-4" value="لا أوافق">
+                        <label for="q11-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q11" id="q11-5" value="لا أوافق بشدة">
+                        <label for="q11-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q12 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">12</span>
+                    نظام الحوافز والمكافآت واضح وعادل
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12-1" value="أوافق بشدة">
+                        <label for="q12-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12-2" value="أوافق">
+                        <label for="q12-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12-3" value="محايد">
+                        <label for="q12-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12-4" value="لا أوافق">
+                        <label for="q12-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q12" id="q12-5" value="لا أوافق بشدة">
+                        <label for="q12-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-next" disabled>التالي →</button>
+            </div>
+        </div>
+
+        <!-- Section 5: Environment (Page 5) -->
+        <div class="survey-card" id="page-5">
+            <div class="section-header">
+                <h2>القسم 5: بيئة العمل</h2>
+                <p>3 أسئلة</p>
+            </div>
+            
+            <!-- Q13 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">13</span>
+                    بيئة العمل صحية ومريحة
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13-1" value="أوافق بشدة">
+                        <label for="q13-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13-2" value="أوافق">
+                        <label for="q13-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13-3" value="محايد">
+                        <label for="q13-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13-4" value="لا أوافق">
+                        <label for="q13-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q13" id="q13-5" value="لا أوافق بشدة">
+                        <label for="q13-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q14 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">14</span>
+                    علاقاتي مع زملائي إيجابية
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14-1" value="أوافق بشدة">
+                        <label for="q14-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14-2" value="أوافق">
+                        <label for="q14-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14-3" value="محايد">
+                        <label for="q14-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14-4" value="لا أوافق">
+                        <label for="q14-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q14" id="q14-5" value="لا أوافق بشدة">
+                        <label for="q14-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q15 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">15</span>
+                    أشعر بالانتماء لفريقي
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q15" id="q15-1" value="أوافق بشدة">
+                        <label for="q15-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" id="q15-2" value="أوافق">
+                        <label for="q15-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" id="q15-3" value="محايد">
+                        <label for="q15-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" id="q15-4" value="لا أوافق">
+                        <label for="q15-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q15" id="q15-5" value="لا أوافق بشدة">
+                        <label for="q15-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-next" disabled>التالي →</button>
+            </div>
+        </div>
+
+        <!-- Section 6: Balance (Page 6) -->
+        <div class="survey-card" id="page-6">
+            <div class="section-header">
+                <h2>القسم 6: التوازن والضغط</h2>
+                <p>3 أسئلة</p>
+            </div>
+            
+            <!-- Q16 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">16</span>
+                    التوازن بين العمل والحياة الشخصية جيد
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q16" id="q16-1" value="أوافق بشدة">
+                        <label for="q16-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" id="q16-2" value="أوافق">
+                        <label for="q16-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" id="q16-3" value="محايد">
+                        <label for="q16-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" id="q16-4" value="لا أوافق">
+                        <label for="q16-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q16" id="q16-5" value="لا أوافق بشدة">
+                        <label for="q16-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q17 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">17</span>
+                    ضغط العمل محتمل ولا يؤثر على صحتي
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q17" id="q17-1" value="أوافق بشدة">
+                        <label for="q17-1">أوافق بشدة</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" id="q17-2" value="أوافق">
+                        <label for="q17-2">أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" id="q17-3" value="محايد">
+                        <label for="q17-3">محايد</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" id="q17-4" value="لا أوافق">
+                        <label for="q17-4">لا أوافق</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q17" id="q17-5" value="لا أوافق بشدة">
+                        <label for="q17-5">لا أوافق بشدة</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Q18 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">18</span>
+                    أشعر بالإرهاق (Burnout) في العمل
+                </div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" name="q18" id="q18-1" value="لا، إطلاقاً">
+                        <label for="q18-1">لا، إطلاقاً</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" id="q18-2" value="نادراً">
+                        <label for="q18-2">نادراً</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" id="q18-3" value="أحياناً">
+                        <label for="q18-3">أحياناً</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" id="q18-4" value="غالباً">
+                        <label for="q18-4">غالباً</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" name="q18" id="q18-5" value="نعم، دائماً">
+                        <label for="q18-5">نعم، دائماً</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-next" disabled>التالي →</button>
+            </div>
+        </div>
+
+        <!-- Section 7: Open-ended (Page 7) -->
+        <div class="survey-card" id="page-7">
+            <div class="section-header">
+                <h2>القسم 7: رأيك يهمنا</h2>
+                <p>سؤالان مفتوحان</p>
+            </div>
+            
+            <!-- Q19 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">19</span>
+                    ما هو أكثر شيء تحبه في العمل في صناع الحياة؟
+                </div>
+                <textarea id="q19" placeholder="شاركنا رأيك..." maxlength="500"></textarea>
+                <div class="char-count"><span id="q19-count">0</span> / 500</div>
+            </div>
+            
+            <!-- Q20 -->
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">20</span>
+                    ما هو الشيء الوحيد الذي لو تغيّر سيجعلك أكثر سعادة في عملك؟
+                </div>
+                <textarea id="q20" placeholder="شاركنا رأيك..." maxlength="500"></textarea>
+                <div class="char-count"><span id="q20-count">0</span> / 500</div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn btn-prev">← السابق</button>
+                <button class="btn btn-submit btn-next" disabled>إرسال الاستطلاع ✅</button>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-card" id="success-card">
+            <div class="success-icon">✅</div>
+            <h2>شكراً لمشاركتك!</h2>
+            <p>تم إرسال إجاباتك بنجاح.</p>
+            <p style="margin-top: 15px;">رأيك سيساعدنا في بناء بيئة عمل أفضل للجميع 💙</p>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentPage = 0;
+        const totalPages = 7; // 0=dept, 1-6=sections, 7=open-ended
+        const surveyData = {};
+        
+        // Elements
+        const pages = document.querySelectorAll('.survey-card');
+        const progressFill = document.getElementById('progress-fill');
+        const progressPercent = document.getElementById('progress-percent');
+        const startBtn = document.getElementById('start-btn');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const successCard = document.getElementById('success-card');
+        
+        // Character counters
+        document.getElementById('q19').addEventListener('input', (e) => {
+            document.getElementById('q19-count').textContent = e.target.value.length;
+        });
+        
+        document.getElementById('q20').addEventListener('input', (e) => {
+            document.getElementById('q20-count').textContent = e.target.value.length;
+        });
+        
+        // Department selection
+        document.querySelectorAll('input[name="department"]').forEach(input => {
+            input.addEventListener('change', () => {
+                startBtn.disabled = false;
+                surveyData.department = input.value;
+            });
+        });
+        
+        startBtn.addEventListener('click', () => {
+            goToPage(1);
+        });
+        
+        // Navigation
+        document.querySelectorAll('.btn-prev').forEach(btn => {
+            btn.addEventListener('click', () => {
+                goToPage(currentPage - 1);
+            });
+        });
+        
+        document.querySelectorAll('.btn-next').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentPage === totalPages) {
+                    submitSurvey();
+                } else {
+                    goToPage(currentPage + 1);
+                }
+            });
+        });
+        
+        // Validation
+        function validatePage(pageNum) {
+            if (pageNum === 0) return true;
+            
+            const page = document.getElementById(`page-${pageNum}`);
+            const questions = page.querySelectorAll('input[type="radio"]');
+            const questionNames = new Set();
+            
+            questions.forEach(q => questionNames.add(q.name));
+            
+            for (let name of questionNames) {
+                const checked = page.querySelector(`input[name="${name}"]:checked`);
+                if (!checked) return false;
+            }
+            
+            // For page 7 (open-ended), check textareas
+            if (pageNum === 7) {
+                const q19 = document.getElementById('q19').value.trim();
+                const q20 = document.getElementById('q20').value.trim();
+                return q19.length > 0 && q20.length > 0;
+            }
+            
+            return true;
+        }
+        
+        // Real-time validation
+        document.querySelectorAll('input[type="radio"]').forEach(input => {
+            input.addEventListener('change', () => {
+                const pageNum = parseInt(input.closest('.survey-card').id.split('-')[1]);
+                const page = document.getElementById(`page-${pageNum}`);
+                const nextBtn = page.querySelector('.btn-next');
+                
+                if (validatePage(pageNum)) {
+                    nextBtn.disabled = false;
+                    
+                    // Save to surveyData
+                    surveyData[input.name] = input.value;
+                }
+            });
+        });
+        
+        // Textarea validation
+        ['q19', 'q20'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                const q19 = document.getElementById('q19').value.trim();
+                const q20 = document.getElementById('q20').value.trim();
+                const nextBtn = document.querySelector('#page-7 .btn-next');
+                
+                nextBtn.disabled = !(q19.length > 0 && q20.length > 0);
+                
+                surveyData.q19 = q19;
+                surveyData.q20 = q20;
+            });
+        });
+        
+        // Go to page
+        function goToPage(pageNum) {
+            pages.forEach(p => p.classList.remove('active'));
+            pages[pageNum].classList.add('active');
+            
+            currentPage = pageNum;
+            
+            // Update progress
+            const progress = Math.round((pageNum / totalPages) * 100);
+            progressFill.style.width = progress + '%';
+            progressPercent.textContent = progress + '%';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Submit survey
+        async function submitSurvey() {
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Prepare data
+                const finalData = {
+                    ...surveyData,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Save to Firestore
+                await db.collection('workshop_motivation')
+                    .doc('survey')
+                    .collection('responses')
+                    .add(finalData);
+                
+                // Hide all pages
+                pages.forEach(p => p.classList.remove('active'));
+                
+                // Show success
+                successCard.classList.add('show');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في الإرسال. حاول مرة أخرى.');
+            } finally {
+                loadingOverlay.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>
