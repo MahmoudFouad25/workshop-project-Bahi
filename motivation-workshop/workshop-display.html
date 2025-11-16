@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📺 عرض الورشة - نتائج الاستطلاع</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a1a;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* SLIDE CONTAINER */
+        /* ═══════════════════════════════════════════════════ */
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .slide.active {
+            display: flex;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* NAVIGATION */
+        /* ═══════════════════════════════════════════════════ */
+        .nav-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .nav-dot.active {
+            background: #667eea;
+            width: 40px;
+            border-radius: 6px;
+        }
+        
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .nav-arrow:hover {
+            background: rgba(102, 126, 234, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .nav-arrow.left {
+            right: 40px;
+        }
+        
+        .nav-arrow.right {
+            left: 40px;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* SLIDE NUMBER */
+        /* ═══════════════════════════════════════════════════ */
+        .slide-number {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* KEYBOARD HINT */
+        /* ═══════════════════════════════════════════════════ */
+        .keyboard-hint {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            display: flex;
+            gap: 20px;
+        }
+        
+        .key {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* SLIDE CONTENT */
+        /* ═══════════════════════════════════════════════════ */
+        .slide-title {
+            font-size: 64px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .slide-subtitle {
+            font-size: 32px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 60px;
+            text-align: center;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* SLIDE 1: WELCOME */
+        /* ═══════════════════════════════════════════════════ */
+        .welcome-icon {
+            font-size: 120px;
+            margin-bottom: 40px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .welcome-title {
+            font-size: 72px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .welcome-subtitle {
+            font-size: 36px;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .welcome-date {
+            font-size: 28px;
+            color: rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* METRICS GRID */
+        /* ═══════════════════════════════════════════════════ */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 60px;
+        }
+        
+        .metric-box {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border: 2px solid #667eea;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .metric-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+        }
+        
+        .metric-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-value {
+            font-size: 72px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .metric-value.success { color: #28a745; }
+        .metric-value.warning { color: #ffc107; }
+        .metric-value.danger { color: #dc3545; }
+        
+        .metric-label {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* NPS BREAKDOWN */
+        /* ═══════════════════════════════════════════════════ */
+        .nps-container {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 60px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 60px;
+            align-items: center;
+        }
+        
+        .nps-score-box {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border: 3px solid #667eea;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .nps-score-value {
+            font-size: 120px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .nps-score-label {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        .nps-interpretation {
+            font-size: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        
+        .nps-breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .nps-segment {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border-radius: 20px;
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nps-segment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 8px;
+        }
+        
+        .nps-segment.promoters::before { background: #28a745; }
+        .nps-segment.passives::before { background: #ffc107; }
+        .nps-segment.detractors::before { background: #dc3545; }
+        
+        .nps-segment-percentage {
+            font-size: 72px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .nps-segment.promoters .nps-segment-percentage { 
+            color: #28a745;
+            text-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
+        }
+        .nps-segment.passives .nps-segment-percentage { 
+            color: #ffc107;
+            text-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+        }
+        .nps-segment.detractors .nps-segment-percentage { 
+            color: #dc3545;
+            text-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+        }
+        
+        .nps-segment-label {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+        
+        .nps-segment-count {
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* BAR CHART */
+        /* ═══════════════════════════════════════════════════ */
+        .chart-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 60px;
+        }
+        
+        .chart-item {
+            display: grid;
+            grid-template-columns: 300px 1fr 120px;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+        
+        .chart-label {
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        
+        .chart-bar-container {
+            background: #1e1e3f;
+            height: 50px;
+            border-radius: 25px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 25px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-left: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .chart-bar-fill.high {
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.5);
+        }
+        
+        .chart-bar-fill.medium {
+            background: linear-gradient(90deg, #ffc107 0%, #ff9800 100%);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+        }
+        
+        .chart-bar-fill.low {
+            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.5);
+        }
+        
+        .chart-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            text-align: center;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* DEPARTMENT COMPARISON */
+        /* ═══════════════════════════════════════════════════ */
+        .dept-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            margin-top: 60px;
+        }
+        
+        .dept-card {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border-radius: 20px;
+            padding: 50px 30px;
+            text-align: center;
+            border-right: 6px solid #667eea;
+            transition: all 0.3s;
+        }
+        
+        .dept-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+        }
+        
+        .dept-name {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        .dept-score {
+            font-size: 72px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dept-count {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* COMMENTS LIST */
+        /* ═══════════════════════════════════════════════════ */
+        .comments-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 60px;
+        }
+        
+        .comment-item {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border-right: 6px solid #667eea;
+            border-radius: 15px;
+            padding: 30px 40px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            transition: all 0.3s;
+        }
+        
+        .comment-item:hover {
+            transform: translateX(-10px);
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .comment-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .comment-text {
+            font-size: 24px;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* EXIT INTERVIEWS */
+        /* ═══════════════════════════════════════════════════ */
+        .exit-list {
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 60px;
+        }
+        
+        .exit-item {
+            background: linear-gradient(135deg, #1e1e3f 0%, #2d2d5f 100%);
+            border-radius: 15px;
+            padding: 35px 40px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            transition: all 0.3s;
+        }
+        
+        .exit-item:hover {
+            transform: translateX(-10px);
+            box-shadow: 0 10px 40px rgba(220, 53, 69, 0.3);
+            border-right: 6px solid #dc3545;
+        }
+        
+        .exit-number {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .exit-text {
+            font-size: 26px;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* LOADING */
+        /* ═══════════════════════════════════════════════════ */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #333;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 30px;
+        }
+        
+        .loading-text {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ═══════════════════════════════════════════════════ */
+        /* REFRESH INDICATOR */
+        /* ═══════════════════════════════════════════════════ */
+        .refresh-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(102, 126, 234, 0.95);
+            color: white;
+            padding: 30px 60px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: 600;
+            display: none;
+            z-index: 9998;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .refresh-indicator.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">جاري تحميل البيانات...</div>
+    </div>
+
+    <!-- Refresh Indicator -->
+    <div class="refresh-indicator" id="refresh-indicator">
+        🔄 جاري التحديث...
+    </div>
+
+    <!-- Navigation -->
+    <div class="slide-number" id="slide-number">1 / 8</div>
+    
+    <div class="keyboard-hint">
+        <span class="key">← →</span>
+        <span class="key">F للشاشة الكاملة</span>
+        <span class="key">R للتحديث</span>
+    </div>
+    
+    <div class="nav-arrow left" onclick="prevSlide()">←</div>
+    <div class="nav-arrow right" onclick="nextSlide()">→</div>
+    
+    <div class="nav-indicator" id="nav-indicator">
+        <!-- Will be filled by JavaScript -->
+    </div>
+
+    <!-- Slide Container -->
+    <div class="slide-container">
+        
+        <!-- SLIDE 1: WELCOME -->
+        <div class="slide active" id="slide-1">
+            <div class="welcome-icon">📊</div>
+            <div class="welcome-title">نتائج استطلاع الرضا الوظيفي</div>
+            <div class="welcome-subtitle">صناع الحياة - مصر</div>
+            <div class="welcome-date">ورشة العمل: روح الانتماء والتحفيز</div>
+            <div class="welcome-date" style="margin-top: 10px;">17 نوفمبر 2026</div>
+        </div>
+
+        <!-- SLIDE 2: EXECUTIVE SUMMARY -->
+        <div class="slide" id="slide-2">
+            <div class="slide-title">📊 الملخص التنفيذي</div>
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-value" id="metric-total">0</div>
+                    <div class="metric-label">عدد المشاركين / 150</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-value" id="metric-rate">0%</div>
+                    <div class="metric-label">معدل الاستجابة</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-icon">⭐</div>
+                    <div class="metric-value" id="metric-satisfaction">0.0</div>
+                    <div class="metric-label">الرضا الإجمالي<br>(من 10)</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-icon">🎯</div>
+                    <div class="metric-value" id="metric-nps">0</div>
+                    <div class="metric-label">NPS Score</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: NPS BREAKDOWN -->
+        <div class="slide" id="slide-3">
+            <div class="slide-title">🎯 Net Promoter Score</div>
+            <div class="nps-container">
+                <div class="nps-score-box">
+                    <div class="nps-score-value" id="nps-display">0</div>
+                    <div class="nps-score-label">NPS Score</div>
+                    <div class="nps-interpretation" id="nps-interpretation">
+                        تحليل...
+                    </div>
+                </div>
+                
+                <div class="nps-breakdown">
+                    <div class="nps-segment promoters">
+                        <div class="nps-segment-percentage" id="promoters-pct">0%</div>
+                        <div class="nps-segment-label">Promoters<br>(9-10)</div>
+                        <div class="nps-segment-count" id="promoters-count">0 موظف</div>
+                    </div>
+                    
+                    <div class="nps-segment passives">
+                        <div class="nps-segment-percentage" id="passives-pct">0%</div>
+                        <div class="nps-segment-label">Passives<br>(7-8)</div>
+                        <div class="nps-segment-count" id="passives-count">0 موظف</div>
+                    </div>
+                    
+                    <div class="nps-segment detractors">
+                        <div class="nps-segment-percentage" id="detractors-pct">0%</div>
+                        <div class="nps-segment-label">Detractors<br>(0-6)</div>
+                        <div class="nps-segment-count" id="detractors-count">0 موظف</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: SECTIONS -->
+        <div class="slide" id="slide-4">
+            <div class="slide-title">📋 النتائج حسب المحاور</div>
+            <div class="chart-container" id="sections-chart">
+                <!-- Will be filled by JavaScript -->
+            </div>
+        </div>
+
+        <!-- SLIDE 5: DEPARTMENTS -->
+        <div class="slide" id="slide-5">
+            <div class="slide-title">🏢 المقارنة بين الأقسام</div>
+            <div class="dept-grid" id="dept-grid">
+                <!-- Will be filled by JavaScript -->
+            </div>
+        </div>
+
+        <!-- SLIDE 6: COMMENTS Q19 -->
+        <div class="slide" id="slide-6">
+            <div class="slide-title">💙 أكثر شيء يحبونه في العمل</div>
+            <div class="slide-subtitle">Top 7 تعليقات</div>
+            <div class="comments-container" id="q19-comments">
+                <!-- Will be filled by JavaScript -->
+            </div>
+        </div>
+
+        <!-- SLIDE 7: COMMENTS Q20 -->
+        <div class="slide" id="slide-7">
+            <div class="slide-title">🔧 التغيير المطلوب للسعادة</div>
+            <div class="slide-subtitle">Top 7 تعليقات</div>
+            <div class="comments-container" id="q20-comments">
+                <!-- Will be filled by JavaScript -->
+            </div>
+        </div>
+
+        <!-- SLIDE 8: EXIT INTERVIEWS -->
+        <div class="slide" id="slide-8">
+            <div class="slide-title">🚪 لماذا يترك الموظفون العمل؟</div>
+            <div class="slide-subtitle">الأسباب الرئيسية من Exit Interviews</div>
+            <div class="exit-list">
+                <div class="exit-item">
+                    <div class="exit-number">1</div>
+                    <div class="exit-text">الامتحانات والدراسة - صعوبة الجمع بين الدراسة والعمل</div>
+                </div>
+                <div class="exit-item">
+                    <div class="exit-number">2</div>
+                    <div class="exit-text">طبيعة العمل - ضغط عالي وساعات طويلة</div>
+                </div>
+                <div class="exit-item">
+                    <div class="exit-number">3</div>
+                    <div class="exit-text">المرتبات والمزايا - غير مجزية ولا تغطي الاحتياجات</div>
+                </div>
+                <div class="exit-item">
+                    <div class="exit-number">4</div>
+                    <div class="exit-text">فرص عمل أفضل - وقت أقل ومرتبات أعلى</div>
+                </div>
+                <div class="exit-item">
+                    <div class="exit-number">5</div>
+                    <div class="exit-text">مشاكل مع الرؤساء - اختلافات وضغط عند عدم تحقيق الأهداف</div>
+                </div>
+                <div class="exit-item">
+                    <div class="exit-number">6</div>
+                    <div class="exit-text">لا مبالاة من بعض الموظفين - "مش فارقة معاهم"</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentSlide = 1;
+        const totalSlides = 8;
+        let data = null;
+        
+        // Initialize
+        init();
+        
+        async function init() {
+            createNavDots();
+            await loadData();
+            setupKeyboardNavigation();
+            updateSlideNumber();
+        }
+        
+        // Create Navigation Dots
+        function createNavDots() {
+            const container = document.getElementById('nav-indicator');
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+                dot.onclick = () => goToSlide(i);
+                container.appendChild(dot);
+            }
+        }
+        
+        // Load Data
+        async function loadData() {
+            try {
+                const snapshot = await db.collection('workshop_motivation')
+                    .doc('survey')
+                    .collection('responses')
+                    .get();
+                
+                if (snapshot.empty) {
+                    console.error('No data');
+                    return;
+                }
+                
+                const responses = [];
+                snapshot.forEach(doc => {
+                    responses.push(doc.data());
+                });
+                
+                data = {
+                    responses,
+                    metrics: calculateMetrics(responses)
+                };
+                
+                displayAllData();
+                
+                // Hide loading
+                document.getElementById('loading-overlay').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Calculate Metrics
+        function calculateMetrics(responses) {
+            const total = responses.length;
+            
+            // Overall satisfaction
+            const satisfactionScores = responses.map(r => parseInt(r.q1));
+            const avgSatisfaction = (satisfactionScores.reduce((a, b) => a + b, 0) / total).toFixed(1);
+            
+            // NPS
+            const npsMapping = {
+                'بالتأكيد نعم (9-10)': 'promoter',
+                'على الأرجح نعم (7-8)': 'passive',
+                'محايد (5-6)': 'detractor',
+                'على الأرجح لا (3-4)': 'detractor',
+                'بالتأكيد لا (0-2)': 'detractor'
+            };
+            
+            let promoters = 0, passives = 0, detractors = 0;
+            responses.forEach(r => {
+                const type = npsMapping[r.q3];
+                if (type === 'promoter') promoters++;
+                else if (type === 'passive') passives++;
+                else detractors++;
+            });
+            
+            const promotersPct = Math.round((promoters / total) * 100);
+            const passivesPct = Math.round((passives / total) * 100);
+            const detractorsPct = Math.round((detractors / total) * 100);
+            const npsScore = promotersPct - detractorsPct;
+            
+            // Section scores
+            const likertMapping = {
+                'أوافق بشدة': 5,
+                'أوافق': 4,
+                'محايد': 3,
+                'لا أوافق': 2,
+                'لا أوافق بشدة': 1
+            };
+            
+            const burnoutMapping = {
+                'لا، إطلاقاً': 5,
+                'نادراً': 4,
+                'أحياناً': 3,
+                'غالباً': 2,
+                'نعم، دائماً': 1
+            };
+            
+            const sections = {
+                'القيادة والإدارة': ['q4', 'q5', 'q6'],
+                'التطوير والنمو': ['q7', 'q8', 'q9'],
+                'التقدير والمكافآت': ['q10', 'q11', 'q12'],
+                'بيئة العمل': ['q13', 'q14', 'q15'],
+                'التوازن والضغط': ['q16', 'q17', 'q18']
+            };
+            
+            const sectionScores = {};
+            
+            Object.keys(sections).forEach(section => {
+                const questions = sections[section];
+                let totalScore = 0;
+                
+                questions.forEach(q => {
+                    responses.forEach(r => {
+                        const value = r[q];
+                        if (q === 'q18') {
+                            totalScore += burnoutMapping[value] || 0;
+                        } else {
+                            totalScore += likertMapping[value] || 0;
+                        }
+                    });
+                });
+                
+                const maxScore = questions.length * responses.length * 5;
+                sectionScores[section] = Math.round((totalScore / maxScore) * 100);
+            });
+            
+            // Department scores
+            const departments = {};
+            responses.forEach(r => {
+                const dept = r.department;
+                if (!departments[dept]) {
+                    departments[dept] = [];
+                }
+                departments[dept].push(parseInt(r.q1));
+            });
+            
+            const deptScores = {};
+            Object.keys(departments).forEach(dept => {
+                const scores = departments[dept];
+                const avg = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
+                deptScores[dept] = {
+                    score: avg,
+                    count: scores.length
+                };
+            });
+            
+            return {
+                total,
+                responseRate: Math.round((total / 150) * 100),
+                avgSatisfaction,
+                nps: {
+                    score: npsScore,
+                    promoters,
+                    passives,
+                    detractors,
+                    promotersPct,
+                    passivesPct,
+                    detractorsPct
+                },
+                sectionScores,
+                deptScores
+            };
+        }
+        
+        // Display All Data
+        function displayAllData() {
+            if (!data) return;
+            
+            const { responses, metrics } = data;
+            
+            // Slide 2: Executive Summary
+            document.getElementById('metric-total').textContent = metrics.total;
+            document.getElementById('metric-rate').textContent = metrics.responseRate + '%';
+            
+            const satisfactionEl = document.getElementById('metric-satisfaction');
+            satisfactionEl.textContent = metrics.avgSatisfaction;
+            if (metrics.avgSatisfaction >= 8) {
+                satisfactionEl.classList.add('success');
+            } else if (metrics.avgSatisfaction >= 6) {
+                satisfactionEl.classList.add('warning');
+            } else {
+                satisfactionEl.classList.add('danger');
+            }
+            
+            const npsEl = document.getElementById('metric-nps');
+            npsEl.textContent = (metrics.nps.score > 0 ? '+' : '') + metrics.nps.score;
+            if (metrics.nps.score > 30) {
+                npsEl.classList.add('success');
+            } else if (metrics.nps.score > 0) {
+                npsEl.classList.add('warning');
+            } else {
+                npsEl.classList.add('danger');
+            }
+            
+            // Slide 3: NPS
+            document.getElementById('nps-display').textContent = (metrics.nps.score > 0 ? '+' : '') + metrics.nps.score;
+            
+            let interpretation = '';
+            let interpClass = '';
+            if (metrics.nps.score > 50) {
+                interpretation = 'ممتاز - موظفون متحمسون جداً 🔥';
+                interpClass = 'success';
+            } else if (metrics.nps.score > 30) {
+                interpretation = 'جيد جداً - معظمهم راضون ✅';
+                interpClass = 'success';
+            } else if (metrics.nps.score > 0) {
+                interpretation = 'جيد - لكن يحتاج تحسين ⚠️';
+                interpClass = 'warning';
+            } else {
+                interpretation = 'يحتاج اهتمام عاجل ❌';
+                interpClass = 'danger';
+            }
+            
+            const interpEl = document.getElementById('nps-interpretation');
+            interpEl.textContent = interpretation;
+            interpEl.style.background = interpClass === 'success' ? 'rgba(40, 167, 69, 0.3)' : 
+                                       interpClass === 'warning' ? 'rgba(255, 193, 7, 0.3)' : 
+                                       'rgba(220, 53, 69, 0.3)';
+            interpEl.style.color = interpClass === 'success' ? '#28a745' : 
+                                   interpClass === 'warning' ? '#ffc107' : 
+                                   '#dc3545';
+            
+            document.getElementById('promoters-pct').textContent = metrics.nps.promotersPct + '%';
+            document.getElementById('promoters-count').textContent = metrics.nps.promoters + ' موظف';
+            
+            document.getElementById('passives-pct').textContent = metrics.nps.passivesPct + '%';
+            document.getElementById('passives-count').textContent = metrics.nps.passives + ' موظف';
+            
+            document.getElementById('detractors-pct').textContent = metrics.nps.detractorsPct + '%';
+            document.getElementById('detractors-count').textContent = metrics.nps.detractors + ' موظف';
+            
+            // Slide 4: Sections
+            const sectionsChart = document.getElementById('sections-chart');
+            sectionsChart.innerHTML = '';
+            
+            Object.keys(metrics.sectionScores).forEach(section => {
+                const score = metrics.sectionScores[section];
+                
+                let barClass = 'low';
+                if (score >= 70) barClass = 'high';
+                else if (score >= 50) barClass = 'medium';
+                
+                const item = document.createElement('div');
+                item.className = 'chart-item';
+                item.innerHTML = `
+                    <div class="chart-label">${section}</div>
+                    <div class="chart-bar-container">
+                        <div class="chart-bar-fill ${barClass}" style="width: ${score}%">
+                            ${score}%
+                        </div>
+                    </div>
+                    <div class="chart-value">${score}%</div>
+                `;
+                sectionsChart.appendChild(item);
+            });
+            
+            // Slide 5: Departments
+            const deptGrid = document.getElementById('dept-grid');
+            deptGrid.innerHTML = '';
+            
+            Object.keys(metrics.deptScores).forEach(dept => {
+                const data = metrics.deptScores[dept];
+                
+                const card = document.createElement('div');
+                card.className = 'dept-card';
+                card.innerHTML = `
+                    <div class="dept-name">${dept}</div>
+                    <div class="dept-score">${data.score}/10</div>
+                    <div class="dept-count">${data.count} موظف</div>
+                `;
+                deptGrid.appendChild(card);
+            });
+            
+            // Slide 6: Q19
+            const q19Container = document.getElementById('q19-comments');
+            q19Container.innerHTML = '';
+            
+            const q19Comments = responses
+                .map(r => r.q19)
+                .filter(c => c && c.trim())
+                .slice(0, 7);
+            
+            q19Comments.forEach((comment, i) => {
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.innerHTML = `
+                    <div class="comment-number">${i + 1}</div>
+                    <div class="comment-text">${comment}</div>
+                `;
+                q19Container.appendChild(item);
+            });
+            
+            // Slide 7: Q20
+            const q20Container = document.getElementById('q20-comments');
+            q20Container.innerHTML = '';
+            
+            const q20Comments = responses
+                .map(r => r.q20)
+                .filter(c => c && c.trim())
+                .slice(0, 7);
+            
+            q20Comments.forEach((comment, i) => {
+                const item = document.createElement('div');
+                item.className = 'comment-item';
+                item.innerHTML = `
+                    <div class="comment-number">${i + 1}</div>
+                    <div class="comment-text">${comment}</div>
+                `;
+                q20Container.appendChild(item);
+            });
+        }
+        
+        // Navigation
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+        
+        function goToSlide(n) {
+            // Hide current
+            document.getElementById('slide-' + currentSlide).classList.remove('active');
+            document.querySelectorAll('.nav-dot')[currentSlide - 1].classList.remove('active');
+            
+            // Show new
+            currentSlide = n;
+            document.getElementById('slide-' + currentSlide).classList.add('active');
+            document.querySelectorAll('.nav-dot')[currentSlide - 1].classList.add('active');
+            
+            updateSlideNumber();
+        }
+        
+        function updateSlideNumber() {
+            document.getElementById('slide-number').textContent = currentSlide + ' / ' + totalSlides;
+        }
+        
+        // Keyboard Navigation
+        function setupKeyboardNavigation() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    if (e.key === 'ArrowRight') {
+                        prevSlide();
+                    } else {
+                        nextSlide();
+                    }
+                } else if (e.key === 'f' || e.key === 'F') {
+                    toggleFullscreen();
+                } else if (e.key === 'r' || e.key === 'R') {
+                    refreshData();
+                }
+            });
+        }
+        
+        // Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Refresh Data
+        async function refreshData() {
+            const indicator = document.getElementById('refresh-indicator');
+            indicator.classList.add('show');
+            
+            await loadData();
+            
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
