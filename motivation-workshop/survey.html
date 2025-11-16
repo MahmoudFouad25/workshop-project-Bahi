@@ -1132,162 +1132,224 @@
     
     <!-- Main Script -->
     <script>
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        // State
-        let currentPage = 0;
-        const totalPages = 7; // Pages 0-7 (8 total)
-        const surveyData = {};
-        
-        // Elements
-        const pages = document.querySelectorAll('.survey-card');
-        const progressFill = document.getElementById('progress-fill');
-        const progressPercent = document.getElementById('progress-percent');
-        const startBtn = document.getElementById('start-btn');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const successCard = document.getElementById('success-card');
-        
-        // Character counters
-        document.getElementById('q19').addEventListener('input', (e) => {
-            document.getElementById('q19-count').textContent = e.target.value.length;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    // State
+    let currentPage = 0;
+    const totalPages = 7; // Pages 0-7 (8 total)
+    const surveyData = {};
+    
+    // Elements
+    const pages = document.querySelectorAll('.survey-card');
+    const progressFill = document.getElementById('progress-fill');
+    const progressPercent = document.getElementById('progress-percent');
+    const startBtn = document.getElementById('start-btn');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const successCard = document.getElementById('success-card');
+    
+    console.log('Initialized. Total pages:', pages.length);
+    
+    // Character counters
+    document.getElementById('q19').addEventListener('input', (e) => {
+        document.getElementById('q19-count').textContent = e.target.value.length;
+    });
+    
+    document.getElementById('q20').addEventListener('input', (e) => {
+        document.getElementById('q20-count').textContent = e.target.value.length;
+    });
+    
+    // Department selection
+    document.querySelectorAll('input[name="department"]').forEach(input => {
+        input.addEventListener('change', () => {
+            startBtn.disabled = false;
+            surveyData.department = input.value;
+            console.log('Department selected:', input.value);
         });
-        
-        document.getElementById('q20').addEventListener('input', (e) => {
-            document.getElementById('q20-count').textContent = e.target.value.length;
+    });
+    
+    // Start button - SEPARATE from other buttons!
+    startBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Start button clicked - going to page 1');
+        goToPage(1);
+    });
+    
+    // Previous buttons
+    document.querySelectorAll('.btn-prev').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Previous clicked from page:', currentPage);
+            goToPage(currentPage - 1);
         });
-        
-        // Department selection
-        document.querySelectorAll('input[name="department"]').forEach(input => {
-            input.addEventListener('change', () => {
-                startBtn.disabled = false;
-                surveyData.department = input.value;
-            });
-        });
-        
-        startBtn.addEventListener('click', () => {
-            goToPage(1);
-        });
-        
-        // Navigation
-        document.querySelectorAll('.btn-prev').forEach(btn => {
-            btn.addEventListener('click', () => {
-                goToPage(currentPage - 1);
-            });
-        });
-        
-        document.querySelectorAll('.btn-next').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (currentPage === totalPages) {
-                    submitSurvey();
-                } else {
-                    goToPage(currentPage + 1);
-                }
-            });
-        });
-        
-        // Validation
-        function validatePage(pageNum) {
-            if (pageNum === 0) return true;
+    });
+    
+    // Next buttons (exclude start button!)
+    document.querySelectorAll('.btn-next:not(#start-btn)').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Next clicked from page:', currentPage);
             
+            if (currentPage === totalPages) {
+                console.log('Last page - submitting');
+                submitSurvey();
+            } else {
+                console.log('Going to page:', currentPage + 1);
+                goToPage(currentPage + 1);
+            }
+        });
+    });
+    
+    // Validation
+    function validatePage(pageNum) {
+        console.log('Validating page:', pageNum);
+        
+        if (pageNum === 0) return true;
+        
+        const page = document.getElementById(`page-${pageNum}`);
+        if (!page) {
+            console.error('Page not found:', pageNum);
+            return false;
+        }
+        
+        const questions = page.querySelectorAll('input[type="radio"]');
+        const questionNames = new Set();
+        
+        questions.forEach(q => questionNames.add(q.name));
+        
+        console.log('Question names in page', pageNum, ':', Array.from(questionNames));
+        
+        for (let name of questionNames) {
+            const checked = page.querySelector(`input[name="${name}"]:checked`);
+            if (!checked) {
+                console.log('Question not answered:', name);
+                return false;
+            }
+        }
+        
+        // For page 7 (open-ended), check textareas
+        if (pageNum === 7) {
+            const q19 = document.getElementById('q19').value.trim();
+            const q20 = document.getElementById('q20').value.trim();
+            const valid = q19.length > 0 && q20.length > 0;
+            console.log('Page 7 validation:', valid, 'q19:', q19.length, 'q20:', q20.length);
+            return valid;
+        }
+        
+        console.log('Page', pageNum, 'is valid');
+        return true;
+    }
+    
+    // Real-time validation for radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const pageNum = parseInt(input.closest('.survey-card').id.split('-')[1]);
             const page = document.getElementById(`page-${pageNum}`);
-            const questions = page.querySelectorAll('input[type="radio"]');
-            const questionNames = new Set();
+            const nextBtn = page.querySelector('.btn-next');
             
-            questions.forEach(q => questionNames.add(q.name));
+            console.log('Radio changed on page:', pageNum, 'Question:', input.name, 'Value:', input.value);
             
-            for (let name of questionNames) {
-                const checked = page.querySelector(`input[name="${name}"]:checked`);
-                if (!checked) return false;
+            if (validatePage(pageNum)) {
+                nextBtn.disabled = false;
+                console.log('Next button enabled on page:', pageNum);
             }
             
-            // For page 7 (open-ended), check textareas
-            if (pageNum === 7) {
-                const q19 = document.getElementById('q19').value.trim();
-                const q20 = document.getElementById('q20').value.trim();
-                return q19.length > 0 && q20.length > 0;
-            }
+            // Save to surveyData
+            surveyData[input.name] = input.value;
+        });
+    });
+    
+    // Textarea validation
+    ['q19', 'q20'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            const q19 = document.getElementById('q19').value.trim();
+            const q20 = document.getElementById('q20').value.trim();
+            const nextBtn = document.querySelector('#page-7 .btn-next');
             
-            return true;
+            const isValid = q19.length > 0 && q20.length > 0;
+            nextBtn.disabled = !isValid;
+            
+            console.log('Textarea changed:', id, 'Valid:', isValid);
+            
+            surveyData.q19 = q19;
+            surveyData.q20 = q20;
+        });
+    });
+    
+    // Go to page
+    function goToPage(pageNum) {
+        console.log('goToPage called:', pageNum, 'from current page:', currentPage);
+        
+        if (pageNum < 0 || pageNum > totalPages) {
+            console.error('Invalid page number:', pageNum);
+            return;
         }
         
-        // Real-time validation
-        document.querySelectorAll('input[type="radio"]').forEach(input => {
-            input.addEventListener('change', () => {
-                const pageNum = parseInt(input.closest('.survey-card').id.split('-')[1]);
-                const page = document.getElementById(`page-${pageNum}`);
-                const nextBtn = page.querySelector('.btn-next');
-                
-                if (validatePage(pageNum)) {
-                    nextBtn.disabled = false;
-                    
-                    // Save to surveyData
-                    surveyData[input.name] = input.value;
-                }
-            });
+        // Hide all pages
+        pages.forEach(p => {
+            p.classList.remove('active');
         });
         
-        // Textarea validation
-        ['q19', 'q20'].forEach(id => {
-            document.getElementById(id).addEventListener('input', () => {
-                const q19 = document.getElementById('q19').value.trim();
-                const q20 = document.getElementById('q20').value.trim();
-                const nextBtn = document.querySelector('#page-7 .btn-next');
-                
-                nextBtn.disabled = !(q19.length > 0 && q20.length > 0);
-                
-                surveyData.q19 = q19;
-                surveyData.q20 = q20;
-            });
-        });
+        // Show target page
+        const targetPage = document.getElementById(`page-${pageNum}`);
+        if (!targetPage) {
+            console.error('Target page not found:', pageNum);
+            return;
+        }
         
-        // Go to page
-        function goToPage(pageNum) {
+        targetPage.classList.add('active');
+        currentPage = pageNum;
+        
+        console.log('Now on page:', currentPage);
+        
+        // Update progress
+        const progress = Math.round((pageNum / totalPages) * 100);
+        progressFill.style.width = progress + '%';
+        progressPercent.textContent = progress + '%';
+        
+        console.log('Progress:', progress + '%');
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // Submit survey
+    async function submitSurvey() {
+        console.log('submitSurvey called');
+        loadingOverlay.classList.add('show');
+        
+        try {
+            // Prepare data
+            const finalData = {
+                ...surveyData,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            console.log('Submitting data:', finalData);
+            
+            // Save to Firestore
+            await db.collection('workshop_motivation')
+                .doc('survey')
+                .collection('responses')
+                .add(finalData);
+            
+            console.log('Data saved successfully');
+            
+            // Hide all pages
             pages.forEach(p => p.classList.remove('active'));
-            pages[pageNum].classList.add('active');
             
-            currentPage = pageNum;
+            // Show success
+            successCard.classList.add('show');
             
-            // Update progress
-            const progress = Math.round((pageNum / totalPages) * 100);
-            progressFill.style.width = progress + '%';
-            progressPercent.textContent = progress + '%';
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+            console.error('Error submitting:', error);
+            alert('حدث خطأ في الإرسال. حاول مرة أخرى.\n\n' + error.message);
+        } finally {
+            loadingOverlay.classList.remove('show');
         }
-        
-        // Submit survey
-        async function submitSurvey() {
-            loadingOverlay.classList.add('show');
-            
-            try {
-                // Prepare data
-                const finalData = {
-                    ...surveyData,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                // Save to Firestore
-                await db.collection('workshop_motivation')
-                    .doc('survey')
-                    .collection('responses')
-                    .add(finalData);
-                
-                // Hide all pages
-                pages.forEach(p => p.classList.remove('active'));
-                
-                // Show success
-                successCard.classList.add('show');
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('حدث خطأ في الإرسال. حاول مرة أخرى.');
-            } finally {
-                loadingOverlay.classList.remove('show');
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
