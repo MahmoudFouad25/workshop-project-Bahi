@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 ملخص الورشة - نتائج الاستطلاع</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #333;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .page-break {
+                page-break-after: always;
+            }
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .header .date {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        /* Section */
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .metric-box {
+            text-align: center;
+            padding: 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+        }
+        
+        .metric-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        .results-table th,
+        .results-table td {
+            padding: 15px;
+            text-align: right;
+            border: 1px solid #ddd;
+        }
+        
+        .results-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .score-high {
+            color: #28a745;
+            font-weight: 700;
+        }
+        
+        .score-medium {
+            color: #ffc107;
+            font-weight: 700;
+        }
+        
+        .score-low {
+            color: #dc3545;
+            font-weight: 700;
+        }
+        
+        /* Comments */
+        .comments-list {
+            list-style: none;
+        }
+        
+        .comment-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-right: 4px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .comment-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        
+        /* PowerPoint Copy Box */
+        .copy-box {
+            background: #f0f4ff;
+            border: 2px dashed #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .copy-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .copy-content {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            margin-top: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 10000;
+        }
+        
+        .toast.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>📋 ملخص نتائج استطلاع الرضا الوظيفي</h1>
+        <div class="date">صناع الحياة - مصر | ورشة العمل: 17 نوفمبر 2026</div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls no-print">
+        <button class="btn" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+        <button class="btn success" onclick="copyForPowerPoint()">📊 نسخ للـ PowerPoint</button>
+        <button class="btn" onclick="location.href='results.html'">← العودة للـ Dashboard</button>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" style="text-align: center; padding: 60px; color: #666;">
+        <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+        <div style="font-size: 20px; font-weight: 600;">جاري تحميل البيانات...</div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content" style="display: none;">
+        
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2 class="section-title">📊 الملخص التنفيذي</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <div class="metric-value" id="total-responses">0</div>
+                    <div class="metric-label">عدد المشاركين</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-value" id="response-rate">0%</div>
+                    <div class="metric-label">معدل الاستجابة</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-value" id="avg-satisfaction">0.0</div>
+                    <div class="metric-label">الرضا الإجمالي (من 10)</div>
+                </div>
+                
+                <div class="metric-box">
+                    <div class="metric-value" id="nps-score">0</div>
+                    <div class="metric-label">NPS Score</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- المحاور -->
+        <div class="section page-break">
+            <h2 class="section-title">📋 النتائج حسب المحاور</h2>
+            
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>المحور</th>
+                        <th style="width: 120px;">النتيجة</th>
+                        <th style="width: 100px;">التقييم</th>
+                    </tr>
+                </thead>
+                <tbody id="sections-table">
+                    <!-- سيتم ملئها بـ JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- التعليقات Q19 -->
+        <div class="section page-break">
+            <h2 class="section-title">💙 أكثر شيء يحبونه في العمل (Top 7)</h2>
+            <ul class="comments-list" id="q19-top">
+                <!-- سيتم ملئها بـ JavaScript -->
+            </ul>
+        </div>
+
+        <!-- التعليقات Q20 -->
+        <div class="section page-break">
+            <h2 class="section-title">🔧 التغيير المطلوب للسعادة (Top 7)</h2>
+            <ul class="comments-list" id="q20-top">
+                <!-- سيتم ملئها بـ JavaScript -->
+            </ul>
+        </div>
+
+        <!-- PowerPoint Copy Box -->
+        <div class="copy-box no-print">
+            <h3>📊 محتوى جاهز للنسخ في PowerPoint:</h3>
+            <div class="copy-content" id="ppt-content"></div>
+            <button class="copy-btn" onclick="copyToClipboard()">📋 نسخ النص</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">✅ تم النسخ بنجاح!</div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="../config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        let allData = {};
+        
+        // Load data
+        loadData();
+        
+        async function loadData() {
+            try {
+                const snapshot = await db.collection('workshop_motivation')
+                    .doc('survey')
+                    .collection('responses')
+                    .get();
+                
+                if (snapshot.empty) {
+                    document.getElementById('loading').innerHTML = `
+                        <div style="font-size: 48px; margin-bottom: 20px;">📭</div>
+                        <div style="font-size: 20px; font-weight: 600;">لا توجد بيانات بعد</div>
+                    `;
+                    return;
+                }
+                
+                // Process responses
+                const responses = [];
+                snapshot.forEach(doc => {
+                    responses.push(doc.data());
+                });
+                
+                // Calculate metrics
+                const metrics = calculateMetrics(responses);
+                allData = { responses, metrics };
+                
+                // Display
+                displaySummary(metrics);
+                displaySections(metrics);
+                displayTopComments(responses);
+                generatePowerPointContent(metrics, responses);
+                
+                // Show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: #dc3545;">❌ حدث خطأ في تحميل البيانات</div>
+                `;
+            }
+        }
+        
+        function calculateMetrics(responses) {
+            const total = responses.length;
+            
+            // Overall satisfaction
+            const satisfactionScores = responses.map(r => parseInt(r.q1));
+            const avgSatisfaction = (satisfactionScores.reduce((a, b) => a + b, 0) / total).toFixed(1);
+            
+            // NPS
+            const npsMapping = {
+                'بالتأكيد نعم (9-10)': 'promoter',
+                'على الأرجح نعم (7-8)': 'passive',
+                'محايد (5-6)': 'detractor',
+                'على الأرجح لا (3-4)': 'detractor',
+                'بالتأكيد لا (0-2)': 'detractor'
+            };
+            
+            let promoters = 0, detractors = 0;
+            responses.forEach(r => {
+                const type = npsMapping[r.q3];
+                if (type === 'promoter') promoters++;
+                else if (type === 'detractor') detractors++;
+            });
+            
+            const promotersPct = Math.round((promoters / total) * 100);
+            const detractorsPct = Math.round((detractors / total) * 100);
+            const npsScore = promotersPct - detractorsPct;
+            
+            // Section scores
+            const likertMapping = {
+                'أوافق بشدة': 5,
+                'أوافق': 4,
+                'محايد': 3,
+                'لا أوافق': 2,
+                'لا أوافق بشدة': 1
+            };
+            
+            const burnoutMapping = {
+                'لا، إطلاقاً': 5,
+                'نادراً': 4,
+                'أحياناً': 3,
+                'غالباً': 2,
+                'نعم، دائماً': 1
+            };
+            
+            const sections = {
+                'القيادة والإدارة': ['q4', 'q5', 'q6'],
+                'التطوير والنمو': ['q7', 'q8', 'q9'],
+                'التقدير والمكافآت': ['q10', 'q11', 'q12'],
+                'بيئة العمل': ['q13', 'q14', 'q15'],
+                'التوازن والضغط': ['q16', 'q17', 'q18']
+            };
+            
+            const sectionScores = {};
+            
+            Object.keys(sections).forEach(section => {
+                const questions = sections[section];
+                let totalScore = 0;
+                
+                questions.forEach(q => {
+                    responses.forEach(r => {
+                        const value = r[q];
+                        if (q === 'q18') {
+                            totalScore += burnoutMapping[value] || 0;
+                        } else {
+                            totalScore += likertMapping[value] || 0;
+                        }
+                    });
+                });
+                
+                const maxScore = questions.length * responses.length * 5;
+                sectionScores[section] = Math.round((totalScore / maxScore) * 100);
+            });
+            
+            return {
+                total,
+                responseRate: Math.round((total / 150) * 100),
+                avgSatisfaction,
+                npsScore,
+                sectionScores
+            };
+        }
+        
+        function displaySummary(metrics) {
+            document.getElementById('total-responses').textContent = metrics.total;
+            document.getElementById('response-rate').textContent = metrics.responseRate + '%';
+            document.getElementById('avg-satisfaction').textContent = metrics.avgSatisfaction;
+            document.getElementById('nps-score').textContent = (metrics.npsScore > 0 ? '+' : '') + metrics.npsScore;
+        }
+        
+        function displaySections(metrics) {
+            const tbody = document.getElementById('sections-table');
+            tbody.innerHTML = '';
+            
+            Object.keys(metrics.sectionScores).forEach(section => {
+                const score = metrics.sectionScores[section];
+                
+                let scoreClass = 'score-low';
+                let assessment = '❌ يحتاج تحسين';
+                
+                if (score >= 70) {
+                    scoreClass = 'score-high';
+                    assessment = '✅ ممتاز';
+                } else if (score >= 50) {
+                    scoreClass = 'score-medium';
+                    assessment = '⚠️ جيد';
+                }
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${section}</td>
+                    <td class="${scoreClass}">${score}%</td>
+                    <td>${assessment}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function displayTopComments(responses) {
+            // Q19
+            const q19Comments = responses
+                .map(r => r.q19)
+                .filter(c => c && c.trim())
+                .slice(0, 7);
+            
+            const q19Container = document.getElementById('q19-top');
+            q19Container.innerHTML = '';
+            
+            q19Comments.forEach((comment, i) => {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                li.innerHTML = `
+                    <span class="comment-number">${i + 1}</span>
+                    ${comment}
+                `;
+                q19Container.appendChild(li);
+            });
+            
+            // Q20
+            const q20Comments = responses
+                .map(r => r.q20)
+                .filter(c => c && c.trim())
+                .slice(0, 7);
+            
+            const q20Container = document.getElementById('q20-top');
+            q20Container.innerHTML = '';
+            
+            q20Comments.forEach((comment, i) => {
+                const li = document.createElement('li');
+                li.className = 'comment-item';
+                li.innerHTML = `
+                    <span class="comment-number">${i + 1}</span>
+                    ${comment}
+                `;
+                q20Container.appendChild(li);
+            });
+        }
+        
+        function generatePowerPointContent(metrics, responses) {
+            const q19 = responses.map(r => r.q19).filter(c => c && c.trim()).slice(0, 7);
+            const q20 = responses.map(r => r.q20).filter(c => c && c.trim()).slice(0, 7);
+            
+            let content = `
+═══════════════════════════════════════════
+SLIDE 5: نتائج الاستطلاع - Overview
+═══════════════════════════════════════════
+
+📊 الملخص التنفيذي
+
+👥 عدد المشاركين: ${metrics.total} / 150
+📈 معدل الاستجابة: ${metrics.responseRate}%
+⭐ الرضا الإجمالي: ${metrics.avgSatisfaction}/10
+🎯 NPS Score: ${metrics.npsScore > 0 ? '+' : ''}${metrics.npsScore}
+
+═══════════════════════════════════════════
+SLIDE 6: النتائج حسب المحاور
+═══════════════════════════════════════════
+
+📋 التفصيل:
+
+`;
+            
+            Object.keys(metrics.sectionScores).forEach(section => {
+                const score = metrics.sectionScores[section];
+                let emoji = '❌';
+                if (score >= 70) emoji = '✅';
+                else if (score >= 50) emoji = '⚠️';
+                
+                content += `${emoji} ${section}: ${score}%\n`;
+            });
+            
+            content += `
+═══════════════════════════════════════════
+SLIDE 7: أكثر التعليقات تكراراً
+═══════════════════════════════════════════
+
+💙 ما يحبونه:
+
+`;
+            
+            q19.forEach((c, i) => {
+                content += `${i + 1}. ${c}\n`;
+            });
+            
+            content += `
+🔧 ما يتمنون تغييره:
+
+`;
+            
+            q20.forEach((c, i) => {
+                content += `${i + 1}. ${c}\n`;
+            });
+            
+            document.getElementById('ppt-content').textContent = content;
+        }
+        
+        function copyForPowerPoint() {
+            const content = document.getElementById('ppt-content').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast();
+            });
+        }
+        
+        function copyToClipboard() {
+            const content = document.getElementById('ppt-content').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast();
+            });
+        }
+        
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
