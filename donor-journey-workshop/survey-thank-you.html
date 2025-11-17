@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شكراً لك! | استبيان المتبرعين</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px 40px;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .success-icon::after {
+            content: '✓';
+            font-size: 60px;
+            color: white;
+            font-weight: bold;
+        }
+        
+        h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: right;
+        }
+        
+        .info-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .info-text {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-right: 5px solid #ffc107;
+            margin: 25px 0;
+        }
+        
+        .highlight-text {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            line-height: 1.7;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .stat-box {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 25px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon"></div>
+        
+        <h1>🎉 شكراً لك!</h1>
+        
+        <p class="subtitle">
+            تم إرسال إجاباتك بنجاح!<br>
+            صوتك سيكون له تأثير كبير في تطوير خدمة المتبرعين
+        </p>
+        
+        <div class="highlight">
+            <p class="highlight-text">
+                💪 مساهمتك القيّمة ستُستخدم مباشرة في ورشة العمل الاستراتيجية<br>
+                يوم <strong>18 نوفمبر 2025</strong>
+            </p>
+        </div>
+        
+        <div class="info-box">
+            <div class="info-title">📊 ماذا سيحدث بعد ذلك؟</div>
+            <div class="info-text">
+                ✓ سيتم تحليل جميع الإجابات باستخدام الذكاء الاصطناعي
+            </div>
+            <div class="info-text">
+                ✓ ستُعرض أهم النتائج والمقترحات في ورشة العمل
+            </div>
+            <div class="info-text">
+                ✓ سيتم بناء خطة تنفيذية شاملة لتحسين تجربة المتبرعين
+            </div>
+            <div class="info-text">
+                ✓ ستلاحظ التحسينات خلال الأشهر القادمة
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number">250K</div>
+                <div class="stat-label">الهدف: عدد المتبرعين</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">40%</div>
+                <div class="stat-label">الهدف: معدل الاحتفاظ</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">التزامنا بالتحسين</div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <div class="info-title">🔒 خصوصيتك مهمة</div>
+            <div class="info-text">
+                جميع إجاباتك سرية تماماً ولن يتم ربطها باسمك.<br>
+                سيتم استخدام البيانات فقط لأغراض التحليل والتحسين.
+            </div>
+        </div>
+        
+        <a href="../index.html" class="cta-button">
+            🏠 العودة للصفحة الرئيسية
+        </a>
+        
+        <div class="footer">
+            <p>
+                شكراً لمساهمتك في تطوير صناع الحياة 💚<br>
+                معاً نصنع فرقاً في حياة الآلاف
+            </p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                © 2025 صناع الحياة - مصر | جميع الحقوق محفوظة
+            </p>
+        </div>
+    </div>
+</body>
+</html>
