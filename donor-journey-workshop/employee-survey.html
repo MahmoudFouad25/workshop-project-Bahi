@@ -1829,107 +1829,131 @@
     }
     
     // Validate section - النسخة المحسّنة
-    function validateSection(sectionNum) {
-        logDebug(`Validating section ${sectionNum}`);
+   // Validate section - النسخة المحسّنة مع Debug مفصّل
+function validateSection(sectionNum) {
+    logDebug(`Validating section ${sectionNum}`);
+    
+    const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
+    let isValid = true;
+    let errors = [];
+    
+    // Hide all error messages first
+    section.querySelectorAll('.error-message').forEach(msg => {
+        msg.classList.remove('show');
+    });
+    
+    // Get all required questions in this section
+    const requiredQuestions = section.querySelectorAll('.question');
+    
+    requiredQuestions.forEach((question, qIndex) => {
+        const label = question.querySelector('.question-label');
+        const isRequired = label && label.querySelector('.question-required');
         
-        const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
-        let isValid = true;
-        let errors = [];
-        
-        // Hide all error messages first
-        section.querySelectorAll('.error-message').forEach(msg => {
-            msg.classList.remove('show');
-        });
-        
-        // Get all required questions in this section
-        const requiredQuestions = section.querySelectorAll('.question');
-        
-        requiredQuestions.forEach(question => {
-            const label = question.querySelector('.question-label');
-            const isRequired = label && label.querySelector('.question-required');
-            
-            if (!isRequired) return; // Skip optional questions
-            
-            // Check radio buttons
-            const radioInputs = question.querySelectorAll('input[type="radio"]');
-            if (radioInputs.length > 0) {
-                const radioName = radioInputs[0].name;
-                const checked = question.querySelector(`input[name="${radioName}"]:checked`);
-                
-                if (!checked) {
-                    isValid = false;
-                    const errorId = `error-${radioName.replace(/_/g, '-')}`;
-                    const errorMsg = document.getElementById(errorId);
-                    if (errorMsg) {
-                        errorMsg.classList.add('show');
-                        errors.push(`السؤال: ${radioName} - لم يتم الاختيار`);
-                    }
-                }
-            }
-            
-            // Check checkboxes
-            const checkboxInputs = question.querySelectorAll('input[type="checkbox"]');
-            if (checkboxInputs.length > 0) {
-                const checkboxName = checkboxInputs[0].name;
-                const checkedBoxes = question.querySelectorAll(`input[name="${checkboxName}"]:checked`);
-                
-                // Get max allowed from label
-                const labelText = label.textContent;
-                let maxAllowed = null;
-                if (labelText.includes('حتى 3')) maxAllowed = 3;
-                if (labelText.includes('حتى 2')) maxAllowed = 2;
-                
-                if (checkedBoxes.length === 0) {
-                    isValid = false;
-                    const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
-                    const errorMsg = document.getElementById(errorId);
-                    if (errorMsg) {
-                        errorMsg.classList.add('show');
-                        errors.push(`السؤال: ${checkboxName} - لم يتم الاختيار`);
-                    }
-                } else if (maxAllowed && checkedBoxes.length > maxAllowed) {
-                    isValid = false;
-                    const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
-                    const errorMsg = document.getElementById(errorId);
-                    if (errorMsg) {
-                        errorMsg.textContent = `❌ الرجاء اختيار ${maxAllowed} خيارات كحد أقصى`;
-                        errorMsg.classList.add('show');
-                        errors.push(`السؤال: ${checkboxName} - اختيارات كثيرة (${checkedBoxes.length}/${maxAllowed})`);
-                    }
-                }
-            }
-            
-            // Check textareas
-            const textarea = question.querySelector('textarea[required]');
-            if (textarea) {
-                const minLength = textarea.name === 'immediate_increase' ? 10 : 20;
-                if (textarea.value.trim().length < minLength) {
-                    isValid = false;
-                    const errorId = `error-${textarea.name.replace(/_/g, '-')}`;
-                    const errorMsg = document.getElementById(errorId);
-                    if (errorMsg) {
-                        errorMsg.classList.add('show');
-                        errors.push(`السؤال: ${textarea.name} - نص قصير جداً (${textarea.value.length}/${minLength})`);
-                    }
-                }
-            }
-        });
-        
-        if (!isValid) {
-            logDebug('Validation failed:');
-            errors.forEach(err => logDebug('  - ' + err));
-            
-            // Scroll to first error
-            const firstError = section.querySelector('.error-message.show');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        } else {
-            logDebug('✅ Validation passed!');
+        if (!isRequired) {
+            logDebug(`  Q${qIndex + 1}: Optional - skipped`);
+            return; // Skip optional questions
         }
         
-        return isValid;
+        // Check radio buttons
+        const radioInputs = question.querySelectorAll('input[type="radio"]');
+        if (radioInputs.length > 0) {
+            const radioName = radioInputs[0].name;
+            const checked = question.querySelector(`input[name="${radioName}"]:checked`);
+            
+            if (!checked) {
+                isValid = false;
+                const errorId = `error-${radioName.replace(/_/g, '-')}`;
+                const errorMsg = document.getElementById(errorId);
+                if (errorMsg) {
+                    errorMsg.classList.add('show');
+                }
+                const errorText = `Q${qIndex + 1} (${radioName}): لم يتم اختيار إجابة`;
+                errors.push(errorText);
+                logDebug(`  ❌ ${errorText}`);
+            } else {
+                logDebug(`  ✅ Q${qIndex + 1} (${radioName}): ${checked.value}`);
+            }
+        }
+        
+        // Check checkboxes
+        const checkboxInputs = question.querySelectorAll('input[type="checkbox"]');
+        if (checkboxInputs.length > 0) {
+            const checkboxName = checkboxInputs[0].name;
+            const checkedBoxes = question.querySelectorAll(`input[name="${checkboxName}"]:checked`);
+            
+            // Get max allowed from label
+            const labelText = label.textContent;
+            let maxAllowed = null;
+            if (labelText.includes('حتى 3')) maxAllowed = 3;
+            if (labelText.includes('حتى 2')) maxAllowed = 2;
+            
+            if (checkedBoxes.length === 0) {
+                isValid = false;
+                const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
+                const errorMsg = document.getElementById(errorId);
+                if (errorMsg) {
+                    errorMsg.classList.add('show');
+                }
+                const errorText = `Q${qIndex + 1} (${checkboxName}): لم يتم اختيار أي خيار`;
+                errors.push(errorText);
+                logDebug(`  ❌ ${errorText}`);
+            } else if (maxAllowed && checkedBoxes.length > maxAllowed) {
+                isValid = false;
+                const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
+                const errorMsg = document.getElementById(errorId);
+                if (errorMsg) {
+                    errorMsg.textContent = `❌ الرجاء اختيار ${maxAllowed} خيارات كحد أقصى`;
+                    errorMsg.classList.add('show');
+                }
+                const errorText = `Q${qIndex + 1} (${checkboxName}): اختيارات كثيرة (${checkedBoxes.length}/${maxAllowed})`;
+                errors.push(errorText);
+                logDebug(`  ❌ ${errorText}`);
+            } else {
+                const values = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
+                logDebug(`  ✅ Q${qIndex + 1} (${checkboxName}): ${values}`);
+            }
+        }
+        
+        // Check textareas
+        const textarea = question.querySelector('textarea[required]');
+        if (textarea) {
+            const minLength = textarea.name === 'immediate_increase' ? 10 : 20;
+            const currentLength = textarea.value.trim().length;
+            
+            if (currentLength < minLength) {
+                isValid = false;
+                const errorId = `error-${textarea.name.replace(/_/g, '-')}`;
+                const errorMsg = document.getElementById(errorId);
+                if (errorMsg) {
+                    errorMsg.classList.add('show');
+                }
+                const errorText = `Q${qIndex + 1} (${textarea.name}): نص قصير جداً (${currentLength}/${minLength} حرف)`;
+                errors.push(errorText);
+                logDebug(`  ❌ ${errorText}`);
+            } else {
+                logDebug(`  ✅ Q${qIndex + 1} (${textarea.name}): ${currentLength} حرف`);
+            }
+        }
+    });
+    
+    if (!isValid) {
+        logDebug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        logDebug('❌ Validation failed - الأخطاء:');
+        errors.forEach(err => logDebug('   ' + err));
+        logDebug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        
+        // Scroll to first error
+        const firstError = section.querySelector('.error-message.show');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    } else {
+        logDebug('✅ Validation passed!');
     }
+    
+    return isValid;
+}
+
     
     // Navigation - Next button
     nextBtn.addEventListener('click', () => {
