@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان: صوتك مهم - تجربتك مع المتبرعين | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 15px;
+        }
+        
+        .privacy-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-right: 5px solid #667eea;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Questions */
+        .question {
+            margin-bottom: 35px;
+        }
+        
+        .question-label {
+            display: block;
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .question-required {
+            color: #dc3545;
+            font-size: 14px;
+        }
+        
+        .question-helper {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Radio/Checkbox Options */
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            position: relative;
+            display: block;
+        }
+        
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .option label:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .option input:checked + label {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-color: #667eea;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .option label::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            border-radius: 50%;
+            margin-left: 12px;
+            transition: all 0.3s;
+        }
+        
+        .option input[type="checkbox"] + label::before {
+            border-radius: 4px;
+        }
+        
+        .option input:checked + label::before {
+            background: #667eea;
+            border-color: #667eea;
+            box-shadow: inset 0 0 0 3px white;
+        }
+        
+        /* Text Input */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Scale Rating */
+        .scale-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .scale-label {
+            font-size: 13px;
+            color: #666;
+            max-width: 100px;
+            text-align: center;
+        }
+        
+        .scale-options {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .scale-option {
+            position: relative;
+        }
+        
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .scale-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .scale-option label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .scale-option input:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+        
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        /* Validation Error */
+        .error-message {
+            display: none;
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff5f5;
+            border-right: 3px solid #dc3545;
+            border-radius: 5px;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .question-label {
+                font-size: 16px;
+            }
+            
+            .scale-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .scale-options {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .navigation {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 استبيان: صوتك مهم</h1>
+            <p>تجربتك مع المتبرعين</p>
+            <div class="meta">
+                <div>⏱️ الوقت المتوقع: 12-15 دقيقة</div>
+                <div class="privacy-badge">🔒 سرية تامة - لن يُطلب منك اسمك</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="progress-text">القسم 1 من 5</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <form id="survey-form">
+                
+                <!-- ============================================ -->
+                <!-- القسم الأول: من أنت؟ -->
+                <!-- ============================================ -->
+                <div class="section active" data-section="1">
+                    <div class="section-header">
+                        <div class="section-title">📌 القسم الأول: من أنت؟</div>
+                        <div class="section-subtitle">5 أسئلة بسيطة لفهم خلفيتك</div>
+                    </div>
+                    
+                    <!-- Q1: القسم/الإدارة -->
+                    <div class="question">
+                        <label class="question-label">
+                            1. القسم/الإدارة التي تعمل بها:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="dept-cc-internal" name="department" value="call_center_internal" required>
+                                <label for="dept-cc-internal">Call Center الداخلي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-cc-external" name="department" value="call_center_external">
+                                <label for="dept-cc-external">Call Center الخارجي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-booths" name="department" value="booths">
+                                <label for="dept-booths">منافذ التمويل (Booths)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-direct" name="department" value="direct_collection">
+                                <label for="dept-direct">التحصيل المباشر</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-network" name="department" value="network">
+                                <label for="dept-network">Network (الشبكة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-online" name="department" value="online">
+                                <label for="dept-online">Online (التبرع الإلكتروني)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-volunteers" name="department" value="volunteer_campaigns">
+                                <label for="dept-volunteers">حملات المتطوعين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-support" name="department" value="support">
+                                <label for="dept-support">أقسام داعمة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-other" name="department" value="other">
+                                <label for="dept-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="dept-other-text" placeholder="حدد القسم..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q1">❌ الرجاء اختيار قسمك</div>
+                    </div>
+                    
+                    <!-- Q2: سنوات الخبرة -->
+                    <div class="question">
+                        <label class="question-label">
+                            2. عدد سنوات خبرتك في التعامل مع المتبرعين:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="exp-less6" name="experience" value="less_6_months" required>
+                                <label for="exp-less6">أقل من 6 شهور</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-6to1" name="experience" value="6_months_1_year">
+                                <label for="exp-6to1">6 شهور - سنة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-1to3" name="experience" value="1_3_years">
+                                <label for="exp-1to3">1-3 سنوات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-3to5" name="experience" value="3_5_years">
+                                <label for="exp-3to5">3-5 سنوات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-more5" name="experience" value="more_5_years">
+                                <label for="exp-more5">أكثر من 5 سنوات</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q2">❌ الرجاء اختيار سنوات خبرتك</div>
+                    </div>
+                    
+                    <!-- Q3: عدد المتبرعين أسبوعياً -->
+                    <div class="question">
+                        <label class="question-label">
+                            3. متوسط عدد المتبرعين الذين تتعامل معهم **أسبوعياً**:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="weekly-less10" name="weekly_donors" value="less_10" required>
+                                <label for="weekly-less10">أقل من 10</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weekly-10to30" name="weekly_donors" value="10_30">
+                                <label for="weekly-10to30">10-30</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weekly-30to60" name="weekly_donors" value="30_60">
+                                <label for="weekly-30to60">30-60</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weekly-60to100" name="weekly_donors" value="60_100">
+                                <label for="weekly-60to100">60-100</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weekly-more100" name="weekly_donors" value="more_100">
+                                <label for="weekly-more100">أكثر من 100</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q3">❌ الرجاء اختيار عدد المتبرعين</div>
+                    </div>
+                    
+                    <!-- Q4: نوع التواصل -->
+                    <div class="question">
+                        <label class="question-label">
+                            4. ما نوع التواصل الأكثر شيوعاً معك؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر الأكثر)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="comm-phone" name="communication_type" value="phone" required>
+                                <label for="comm-phone">مكالمات هاتفية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comm-face" name="communication_type" value="face_to_face">
+                                <label for="comm-face">زيارات مباشرة (Face-to-face)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comm-whatsapp" name="communication_type" value="whatsapp">
+                                <label for="comm-whatsapp">واتساب / رسائل نصية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comm-social" name="communication_type" value="social_media">
+                                <label for="comm-social">سوشيال ميديا (FB, Instagram)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comm-email" name="communication_type" value="email">
+                                <label for="comm-email">بريد إلكتروني</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comm-other" name="communication_type" value="other">
+                                <label for="comm-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="comm-other-text" placeholder="حدد نوع التواصل..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q4">❌ الرجاء اختيار نوع التواصل</div>
+                    </div>
+                    
+                    <!-- Q5: تقييم الخدمة -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. من 1 إلى 10، كيف تقيّم **جودة الخدمة التي تقدمها** للمتبرعين حالياً؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-label">ضعيفة جداً</div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-1" name="service_quality_rating" value="1" required>
+                                    <label for="rating-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-2" name="service_quality_rating" value="2">
+                                    <label for="rating-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-3" name="service_quality_rating" value="3">
+                                    <label for="rating-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-4" name="service_quality_rating" value="4">
+                                    <label for="rating-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-5" name="service_quality_rating" value="5">
+                                    <label for="rating-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-6" name="service_quality_rating" value="6">
+                                    <label for="rating-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-7" name="service_quality_rating" value="7">
+                                    <label for="rating-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-8" name="service_quality_rating" value="8">
+                                    <label for="rating-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-9" name="service_quality_rating" value="9">
+                                    <label for="rating-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="rating-10" name="service_quality_rating" value="10">
+                                    <label for="rating-10">10</label>
+                                </div>
+                            </div>
+                            <div class="scale-label">ممتازة</div>
+                        </div>
+                        <div class="error-message" id="error-q5">❌ الرجاء اختيار تقييم</div>
+                    </div>
+                </div>
+                
+                <!-- ============================================ -->
+                <!-- القسم الثاني: عملك اليومي -->
+                <!-- ============================================ -->
+                <div class="section" data-section="2">
+                    <div class="section-header">
+                        <div class="section-title">📌 القسم الثاني: عملك اليومي مع المتبرعين</div>
+                        <div class="section-subtitle">6 أسئلة عن تجربتك الفعلية</div>
+                    </div>
+                    
+                    <!-- Q6: أكثر الأسئلة تكراراً -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. ما **أكثر** الأسئلة أو الطلبات التي تتكرر من المتبرعين؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="freq-where-money" name="frequent_questions" value="where_money">
+                                <label for="freq-where-money">"فين راحت فلوسي؟ / عملت إيه؟"</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-receipt" name="frequent_questions" value="receipt_delay">
+                                <label for="freq-receipt">"ليه الإيصال اتأخر؟"</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-track" name="frequent_questions" value="how_track">
+                                <label for="freq-track">"إزاي أتابع تبرعي؟"</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-annoy" name="frequent_questions" value="why_contact">
+                                <label for="freq-annoy">"ليه المكالمة/الرسالة دي؟" (انزعاج من التواصل)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-projects" name="frequent_questions" value="what_projects">
+                                <label for="freq-projects">"فيه مشاريع إيه؟"</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-easier" name="frequent_questions" value="easier_way">
+                                <label for="freq-easier">"ينفع أتبرع بطريقة أسهل؟"</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-stop" name="frequent_questions" value="stop_recurring">
+                                <label for="freq-stop">"إزاي أوقف الاشتراك/التبرع المتكرر؟"</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="freq-other" name="frequent_questions" value="other">
+                                <label for="freq-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="freq-other-text" placeholder="حدد..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q6">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                    </div>
+                    
+                    <!-- Q7: الدافع الأكبر -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. ما الدافع **الأكبر** الذي يجعل المتبرعين يختارون صناع الحياة؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(من تجربتك)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="motiv-trust" name="main_motivation" value="trust" required>
+                                <label for="motiv-trust">الثقة والمصداقية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="motiv-variety" name="main_motivation" value="variety">
+                                <label for="motiv-variety">تنوع المشاريع</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="motiv-transparency" name="main_motivation" value="transparency">
+                                <label for="motiv-transparency">الشفافية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="motiv-speed" name="main_motivation" value="speed">
+                                <label for="motiv-speed">سرعة الاستجابة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="motiv-referral" name="main_motivation" value="referral">
+                                <label for="motiv-referral">توصية من شخص موثوق</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="motiv-seasonal" name="main_motivation" value="seasonal">
+                                <label for="motiv-seasonal">الحملات الموسمية (رمضان، إلخ)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="motiv-dont-know" name="main_motivation" value="dont_know">
+                                <label for="motiv-dont-know">لا أعرف بالضبط</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q7">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q8: أول خطوة عند المشكلة -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. عند التعامل مع متبرع لديه **مشكلة**... ماذا تفعل **أول خطوة**؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="action-listen" name="first_action_problem" value="listen_carefully" required>
+                                <label for="action-listen">الاستماع بعناية وبدون مقاطعة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="action-apologize" name="first_action_problem" value="apologize">
+                                <label for="action-apologize">الاعتذار وطمأنته</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="action-solve" name="first_action_problem" value="solve_immediately">
+                                <label for="action-solve">محاولة حل المشكلة فوراً بنفسي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="action-transfer" name="first_action_problem" value="transfer">
+                                <label for="action-transfer">تحويله للجهة المختصة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="action-log" name="first_action_problem" value="log_complaint">
+                                <label for="action-log">تسجيل الشكوى ومتابعتها</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="action-other" name="first_action_problem" value="other">
+                                <label for="action-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="action-other-text" placeholder="حدد..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q8">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q9: أكثر المشكلات -->
+                    <div class="question">
+                        <label class="question-label">
+                            9. ما **أكثر** أنواع المشكلات التي تواجهها مع المتبرعين؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="prob-receipt" name="common_problems" value="receipt_delay">
+                                <label for="prob-receipt">تأخر وصول الإيصال</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-notif" name="common_problems" value="no_notifications">
+                                <label for="prob-notif">عدم وصول الرسائل/الإشعارات</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-info" name="common_problems" value="lack_info">
+                                <label for="prob-info">معلومة ناقصة أو غير واضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-pos" name="common_problems" value="pos_issue">
+                                <label for="prob-pos">مشكلة في ماكينة الدفع (POS)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-system" name="common_problems" value="system_issue">
+                                <label for="prob-system">مشكلة في النظام الإلكتروني</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-too-much" name="common_problems" value="too_much_contact">
+                                <label for="prob-too-much">شكوى من التواصل الزائد</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-misunderstand" name="common_problems" value="misunderstanding">
+                                <label for="prob-misunderstand">سوء فهم بين الموظف والمتبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-coord" name="common_problems" value="coordination">
+                                <label for="prob-coord">صعوبة التنسيق مع إدارات أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-other" name="common_problems" value="other">
+                                <label for="prob-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="prob-other-text" placeholder="حدد..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q9">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                    </div>
+                    
+                    <!-- Q10: نسبة الحل من أول مرة -->
+                    <div class="question">
+                        <label class="question-label">
+                            10. ما نسبة المشكلات التي يتم حلها من **أول مرة** (دون تحويل أو تأجيل)؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="resolve-less30" name="first_time_resolution" value="less_30" required>
+                                <label for="resolve-less30">أقل من 30%</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="resolve-30to50" name="first_time_resolution" value="30_50">
+                                <label for="resolve-30to50">30-50%</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="resolve-50to70" name="first_time_resolution" value="50_70">
+                                <label for="resolve-50to70">50-70%</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="resolve-70to90" name="first_time_resolution" value="70_90">
+                                <label for="resolve-70to90">70-90%</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="resolve-more90" name="first_time_resolution" value="more_90">
+                                <label for="resolve-more90">أكثر من 90%</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q10">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q11: الصلاحيات -->
+                    <div class="question">
+                        <label class="question-label">
+                            11. هل تشعر أن لديك **الصلاحيات الكافية** لحل مشكلات المتبرعين بسرعة؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="auth-always" name="sufficient_authority" value="always" required>
+                                <label for="auth-always">نعم، دائماً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="auth-mostly" name="sufficient_authority" value="mostly">
+                                <label for="auth-mostly">نعم، في أغلب الأحيان</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="auth-sometimes" name="sufficient_authority" value="sometimes">
+                                <label for="auth-sometimes">أحياناً (حسب نوع المشكلة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="auth-rarely" name="sufficient_authority" value="rarely">
+                                <label for="auth-rarely">نادراً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="auth-never" name="sufficient_authority" value="never">
+                                <label for="auth-never">لا، أبداً</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q11">❌ الرجاء الاختيار</div>
+                    </div>
+                </div>
+                
+                <!-- ============================================ -->
+                <!-- القسم الثالث: التحديات الحقيقية -->
+                <!-- ============================================ -->
+                <div class="section" data-section="3">
+                    <div class="section-header">
+                        <div class="section-title">📌 القسم الثالث: التحديات الحقيقية</div>
+                        <div class="section-subtitle">8 أسئلة عن المعوقات والفجوات</div>
+                    </div>
+                    
+                    <!-- Q12: أهم تحدي -->
+                    <div class="question">
+                        <label class="question-label">
+                            12. ما **أهم تحدي** تواجهه أثناء التعامل مع المتبرعين؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر واحد فقط)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="chal-workload" name="biggest_challenge" value="workload" required>
+                                <label for="chal-workload">ضغط العمل (عدد كبير من المتبرعين)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-info" name="biggest_challenge" value="lack_info">
+                                <label for="chal-info">نقص المعلومات أو وضوحها</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-tech" name="biggest_challenge" value="system_slow">
+                                <label for="chal-tech">بطء أو تعطل الأنظمة التقنية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-coord" name="biggest_challenge" value="weak_coordination">
+                                <label for="chal-coord">ضعف التنسيق بين الإدارات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-auth" name="biggest_challenge" value="no_authority">
+                                <label for="chal-auth">عدم وجود صلاحيات كافية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-training" name="biggest_challenge" value="lack_training">
+                                <label for="chal-training">قلة التدريب على المستجدات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-angry" name="biggest_challenge" value="angry_donors">
+                                <label for="chal-angry">التعامل مع متبرعين غاضبين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="chal-other" name="biggest_challenge" value="other">
+                                <label for="chal-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="chal-other-text" placeholder="حدد..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q12">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q13: خطوة غير ضرورية -->
+                    <div class="question">
+                        <label class="question-label">
+                            13. ما **أكثر خطوة** تشعر أنها **غير ضرورية** وتضيع وقتك ووقت المتبرع؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="unnec-duplicate" name="unnecessary_step" value="duplicate_data" required>
+                                <label for="unnec-duplicate">تكرار إدخال البيانات أكثر من مرة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="unnec-transfer" name="unnecessary_step" value="multiple_transfers">
+                                <label for="unnec-transfer">تحويل المتبرع لأكثر من جهة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="unnec-approval" name="unnecessary_step" value="slow_approvals">
+                                <label for="unnec-approval">تأخر الموافقات الإدارية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="unnec-unclear" name="unnecessary_step" value="unclear_policies">
+                                <label for="unnec-unclear">عدم وضوح السياسات/الإجراءات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="unnec-collection" name="unnecessary_step" value="complex_collection">
+                                <label for="unnec-collection">خطوات التحصيل المعقدة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="unnec-none" name="unnecessary_step" value="none">
+                                <label for="unnec-none">لا يوجد شيء غير ضروري</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q13">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q14: إدارة تتأخر -->
+                    <div class="question">
+                        <label class="question-label">
+                            14. أي إدارة **تتأخر عادة** في تقديم الدعم لحل مشكلات المتبرعين؟
+                            <div class="question-helper">(اختياري - لن نحاسب أحد!)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="slow-collection" name="slow_department" value="collection">
+                                <label for="slow-collection">التحصيل</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="slow-ops" name="slow_department" value="operations">
+                                <label for="slow-ops">العمليات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="slow-funding" name="slow_department" value="funding">
+                                <label for="slow-funding">التمويل</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="slow-it" name="slow_department" value="it">
+                                <label for="slow-it">الـIT (التقنية)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="slow-cs" name="slow_department" value="customer_service">
+                                <label for="slow-cs">خدمة العملاء</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="slow-none" name="slow_department" value="none">
+                                <label for="slow-none">لا يوجد تأخير</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="slow-skip" name="slow_department" value="prefer_not">
+                                <label for="slow-skip">أفضل عدم الإجابة</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Q15: مشكلة تقنية -->
+                    <div class="question">
+                        <label class="question-label">
+                            15. ما **أكثر مشكلة تقنية** تؤثر على خدمتك للمتبرع؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="tech-slow" name="tech_problem" value="system_slow" required>
+                                <label for="tech-slow">بطء النظام</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="tech-crash" name="tech_problem" value="system_crash">
+                                <label for="tech-crash">تعطل النظام (Crash)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="tech-outdated" name="tech_problem" value="outdated_data">
+                                <label for="tech-outdated">البيانات غير محدثة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="tech-integration" name="tech_problem" value="weak_integration">
+                                <label for="tech-integration">ضعف الربط بين الأنظمة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="tech-pos" name="tech_problem" value="pos_issues">
+                                <label for="tech-pos">مشاكل في ماكينات الدفع (POS)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="tech-none" name="tech_problem" value="none">
+                                <label for="tech-none">لا توجد مشاكل تقنية</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q15">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q16: سبب ابتعاد المتبرع -->
+                    <div class="question">
+                        <label class="question-label">
+                            16. برأيك، ما **أهم سبب** قد يجعل المتبرع **يبتعد نهائياً** عن المؤسسة؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر واحد)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="churn-slow" name="churn_reason" value="slow_response" required>
+                                <label for="churn-slow">الرد المتأخر على استفساراته</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="churn-unresolved" name="churn_reason" value="unresolved">
+                                <label for="churn-unresolved">عدم حل مشكلته رغم المحاولات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="churn-followup" name="churn_reason" value="no_followup">
+                                <label for="churn-followup">عدم المتابعة بعد التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="churn-unclear" name="churn_reason" value="unclear_info">
+                                <label for="churn-unclear">عدم وضوح المعلومات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="churn-bad" name="churn_reason" value="bad_treatment">
+                                <label for="churn-bad">سوء التعامل من موظف</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="churn-competition" name="churn_reason" value="competition">
+                                <label for="churn-competition">ارتفاع المنافسة من جهات أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="churn-impact" name="churn_reason" value="no_impact">
+                                <label for="churn-impact">عدم رؤية أثر تبرعه</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q16">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q17: الثقة في الأنظمة -->
+                    <div class="question">
+                        <label class="question-label">
+                            17. من 1 إلى 10، **كم تثق** في الأنظمة التقنية التي تستخدمها؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-label">لا أثق أبداً</div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-1" name="system_trust_rating" value="1" required>
+                                    <label for="trust-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-2" name="system_trust_rating" value="2">
+                                    <label for="trust-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-3" name="system_trust_rating" value="3">
+                                    <label for="trust-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-4" name="system_trust_rating" value="4">
+                                    <label for="trust-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-5" name="system_trust_rating" value="5">
+                                    <label for="trust-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-6" name="system_trust_rating" value="6">
+                                    <label for="trust-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-7" name="system_trust_rating" value="7">
+                                    <label for="trust-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-8" name="system_trust_rating" value="8">
+                                    <label for="trust-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-9" name="system_trust_rating" value="9">
+                                    <label for="trust-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="trust-10" name="system_trust_rating" value="10">
+                                    <label for="trust-10">10</label>
+                                </div>
+                            </div>
+                            <div class="scale-label">ثقة تامة</div>
+                        </div>
+                        <div class="error-message" id="error-q17">❌ الرجاء اختيار تقييم</div>
+                    </div>
+                    
+                    <!-- Q18: متى لا تستطيع الخدمة -->
+                    <div class="question">
+                        <label class="question-label">
+                            18. في أي موقف تشعر أنك **غير قادر** على خدمة المتبرع بالشكل الأمثل؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="unable-volume" name="cannot_serve_when" value="high_volume">
+                                <label for="unable-volume">عند زيادة عدد المكالمات/الطلبات</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="unable-complex" name="cannot_serve_when" value="complex_issue">
+                                <label for="unable-complex">عند وجود مشكلة معقدة تتطلب تنسيق</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="unable-delay" name="cannot_serve_when" value="delayed_response">
+                                <label for="unable-delay">عند تأخر الردود من إدارات أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="unable-angry" name="cannot_serve_when" value="angry_donor">
+                                <label for="unable-angry">عند التعامل مع متبرع غاضب جداً</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="unable-info" name="cannot_serve_when" value="lack_info">
+                                <label for="unable-info">عند نقص المعلومات الواضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="unable-never" name="cannot_serve_when" value="never">
+                                <label for="unable-never">لا يوجد - أستطيع الخدمة دائماً</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q18">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 2)</div>
+                    </div>
+                    
+                    <!-- Q19: تعامل غير مناسب -->
+                    <div class="question">
+                        <label class="question-label">
+                            19. هل سبق ولاحظت **تعاملاً غير مناسب** من زميل مع متبرع؟
+                            <div class="question-helper">(سرية تامة)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="bad-sometimes" name="witnessed_bad_behavior" value="sometimes">
+                                <label for="bad-sometimes">نعم، يحدث أحياناً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="bad-rarely" name="witnessed_bad_behavior" value="rarely">
+                                <label for="bad-rarely">نعم، لكن نادراً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="bad-never" name="witnessed_bad_behavior" value="never">
+                                <label for="bad-never">لا، لم ألاحظ أبداً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="bad-skip" name="witnessed_bad_behavior" value="prefer_not">
+                                <label for="bad-skip">أفضل عدم الإجابة</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ============================================ -->
+                <!-- القسم الرابع: لو كنت أنا المتبرع -->
+                <!-- ============================================ -->
+                <div class="section" data-section="4">
+                    <div class="section-header">
+                        <div class="section-title">📌 القسم الرابع: لو كنت أنا المتبرع... 🤔</div>
+                        <div class="section-subtitle">5 أسئلة - ضع نفسك مكان المتبرع</div>
+                    </div>
+                    
+                    <!-- Q20: سلوكيات تشجع التبرع لأول مرة -->
+                    <div class="question">
+                        <label class="question-label">
+                            20. ما السلوكيات التي لو حدثت ستجعلك (كمتبرع) **تتبرع لأول مرة**؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="first-respectful" name="donate_first_triggers" value="respectful">
+                                <label for="first-respectful">أسلوب محترم ولطيف من الموظف</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-clarity" name="donate_first_triggers" value="clarity">
+                                <label for="first-clarity">وضوح المعلومات بدون لف ودوران</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-ease" name="donate_first_triggers" value="ease">
+                                <label for="first-ease">سهولة وسرعة عملية التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-trust" name="donate_first_triggers" value="trust">
+                                <label for="first-trust">ثقة وسمعة المؤسسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-impact" name="donate_first_triggers" value="impact_visible">
+                                <label for="first-impact">رؤية واضحة لأثر التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-speed" name="donate_first_triggers" value="fast_response">
+                                <label for="first-speed">استجابة سريعة عند التواصل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-referral" name="donate_first_triggers" value="referral">
+                                <label for="first-referral">ترشيح من شخص موثوق</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="first-no-pressure" name="donate_first_triggers" value="no_pressure">
+                                <label for="first-no-pressure">عدم وجود ضغط أو إلحاح</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q20">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                    </div>
+                    
+                    <!-- Q21: سلوكيات تشجع التكرار -->
+                    <div class="question">
+                        <label class="question-label">
+                            21. ما السلوكيات التي ستجعلك **تكرر التبرع** مرة أخرى؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="repeat-followup" name="repeat_triggers" value="followup">
+                                <label for="repeat-followup">متابعة بعد التبرع (شكر، تقارير)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-impact" name="repeat_triggers" value="impact_clear">
+                                <label for="repeat-impact">مشاركة واضحة لأثر تبرعي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-recognition" name="repeat_triggers" value="recognition">
+                                <label for="repeat-recognition">تقدير شخصي (تذكُّر اسمي، احترامي)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-solve" name="repeat_triggers" value="solve_fast">
+                                <label for="repeat-solve">حل المشكلات بسرعة لو حصلت</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-ease" name="repeat_triggers" value="ease_everytime">
+                                <label for="repeat-ease">سهولة عملية التبرع في كل مرة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-honesty" name="repeat_triggers" value="honesty">
+                                <label for="repeat-honesty">صراحة ووضوح الموظفين</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-difference" name="repeat_triggers" value="makes_difference">
+                                <label for="repeat-difference">إحساسي بأن تبرعي يُحدث فرقاً حقيقياً</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-no-spam" name="repeat_triggers" value="no_spam">
+                                <label for="repeat-no-spam">عدم الإزعاج بكثرة الاتصالات</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q21">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                    </div>
+                    
+                    <!-- Q22: سلوكيات تشجع الترشيح -->
+                    <div class="question">
+                        <label class="question-label">
+                            22. ما السلوكيات التي ستجعلك **ترشح غيرك** للتبرع؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="refer-service" name="refer_triggers" value="fast_service">
+                                <label for="refer-service">خدمة محترمة وسريعة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-transparency" name="refer_triggers" value="transparency">
+                                <label for="refer-transparency">شفافية عالية في التقارير</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-professionalism" name="refer_triggers" value="professionalism">
+                                <label for="refer-professionalism">تعامل الموظفين باحترام واحتراف</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-projects" name="refer_triggers" value="strong_projects">
+                                <label for="refer-projects">مشاريع قوية ونتائج واضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-experience" name="refer_triggers" value="smooth_experience">
+                                <label for="refer-experience">تجربة تبرع مريحة وخالية من التعقيد</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-consistency" name="refer_triggers" value="consistency">
+                                <label for="refer-consistency">ثبات مستوى الجودة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-trust-overall" name="refer_triggers" value="trust">
+                                <label for="refer-trust-overall">إحساس عام بالثقة في المؤسسة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q22">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                    </div>
+                    
+                    <!-- Q23: سلوكيات تمنع التبرع -->
+                    <div class="question">
+                        <label class="question-label">
+                            23. ما السلوكيات التي ستجعلك **لا تتبرع** من الأساس؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="prevent-slow" name="prevent_donation" value="slow_response">
+                                <label for="prevent-slow">التأخر في الرد</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prevent-unclear" name="prevent_donation" value="unclear_process">
+                                <label for="prevent-unclear">عدم وضوح طريقة التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prevent-inconsistent" name="prevent_donation" value="inconsistent_info">
+                                <label for="prevent-inconsistent">اختلاف المعلومة من موظف لآخر</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prevent-disorganized" name="prevent_donation" value="disorganized">
+                                <label for="prevent-disorganized">شعور بعدم التنظيم</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prevent-pressure" name="prevent_donation" value="pressure">
+                                <label for="prevent-pressure">أسلوب ضغط أو إلحاح زائد</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prevent-lack-info" name="prevent_donation" value="lack_info">
+                                <label for="prevent-lack-info">عدم وجود معلومات كافية عن المشروع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prevent-distrust" name="prevent_donation" value="distrust">
+                                <label for="prevent-distrust">ضعف الثقة في المؤسسة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q23">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 2)</div>
+                    </div>
+                    
+                    <!-- Q24: سلوكيات توقف التبرع -->
+                    <div class="question">
+                        <label class="question-label">
+                            24. ما السلوكيات التي ستجعلك **توقف التبرع نهائياً**؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="stop-unresolved" name="stop_donation" value="unresolved">
+                                <label for="stop-unresolved">عدم حل المشكلة رغم تكرار الشكوى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-trust-loss" name="stop_donation" value="trust_loss">
+                                <label for="stop-trust-loss">فقدان الثقة بسبب موقف معين</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-delay" name="stop_donation" value="delay_proof">
+                                <label for="stop-delay">التأخر في إثبات التبرع أو وصوله</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-spam" name="stop_donation" value="spam">
+                                <label for="stop-spam">تواصل زائد أو إلحاح مزعج</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-disrespect" name="stop_donation" value="disrespect">
+                                <label for="stop-disrespect">عدم احترام المتبرع أو تجاهله</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-conflict" name="stop_donation" value="conflicting_info">
+                                <label for="stop-conflict">تضارب مستمر في المعلومات</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-no-followup" name="stop_donation" value="no_followup">
+                                <label for="stop-no-followup">متابعة ضعيفة أو معدومة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-not-valued" name="stop_donation" value="not_valued">
+                                <label for="stop-not-valued">إحساس بأن المؤسسة لا تقدّر المتبرعين</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q24">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 2)</div>
+                    </div>
+                </div>
+                
+                <!-- ============================================ -->
+                <!-- القسم الخامس: مقترحاتك للتحسين -->
+                <!-- ============================================ -->
+                <div class="section" data-section="5">
+                    <div class="section-header">
+                        <div class="section-title">📌 القسم الخامس: مقترحاتك للتحسين</div>
+                        <div class="section-subtitle">3 أسئلة - صوتك للتغيير</div>
+                    </div>
+                    
+                    <!-- Q25: لو لديك صلاحية -->
+                    <div class="question">
+                        <label class="question-label">
+                            25. لو لديك **صلاحية ليوم واحد**... ما أول شيء ستقوم بإصلاحه؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="fix-systems" name="fix_if_authority" value="update_systems" required>
+                                <label for="fix-systems">تحديث/تسريع الأنظمة التقنية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="fix-bureaucracy" name="fix_if_authority" value="reduce_bureaucracy">
+                                <label for="fix-bureaucracy">تقليل البيروقراطية والخطوات الزائدة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="fix-coordination" name="fix_if_authority" value="improve_coordination">
+                                <label for="fix-coordination">تحسين التنسيق بين الإدارات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="fix-training" name="fix_if_authority" value="more_training">
+                                <label for="fix-training">زيادة التدريب للموظفين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="fix-followup" name="fix_if_authority" value="better_followup">
+                                <label for="fix-followup">رفع مستوى المتابعة بعد التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="fix-communication" name="fix_if_authority" value="better_communication">
+                                <label for="fix-communication">تحسين طرق التواصل مع المتبرعين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="fix-other" name="fix_if_authority" value="other">
+                                <label for="fix-other">أخرى</label>
+                            </div>
+                        </div>
+                        <input type="text" id="fix-other-text" placeholder="اكتب اقتراحك..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q25">❌ الرجاء الاختيار</div>
+                    </div>
+                    
+                    <!-- Q26: التغيير الفوري -->
+                    <div class="question">
+                        <label class="question-label">
+                            26. ما **التغيير الوحيد** الذي لو حدث سيزيد عدد المتبرعين **فوراً**؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <textarea 
+                            id="immediate_increase" 
+                            name="immediate_increase" 
+                            placeholder="مثلاً: حل مشاكل الـPOS فوراً، أو تبسيط عملية التبرع، أو..."
+                            required
+                            maxlength="500"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q26">0</span> / 500 حرف
+                        </div>
+                        <div class="error-message" id="error-q26">❌ الرجاء كتابة إجابتك (10 أحرف على الأقل)</div>
+                    </div>
+                    
+                    <!-- Q27: أول شيء لزيادة عدد المتبرعين -->
+                    <div class="question">
+                        <label class="question-label">
+                            27. بخصوص زيادة عدد المتبرعين... ما **أول شيء ستفعله** لو كان القرار بيدك؟
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(كن محدداً قدر الإمكان)</div>
+                        </label>
+                        <textarea 
+                            id="first_action_donors" 
+                            name="first_action_donors" 
+                            placeholder="شاركنا أفكارك بالتفصيل..."
+                            required
+                            maxlength="1000"
+                            rows="5"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q27">0</span> / 1000 حرف
+                        </div>
+                        <div class="error-message" id="error-q27">❌ الرجاء كتابة إجابتك (20 حرف على الأقل)</div>
+                    </div>
+                    
+                    <!-- Final Message -->
+                    <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-top: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+                        <div style="font-size: 22px; font-weight: 700; margin-bottom: 10px;">
+                            شكراً لوقتك وصراحتك!
+                        </div>
+                        <div style="font-size: 15px; line-height: 1.8;">
+                            صوتك مهم جداً، وسيُستخدم مباشرة في ورشة عمل استراتيجية يوم <strong>18 نوفمبر 2025</strong><br>
+                            لبناء خطة شاملة لزيادة عدد المتبرعين من <strong>180,000 إلى 250,000</strong><br>
+                            وتحسين معدل الاحتفاظ من <strong>15% إلى 40%</strong>.<br><br>
+                            <strong>كل كلمة كتبتها... ستصنع فرقاً! 💪</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn btn-prev" id="prev-btn">
+                        ← السابق
+                    </button>
+                    <button type="button" class="btn btn-next" id="next-btn">
+                        التالي →
+                    </button>
+                    <button type="submit" class="btn btn-submit" id="submit-btn" style="display: none;">
+                        ✅ إرسال الاستبيان
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري إرسال الاستبيان...</div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Config -->
+    <script src="config.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentSection = 1;
+        const totalSections = 5;
+        
+        // Elements
+        const sections = document.querySelectorAll('.section');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const form = document.getElementById('survey-form');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        // Show/hide "other" text fields
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const name = this.name;
+                const textField = document.getElementById(`${name.replace('_', '-')}-other-text`);
+                
+                if (textField) {
+                    if (this.value === 'other') {
+                        textField.style.display = 'block';
+                        textField.required = true;
+                    } else {
+                        textField.style.display = 'none';
+                        textField.required = false;
+                        textField.value = '';
+                    }
+                }
+            });
+        });
+        
+        // Handle department "other"
+        document.querySelectorAll('input[name="department"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherField = document.getElementById('dept-other-text');
+                if (this.value === 'other' || this.value === 'support') {
+                    otherField.style.display = 'block';
+                    otherField.required = true;
+                } else {
+                    otherField.style.display = 'none';
+                    otherField.required = false;
+                    otherField.value = '';
+                }
+            });
+        });
+        
+        // Handle communication "other"
+        document.querySelectorAll('input[name="communication_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherField = document.getElementById('comm-other-text');
+                if (this.value === 'other') {
+                    otherField.style.display = 'block';
+                    otherField.required = true;
+                } else {
+                    otherField.style.display = 'none';
+                    otherField.required = false;
+                    otherField.value = '';
+                }
+            });
+        });
+        
+        // Checkbox "other" handlers
+        ['frequent_questions', 'common_problems'].forEach(name => {
+            document.querySelectorAll(`input[name="${name}"]`).forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const prefix = name === 'frequent_questions' ? 'freq' : 'prob';
+                    const otherCheckbox = document.getElementById(`${prefix}-other`);
+                    const otherField = document.getElementById(`${prefix}-other-text`);
+                    
+                    if (otherCheckbox && otherCheckbox.checked) {
+                        otherField.style.display = 'block';
+                    } else {
+                        otherField.style.display = 'none';
+                        otherField.value = '';
+                    }
+                });
+            });
+        });
+        
+        // First action "other"
+        document.querySelectorAll('input[name="first_action_problem"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherField = document.getElementById('action-other-text');
+                if (this.value === 'other') {
+                    otherField.style.display = 'block';
+                    otherField.required = true;
+                } else {
+                    otherField.style.display = 'none';
+                    otherField.required = false;
+                    otherField.value = '';
+                }
+            });
+        });
+        
+        // Biggest challenge "other"
+        document.querySelectorAll('input[name="biggest_challenge"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherField = document.getElementById('chal-other-text');
+                if (this.value === 'other') {
+                    otherField.style.display = 'block';
+                    otherField.required = true;
+                } else {
+                    otherField.style.display = 'none';
+                    otherField.required = false;
+                    otherField.value = '';
+                }
+            });
+        });
+        
+        // Fix if authority "other"
+        document.querySelectorAll('input[name="fix_if_authority"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherField = document.getElementById('fix-other-text');
+                if (this.value === 'other') {
+                    otherField.style.display = 'block';
+                    otherField.required = true;
+                } else {
+                    otherField.style.display = 'none';
+                    otherField.required = false;
+                    otherField.value = '';
+                }
+            });
+        });
+        
+        // Character counters
+        document.getElementById('immediate_increase').addEventListener('input', function() {
+            document.getElementById('char-count-q26').textContent = this.value.length;
+        });
+        
+        document.getElementById('first_action_donors').addEventListener('input', function() {
+            document.getElementById('char-count-q27').textContent = this.value.length;
+        });
+        
+        // Update progress
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `القسم ${currentSection} من ${totalSections}`;
+            
+            // Update button visibility
+            prevBtn.style.display = currentSection === 1 ? 'none' : 'block';
+            
+            if (currentSection === totalSections) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+        }
+        
+        // Show section
+        function showSection(sectionNum) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // Validate section
+        function validateSection(sectionNum) {
+            const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            const inputs = section.querySelectorAll('input[required], textarea[required]');
+            let isValid = true;
+            
+            // Hide all error messages first
+            section.querySelectorAll('.error-message').forEach(msg => {
+                msg.classList.remove('show');
+            });
+            
+            // Check radio groups
+            const radioGroups = {};
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    if (!radioGroups[input.name]) {
+                        radioGroups[input.name] = false;
+                    }
+                    if (input.checked) {
+                        radioGroups[input.name] = true;
+                    }
+                }
+            });
+            
+            Object.keys(radioGroups).forEach(name => {
+                if (!radioGroups[name]) {
+                    isValid = false;
+                    const errorMsg = section.querySelector(`#error-${name.replace(/_/g, '-')}`);
+                    if (errorMsg) {
+                        errorMsg.classList.add('show');
+                    }
+                }
+            });
+            
+            // Check checkboxes (max 3 for some questions)
+            const checkboxGroups = {};
+            section.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                if (!checkboxGroups[checkbox.name]) {
+                    checkboxGroups[checkbox.name] = [];
+                }
+                if (checkbox.checked) {
+                    checkboxGroups[checkbox.name].push(checkbox);
+                }
+            });
+            
+            Object.keys(checkboxGroups).forEach(name => {
+                const checked = checkboxGroups[name];
+                const question = section.querySelector(`input[name="${name}"]`).closest('.question');
+                const label = question.querySelector('.question-label');
+                const isRequired = label.querySelector('.question-required');
+                
+                if (isRequired && checked.length === 0) {
+                    isValid = false;
+                    const errorId = `error-${name.replace(/_/g, '-')}`;
+                    const errorMsg = document.getElementById(errorId);
+                    if (errorMsg) {
+                        errorMsg.classList.add('show');
+                    }
+                }
+                
+                // Check for max 3
+                if (checked.length > 3 && label.textContent.includes('حتى 3')) {
+                    isValid = false;
+                    const errorId = `error-${name.replace(/_/g, '-')}`;
+                    const errorMsg = document.getElementById(errorId);
+                    if (errorMsg) {
+                        errorMsg.textContent = '❌ الرجاء اختيار 3 خيارات كحد أقصى';
+                        errorMsg.classList.add('show');
+                    }
+                }
+                
+                // Check for max 2
+                if (checked.length > 2 && label.textContent.includes('حتى 2')) {
+                    isValid = false;
+                    const errorId = `error-${name.replace(/_/g, '-')}`;
+                    const errorMsg = document.getElementById(errorId);
+                    if (errorMsg) {
+                        errorMsg.textContent = '❌ الرجاء اختيار خيارين كحد أقصى';
+                        errorMsg.classList.add('show');
+                    }
+                }
+            });
+            
+            // Check textareas
+            section.querySelectorAll('textarea[required]').forEach(textarea => {
+                if (textarea.value.trim().length < 10) {
+                    isValid = false;
+                    const errorId = `error-${textarea.name.replace(/_/g, '-')}`;
+                    const errorMsg = document.getElementById(errorId);
+                    if (errorMsg) {
+                        errorMsg.classList.add('show');
+                    }
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Navigation
+        nextBtn.addEventListener('click', () => {
+            if (validateSection(currentSection)) {
+                currentSection++;
+                showSection(currentSection);
+                updateProgress();
+            }
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            currentSection--;
+            showSection(currentSection);
+            updateProgress();
+        });
+        
+        // Submit form
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!validateSection(currentSection)) {
+                return;
+            }
+            
+            // Show loading
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Collect all data
+                const formData = new FormData(form);
+                const data = {
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    
+                    // Section 1
+                    department: formData.get('department'),
+                    department_other: formData.get('department') === 'other' || formData.get('department') === 'support' ? document.getElementById('dept-other-text').value : '',
+                    experience: formData.get('experience'),
+                    weekly_donors: formData.get('weekly_donors'),
+                    communication_type: formData.get('communication_type'),
+                    communication_type_other: formData.get('communication_type') === 'other' ? document.getElementById('comm-other-text').value : '',
+                    service_quality_rating: parseInt(formData.get('service_quality_rating')),
+                    
+                    // Section 2
+                    frequent_questions: Array.from(document.querySelectorAll('input[name="frequent_questions"]:checked')).map(cb => cb.value),
+                    frequent_questions_other: document.getElementById('freq-other').checked ? document.getElementById('freq-other-text').value : '',
+                    main_motivation: formData.get('main_motivation'),
+                    first_action_problem: formData.get('first_action_problem'),
+                    first_action_problem_other: formData.get('first_action_problem') === 'other' ? document.getElementById('action-other-text').value : '',
+                    common_problems: Array.from(document.querySelectorAll('input[name="common_problems"]:checked')).map(cb => cb.value),
+                    common_problems_other: document.getElementById('prob-other').checked ? document.getElementById('prob-other-text').value : '',
+                    first_time_resolution: formData.get('first_time_resolution'),
+                    sufficient_authority: formData.get('sufficient_authority'),
+                    
+                    // Section 3
+                    biggest_challenge: formData.get('biggest_challenge'),
+                    biggest_challenge_other: formData.get('biggest_challenge') === 'other' ? document.getElementById('chal-other-text').value : '',
+                    unnecessary_step: formData.get('unnecessary_step'),
+                    slow_department: formData.get('slow_department') || null,
+                    tech_problem: formData.get('tech_problem'),
+                    churn_reason: formData.get('churn_reason'),
+                    system_trust_rating: parseInt(formData.get('system_trust_rating')),
+                    cannot_serve_when: Array.from(document.querySelectorAll('input[name="cannot_serve_when"]:checked')).map(cb => cb.value),
+                    witnessed_bad_behavior: formData.get('witnessed_bad_behavior') || null,
+                    
+                    // Section 4
+                    donate_first_triggers: Array.from(document.querySelectorAll('input[name="donate_first_triggers"]:checked')).map(cb => cb.value),
+                    repeat_triggers: Array.from(document.querySelectorAll('input[name="repeat_triggers"]:checked')).map(cb => cb.value),
+                    refer_triggers: Array.from(document.querySelectorAll('input[name="refer_triggers"]:checked')).map(cb => cb.value),
+                    prevent_donation: Array.from(document.querySelectorAll('input[name="prevent_donation"]:checked')).map(cb => cb.value),
+                    stop_donation: Array.from(document.querySelectorAll('input[name="stop_donation"]:checked')).map(cb => cb.value),
+                    
+                    // Section 5
+                    fix_if_authority: formData.get('fix_if_authority'),
+                    fix_if_authority_other: formData.get('fix_if_authority') === 'other' ? document.getElementById('fix-other-text').value : '',
+                    immediate_increase: formData.get('immediate_increase').trim(),
+                    first_action_donors: formData.get('first_action_donors').trim()
+                };
+                
+                // Save to Firestore
+                await db.collection('workshop_nov18_donor_journey')
+                    .doc('employee_survey')
+                    .collection('responses')
+                    .add(data);
+                
+                // Redirect to thank you page
+                window.location.href = 'survey-thank-you.html';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingOverlay.classList.remove('show');
+                alert('حدث خطأ في إرسال الاستبيان. الرجاء المحاولة مرة أخرى.');
+            }
+        });
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
