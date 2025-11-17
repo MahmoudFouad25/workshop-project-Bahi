@@ -1,0 +1,1965 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - استبيان تجربة المتبرعين | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .last-update {
+            margin-top: 10px;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Controls */
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .controls-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Filters */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .filter-select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        /* Table Section */
+        .table-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        th {
+            padding: 15px;
+            text-align: right;
+            font-weight: 700;
+            color: #333;
+            font-size: 13px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        tbody tr {
+            transition: background 0.3s;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-primary {
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 14px;
+        }
+        
+        .btn-view {
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+        
+        .btn-view:hover {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 25px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .detail-section {
+            margin-bottom: 30px;
+        }
+        
+        .detail-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .detail-value ul {
+            margin: 5px 0 0 20px;
+        }
+        
+        .detail-value li {
+            margin: 3px 0;
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f0f0f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .page-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .page-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-section {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 10px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Header -->
+    <div class="header">
+        <h1>📊 لوحة التحكم - استبيان تجربة المتبرعين</h1>
+        <p>ورشة عمل 18 نوفمبر 2025 | رحلة المتبرع من البداية للنهاية</p>
+        <div class="last-update">
+            آخر تحديث: <span id="last-update-time">جاري التحميل...</span>
+        </div>
+    </div>
+    
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="total-responses">0</div>
+            <div class="stat-label">إجمالي الردود</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-value" id="avg-rating">0</div>
+            <div class="stat-label">متوسط تقييم الخدمة</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-value" id="completion-rate">0%</div>
+            <div class="stat-label">معدل الإكمال</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" id="today-responses">0</div>
+            <div class="stat-label">ردود اليوم</div>
+        </div>
+    </div>
+    
+    <!-- Controls -->
+    <div class="controls">
+        <div class="controls-header">
+            <div class="controls-title">🎛️ التحكم والإدارة</div>
+            <div class="button-group">
+                <button class="btn btn-primary" id="refresh-btn">
+                    🔄 تحديث البيانات
+                </button>
+                <button class="btn btn-success" id="export-excel-btn">
+                    📥 تصدير Excel
+                </button>
+                <button class="btn btn-danger" id="delete-all-btn">
+                    🗑️ حذف الكل
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">
+                    🏠 الرئيسية
+                </button>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label">القسم:</label>
+                <select class="filter-select" id="filter-department">
+                    <option value="">الكل</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">سنوات الخبرة:</label>
+                <select class="filter-select" id="filter-experience">
+                    <option value="">الكل</option>
+                    <option value="less_6_months">أقل من 6 شهور</option>
+                    <option value="6_months_1_year">6 شهور - سنة</option>
+                    <option value="1_3_years">1-3 سنوات</option>
+                    <option value="3_5_years">3-5 سنوات</option>
+                    <option value="more_5_years">أكثر من 5 سنوات</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">تقييم الخدمة:</label>
+                <select class="filter-select" id="filter-rating">
+                    <option value="">الكل</option>
+                    <option value="low">منخفض (1-4)</option>
+                    <option value="medium">متوسط (5-7)</option>
+                    <option value="high">عالي (8-10)</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">نوع التواصل:</label>
+                <select class="filter-select" id="filter-communication">
+                    <option value="">الكل</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="chart-card">
+            <div class="chart-title">📊 توزيع الردود حسب القسم</div>
+            <div class="chart-container">
+                <canvas id="departmentChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">⭐ توزيع تقييم جودة الخدمة</div>
+            <div class="chart-container">
+                <canvas id="ratingChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">👥 توزيع سنوات الخبرة</div>
+            <div class="chart-container">
+                <canvas id="experienceChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-card">
+            <div class="chart-title">🎯 أهم التحديات (Top 5)</div>
+            <div class="chart-container">
+                <canvas id="challengesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Table Section -->
+    <div class="table-section">
+        <div class="table-header">
+            <h3 style="font-size: 20px; font-weight: 700;">📋 جميع الردود</h3>
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="search-input" 
+                    placeholder="🔍 ابحث في الردود...">
+            </div>
+        </div>
+        
+        <table id="responses-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>التاريخ</th>
+                    <th>القسم</th>
+                    <th>الخبرة</th>
+                    <th>التقييم</th>
+                    <th>نوع التواصل</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">لا توجد ردود بعد</div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+            <!-- Pagination buttons will be inserted here -->
+        </div>
+    </div>
+    
+    <!-- Detail Modal -->
+    <div class="modal" id="detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📄 تفاصيل الرد</div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Details will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري التحميل...</div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <!-- Config -->
+    <script src="../config.js"></script>
+    
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Global variables
+        let allResponses = [];
+        let filteredResponses = [];
+        let currentPage = 1;
+        const responsesPerPage = 10;
+        
+        // Charts
+        let departmentChart, ratingChart, experienceChart, challengesChart;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupEventListeners();
+        });
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('refresh-btn').addEventListener('click', loadData);
+            document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
+            document.getElementById('delete-all-btn').addEventListener('click', deleteAllResponses);
+            document.getElementById('search-input').addEventListener('input', handleSearch);
+            
+            // Filters
+            document.getElementById('filter-department').addEventListener('change', applyFilters);
+            document.getElementById('filter-experience').addEventListener('change', applyFilters);
+            document.getElementById('filter-rating').addEventListener('change', applyFilters);
+            document.getElementById('filter-communication').addEventListener('change', applyFilters);
+        }
+        
+        // Load data from Firebase
+        async function loadData() {
+            showLoading(true);
+            
+            try {
+                const snapshot = await db.collection('workshop_nov18_donor_journey')
+                    .doc('employee_survey')
+                    .collection('responses')
+                    .orderBy('timestamp', 'desc')
+                    .get();
+                
+                allResponses = [];
+                snapshot.forEach(doc => {
+                    allResponses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                filteredResponses = [...allResponses];
+                
+                updateStats();
+                populateFilters();
+                renderTable();
+                renderCharts();
+                updateLastUpdateTime();
+                
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showLoading(false);
+                alert('حدث خطأ في تحميل البيانات: ' + error.message);
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            // Total responses
+            document.getElementById('total-responses').textContent = allResponses.length;
+            
+            // Average rating
+            if (allResponses.length > 0) {
+                const avgRating = allResponses.reduce((sum, r) => sum + (r.service_quality_rating || 0), 0) / allResponses.length;
+                document.getElementById('avg-rating').textContent = avgRating.toFixed(1);
+            } else {
+                document.getElementById('avg-rating').textContent = '0';
+            }
+            
+            // Completion rate (assuming all responses are complete)
+            document.getElementById('completion-rate').textContent = '100%';
+            
+            // Today's responses
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayResponses = allResponses.filter(r => {
+                if (!r.timestamp) return false;
+                const responseDate = r.timestamp.toDate();
+                return responseDate >= today;
+            });
+            document.getElementById('today-responses').textContent = todayResponses.length;
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters() {
+            // Department filter
+            const departments = [...new Set(allResponses.map(r => r.department))].filter(Boolean);
+            const deptSelect = document.getElementById('filter-department');
+            deptSelect.innerHTML = '<option value="">الكل</option>';
+            departments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept;
+                option.textContent = getDepartmentLabel(dept);
+                deptSelect.appendChild(option);
+            });
+            
+            // Communication type filter
+            const commTypes = [...new Set(allResponses.map(r => r.communication_type))].filter(Boolean);
+            const commSelect = document.getElementById('filter-communication');
+            commSelect.innerHTML = '<option value="">الكل</option>';
+            commTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = getCommunicationLabel(type);
+                commSelect.appendChild(option);
+            });
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const deptFilter = document.getElementById('filter-department').value;
+            const expFilter = document.getElementById('filter-experience').value;
+            const ratingFilter = document.getElementById('filter-rating').value;
+            const commFilter = document.getElementById('filter-communication').value;
+            
+            filteredResponses = allResponses.filter(response => {
+                if (deptFilter && response.department !== deptFilter) return false;
+                if (expFilter && response.experience !== expFilter) return false;
+                if (commFilter && response.communication_type !== commFilter) return false;
+                
+                if (ratingFilter) {
+                    const rating = response.service_quality_rating || 0;
+                    if (ratingFilter === 'low' && rating > 4) return false;
+                    if (ratingFilter === 'medium' && (rating < 5 || rating > 7)) return false;
+                    if (ratingFilter === 'high' && rating < 8) return false;
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            renderTable();
+            renderCharts();
+        }
+        
+        // Handle search
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (!searchTerm) {
+                applyFilters();
+                return;
+            }
+            
+            filteredResponses = allResponses.filter(response => {
+                const searchableText = JSON.stringify(response).toLowerCase();
+                return searchableText.includes(searchTerm);
+            });
+            
+            currentPage = 1;
+            renderTable();
+        }
+        
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (filteredResponses.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            const startIndex = (currentPage - 1) * responsesPerPage;
+            const endIndex = startIndex + responsesPerPage;
+            const pageResponses = filteredResponses.slice(startIndex, endIndex);
+            
+            tbody.innerHTML = pageResponses.map((response, index) => {
+                const globalIndex = startIndex + index + 1;
+                const date = response.timestamp ? response.timestamp.toDate().toLocaleDateString('ar-EG') : 'N/A';
+                const rating = response.service_quality_rating || 'N/A';
+                const ratingBadge = getRatingBadgeClass(rating);
+                
+                return `
+                    <tr>
+                        <td>${globalIndex}</td>
+                        <td>${date}</td>
+                        <td>${getDepartmentLabel(response.department)}</td>
+                        <td>${getExperienceLabel(response.experience)}</td>
+                        <td><span class="badge ${ratingBadge}">${rating}/10</span></td>
+                        <td>${getCommunicationLabel(response.communication_type)}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-view" onclick="viewDetails('${response.id}')" title="عرض التفاصيل">
+                                    👁️
+                                </button>
+                                <button class="btn-icon btn-delete" onclick="deleteResponse('${response.id}')" title="حذف">
+                                    🗑️
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            renderPagination();
+        }
+        
+        // Render pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredResponses.length / responsesPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Previous button
+            if (currentPage > 1) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage - 1})">السابق</button>`;
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    html += `<span>...</span>`;
+                }
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                html += `<button class="page-btn" onclick="changePage(${currentPage + 1})">التالي</button>`;
+            }
+            
+            pagination.innerHTML = html;
+        }
+        
+        // Change page
+        function changePage(page) {
+            currentPage = page;
+            renderTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Render charts
+        function renderCharts() {
+            renderDepartmentChart();
+            renderRatingChart();
+            renderExperienceChart();
+            renderChallengesChart();
+        }
+        
+        // Department chart
+        function renderDepartmentChart() {
+            const ctx = document.getElementById('departmentChart');
+            
+            const deptCounts = {};
+            filteredResponses.forEach(r => {
+                const dept = getDepartmentLabel(r.department);
+                deptCounts[dept] = (deptCounts[dept] || 0) + 1;
+            });
+            
+            if (departmentChart) departmentChart.destroy();
+            
+            departmentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(deptCounts),
+                    datasets: [{
+                        data: Object.values(deptCounts),
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                            '#43e97b', '#fa709a', '#fee140', '#30cfd0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Rating chart
+        function renderRatingChart() {
+            const ctx = document.getElementById('ratingChart');
+            
+            const ratingCounts = {};
+            for (let i = 1; i <= 10; i++) {
+                ratingCounts[i] = 0;
+            }
+            
+            filteredResponses.forEach(r => {
+                const rating = r.service_quality_rating || 0;
+                if (rating >= 1 && rating <= 10) {
+                    ratingCounts[rating]++;
+                }
+            });
+            
+            if (ratingChart) ratingChart.destroy();
+            
+            ratingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(ratingCounts),
+                    datasets: [{
+                        label: 'عدد الردود',
+                        data: Object.values(ratingCounts),
+                        backgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Experience chart
+        function renderExperienceChart() {
+            const ctx = document.getElementById('experienceChart');
+            
+            const expCounts = {};
+            filteredResponses.forEach(r => {
+                const exp = getExperienceLabel(r.experience);
+                expCounts[exp] = (expCounts[exp] || 0) + 1;
+            });
+            
+            if (experienceChart) experienceChart.destroy();
+            
+            experienceChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(expCounts),
+                    datasets: [{
+                        data: Object.values(expCounts),
+                        backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Challenges chart
+        function renderChallengesChart() {
+            const ctx = document.getElementById('challengesChart');
+            
+            const challengeCounts = {};
+            filteredResponses.forEach(r => {
+                const challenge = getChallengeLabel(r.biggest_challenge);
+                challengeCounts[challenge] = (challengeCounts[challenge] || 0) + 1;
+            });
+            
+            // Get top 5
+            const sortedChallenges = Object.entries(challengeCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            if (challengesChart) challengesChart.destroy();
+            
+            challengesChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: sortedChallenges.map(c => c[0]),
+                    datasets: [{
+                        label: 'عدد الردود',
+                        data: sortedChallenges.map(c => c[1]),
+                        backgroundColor: '#764ba2'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // View details modal
+        function viewDetails(id) {
+            const response = allResponses.find(r => r.id === id);
+            if (!response) return;
+            
+            const modal = document.getElementById('detail-modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            modalBody.innerHTML = `
+                <!-- Section 1: Demographics -->
+                <div class="detail-section">
+                    <div class="detail-section-title">📌 القسم الأول: من أنت؟</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">القسم/الإدارة:</div>
+                        <div class="detail-value">${getDepartmentLabel(response.department)}${response.department_other ? ` (${response.department_other})` : ''}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">سنوات الخبرة:</div>
+                        <div class="detail-value">${getExperienceLabel(response.experience)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">متوسط عدد المتبرعين أسبوعياً:</div>
+                        <div class="detail-value">${getWeeklyDonorsLabel(response.weekly_donors)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">نوع التواصل الأكثر شيوعاً:</div>
+                        <div class="detail-value">${getCommunicationLabel(response.communication_type)}${response.communication_type_other ? ` (${response.communication_type_other})` : ''}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">تقييم جودة الخدمة:</div>
+                        <div class="detail-value"><strong>${response.service_quality_rating}/10</strong></div>
+                    </div>
+                </div>
+                
+                <!-- Section 2: Daily Work -->
+                <div class="detail-section">
+                    <div class="detail-section-title">📌 القسم الثاني: عملك اليومي</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">أكثر الأسئلة تكراراً من المتبرعين:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.frequent_questions || []).map(q => `<li>${getFrequentQuestionLabel(q)}</li>`).join('')}
+                            </ul>
+                            ${response.frequent_questions_other ? `<div>أخرى: ${response.frequent_questions_other}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الدافع الأكبر للمتبرعين:</div>
+                        <div class="detail-value">${getMotivationLabel(response.main_motivation)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">أول خطوة عند وجود مشكلة:</div>
+                        <div class="detail-value">${getFirstActionLabel(response.first_action_problem)}${response.first_action_problem_other ? ` (${response.first_action_problem_other})` : ''}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">أكثر أنواع المشكلات:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.common_problems || []).map(p => `<li>${getCommonProblemLabel(p)}</li>`).join('')}
+                            </ul>
+                            ${response.common_problems_other ? `<div>أخرى: ${response.common_problems_other}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">نسبة الحل من أول مرة:</div>
+                        <div class="detail-value">${getResolutionLabel(response.first_time_resolution)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الصلاحيات الكافية:</div>
+                        <div class="detail-value">${getAuthorityLabel(response.sufficient_authority)}</div>
+                    </div>
+                </div>
+                
+                <!-- Section 3: Challenges -->
+                <div class="detail-section">
+                    <div class="detail-section-title">📌 القسم الثالث: التحديات</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">أهم تحدي:</div>
+                        <div class="detail-value">${getChallengeLabel(response.biggest_challenge)}${response.biggest_challenge_other ? ` (${response.biggest_challenge_other})` : ''}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">خطوة غير ضرورية:</div>
+                        <div class="detail-value">${getUnnecessaryStepLabel(response.unnecessary_step)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">إدارة تتأخر في الدعم:</div>
+                        <div class="detail-value">${getSlowDeptLabel(response.slow_department) || 'لم يُحدد'}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">مشكلة تقنية:</div>
+                        <div class="detail-value">${getTechProblemLabel(response.tech_problem)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">سبب ابتعاد المتبرع:</div>
+                        <div class="detail-value">${getChurnReasonLabel(response.churn_reason)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الثقة في الأنظمة التقنية:</div>
+                        <div class="detail-value"><strong>${response.system_trust_rating}/10</strong></div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">متى لا تستطيع الخدمة:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.cannot_serve_when || []).map(w => `<li>${getCannotServeLabel(w)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">شاهد تعامل غير مناسب:</div>
+                        <div class="detail-value">${getBadBehaviorLabel(response.witnessed_bad_behavior) || 'لم يُحدد'}</div>
+                    </div>
+                </div>
+                
+                <!-- Section 4: Empathy -->
+                <div class="detail-section">
+                    <div class="detail-section-title">📌 القسم الرابع: لو كنت أنا المتبرع</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">ما يشجع على التبرع لأول مرة:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.donate_first_triggers || []).map(t => `<li>${getFirstDonationLabel(t)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">ما يشجع على تكرار التبرع:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.repeat_triggers || []).map(t => `<li>${getRepeatLabel(t)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">ما يشجع على الترشيح:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.refer_triggers || []).map(t => `<li>${getReferLabel(t)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">ما يمنع التبرع:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.prevent_donation || []).map(p => `<li>${getPreventLabel(p)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">ما يوقف التبرع نهائياً:</div>
+                        <div class="detail-value">
+                            <ul>
+                                ${(response.stop_donation || []).map(s => `<li>${getStopLabel(s)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section 5: Suggestions -->
+                <div class="detail-section">
+                    <div class="detail-section-title">📌 القسم الخامس: مقترحات التحسين</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">لو لديك صلاحية ليوم واحد:</div>
+                        <div class="detail-value">${getFixLabel(response.fix_if_authority)}${response.fix_if_authority_other ? ` (${response.fix_if_authority_other})` : ''}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">التغيير الذي سيزيد المتبرعين فوراً:</div>
+                        <div class="detail-value">${response.immediate_increase || 'لم يُحدد'}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">أول شيء لزيادة عدد المتبرعين:</div>
+                        <div class="detail-value">${response.first_action_donors || 'لم يُحدد'}</div>
+                    </div>
+                </div>
+                
+                <!-- Metadata -->
+                <div class="detail-section">
+                    <div class="detail-section-title">ℹ️ معلومات إضافية</div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">رقم الرد:</div>
+                        <div class="detail-value">${response.id}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">تاريخ الإرسال:</div>
+                        <div class="detail-value">${response.timestamp ? response.timestamp.toDate().toLocaleString('ar-EG') : 'N/A'}</div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('detail-modal').classList.remove('show');
+        }
+        
+        // Delete single response
+        async function deleteResponse(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الرد؟')) return;
+            
+            showLoading(true);
+            
+            try {
+                await db.collection('workshop_nov18_donor_journey')
+                    .doc('employee_survey')
+                    .collection('responses')
+                    .doc(id)
+                    .delete();
+                
+                alert('✅ تم الحذف بنجاح!');
+                loadData();
+                
+            } catch (error) {
+                console.error('Error deleting:', error);
+                showLoading(false);
+                alert('❌ حدث خطأ في الحذف: ' + error.message);
+            }
+        }
+        
+        // Delete all responses
+        async function deleteAllResponses() {
+            if (allResponses.length === 0) {
+                alert('لا توجد ردود للحذف!');
+                return;
+            }
+            
+            const confirmMsg = `⚠️ تحذير!\n\nهل أنت متأكد من حذف جميع الردود (${allResponses.length} رد)؟\n\nهذه العملية لا يمكن التراجع عنها!`;
+            
+            if (!confirm(confirmMsg)) return;
+            
+            // Double confirmation
+            if (!confirm('تأكيد نهائي: هل تريد المتابعة؟')) return;
+            
+            showLoading(true, `جاري حذف ${allResponses.length} رد...`);
+            
+            try {
+                const batch = db.batch();
+                
+                allResponses.forEach(response => {
+                    const docRef = db.collection('workshop_nov18_donor_journey')
+                        .doc('employee_survey')
+                        .collection('responses')
+                        .doc(response.id);
+                    batch.delete(docRef);
+                });
+                
+                await batch.commit();
+                
+                alert(`✅ تم حذف ${allResponses.length} رد بنجاح!`);
+                loadData();
+                
+            } catch (error) {
+                console.error('Error deleting all:', error);
+                showLoading(false);
+                alert('❌ حدث خطأ في الحذف: ' + error.message);
+            }
+        }
+        
+        // Export to Excel
+        function exportToExcel() {
+            if (filteredResponses.length === 0) {
+                alert('لا توجد بيانات للتصدير!');
+                return;
+            }
+            
+            showLoading(true, 'جاري تجهيز ملف Excel...');
+            
+            try {
+                // Prepare data
+                const excelData = filteredResponses.map((r, index) => ({
+                    '#': index + 1,
+                    'التاريخ': r.timestamp ? r.timestamp.toDate().toLocaleString('ar-EG') : 'N/A',
+                    'القسم': getDepartmentLabel(r.department),
+                    'تفاصيل القسم': r.department_other || '',
+                    'سنوات الخبرة': getExperienceLabel(r.experience),
+                    'عدد المتبرعين أسبوعياً': getWeeklyDonorsLabel(r.weekly_donors),
+                    'نوع التواصل': getCommunicationLabel(r.communication_type),
+                    'تفاصيل التواصل': r.communication_type_other || '',
+                    'تقييم الخدمة': r.service_quality_rating,
+                    
+                    // Section 2
+                    'الأسئلة المتكررة': (r.frequent_questions || []).map(q => getFrequentQuestionLabel(q)).join(', '),
+                    'تفاصيل الأسئلة': r.frequent_questions_other || '',
+                    'دافع المتبرعين': getMotivationLabel(r.main_motivation),
+                    'أول خطوة عند المشكلة': getFirstActionLabel(r.first_action_problem),
+                    'تفاصيل الخطوة': r.first_action_problem_other || '',
+                    'المشكلات الشائعة': (r.common_problems || []).map(p => getCommonProblemLabel(p)).join(', '),
+                    'تفاصيل المشكلات': r.common_problems_other || '',
+                    'نسبة الحل من أول مرة': getResolutionLabel(r.first_time_resolution),
+                    'الصلاحيات الكافية': getAuthorityLabel(r.sufficient_authority),
+                    
+                    // Section 3
+                    'أهم تحدي': getChallengeLabel(r.biggest_challenge),
+                    'تفاصيل التحدي': r.biggest_challenge_other || '',
+                    'خطوة غير ضرورية': getUnnecessaryStepLabel(r.unnecessary_step),
+                    'إدارة متأخرة': getSlowDeptLabel(r.slow_department) || '',
+                    'مشكلة تقنية': getTechProblemLabel(r.tech_problem),
+                    'سبب ابتعاد المتبرع': getChurnReasonLabel(r.churn_reason),
+                    'الثقة في الأنظمة': r.system_trust_rating,
+                    'متى لا يستطيع الخدمة': (r.cannot_serve_when || []).map(w => getCannotServeLabel(w)).join(', '),
+                    'شاهد تعامل سيء': getBadBehaviorLabel(r.witnessed_bad_behavior) || '',
+                    
+                    // Section 4
+                    'محفزات التبرع الأول': (r.donate_first_triggers || []).map(t => getFirstDonationLabel(t)).join(', '),
+                    'محفزات التكرار': (r.repeat_triggers || []).map(t => getRepeatLabel(t)).join(', '),
+                    'محفزات الترشيح': (r.refer_triggers || []).map(t => getReferLabel(t)).join(', '),
+                    'موانع التبرع': (r.prevent_donation || []).map(p => getPreventLabel(p)).join(', '),
+                    'أسباب التوقف': (r.stop_donation || []).map(s => getStopLabel(s)).join(', '),
+                    
+                    // Section 5
+                    'الإصلاح لو كان صلاحية': getFixLabel(r.fix_if_authority),
+                    'تفاصيل الإصلاح': r.fix_if_authority_other || '',
+                    'التغيير الفوري': r.immediate_increase || '',
+                    'أول شيء لزيادة المتبرعين': r.first_action_donors || '',
+                    
+                    'ID': r.id
+                }));
+                
+                // Create workbook
+                const ws = XLSX.utils.json_to_sheet(excelData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'الردود');
+                
+                // Generate filename
+                const date = new Date().toISOString().split('T')[0];
+                const filename = `استبيان_المتبرعين_${date}.xlsx`;
+                
+                // Save file
+                XLSX.writeFile(wb, filename);
+                
+                showLoading(false);
+                alert('✅ تم تصدير الملف بنجاح!');
+                
+            } catch (error) {
+                console.error('Error exporting:', error);
+                showLoading(false);
+                alert('❌ حدث خطأ في التصدير: ' + error.message);
+            }
+        }
+        
+        // Helper: Show loading
+        function showLoading(show, text = 'جاري التحميل...') {
+            const overlay = document.getElementById('loading-overlay');
+            const loadingText = overlay.querySelector('.loading-text');
+            
+            loadingText.textContent = text;
+            
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+        
+        // Helper: Update last update time
+        function updateLastUpdateTime() {
+            const now = new Date().toLocaleString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('last-update-time').textContent = now;
+        }
+        
+        // Helper: Get rating badge class
+        function getRatingBadgeClass(rating) {
+            if (rating >= 8) return 'badge-success';
+            if (rating >= 5) return 'badge-warning';
+            return 'badge-danger';
+        }
+        
+        // ============================================
+        // Label Helpers (same as in survey)
+        // ============================================
+        
+        function getDepartmentLabel(value) {
+            const labels = {
+                'call_center_internal': 'Call Center الداخلي',
+                'call_center_external': 'Call Center الخارجي',
+                'booths': 'منافذ التمويل',
+                'direct_collection': 'التحصيل المباشر',
+                'network': 'Network',
+                'online': 'Online',
+                'volunteer_campaigns': 'حملات المتطوعين',
+                'support': 'أقسام داعمة'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getExperienceLabel(value) {
+            const labels = {
+                'less_6_months': 'أقل من 6 شهور',
+                '6_months_1_year': '6 شهور - سنة',
+                '1_3_years': '1-3 سنوات',
+                '3_5_years': '3-5 سنوات',
+                'more_5_years': 'أكثر من 5 سنوات'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getWeeklyDonorsLabel(value) {
+            const labels = {
+                'less_10': 'أقل من 10',
+                '10_30': '10-30',
+                '30_60': '30-60',
+                '60_100': '60-100',
+                'more_100': 'أكثر من 100'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getCommunicationLabel(value) {
+            const labels = {
+                'phone': 'مكالمات هاتفية',
+                'face_to_face': 'زيارات مباشرة',
+                'whatsapp': 'واتساب / رسائل',
+                'social_media': 'سوشيال ميديا',
+                'email': 'بريد إلكتروني'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getFrequentQuestionLabel(value) {
+            const labels = {
+                'where_money': 'فين راحت فلوسي؟',
+                'receipt_delay': 'ليه الإيصال اتأخر؟',
+                'how_track': 'إزاي أتابع تبرعي؟',
+                'why_contact': 'ليه المكالمة/الرسالة دي؟',
+                'what_projects': 'فيه مشاريع إيه؟',
+                'easier_way': 'ينفع أتبرع بطريقة أسهل؟',
+                'stop_recurring': 'إزاي أوقف الاشتراك؟'
+            };
+            return labels[value] || value;
+        }
+        
+        function getMotivationLabel(value) {
+            const labels = {
+                'trust': 'الثقة والمصداقية',
+                'variety': 'تنوع المشاريع',
+                'transparency': 'الشفافية',
+                'speed': 'سرعة الاستجابة',
+                'referral': 'توصية من شخص موثوق',
+                'seasonal': 'الحملات الموسمية',
+                'dont_know': 'لا أعرف بالضبط'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getFirstActionLabel(value) {
+            const labels = {
+                'listen_carefully': 'الاستماع بعناية',
+                'apologize': 'الاعتذار وطمأنته',
+                'solve_immediately': 'محاولة الحل فوراً',
+                'transfer': 'تحويله للجهة المختصة',
+                'log_complaint': 'تسجيل الشكوى'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getCommonProblemLabel(value) {
+            const labels = {
+                'receipt_delay': 'تأخر الإيصال',
+                'no_notifications': 'عدم وصول الرسائل',
+                'lack_info': 'معلومة ناقصة',
+                'pos_issue': 'مشكلة POS',
+                'system_issue': 'مشكلة في النظام',
+                'too_much_contact': 'شكوى من التواصل الزائد',
+                'misunderstanding': 'سوء فهم',
+                'coordination': 'صعوبة التنسيق'
+            };
+            return labels[value] || value;
+        }
+        
+        function getResolutionLabel(value) {
+            const labels = {
+                'less_30': 'أقل من 30%',
+                '30_50': '30-50%',
+                '50_70': '50-70%',
+                '70_90': '70-90%',
+                'more_90': 'أكثر من 90%'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getAuthorityLabel(value) {
+            const labels = {
+                'always': 'نعم، دائماً',
+                'mostly': 'نعم، في أغلب الأحيان',
+                'sometimes': 'أحياناً',
+                'rarely': 'نادراً',
+                'never': 'لا، أبداً'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getChallengeLabel(value) {
+            const labels = {
+                'workload': 'ضغط العمل',
+                'lack_info': 'نقص المعلومات',
+                'system_slow': 'بطء الأنظمة',
+                'weak_coordination': 'ضعف التنسيق',
+                'no_authority': 'عدم وجود صلاحيات',
+                'lack_training': 'قلة التدريب',
+                'angry_donors': 'التعامل مع متبرعين غاضبين'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getUnnecessaryStepLabel(value) {
+            const labels = {
+                'duplicate_data': 'تكرار إدخال البيانات',
+                'multiple_transfers': 'تحويل لأكثر من جهة',
+                'slow_approvals': 'تأخر الموافقات',
+                'unclear_policies': 'عدم وضوح السياسات',
+                'complex_collection': 'خطوات التحصيل المعقدة',
+                'none': 'لا يوجد شيء غير ضروري'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getSlowDeptLabel(value) {
+            const labels = {
+                'collection': 'التحصيل',
+                'operations': 'العمليات',
+                'funding': 'التمويل',
+                'it': 'IT',
+                'customer_service': 'خدمة العملاء',
+                'none': 'لا يوجد تأخير',
+                'prefer_not': 'يفضل عدم الإجابة'
+            };
+            return labels[value] || value;
+        }
+        
+        function getTechProblemLabel(value) {
+            const labels = {
+                'system_slow': 'بطء النظام',
+                'system_crash': 'تعطل النظام',
+                'outdated_data': 'بيانات غير محدثة',
+                'weak_integration': 'ضعف الربط بين الأنظمة',
+                'pos_issues': 'مشاكل POS',
+                'none': 'لا توجد مشاكل'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getChurnReasonLabel(value) {
+            const labels = {
+                'slow_response': 'الرد المتأخر',
+                'unresolved': 'عدم حل المشكلة',
+                'no_followup': 'عدم المتابعة',
+                'unclear_info': 'عدم وضوح المعلومات',
+                'bad_treatment': 'سوء التعامل',
+                'competition': 'المنافسة',
+                'no_impact': 'عدم رؤية الأثر'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        function getCannotServeLabel(value) {
+            const labels = {
+                'high_volume': 'زيادة الطلبات',
+                'complex_issue': 'مشكلة معقدة',
+                'delayed_response': 'تأخر الردود',
+                'angry_donor': 'متبرع غاضب',
+                'lack_info': 'نقص المعلومات',
+                'never': 'أستطيع الخدمة دائماً'
+            };
+            return labels[value] || value;
+        }
+        
+        function getBadBehaviorLabel(value) {
+            const labels = {
+                'sometimes': 'نعم، يحدث أحياناً',
+                'rarely': 'نعم، لكن نادراً',
+                'never': 'لا، لم ألاحظ أبداً',
+                'prefer_not': 'يفضل عدم الإجابة'
+            };
+            return labels[value] || value;
+        }
+        
+        function getFirstDonationLabel(value) {
+            const labels = {
+                'respectful': 'أسلوب محترم',
+                'clarity': 'وضوح المعلومات',
+                'ease': 'سهولة التبرع',
+                'trust': 'الثقة والسمعة',
+                'impact_visible': 'رؤية الأثر',
+                'fast_response': 'استجابة سريعة',
+                'referral': 'ترشيح موثوق',
+                'no_pressure': 'عدم الضغط'
+            };
+            return labels[value] || value;
+        }
+        
+        function getRepeatLabel(value) {
+            const labels = {
+                'followup': 'المتابعة بعد التبرع',
+                'impact_clear': 'مشاركة الأثر',
+                'recognition': 'التقدير الشخصي',
+                'solve_fast': 'حل المشكلات بسرعة',
+                'ease_everytime': 'سهولة التبرع',
+                'honesty': 'الصراحة والوضوح',
+                'makes_difference': 'إحساس بالفرق',
+                'no_spam': 'عدم الإزعاج'
+            };
+            return labels[value] || value;
+        }
+        
+        function getReferLabel(value) {
+            const labels = {
+                'fast_service': 'خدمة سريعة',
+                'transparency': 'شفافية عالية',
+                'professionalism': 'احترافية الموظفين',
+                'strong_projects': 'مشاريع قوية',
+                'smooth_experience': 'تجربة مريحة',
+                'consistency': 'ثبات الجودة',
+                'trust': 'الثقة العامة'
+            };
+            return labels[value] || value;
+        }
+        
+        function getPreventLabel(value) {
+            const labels = {
+                'slow_response': 'التأخر في الرد',
+                'unclear_process': 'عدم وضوح الطريقة',
+                'inconsistent_info': 'اختلاف المعلومة',
+                'disorganized': 'عدم التنظيم',
+                'pressure': 'الضغط والإلحاح',
+                'lack_info': 'نقص المعلومات',
+                'distrust': 'ضعف الثقة'
+            };
+            return labels[value] || value;
+        }
+        
+        function getStopLabel(value) {
+            const labels = {
+                'unresolved': 'عدم حل المشكلة',
+                'trust_loss': 'فقدان الثقة',
+                'delay_proof': 'تأخر إثبات التبرع',
+                'spam': 'تواصل زائد',
+                'disrespect': 'عدم الاحترام',
+                'conflicting_info': 'تضارب المعلومات',
+                'no_followup': 'متابعة ضعيفة',
+                'not_valued': 'عدم التقدير'
+            };
+            return labels[value] || value;
+        }
+        
+        function getFixLabel(value) {
+            const labels = {
+                'update_systems': 'تحديث الأنظمة',
+                'reduce_bureaucracy': 'تقليل البيروقراطية',
+                'improve_coordination': 'تحسين التنسيق',
+                'more_training': 'زيادة التدريب',
+                'better_followup': 'رفع المتابعة',
+                'better_communication': 'تحسين التواصل'
+            };
+            return labels[value] || value || 'غير محدد';
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
