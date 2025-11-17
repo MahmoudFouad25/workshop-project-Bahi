@@ -768,7 +768,7 @@
                             </div>
                         </div>
                         <input type="text" id="freq-other-text" placeholder="حدد..." style="display: none; margin-top: 10px;">
-                        <div class="error-message" id="error-q6">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                        <div class="error-message" id="error-q6">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q7: الدافع الأكبر -->
@@ -893,7 +893,7 @@
                             </div>
                         </div>
                         <input type="text" id="prob-other-text" placeholder="حدد..." style="display: none; margin-top: 10px;">
-                        <div class="error-message" id="error-q9">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                        <div class="error-message" id="error-q9">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q10: نسبة الحل من أول مرة -->
@@ -1249,7 +1249,7 @@
                                 <label for="unable-never">لا يوجد - أستطيع الخدمة دائماً</label>
                             </div>
                         </div>
-                        <div class="error-message" id="error-q18">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 2)</div>
+                        <div class="error-message" id="error-q18">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q19: تعامل غير مناسب -->
@@ -1329,7 +1329,7 @@
                                 <label for="first-no-pressure">عدم وجود ضغط أو إلحاح</label>
                             </div>
                         </div>
-                        <div class="error-message" id="error-q20">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                        <div class="error-message" id="error-q20">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q21: سلوكيات تشجع التكرار -->
@@ -1373,7 +1373,7 @@
                                 <label for="repeat-no-spam">عدم الإزعاج بكثرة الاتصالات</label>
                             </div>
                         </div>
-                        <div class="error-message" id="error-q21">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                        <div class="error-message" id="error-q21">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q22: سلوكيات تشجع الترشيح -->
@@ -1413,7 +1413,7 @@
                                 <label for="refer-trust-overall">إحساس عام بالثقة في المؤسسة</label>
                             </div>
                         </div>
-                        <div class="error-message" id="error-q22">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 3)</div>
+                        <div class="error-message" id="error-q22">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q23: سلوكيات تمنع التبرع -->
@@ -1453,7 +1453,7 @@
                                 <label for="prevent-distrust">ضعف الثقة في المؤسسة</label>
                             </div>
                         </div>
-                        <div class="error-message" id="error-q23">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 2)</div>
+                        <div class="error-message" id="error-q23">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                     
                     <!-- Q24: سلوكيات توقف التبرع -->
@@ -1497,7 +1497,7 @@
                                 <label for="stop-not-valued">إحساس بأن المؤسسة لا تقدّر المتبرعين</label>
                             </div>
                         </div>
-                        <div class="error-message" id="error-q24">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 2)</div>
+                        <div class="error-message" id="error-q24">❌ الرجاء اختيار خيار واحد على الأقل (حد أقصى 4)</div>
                     </div>
                 </div>
                 
@@ -1883,10 +1883,8 @@ function validateSection(sectionNum) {
             const checkedBoxes = question.querySelectorAll(`input[name="${checkboxName}"]:checked`);
             
             // Get max allowed from label
-            const labelText = label.textContent;
-            let maxAllowed = null;
-            if (labelText.includes('حتى 3')) maxAllowed = 3;
-            if (labelText.includes('حتى 2')) maxAllowed = 2;
+const labelText = label.textContent;
+let maxAllowed = 4; // Always allow up to 4 choices
             
             if (checkedBoxes.length === 0) {
                 isValid = false;
@@ -1898,18 +1896,18 @@ function validateSection(sectionNum) {
                 const errorText = `Q${qIndex + 1} (${checkboxName}): لم يتم اختيار أي خيار`;
                 errors.push(errorText);
                 logDebug(`  ❌ ${errorText}`);
-            } else if (maxAllowed && checkedBoxes.length > maxAllowed) {
-                isValid = false;
-                const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
-                const errorMsg = document.getElementById(errorId);
-                if (errorMsg) {
-                    errorMsg.textContent = `❌ الرجاء اختيار ${maxAllowed} خيارات كحد أقصى`;
-                    errorMsg.classList.add('show');
-                }
-                const errorText = `Q${qIndex + 1} (${checkboxName}): اختيارات كثيرة (${checkedBoxes.length}/${maxAllowed})`;
-                errors.push(errorText);
-                logDebug(`  ❌ ${errorText}`);
-            } else {
+            } else if (checkedBoxes.length > 4) {
+    isValid = false;
+    const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
+    const errorMsg = document.getElementById(errorId);
+    if (errorMsg) {
+        errorMsg.textContent = '❌ الرجاء اختيار 4 خيارات كحد أقصى';
+        errorMsg.classList.add('show');
+    }
+    const errorText = `Q${qIndex + 1} (${checkboxName}): اختيارات كثيرة (${checkedBoxes.length}/4)`;
+    errors.push(errorText);
+    logDebug(`  ❌ ${errorText}`);
+} else {
                 const values = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
                 logDebug(`  ✅ Q${qIndex + 1} (${checkboxName}): ${values}`);
             }
