@@ -1863,7 +1863,7 @@ autoLoadCachedAnalysis();
         document.getElementById('analyze-q20').addEventListener('click', () => analyzeComments('q20'));
         
         async function analyzeComments(question) {
-    const btn = document.getElementById(`analyze-${question}-btn`);
+    const btn = document.getElementById(`analyze-${question}`); // ✅ صححت هنا
     btn.disabled = true;
     btn.classList.add('loading');
     
@@ -2211,7 +2211,10 @@ async function loadAnalysisFromFirebase(question) {
     if (q19Analysis) {
         displayAIInsights('q19', q19Analysis, true);
         // Update button text
-        document.getElementById('analyze-q19').innerHTML = '🔄 إعادة التحليل <span class="spinner"></span>';
+        const btn19 = document.getElementById('analyze-q19'); // ✅ صححت هنا
+        if (btn19) {
+            btn19.innerHTML = '🔄 إعادة التحليل <span class="spinner"></span>';
+        }
     }
     
     // Try to load Q20
@@ -2219,7 +2222,10 @@ async function loadAnalysisFromFirebase(question) {
     if (q20Analysis) {
         displayAIInsights('q20', q20Analysis, true);
         // Update button text
-        document.getElementById('analyze-q20').innerHTML = '🔄 إعادة التحليل <span class="spinner"></span>';
+        const btn20 = document.getElementById('analyze-q20'); // ✅ صححت هنا
+        if (btn20) {
+            btn20.innerHTML = '🔄 إعادة التحليل <span class="spinner"></span>';
+        }
     }
 }
     </script>
