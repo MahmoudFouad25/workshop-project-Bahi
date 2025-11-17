@@ -1628,376 +1628,458 @@
     </div>
     
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<!-- Config -->
+<script src="../config.js"></script>
+
+<!-- Main Script -->
+<script>
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
     
-    <!-- Config -->
-    <script src="../config.js"></script>
-    <!-- Main Script -->
-    <script>
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        
-        // State
-        let currentSection = 1;
-        const totalSections = 5;
-        
-        // Elements
-        const sections = document.querySelectorAll('.section');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const submitBtn = document.getElementById('submit-btn');
-        const progressFill = document.getElementById('progress-fill');
-        const progressText = document.getElementById('progress-text');
-        const form = document.getElementById('survey-form');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        
-        // Show/hide "other" text fields
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const name = this.name;
-                const textField = document.getElementById(`${name.replace('_', '-')}-other-text`);
-                
-                if (textField) {
-                    if (this.value === 'other') {
-                        textField.style.display = 'block';
-                        textField.required = true;
-                    } else {
-                        textField.style.display = 'none';
-                        textField.required = false;
-                        textField.value = '';
-                    }
-                }
-            });
-        });
-        
-        // Handle department "other"
-        document.querySelectorAll('input[name="department"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const otherField = document.getElementById('dept-other-text');
-                if (this.value === 'other' || this.value === 'support') {
-                    otherField.style.display = 'block';
-                    otherField.required = true;
-                } else {
-                    otherField.style.display = 'none';
-                    otherField.required = false;
-                    otherField.value = '';
-                }
-            });
-        });
-        
-        // Handle communication "other"
-        document.querySelectorAll('input[name="communication_type"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const otherField = document.getElementById('comm-other-text');
+    // State
+    let currentSection = 1;
+    const totalSections = 5;
+    
+    // Elements
+    const sections = document.querySelectorAll('.section');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const form = document.getElementById('survey-form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
+    // Debug mode - لو عايز تشوف الأخطاء
+    const DEBUG = true;
+    
+    function logDebug(message) {
+        if (DEBUG) {
+            console.log('🔍 DEBUG:', message);
+        }
+    }
+    
+    // Show/hide "other" text fields
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const name = this.name;
+            const otherId = name.replace(/_/g, '-') + '-other-text';
+            const textField = document.getElementById(otherId);
+            
+            if (textField) {
                 if (this.value === 'other') {
+                    textField.style.display = 'block';
+                    textField.required = true;
+                } else {
+                    textField.style.display = 'none';
+                    textField.required = false;
+                    textField.value = '';
+                }
+            }
+        });
+    });
+    
+    // Handle department "other" and "support"
+    document.querySelectorAll('input[name="department"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherField = document.getElementById('dept-other-text');
+            if (this.value === 'other' || this.value === 'support') {
+                otherField.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherField.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
+        });
+    });
+    
+    // Handle communication "other"
+    document.querySelectorAll('input[name="communication_type"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherField = document.getElementById('comm-other-text');
+            if (this.value === 'other') {
+                otherField.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherField.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
+        });
+    });
+    
+    // Checkbox "other" handlers
+    ['frequent_questions', 'common_problems'].forEach(name => {
+        const otherCheckboxId = name === 'frequent_questions' ? 'freq-other' : 'prob-other';
+        const otherFieldId = name === 'frequent_questions' ? 'freq-other-text' : 'prob-other-text';
+        
+        const otherCheckbox = document.getElementById(otherCheckboxId);
+        if (otherCheckbox) {
+            otherCheckbox.addEventListener('change', function() {
+                const otherField = document.getElementById(otherFieldId);
+                if (this.checked) {
                     otherField.style.display = 'block';
-                    otherField.required = true;
                 } else {
                     otherField.style.display = 'none';
-                    otherField.required = false;
                     otherField.value = '';
                 }
             });
+        }
+    });
+    
+    // First action "other"
+    document.querySelectorAll('input[name="first_action_problem"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherField = document.getElementById('action-other-text');
+            if (this.value === 'other') {
+                otherField.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherField.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
         });
-        
-        // Checkbox "other" handlers
-        ['frequent_questions', 'common_problems'].forEach(name => {
-            document.querySelectorAll(`input[name="${name}"]`).forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const prefix = name === 'frequent_questions' ? 'freq' : 'prob';
-                    const otherCheckbox = document.getElementById(`${prefix}-other`);
-                    const otherField = document.getElementById(`${prefix}-other-text`);
-                    
-                    if (otherCheckbox && otherCheckbox.checked) {
-                        otherField.style.display = 'block';
-                    } else {
-                        otherField.style.display = 'none';
-                        otherField.value = '';
-                    }
-                });
-            });
+    });
+    
+    // Biggest challenge "other"
+    document.querySelectorAll('input[name="biggest_challenge"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherField = document.getElementById('chal-other-text');
+            if (this.value === 'other') {
+                otherField.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherField.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
         });
-        
-        // First action "other"
-        document.querySelectorAll('input[name="first_action_problem"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const otherField = document.getElementById('action-other-text');
-                if (this.value === 'other') {
-                    otherField.style.display = 'block';
-                    otherField.required = true;
-                } else {
-                    otherField.style.display = 'none';
-                    otherField.required = false;
-                    otherField.value = '';
-                }
-            });
+    });
+    
+    // Fix if authority "other"
+    document.querySelectorAll('input[name="fix_if_authority"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const otherField = document.getElementById('fix-other-text');
+            if (this.value === 'other') {
+                otherField.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherField.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
         });
-        
-        // Biggest challenge "other"
-        document.querySelectorAll('input[name="biggest_challenge"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const otherField = document.getElementById('chal-other-text');
-                if (this.value === 'other') {
-                    otherField.style.display = 'block';
-                    otherField.required = true;
-                } else {
-                    otherField.style.display = 'none';
-                    otherField.required = false;
-                    otherField.value = '';
-                }
-            });
-        });
-        
-        // Fix if authority "other"
-        document.querySelectorAll('input[name="fix_if_authority"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const otherField = document.getElementById('fix-other-text');
-                if (this.value === 'other') {
-                    otherField.style.display = 'block';
-                    otherField.required = true;
-                } else {
-                    otherField.style.display = 'none';
-                    otherField.required = false;
-                    otherField.value = '';
-                }
-            });
-        });
-        
-        // Character counters
-        document.getElementById('immediate_increase').addEventListener('input', function() {
+    });
+    
+    // Character counters
+    const q26Field = document.getElementById('immediate_increase');
+    const q27Field = document.getElementById('first_action_donors');
+    
+    if (q26Field) {
+        q26Field.addEventListener('input', function() {
             document.getElementById('char-count-q26').textContent = this.value.length;
         });
-        
-        document.getElementById('first_action_donors').addEventListener('input', function() {
+    }
+    
+    if (q27Field) {
+        q27Field.addEventListener('input', function() {
             document.getElementById('char-count-q27').textContent = this.value.length;
         });
+    }
+    
+    // Update progress
+    function updateProgress() {
+        const progress = (currentSection / totalSections) * 100;
+        progressFill.style.width = progress + '%';
+        progressText.textContent = `القسم ${currentSection} من ${totalSections}`;
         
-        // Update progress
-        function updateProgress() {
-            const progress = (currentSection / totalSections) * 100;
-            progressFill.style.width = progress + '%';
-            progressText.textContent = `القسم ${currentSection} من ${totalSections}`;
-            
-            // Update button visibility
-            prevBtn.style.display = currentSection === 1 ? 'none' : 'block';
-            
-            if (currentSection === totalSections) {
-                nextBtn.style.display = 'none';
-                submitBtn.style.display = 'block';
-            } else {
-                nextBtn.style.display = 'block';
-                submitBtn.style.display = 'none';
-            }
+        // Update button visibility
+        prevBtn.style.display = currentSection === 1 ? 'none' : 'block';
+        
+        if (currentSection === totalSections) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'block';
+        } else {
+            nextBtn.style.display = 'block';
+            submitBtn.style.display = 'none';
         }
         
-        // Show section
-        function showSection(sectionNum) {
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            const targetSection = document.querySelector(`.section[data-section="${sectionNum}"]`);
-            if (targetSection) {
-                targetSection.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
+        logDebug(`Current section: ${currentSection}/${totalSections}`);
+    }
+    
+    // Show section
+    function showSection(sectionNum) {
+        logDebug(`Showing section ${sectionNum}`);
         
-        // Validate section
-        function validateSection(sectionNum) {
-            const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
-            const inputs = section.querySelectorAll('input[required], textarea[required]');
-            let isValid = true;
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        const targetSection = document.querySelector(`.section[data-section="${sectionNum}"]`);
+        if (targetSection) {
+            targetSection.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    
+    // Validate section - النسخة المحسّنة
+    function validateSection(sectionNum) {
+        logDebug(`Validating section ${sectionNum}`);
+        
+        const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
+        let isValid = true;
+        let errors = [];
+        
+        // Hide all error messages first
+        section.querySelectorAll('.error-message').forEach(msg => {
+            msg.classList.remove('show');
+        });
+        
+        // Get all required questions in this section
+        const requiredQuestions = section.querySelectorAll('.question');
+        
+        requiredQuestions.forEach(question => {
+            const label = question.querySelector('.question-label');
+            const isRequired = label && label.querySelector('.question-required');
             
-            // Hide all error messages first
-            section.querySelectorAll('.error-message').forEach(msg => {
-                msg.classList.remove('show');
-            });
+            if (!isRequired) return; // Skip optional questions
             
-            // Check radio groups
-            const radioGroups = {};
-            inputs.forEach(input => {
-                if (input.type === 'radio') {
-                    if (!radioGroups[input.name]) {
-                        radioGroups[input.name] = false;
-                    }
-                    if (input.checked) {
-                        radioGroups[input.name] = true;
-                    }
-                }
-            });
-            
-            Object.keys(radioGroups).forEach(name => {
-                if (!radioGroups[name]) {
-                    isValid = false;
-                    const errorMsg = section.querySelector(`#error-${name.replace(/_/g, '-')}`);
-                    if (errorMsg) {
-                        errorMsg.classList.add('show');
-                    }
-                }
-            });
-            
-            // Check checkboxes (max 3 for some questions)
-            const checkboxGroups = {};
-            section.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                if (!checkboxGroups[checkbox.name]) {
-                    checkboxGroups[checkbox.name] = [];
-                }
-                if (checkbox.checked) {
-                    checkboxGroups[checkbox.name].push(checkbox);
-                }
-            });
-            
-            Object.keys(checkboxGroups).forEach(name => {
-                const checked = checkboxGroups[name];
-                const question = section.querySelector(`input[name="${name}"]`).closest('.question');
-                const label = question.querySelector('.question-label');
-                const isRequired = label.querySelector('.question-required');
+            // Check radio buttons
+            const radioInputs = question.querySelectorAll('input[type="radio"]');
+            if (radioInputs.length > 0) {
+                const radioName = radioInputs[0].name;
+                const checked = question.querySelector(`input[name="${radioName}"]:checked`);
                 
-                if (isRequired && checked.length === 0) {
+                if (!checked) {
                     isValid = false;
-                    const errorId = `error-${name.replace(/_/g, '-')}`;
+                    const errorId = `error-${radioName.replace(/_/g, '-')}`;
                     const errorMsg = document.getElementById(errorId);
                     if (errorMsg) {
                         errorMsg.classList.add('show');
+                        errors.push(`السؤال: ${radioName} - لم يتم الاختيار`);
                     }
                 }
+            }
+            
+            // Check checkboxes
+            const checkboxInputs = question.querySelectorAll('input[type="checkbox"]');
+            if (checkboxInputs.length > 0) {
+                const checkboxName = checkboxInputs[0].name;
+                const checkedBoxes = question.querySelectorAll(`input[name="${checkboxName}"]:checked`);
                 
-                // Check for max 3
-                if (checked.length > 3 && label.textContent.includes('حتى 3')) {
+                // Get max allowed from label
+                const labelText = label.textContent;
+                let maxAllowed = null;
+                if (labelText.includes('حتى 3')) maxAllowed = 3;
+                if (labelText.includes('حتى 2')) maxAllowed = 2;
+                
+                if (checkedBoxes.length === 0) {
                     isValid = false;
-                    const errorId = `error-${name.replace(/_/g, '-')}`;
+                    const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
                     const errorMsg = document.getElementById(errorId);
                     if (errorMsg) {
-                        errorMsg.textContent = '❌ الرجاء اختيار 3 خيارات كحد أقصى';
                         errorMsg.classList.add('show');
+                        errors.push(`السؤال: ${checkboxName} - لم يتم الاختيار`);
                     }
-                }
-                
-                // Check for max 2
-                if (checked.length > 2 && label.textContent.includes('حتى 2')) {
+                } else if (maxAllowed && checkedBoxes.length > maxAllowed) {
                     isValid = false;
-                    const errorId = `error-${name.replace(/_/g, '-')}`;
+                    const errorId = `error-${checkboxName.replace(/_/g, '-')}`;
                     const errorMsg = document.getElementById(errorId);
                     if (errorMsg) {
-                        errorMsg.textContent = '❌ الرجاء اختيار خيارين كحد أقصى';
+                        errorMsg.textContent = `❌ الرجاء اختيار ${maxAllowed} خيارات كحد أقصى`;
                         errorMsg.classList.add('show');
+                        errors.push(`السؤال: ${checkboxName} - اختيارات كثيرة (${checkedBoxes.length}/${maxAllowed})`);
                     }
                 }
-            });
+            }
             
             // Check textareas
-            section.querySelectorAll('textarea[required]').forEach(textarea => {
-                if (textarea.value.trim().length < 10) {
+            const textarea = question.querySelector('textarea[required]');
+            if (textarea) {
+                const minLength = textarea.name === 'immediate_increase' ? 10 : 20;
+                if (textarea.value.trim().length < minLength) {
                     isValid = false;
                     const errorId = `error-${textarea.name.replace(/_/g, '-')}`;
                     const errorMsg = document.getElementById(errorId);
                     if (errorMsg) {
                         errorMsg.classList.add('show');
+                        errors.push(`السؤال: ${textarea.name} - نص قصير جداً (${textarea.value.length}/${minLength})`);
                     }
                 }
-            });
+            }
+        });
+        
+        if (!isValid) {
+            logDebug('Validation failed:');
+            errors.forEach(err => logDebug('  - ' + err));
             
-            return isValid;
+            // Scroll to first error
+            const firstError = section.querySelector('.error-message.show');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        } else {
+            logDebug('✅ Validation passed!');
         }
         
-        // Navigation
-        nextBtn.addEventListener('click', () => {
-            if (validateSection(currentSection)) {
-                currentSection++;
-                showSection(currentSection);
-                updateProgress();
-            }
-        });
+        return isValid;
+    }
+    
+    // Navigation - Next button
+    nextBtn.addEventListener('click', () => {
+        logDebug('Next button clicked');
         
-        prevBtn.addEventListener('click', () => {
-            currentSection--;
+        if (validateSection(currentSection)) {
+            currentSection++;
             showSection(currentSection);
             updateProgress();
-        });
-        
-        // Submit form
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!validateSection(currentSection)) {
-                return;
-            }
-            
-            // Show loading
-            loadingOverlay.classList.add('show');
-            
-            try {
-                // Collect all data
-                const formData = new FormData(form);
-                const data = {
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    
-                    // Section 1
-                    department: formData.get('department'),
-                    department_other: formData.get('department') === 'other' || formData.get('department') === 'support' ? document.getElementById('dept-other-text').value : '',
-                    experience: formData.get('experience'),
-                    weekly_donors: formData.get('weekly_donors'),
-                    communication_type: formData.get('communication_type'),
-                    communication_type_other: formData.get('communication_type') === 'other' ? document.getElementById('comm-other-text').value : '',
-                    service_quality_rating: parseInt(formData.get('service_quality_rating')),
-                    
-                    // Section 2
-                    frequent_questions: Array.from(document.querySelectorAll('input[name="frequent_questions"]:checked')).map(cb => cb.value),
-                    frequent_questions_other: document.getElementById('freq-other').checked ? document.getElementById('freq-other-text').value : '',
-                    main_motivation: formData.get('main_motivation'),
-                    first_action_problem: formData.get('first_action_problem'),
-                    first_action_problem_other: formData.get('first_action_problem') === 'other' ? document.getElementById('action-other-text').value : '',
-                    common_problems: Array.from(document.querySelectorAll('input[name="common_problems"]:checked')).map(cb => cb.value),
-                    common_problems_other: document.getElementById('prob-other').checked ? document.getElementById('prob-other-text').value : '',
-                    first_time_resolution: formData.get('first_time_resolution'),
-                    sufficient_authority: formData.get('sufficient_authority'),
-                    
-                    // Section 3
-                    biggest_challenge: formData.get('biggest_challenge'),
-                    biggest_challenge_other: formData.get('biggest_challenge') === 'other' ? document.getElementById('chal-other-text').value : '',
-                    unnecessary_step: formData.get('unnecessary_step'),
-                    slow_department: formData.get('slow_department') || null,
-                    tech_problem: formData.get('tech_problem'),
-                    churn_reason: formData.get('churn_reason'),
-                    system_trust_rating: parseInt(formData.get('system_trust_rating')),
-                    cannot_serve_when: Array.from(document.querySelectorAll('input[name="cannot_serve_when"]:checked')).map(cb => cb.value),
-                    witnessed_bad_behavior: formData.get('witnessed_bad_behavior') || null,
-                    
-                    // Section 4
-                    donate_first_triggers: Array.from(document.querySelectorAll('input[name="donate_first_triggers"]:checked')).map(cb => cb.value),
-                    repeat_triggers: Array.from(document.querySelectorAll('input[name="repeat_triggers"]:checked')).map(cb => cb.value),
-                    refer_triggers: Array.from(document.querySelectorAll('input[name="refer_triggers"]:checked')).map(cb => cb.value),
-                    prevent_donation: Array.from(document.querySelectorAll('input[name="prevent_donation"]:checked')).map(cb => cb.value),
-                    stop_donation: Array.from(document.querySelectorAll('input[name="stop_donation"]:checked')).map(cb => cb.value),
-                    
-                    // Section 5
-                    fix_if_authority: formData.get('fix_if_authority'),
-                    fix_if_authority_other: formData.get('fix_if_authority') === 'other' ? document.getElementById('fix-other-text').value : '',
-                    immediate_increase: formData.get('immediate_increase').trim(),
-                    first_action_donors: formData.get('first_action_donors').trim()
-                };
-                
-                // Save to Firestore
-                await db.collection('workshop_nov18_donor_journey')
-                    .doc('employee_survey')
-                    .collection('responses')
-                    .add(data);
-                
-                // Redirect to thank you page
-                window.location.href = 'survey-thank-you.html';
-                
-            } catch (error) {
-                console.error('Error:', error);
-                loadingOverlay.classList.remove('show');
-                alert('حدث خطأ في إرسال الاستبيان. الرجاء المحاولة مرة أخرى.');
-            }
-        });
-        
-        // Initialize
+        } else {
+            logDebug('❌ Validation failed - staying on current section');
+        }
+    });
+    
+    // Navigation - Previous button
+    prevBtn.addEventListener('click', () => {
+        logDebug('Previous button clicked');
+        currentSection--;
+        showSection(currentSection);
         updateProgress();
-    </script>
+    });
+    
+    // Submit form
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        logDebug('Form submitted');
+        
+        if (!validateSection(currentSection)) {
+            logDebug('❌ Final validation failed');
+            return;
+        }
+        
+        // Show loading
+        loadingOverlay.classList.add('show');
+        
+        try {
+            logDebug('Collecting form data...');
+            
+            // Helper function to get checked values
+            function getCheckedValues(name) {
+                return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+                    .map(cb => cb.value);
+            }
+            
+            // Helper function to get radio value
+            function getRadioValue(name) {
+                const checked = document.querySelector(`input[name="${name}"]:checked`);
+                return checked ? checked.value : null;
+            }
+            
+            // Collect all data
+            const data = {
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                
+                // Section 1: Demographics
+                department: getRadioValue('department'),
+                department_other: (['other', 'support'].includes(getRadioValue('department'))) 
+                    ? document.getElementById('dept-other-text').value 
+                    : '',
+                experience: getRadioValue('experience'),
+                weekly_donors: getRadioValue('weekly_donors'),
+                communication_type: getRadioValue('communication_type'),
+                communication_type_other: (getRadioValue('communication_type') === 'other') 
+                    ? document.getElementById('comm-other-text').value 
+                    : '',
+                service_quality_rating: parseInt(getRadioValue('service_quality_rating')),
+                
+                // Section 2: Daily Work
+                frequent_questions: getCheckedValues('frequent_questions'),
+                frequent_questions_other: document.getElementById('freq-other')?.checked 
+                    ? document.getElementById('freq-other-text').value 
+                    : '',
+                main_motivation: getRadioValue('main_motivation'),
+                first_action_problem: getRadioValue('first_action_problem'),
+                first_action_problem_other: (getRadioValue('first_action_problem') === 'other') 
+                    ? document.getElementById('action-other-text').value 
+                    : '',
+                common_problems: getCheckedValues('common_problems'),
+                common_problems_other: document.getElementById('prob-other')?.checked 
+                    ? document.getElementById('prob-other-text').value 
+                    : '',
+                first_time_resolution: getRadioValue('first_time_resolution'),
+                sufficient_authority: getRadioValue('sufficient_authority'),
+                
+                // Section 3: Challenges
+                biggest_challenge: getRadioValue('biggest_challenge'),
+                biggest_challenge_other: (getRadioValue('biggest_challenge') === 'other') 
+                    ? document.getElementById('chal-other-text').value 
+                    : '',
+                unnecessary_step: getRadioValue('unnecessary_step'),
+                slow_department: getRadioValue('slow_department'),
+                tech_problem: getRadioValue('tech_problem'),
+                churn_reason: getRadioValue('churn_reason'),
+                system_trust_rating: parseInt(getRadioValue('system_trust_rating')),
+                cannot_serve_when: getCheckedValues('cannot_serve_when'),
+                witnessed_bad_behavior: getRadioValue('witnessed_bad_behavior'),
+                
+                // Section 4: Empathy
+                donate_first_triggers: getCheckedValues('donate_first_triggers'),
+                repeat_triggers: getCheckedValues('repeat_triggers'),
+                refer_triggers: getCheckedValues('refer_triggers'),
+                prevent_donation: getCheckedValues('prevent_donation'),
+                stop_donation: getCheckedValues('stop_donation'),
+                
+                // Section 5: Suggestions
+                fix_if_authority: getRadioValue('fix_if_authority'),
+                fix_if_authority_other: (getRadioValue('fix_if_authority') === 'other') 
+                    ? document.getElementById('fix-other-text').value 
+                    : '',
+                immediate_increase: document.getElementById('immediate_increase').value.trim(),
+                first_action_donors: document.getElementById('first_action_donors').value.trim()
+            };
+            
+            logDebug('Data collected:');
+            logDebug(JSON.stringify(data, null, 2));
+            
+            // Save to Firestore
+            logDebug('Saving to Firestore...');
+            await db.collection('workshop_nov18_donor_journey')
+                .doc('employee_survey')
+                .collection('responses')
+                .add(data);
+            
+            logDebug('✅ Saved successfully!');
+            
+            // Redirect to thank you page
+            window.location.href = 'survey-thank-you.html';
+            
+        } catch (error) {
+            console.error('❌ Error:', error);
+            loadingOverlay.classList.remove('show');
+            alert('حدث خطأ في إرسال الاستبيان. الرجاء المحاولة مرة أخرى.\n\nالخطأ: ' + error.message);
+        }
+    });
+    
+    // Initialize
+    logDebug('Initializing survey...');
+    updateProgress();
+    
+    // Test Firebase connection
+    db.collection('workshop_nov18_donor_journey')
+        .doc('employee_survey')
+        .get()
+        .then(() => {
+            logDebug('✅ Firebase connected successfully!');
+        })
+        .catch(err => {
+            console.error('❌ Firebase connection error:', err);
+        });
+</script>
 </body>
 </html>
