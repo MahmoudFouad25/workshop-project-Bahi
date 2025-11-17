@@ -1898,40 +1898,102 @@
         }
         
         function displayAIInsights(question, result) {
-            const container = document.getElementById(`${question}-insights`);
-            container.innerHTML = `
-                <div class="ai-insights-container">
-                    <div class="ai-header">
-                        <div class="ai-icon">🤖</div>
-                        <div>
-                            <div class="ai-title">تحليل الذكاء الاصطناعي</div>
-                            <div style="color: #999; font-size: 14px; margin-top: 5px;">
-                                ${result.summary.key_finding}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="insights-grid">
-                        ${result.actionable_insights.map(insight => `
-                            <div class="insight-card priority-${insight.priority}">
-                                <div class="insight-header">
-                                    <div class="insight-title">${insight.action}</div>
-                                    <div class="insight-priority ${insight.priority}">${
-                                        insight.priority === 'high' ? 'عاجل' :
-                                        insight.priority === 'medium' ? 'متوسط' : 'منخفض'
-                                    }</div>
-                                </div>
-                                <div class="insight-description">${insight.expected_impact}</div>
-                                <div class="insight-meta">
-                                    <span>⏱️ ${insight.timeframe}</span>
-                                </div>
-                            </div>
-                        `).join('')}
+    const container = document.getElementById(`${question}-insights`);
+    container.innerHTML = `
+        <div class="ai-insights-container">
+            <div class="ai-header">
+                <div class="ai-icon">🤖</div>
+                <div>
+                    <div class="ai-title">تحليل الذكاء الاصطناعي</div>
+                    <div style="color: #999; font-size: 14px; margin-top: 5px;">
+                        ${result.summary.key_finding}
                     </div>
                 </div>
-            `;
-            container.style.display = 'block';
-        }
+            </div>
+            
+            <!-- Themes -->
+            <div style="margin-top: 30px;">
+                <h3 style="color: #667eea; margin-bottom: 15px; font-size: 20px;">📊 الموضوعات الرئيسية:</h3>
+                <div style="display: grid; gap: 15px;">
+                    ${result.themes.map(theme => `
+                        <div style="background: #2d2d5f; padding: 20px; border-radius: 10px; border-right: 4px solid ${
+                            theme.sentiment === 'positive' ? '#28a745' : 
+                            theme.sentiment === 'negative' ? '#dc3545' : '#ffc107'
+                        };">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="font-size: 18px; font-weight: 700; color: #e0e0e0;">${theme.theme}</span>
+                                <span style="background: #667eea; color: white; padding: 5px 15px; border-radius: 15px; font-size: 14px; font-weight: 700;">
+                                    ${theme.count} مرة
+                                </span>
+                            </div>
+                            <div style="color: #999; font-size: 14px;">${theme.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <!-- Top Quotes -->
+            <div style="margin-top: 30px;">
+                <h3 style="color: #667eea; margin-bottom: 15px; font-size: 20px;">💬 أهم الاقتباسات:</h3>
+                <div style="display: grid; gap: 12px;">
+                    ${result.top_quotes.map((quote, i) => `
+                        <div style="background: #2d2d5f; padding: 15px 20px; border-radius: 10px; border-right: 3px solid #667eea; display: flex; gap: 15px; align-items: flex-start;">
+                            <span style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">
+                                ${i + 1}
+                            </span>
+                            <span style="color: #e0e0e0; font-size: 15px; line-height: 1.6;">"${quote}"</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <!-- Actionable Insights -->
+            <div style="margin-top: 30px;">
+                <h3 style="color: #667eea; margin-bottom: 15px; font-size: 20px;">🎯 التوصيات العملية:</h3>
+                <div class="insights-grid">
+                    ${result.actionable_insights.map(insight => `
+                        <div class="insight-card priority-${insight.priority}">
+                            <div class="insight-header">
+                                <div class="insight-title">${insight.action}</div>
+                                <div class="insight-priority ${insight.priority}">${
+                                    insight.priority === 'high' ? '🔴 عاجل' :
+                                    insight.priority === 'medium' ? '🟡 متوسط' : '🟢 منخفض'
+                                }</div>
+                            </div>
+                            <div class="insight-description">${insight.expected_impact}</div>
+                            <div class="insight-meta">
+                                <span>⏱️ ${insight.timeframe}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <!-- Summary Stats -->
+            <div style="margin-top: 30px; background: #2d2d5f; padding: 20px; border-radius: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center;">
+                <div>
+                    <div style="font-size: 32px; font-weight: 700; color: #667eea;">${result.summary.total_comments}</div>
+                    <div style="color: #999; font-size: 14px; margin-top: 5px;">إجمالي التعليقات</div>
+                </div>
+                <div>
+                    <div style="font-size: 32px; font-weight: 700; color: ${
+                        result.summary.overall_sentiment === 'positive' ? '#28a745' :
+                        result.summary.overall_sentiment === 'negative' ? '#dc3545' : '#ffc107'
+                    };">${
+                        result.summary.overall_sentiment === 'positive' ? '😊' :
+                        result.summary.overall_sentiment === 'negative' ? '😞' : '😐'
+                    }</div>
+                    <div style="color: #999; font-size: 14px; margin-top: 5px;">المشاعر العامة</div>
+                </div>
+                <div>
+                    <div style="font-size: 32px; font-weight: 700; color: #667eea;">${result.themes.length}</div>
+                    <div style="color: #999; font-size: 14px; margin-top: 5px;">موضوعات رئيسية</div>
+                </div>
+            </div>
+        </div>
+    `;
+    container.style.display = 'block';
+}
         
         // Filters & Search
         function showAllQuestions() {
