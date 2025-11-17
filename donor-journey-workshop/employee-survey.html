@@ -1553,9 +1553,10 @@
                     <!-- Q26: التغيير الفوري -->
                     <div class="question">
                         <label class="question-label">
-                            26. ما **التغيير الوحيد** الذي لو حدث سيزيد عدد المتبرعين **فوراً**؟
-                            <span class="question-required">*</span>
-                        </label>
+    26. ما **التغيير الوحيد** الذي لو حدث سيزيد عدد المتبرعين **فوراً**؟
+    <span class="question-required">*</span>
+    <div class="question-helper">(اكتب ما يخطر ببالك - حتى لو كلمة واحدة)</div>
+</label>
                         <textarea 
                             id="immediate_increase" 
                             name="immediate_increase" 
@@ -1563,18 +1564,18 @@
                             required
                             maxlength="500"></textarea>
                         <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
-                            <span id="char-count-q26">0</span> / 500 حرف
-                        </div>
-                        <div class="error-message" id="error-q26">❌ الرجاء كتابة إجابتك (10 أحرف على الأقل)</div>
+    <span id="char-count-q26">0</span> حرف (حد أقصى 500)
+</div>
+                        <div class="error-message" id="error-q26">❌ الرجاء كتابة إجابتك</div>
                     </div>
                     
                     <!-- Q27: أول شيء لزيادة عدد المتبرعين -->
                     <div class="question">
                         <label class="question-label">
-                            27. بخصوص زيادة عدد المتبرعين... ما **أول شيء ستفعله** لو كان القرار بيدك؟
-                            <span class="question-required">*</span>
-                            <div class="question-helper">(كن محدداً قدر الإمكان)</div>
-                        </label>
+    27. بخصوص زيادة عدد المتبرعين... ما **أول شيء ستفعله** لو كان القرار بيدك؟
+    <span class="question-required">*</span>
+    <div class="question-helper">(أكتب ما يحلو لك بعفوية - شاركنا أفكارك)</div>
+</label>
                         <textarea 
                             id="first_action_donors" 
                             name="first_action_donors" 
@@ -1583,9 +1584,9 @@
                             maxlength="1000"
                             rows="5"></textarea>
                         <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
-                            <span id="char-count-q27">0</span> / 1000 حرف
-                        </div>
-                        <div class="error-message" id="error-q27">❌ الرجاء كتابة إجابتك (20 حرف على الأقل)</div>
+    <span id="char-count-q27">0</span> حرف (حد أقصى 1000)
+</div>
+                        <div class="error-message" id="error-q27">❌ الرجاء كتابة إجابتك</div>
                     </div>
                     
                     <!-- Final Message -->
@@ -1915,25 +1916,26 @@ function validateSection(sectionNum) {
         }
         
         // Check textareas
-        const textarea = question.querySelector('textarea[required]');
-        if (textarea) {
-            const minLength = textarea.name === 'immediate_increase' ? 10 : 20;
-            const currentLength = textarea.value.trim().length;
-            
-            if (currentLength < minLength) {
-                isValid = false;
-                const errorId = `error-${textarea.name.replace(/_/g, '-')}`;
-                const errorMsg = document.getElementById(errorId);
-                if (errorMsg) {
-                    errorMsg.classList.add('show');
-                }
-                const errorText = `Q${qIndex + 1} (${textarea.name}): نص قصير جداً (${currentLength}/${minLength} حرف)`;
-                errors.push(errorText);
-                logDebug(`  ❌ ${errorText}`);
-            } else {
-                logDebug(`  ✅ Q${qIndex + 1} (${textarea.name}): ${currentLength} حرف`);
-            }
+const textarea = question.querySelector('textarea[required]');
+if (textarea) {
+    const currentLength = textarea.value.trim().length;
+    
+    // بس نتأكد إن مش فاضي تماماً (على الأقل حرف واحد)
+    if (currentLength === 0) {
+        isValid = false;
+        const errorId = `error-${textarea.name.replace(/_/g, '-')}`;
+        const errorMsg = document.getElementById(errorId);
+        if (errorMsg) {
+            errorMsg.textContent = '❌ الرجاء كتابة إجابتك (أي طول يكفي)';
+            errorMsg.classList.add('show');
         }
+        const errorText = `Q${qIndex + 1} (${textarea.name}): فارغ`;
+        errors.push(errorText);
+        logDebug(`  ❌ ${errorText}`);
+    } else {
+        logDebug(`  ✅ Q${qIndex + 1} (${textarea.name}): ${currentLength} حرف`);
+    }
+}
     });
     
     if (!isValid) {
