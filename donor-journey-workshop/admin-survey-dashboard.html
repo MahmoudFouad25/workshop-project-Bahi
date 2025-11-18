@@ -680,6 +680,11 @@
                 <button class="btn btn-primary" id="refresh-btn">
                     🔄 تحديث البيانات
                 </button>
+                    <!-- ✅ الزرار الجديد -->
+    <button class="btn btn-success" id="analyze-btn">
+        🤖 تحليل بالـ AI
+    </button>
+
                 <button class="btn btn-success" id="export-excel-btn">
                     📥 تصدير Excel
                 </button>
@@ -861,17 +866,20 @@
         
         // Setup event listeners
         function setupEventListeners() {
-            document.getElementById('refresh-btn').addEventListener('click', loadData);
-            document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
-            document.getElementById('delete-all-btn').addEventListener('click', deleteAllResponses);
-            document.getElementById('search-input').addEventListener('input', handleSearch);
-            
-            // Filters
-            document.getElementById('filter-department').addEventListener('change', applyFilters);
-            document.getElementById('filter-experience').addEventListener('change', applyFilters);
-            document.getElementById('filter-rating').addEventListener('change', applyFilters);
-            document.getElementById('filter-communication').addEventListener('change', applyFilters);
-        }
+    document.getElementById('refresh-btn').addEventListener('click', loadData);
+    document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
+    document.getElementById('delete-all-btn').addEventListener('click', deleteAllResponses);
+    document.getElementById('search-input').addEventListener('input', handleSearch);
+    
+    // ✅ الزرار الجديد
+    document.getElementById('analyze-btn').addEventListener('click', runAIAnalysis);
+    
+    // Filters
+    document.getElementById('filter-department').addEventListener('change', applyFilters);
+    document.getElementById('filter-experience').addEventListener('change', applyFilters);
+    document.getElementById('filter-rating').addEventListener('change', applyFilters);
+    document.getElementById('filter-communication').addEventListener('change', applyFilters);
+}
         
         // Load data from Firebase
         async function loadData() {
@@ -1978,6 +1986,96 @@ function renderChallengesChart() {
                 closeModal();
             }
         });
+
+
+        // Run AI Analysis
+async function runAIAnalysis() {
+    if (allResponses.length === 0) {
+        alert('لا توجد ردود للتحليل!');
+        return;
+    }
+    
+    const confirmMsg = `🤖 تحليل الردود بالذكاء الاصطناعي\n\nسيتم تحليل ${allResponses.length} رد باستخدام Claude AI.\n\nهذه العملية قد تستغرق 1-2 دقيقة.\n\nهل تريد المتابعة؟`;
+    
+    if (!confirm(confirmMsg)) return;
+    
+    showLoading(true, 'جاري التحليل بالذكاء الاصطناعي... قد يستغرق دقيقة أو دقيقتين...');
+    
+    try {
+        const response = await fetch('/api/analyze-employee-survey', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                timestamp: new Date().toISOString()
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'فشل التحليل');
+        }
+        
+        const data = await response.json();
+        
+        showLoading(false);
+        
+        // Show analysis in modal
+        showAnalysisModal(data.analysis);
+        
+        // Optionally refresh data to show saved analysis
+        loadData();
+        
+    } catch (error) {
+        console.error('Error running AI analysis:', error);
+        showLoading(false);
+        alert('❌ حدث خطأ في التحليل: ' + error.message);
+    }
+}
+
+// Show analysis in modal
+function showAnalysisModal(analysis) {
+    const modal = document.getElementById('detail-modal');
+    const modalBody = document.getElementById('modal-body');
+    
+    modalBody.innerHTML = `
+        <div style="white-space: pre-wrap; line-height: 1.8; font-size: 15px;">
+            ${analysis.fullText.replace(/\n/g, '<br>')}
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+            <button class="btn btn-success" onclick="downloadAnalysis()">
+                📥 تحميل التحليل (TXT)
+            </button>
+            <button class="btn btn-secondary" onclick="closeModal()" style="margin-right: 10px;">
+                ✖️ إغلاق
+            </button>
+        </div>
+    `;
+    
+    modal.classList.add('show');
+    
+    // Store analysis for download
+    window.currentAnalysis = analysis;
+}
+
+// Download analysis as TXT
+function downloadAnalysis() {
+    if (!window.currentAnalysis) return;
+    
+    const text = window.currentAnalysis.fullText;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `تحليل_الاستبيان_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
     </script>
 </body>
 </html>
