@@ -8,21 +8,32 @@ import admin from 'firebase-admin';
 
 // Initialize Firebase Admin (only once)
 if (!admin.apps.length) {
-    admin.initializeApp({
-        credential: admin.credential.cert({
-            projectId: process.env.FIREBASE_PROJECT_ID,
-            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-            privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-        })
-    });
+    try {
+        admin.initializeApp({
+            credential: admin.credential.cert({
+                projectId: process.env.FIREBASE_PROJECT_ID,
+                clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+                privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+            })
+        });
+        console.log('✅ Firebase initialized successfully');
+    } catch (error) {
+        console.error('❌ Firebase initialization error:', error);
+    }
 }
 
 const db = admin.firestore();
 
 // Initialize Anthropic client
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY
-});
+let anthropic;
+try {
+    anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY
+    });
+    console.log('✅ Anthropic client initialized');
+} catch (error) {
+    console.error('❌ Anthropic initialization error:', error);
+}
 
 export default async function handler(req, res) {
     // CORS
@@ -30,13 +41,31 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
-    if (req.method === 'OPTIONS') return res.status(200).json({ success: true });
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    if (req.method === 'OPTIONS') {
+        return res.status(200).json({ success: true });
+    }
+    
+    if (req.method !== 'POST') {
+        return res.status(405).json({ 
+            error: 'Method not allowed',
+            message: 'يجب استخدام POST method'
+        });
+    }
     
     try {
         console.log('🔍 Starting AI analysis...');
         
+        // Check if API keys exist
+        if (!process.env.ANTHROPIC_API_KEY) {
+            throw new Error('ANTHROPIC_API_KEY غير موجود في environment variables');
+        }
+        
+        if (!process.env.FIREBASE_PROJECT_ID) {
+            throw new Error('FIREBASE_PROJECT_ID غير موجود في environment variables');
+        }
+        
         // Fetch all responses from Firebase
+        console.log('📊 Fetching responses from Firebase...');
         const responsesSnapshot = await db
             .collection('workshop_nov18_donor_journey')
             .doc('employee_survey')
@@ -75,30 +104,43 @@ export default async function handler(req, res) {
         
         const analysisText = message.content[0].text;
         
+        console.log('💾 Saving analysis to Firebase...');
+        
         // Save to Firebase
-        await db.collection('workshop_nov18_donor_journey')
+        const savedDoc = await db.collection('workshop_nov18_donor_journey')
             .doc('employee_survey')
             .collection('analysis')
             .add({
                 timestamp: admin.firestore.FieldValue.serverTimestamp(),
                 totalResponses: responses.length,
-                analysis: analysisText,
+                fullText: analysisText,
                 dataSummary: dataSummary
             });
         
-        console.log('✅ Analysis completed');
+        console.log('✅ Analysis completed and saved with ID:', savedDoc.id);
         
         return res.status(200).json({
             success: true,
-            analysis: analysisText,
-            totalResponses: responses.length
+            analysis: {
+                fullText: analysisText,
+                totalResponses: responses.length
+            },
+            message: 'تم التحليل بنجاح'
         });
         
     } catch (error) {
-        console.error('❌ Error:', error);
+        console.error('❌ Error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        
+        // Return detailed error in JSON format
         return res.status(500).json({
             error: 'Analysis failed',
-            message: error.message
+            message: error.message,
+            details: error.stack,
+            timestamp: new Date().toISOString()
         });
     }
 }
@@ -117,6 +159,7 @@ function prepareDataSummary(responses) {
     };
     
     let totalRating = 0;
+    let ratingCount = 0;
     
     responses.forEach(r => {
         if (r.department) {
@@ -127,6 +170,7 @@ function prepareDataSummary(responses) {
         }
         if (r.service_quality_rating) {
             totalRating += r.service_quality_rating;
+            ratingCount++;
         }
         if (r.biggest_challenge) {
             summary.commonChallenges[r.biggest_challenge] = (summary.commonChallenges[r.biggest_challenge] || 0) + 1;
@@ -148,7 +192,7 @@ function prepareDataSummary(responses) {
         }
     });
     
-    summary.averageRating = (totalRating / responses.length).toFixed(2);
+    summary.averageRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(2) : 0;
     
     return summary;
 }
