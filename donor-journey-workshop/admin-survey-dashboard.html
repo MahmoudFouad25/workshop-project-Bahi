@@ -2005,7 +2005,7 @@ async function runAIAnalysis() {
     try {
         console.log('🤖 Starting AI analysis...');
         
-        const response = await fetch('https://your-project.vercel.app/api/analyze-employee-survey', {
+        const response = await fetch('https://workshop-project-bahi.vercel.app/api/analyze-employee-survey', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2132,47 +2132,8 @@ function copyAnalysisToClipboard() {
     });
 }
 
-// Show analysis in modal
-function showAnalysisModal(analysis) {
-    const modal = document.getElementById('detail-modal');
-    const modalBody = document.getElementById('modal-body');
-    
-    modalBody.innerHTML = `
-        <div style="white-space: pre-wrap; line-height: 1.8; font-size: 15px;">
-            ${analysis.fullText.replace(/\n/g, '<br>')}
-        </div>
-        
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
-            <button class="btn btn-success" onclick="downloadAnalysis()">
-                📥 تحميل التحليل (TXT)
-            </button>
-            <button class="btn btn-secondary" onclick="closeModal()" style="margin-right: 10px;">
-                ✖️ إغلاق
-            </button>
-        </div>
-    `;
-    
-    modal.classList.add('show');
-    
-    // Store analysis for download
-    window.currentAnalysis = analysis;
-}
 
-// Download analysis as TXT
-function downloadAnalysis() {
-    if (!window.currentAnalysis) return;
-    
-    const text = window.currentAnalysis.fullText;
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `تحليل_الاستبيان_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
+
 
     </script>
 </body>
