@@ -1989,6 +1989,7 @@ function renderChallengesChart() {
 
 
         // Run AI Analysis
+// Run AI Analysis - النسخة المحسّنة
 async function runAIAnalysis() {
     if (allResponses.length === 0) {
         alert('لا توجد ردود للتحليل!');
@@ -2002,7 +2003,9 @@ async function runAIAnalysis() {
     showLoading(true, 'جاري التحليل بالذكاء الاصطناعي... قد يستغرق دقيقة أو دقيقتين...');
     
     try {
-        const response = await fetch('/api/analyze-employee-survey', {
+        console.log('🤖 Starting AI analysis...');
+        
+        const response = await fetch('https://your-project.vercel.app/api/analyze-employee-survey', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -2012,12 +2015,25 @@ async function runAIAnalysis() {
             })
         });
         
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'فشل التحليل');
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        // Get response as text first
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
+        
+        // Try to parse as JSON
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error('Failed to parse response as JSON:', parseError);
+            throw new Error(`استجابة غير صحيحة من السيرفر: ${responseText.substring(0, 200)}`);
         }
         
-        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || data.error || 'فشل التحليل');
+        }
         
         showLoading(false);
         
@@ -2028,10 +2044,92 @@ async function runAIAnalysis() {
         loadData();
         
     } catch (error) {
-        console.error('Error running AI analysis:', error);
+        console.error('❌ Error running AI analysis:', error);
         showLoading(false);
-        alert('❌ حدث خطأ في التحليل: ' + error.message);
+        
+        // Show detailed error message
+        const errorMsg = `❌ حدث خطأ في التحليل:\n\n${error.message}\n\nيرجى التحقق من:\n1. الـ API Key الخاص بـ Anthropic\n2. إعدادات Firebase\n3. رابط Vercel الصحيح`;
+        alert(errorMsg);
     }
+}
+
+// Show analysis in modal - النسخة المحسّنة
+function showAnalysisModal(analysis) {
+    const modal = document.getElementById('detail-modal');
+    const modalBody = document.getElementById('modal-body');
+    
+    // Format the analysis text with proper line breaks and styling
+    const formattedAnalysis = analysis.fullText
+        .replace(/\n/g, '<br>')
+        .replace(/##\s+(.+)/g, '<h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px; font-size: 20px; font-weight: 700;">$1</h3>')
+        .replace(/###\s+(.+)/g, '<h4 style="color: #764ba2; margin-top: 20px; margin-bottom: 10px; font-size: 18px; font-weight: 600;">$1</h4>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong style="color: #333;">$1</strong>')
+        .replace(/- (.+)/g, '<li style="margin: 8px 0; padding-right: 20px;">$1</li>');
+    
+    modalBody.innerHTML = `
+        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 12px; margin-bottom: 25px; border-right: 5px solid #667eea;">
+            <div style="font-size: 18px; font-weight: 700; color: #333; margin-bottom: 10px;">
+                📊 تحليل شامل لاستبيان تجربة المتبرعين
+            </div>
+            <div style="font-size: 14px; color: #666;">
+                عدد الردود: <strong>${analysis.totalResponses}</strong> | 
+                تاريخ التحليل: <strong>${new Date().toLocaleDateString('ar-EG')}</strong>
+            </div>
+        </div>
+        
+        <div style="line-height: 1.8; font-size: 15px; color: #333;">
+            ${formattedAnalysis}
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-success" onclick="downloadAnalysis()" style="flex: 1; min-width: 200px;">
+                📥 تحميل التحليل (TXT)
+            </button>
+            <button class="btn btn-primary" onclick="copyAnalysisToClipboard()" style="flex: 1; min-width: 200px;">
+                📋 نسخ إلى الحافظة
+            </button>
+            <button class="btn btn-secondary" onclick="closeModal()" style="flex: 1; min-width: 200px;">
+                ✖️ إغلاق
+            </button>
+        </div>
+    `;
+    
+    modal.classList.add('show');
+    
+    // Store analysis for download
+    window.currentAnalysis = analysis;
+}
+
+// Download analysis as TXT
+function downloadAnalysis() {
+    if (!window.currentAnalysis) return;
+    
+    const text = window.currentAnalysis.fullText;
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `تحليل_الاستبيان_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert('✅ تم تحميل التحليل بنجاح!');
+}
+
+// Copy analysis to clipboard
+function copyAnalysisToClipboard() {
+    if (!window.currentAnalysis) return;
+    
+    const text = window.currentAnalysis.fullText;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        alert('✅ تم نسخ التحليل إلى الحافظة!');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('❌ فشل النسخ. الرجاء المحاولة مرة أخرى.');
+    });
 }
 
 // Show analysis in modal
