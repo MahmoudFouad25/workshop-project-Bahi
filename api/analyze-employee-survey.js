@@ -119,14 +119,35 @@ export default async function handler(req, res) {
         
         console.log('✅ Analysis completed and saved with ID:', savedDoc.id);
         
-        return res.status(200).json({
-            success: true,
-            analysis: {
-                fullText: analysisText,
-                totalResponses: responses.length
-            },
-            message: 'تم التحليل بنجاح'
-        });
+        // Prepare response with error handling
+        try {
+            const responseData = {
+                success: true,
+                analysis: {
+                    fullText: analysisText,
+                    totalResponses: responses.length,
+                    savedId: savedDoc.id
+                },
+                message: 'تم التحليل بنجاح'
+            };
+            
+            console.log('📤 Sending response...');
+            
+            return res.status(200).json(responseData);
+            
+        } catch (responseError) {
+            console.error('❌ Error preparing response:', responseError);
+            
+            // Return minimal response
+            return res.status(200).json({
+                success: true,
+                analysis: {
+                    fullText: 'تم التحليل بنجاح. يمكنك الوصول للنتائج من Firebase.',
+                    totalResponses: responses.length
+                },
+                message: 'تم التحليل وحفظه في قاعدة البيانات'
+            });
+        }
         
     } catch (error) {
         console.error('❌ Error details:', {
