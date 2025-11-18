@@ -684,6 +684,9 @@
     <button class="btn btn-success" id="analyze-btn">
         🤖 تحليل بالـ AI
     </button>
+                <button class="btn btn-primary" id="view-last-analysis-btn">
+    📊 عرض آخر تحليل
+</button>
 
                 <button class="btn btn-success" id="export-excel-btn">
                     📥 تصدير Excel
@@ -873,7 +876,7 @@
     
     // ✅ الزرار الجديد
     document.getElementById('analyze-btn').addEventListener('click', runAIAnalysis);
-    
+    document.getElementById('view-last-analysis-btn').addEventListener('click', viewLastAnalysis);
     // Filters
     document.getElementById('filter-department').addEventListener('change', applyFilters);
     document.getElementById('filter-experience').addEventListener('change', applyFilters);
@@ -2132,7 +2135,39 @@ function copyAnalysisToClipboard() {
     });
 }
 
-
+// View last analysis from Firebase
+async function viewLastAnalysis() {
+    showLoading(true, 'جاري تحميل آخر تحليل...');
+    
+    try {
+        const snapshot = await db.collection('workshop_nov18_donor_journey')
+            .doc('employee_survey')
+            .collection('analysis')
+            .orderBy('timestamp', 'desc')
+            .limit(1)
+            .get();
+        
+        if (snapshot.empty) {
+            alert('لا يوجد تحليل محفوظ بعد!');
+            showLoading(false);
+            return;
+        }
+        
+        const analysisDoc = snapshot.docs[0].data();
+        
+        showLoading(false);
+        
+        showAnalysisModal({
+            fullText: analysisDoc.fullText,
+            totalResponses: analysisDoc.totalResponses
+        });
+        
+    } catch (error) {
+        console.error('Error loading analysis:', error);
+        showLoading(false);
+        alert('حدث خطأ في تحميل التحليل: ' + error.message);
+    }
+}
 
 
     </script>
