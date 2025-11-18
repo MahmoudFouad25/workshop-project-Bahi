@@ -1123,9 +1123,10 @@
                     datasets: [{
                         data: Object.values(deptCounts),
                         backgroundColor: [
-                            '#667eea', '#764ba2', '#f093fb', '#4facfe',
-                            '#43e97b', '#fa709a', '#fee140', '#30cfd0'
-                        ]
+    '#667eea', '#764ba2', '#f093fb', '#4facfe',
+    '#43e97b', '#fa709a', '#fee140', '#30cfd0',
+    '#a8edea', '#fed6e3'
+]
                     }]
                 },
                 options: {
@@ -1221,45 +1222,71 @@
             });
         }
         
-        // Challenges chart
-        function renderChallengesChart() {
-            const ctx = document.getElementById('challengesChart');
-            
-            const challengeCounts = {};
-            filteredResponses.forEach(r => {
-                const challenge = getChallengeLabel(r.biggest_challenge);
-                challengeCounts[challenge] = (challengeCounts[challenge] || 0) + 1;
-            });
-            
-            // Get top 5
-            const sortedChallenges = Object.entries(challengeCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-            
-            if (challengesChart) challengesChart.destroy();
-            
-            challengesChart = new Chart(ctx, {
-                type: 'horizontalBar',
-                data: {
-                    labels: sortedChallenges.map(c => c[0]),
-                    datasets: [{
-                        label: 'عدد الردود',
-                        data: sortedChallenges.map(c => c[1]),
-                        backgroundColor: '#764ba2'
-                    }]
+// Challenges chart
+function renderChallengesChart() {
+    const ctx = document.getElementById('challengesChart');
+    
+    const challengeCounts = {};
+    filteredResponses.forEach(r => {
+        const challenge = getChallengeLabel(r.biggest_challenge);
+        challengeCounts[challenge] = (challengeCounts[challenge] || 0) + 1;
+    });
+    
+    // Get top 5
+    const sortedChallenges = Object.entries(challengeCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+    
+    if (challengesChart) challengesChart.destroy();
+    
+    // Handle empty data
+    if (sortedChallenges.length === 0) {
+        return;
+    }
+    
+    challengesChart = new Chart(ctx, {
+        type: 'bar',  // ✅ تم التصحيح من horizontalBar إلى bar
+        data: {
+            labels: sortedChallenges.map(c => c[0]),
+            datasets: [{
+    label: 'عدد الردود',
+    data: Object.values(ratingCounts),
+    backgroundColor: function(context) {
+        const value = context.parsed.y;
+        if (value === 0) return '#e0e0e0';
+        return context.dataIndex >= 7 ? '#28a745' : 
+               context.dataIndex >= 4 ? '#ffc107' : '#dc3545';
+    },
+    borderRadius: 5
+}]
+        },
+        options: {
+            indexAxis: 'y',  // ✅ هذا ما يجعله أفقي
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
                 },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'عدد الردود: ' + context.parsed.x;
                         }
                     }
                 }
-            });
+            }
         }
+    });
+}        
         
         // View details modal
         function viewDetails(id) {
