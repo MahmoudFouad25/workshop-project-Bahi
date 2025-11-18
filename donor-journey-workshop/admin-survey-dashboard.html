@@ -1097,131 +1097,134 @@
         }
         
         // Render charts
-        function renderCharts() {
-            renderDepartmentChart();
-            renderRatingChart();
-            renderExperienceChart();
-            renderChallengesChart();
-        }
+function renderCharts() {
+    renderDepartmentChart();
+    renderRatingChart();
+    renderExperienceChart();
+    renderChallengesChart();
+}
         
         // Department chart
-        function renderDepartmentChart() {
-            const ctx = document.getElementById('departmentChart');
-            
-            const deptCounts = {};
-            filteredResponses.forEach(r => {
-                const dept = getDepartmentLabel(r.department);
-                deptCounts[dept] = (deptCounts[dept] || 0) + 1;
-            });
-            
-            if (departmentChart) departmentChart.destroy();
-            
-            departmentChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(deptCounts),
-                    datasets: [{
-                        data: Object.values(deptCounts),
-                        backgroundColor: [
-    '#667eea', '#764ba2', '#f093fb', '#4facfe',
-    '#43e97b', '#fa709a', '#fee140', '#30cfd0',
-    '#a8edea', '#fed6e3'
-]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+        // Department chart
+function renderDepartmentChart() {
+    const ctx = document.getElementById('departmentChart');
+    
+    const deptCounts = {};
+    filteredResponses.forEach(r => {
+        const dept = getDepartmentLabel(r.department);
+        deptCounts[dept] = (deptCounts[dept] || 0) + 1;
+    });
+    
+    if (departmentChart) departmentChart.destroy();
+    
+    departmentChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(deptCounts),
+            datasets: [{
+                data: Object.values(deptCounts),
+                backgroundColor: [
+                    '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                    '#43e97b', '#fa709a', '#fee140', '#30cfd0'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
                 }
-            });
+            }
         }
+    });
+}
         
         // Rating chart
-        function renderRatingChart() {
-            const ctx = document.getElementById('ratingChart');
-            
-            const ratingCounts = {};
-            for (let i = 1; i <= 10; i++) {
-                ratingCounts[i] = 0;
-            }
-            
-            filteredResponses.forEach(r => {
-                const rating = r.service_quality_rating || 0;
-                if (rating >= 1 && rating <= 10) {
-                    ratingCounts[rating]++;
-                }
-            });
-            
-            if (ratingChart) ratingChart.destroy();
-            
-            ratingChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(ratingCounts),
-                    datasets: [{
-                        label: 'عدد الردود',
-                        data: Object.values(ratingCounts),
-                        backgroundColor: '#667eea'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
+        // Rating chart
+function renderRatingChart() {
+    const ctx = document.getElementById('ratingChart');
+    
+    const ratingCounts = {};
+    for (let i = 1; i <= 10; i++) {
+        ratingCounts[i] = 0;
+    }
+    
+    filteredResponses.forEach(r => {
+        const rating = r.service_quality_rating || 0;
+        if (rating >= 1 && rating <= 10) {
+            ratingCounts[rating]++;
+        }
+    });
+    
+    if (ratingChart) ratingChart.destroy();
+    
+    ratingChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(ratingCounts),
+            datasets: [{
+                label: 'عدد الردود',
+                data: Object.values(ratingCounts),
+                backgroundColor: '#667eea'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
                     }
                 }
-            });
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
+    });
+}
         
         // Experience chart
-        function renderExperienceChart() {
-            const ctx = document.getElementById('experienceChart');
-            
-            const expCounts = {};
-            filteredResponses.forEach(r => {
-                const exp = getExperienceLabel(r.experience);
-                expCounts[exp] = (expCounts[exp] || 0) + 1;
-            });
-            
-            if (experienceChart) experienceChart.destroy();
-            
-            experienceChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: Object.keys(expCounts),
-                    datasets: [{
-                        data: Object.values(expCounts),
-                        backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+        // Experience chart
+function renderExperienceChart() {
+    const ctx = document.getElementById('experienceChart');
+    
+    const expCounts = {};
+    filteredResponses.forEach(r => {
+        const exp = getExperienceLabel(r.experience);
+        expCounts[exp] = (expCounts[exp] || 0) + 1;
+    });
+    
+    if (experienceChart) experienceChart.destroy();
+    
+    experienceChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(expCounts),
+            datasets: [{
+                data: Object.values(expCounts),
+                backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
                 }
-            });
+            }
         }
+    });
+}
         
+// Challenges chart
 // Challenges chart
 function renderChallengesChart() {
     const ctx = document.getElementById('challengesChart');
@@ -1245,23 +1248,18 @@ function renderChallengesChart() {
     }
     
     challengesChart = new Chart(ctx, {
-        type: 'bar',  // ✅ تم التصحيح من horizontalBar إلى bar
+        type: 'bar',
         data: {
             labels: sortedChallenges.map(c => c[0]),
             datasets: [{
-    label: 'عدد الردود',
-    data: Object.values(ratingCounts),
-    backgroundColor: function(context) {
-        const value = context.parsed.y;
-        if (value === 0) return '#e0e0e0';
-        return context.dataIndex >= 7 ? '#28a745' : 
-               context.dataIndex >= 4 ? '#ffc107' : '#dc3545';
-    },
-    borderRadius: 5
-}]
+                label: 'عدد الردود',
+                data: sortedChallenges.map(c => c[1]),
+                backgroundColor: '#764ba2',
+                borderRadius: 5
+            }]
         },
         options: {
-            indexAxis: 'y',  // ✅ هذا ما يجعله أفقي
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             scales: {
@@ -1275,18 +1273,11 @@ function renderChallengesChart() {
             plugins: {
                 legend: {
                     display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'عدد الردود: ' + context.parsed.x;
-                        }
-                    }
                 }
             }
         }
     });
-}        
+}
         
         // View details modal
         function viewDetails(id) {
