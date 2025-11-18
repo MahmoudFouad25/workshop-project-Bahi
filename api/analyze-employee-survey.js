@@ -24,31 +24,19 @@ const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY
 });
 
-// CORS headers
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-};
-
 export default async function handler(req, res) {
-    // Handle CORS preflight
-    if (req.method === 'OPTIONS') {
-        return res.status(200).json({ success: true });
-    }
+    // CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     
-    // Only allow POST requests
-    if (req.method !== 'POST') {
-        return res.status(405).json({ 
-            error: 'Method not allowed',
-            allowedMethods: ['POST']
-        });
-    }
+    if (req.method === 'OPTIONS') return res.status(200).json({ success: true });
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
     
     try {
         console.log('🔍 Starting AI analysis...');
         
-        // Step 1: Fetch all responses from Firebase
+        // Fetch all responses from Firebase
         const responsesSnapshot = await db
             .collection('workshop_nov18_donor_journey')
             .doc('employee_survey')
@@ -62,24 +50,18 @@ export default async function handler(req, res) {
             });
         }
         
-        // Step 2: Prepare responses data
         const responses = [];
         responsesSnapshot.forEach(doc => {
-            responses.push({
-                id: doc.id,
-                ...doc.data()
-            });
+            responses.push({ id: doc.id, ...doc.data() });
         });
         
-        console.log(`📊 Found ${responses.length} responses to analyze`);
+        console.log(`📊 Found ${responses.length} responses`);
         
-        // Step 3: Prepare data summary for AI
+        // Prepare data summary
         const dataSummary = prepareDataSummary(responses);
         
-        // Step 4: Call Claude AI for analysis
-        console.log('🤖 Calling Claude AI for analysis...');
-        
-        const analysisPrompt = buildAnalysisPrompt(responses, dataSummary);
+        // Call Claude AI
+        console.log('🤖 Calling Claude AI...');
         
         const message = await anthropic.messages.create({
             model: 'claude-sonnet-4-20250514',
@@ -87,56 +69,39 @@ export default async function handler(req, res) {
             temperature: 0.7,
             messages: [{
                 role: 'user',
-                content: analysisPrompt
+                content: buildAnalysisPrompt(responses, dataSummary)
             }]
         });
         
         const analysisText = message.content[0].text;
         
-        // Step 5: Parse AI response
-        const analysis = parseAnalysisResponse(analysisText);
-        
-        // Step 6: Save analysis to Firebase
-        const analysisDoc = {
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            totalResponses: responses.length,
-            analysis: analysis,
-            rawAnalysis: analysisText,
-            dataSummary: dataSummary,
-            version: '1.0'
-        };
-        
-        await db
-            .collection('workshop_nov18_donor_journey')
+        // Save to Firebase
+        await db.collection('workshop_nov18_donor_journey')
             .doc('employee_survey')
             .collection('analysis')
-            .add(analysisDoc);
+            .add({
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                totalResponses: responses.length,
+                analysis: analysisText,
+                dataSummary: dataSummary
+            });
         
-        console.log('✅ Analysis completed and saved');
+        console.log('✅ Analysis completed');
         
-        // Step 7: Return response
         return res.status(200).json({
             success: true,
-            message: 'تم التحليل بنجاح',
-            totalResponses: responses.length,
-            analysis: analysis,
-            timestamp: new Date().toISOString()
+            analysis: analysisText,
+            totalResponses: responses.length
         });
         
     } catch (error) {
-        console.error('❌ Error in analysis:', error);
-        
+        console.error('❌ Error:', error);
         return res.status(500).json({
             error: 'Analysis failed',
-            message: error.message,
-            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            message: error.message
         });
     }
 }
-
-// ═══════════════════════════════════════════════════════════
-// Helper Functions
-// ═══════════════════════════════════════════════════════════
 
 function prepareDataSummary(responses) {
     const summary = {
@@ -154,42 +119,27 @@ function prepareDataSummary(responses) {
     let totalRating = 0;
     
     responses.forEach(r => {
-        // Departments
         if (r.department) {
             summary.departments[r.department] = (summary.departments[r.department] || 0) + 1;
         }
-        
-        // Experience
         if (r.experience) {
             summary.experience[r.experience] = (summary.experience[r.experience] || 0) + 1;
         }
-        
-        // Rating
         if (r.service_quality_rating) {
             totalRating += r.service_quality_rating;
         }
-        
-        // Challenges
         if (r.biggest_challenge) {
             summary.commonChallenges[r.biggest_challenge] = (summary.commonChallenges[r.biggest_challenge] || 0) + 1;
         }
-        
-        // Tech problems
         if (r.tech_problem) {
             summary.techProblems[r.tech_problem] = (summary.techProblems[r.tech_problem] || 0) + 1;
         }
-        
-        // Motivations
         if (r.main_motivation) {
             summary.motivations[r.main_motivation] = (summary.motivations[r.main_motivation] || 0) + 1;
         }
-        
-        // Churn reasons
         if (r.churn_reason) {
             summary.churnReasons[r.churn_reason] = (summary.churnReasons[r.churn_reason] || 0) + 1;
         }
-        
-        // Improvement suggestions
         if (r.immediate_increase) {
             summary.improvements.push(r.immediate_increase);
         }
@@ -288,52 +238,3 @@ ${summary.improvements.slice(0, 20).map((imp, i) => `${i + 1}. ${imp}`).join('\n
 
 ابدأ التحليل الآن:`;
 }
-
-function parseAnalysisResponse(text) {
-    // Try to extract structured data from the response
-    const sections = {
-        keyFindings: extractSection(text, 'الاكتشافات الرئيسية', 'المشاكل الحرجة'),
-        criticalIssues: extractSection(text, 'المشاكل الحرجة', 'الفرص الذهبية'),
-        opportunities: extractSection(text, 'الفرص الذهبية', 'التوصيات الاستراتيجية'),
-        recommendations: extractSection(text, 'التوصيات الاستراتيجية', 'مؤشرات النجاح'),
-        metrics: extractSection(text, 'مؤشرات النجاح', 'خارطة الطريق'),
-        roadmap: extractSection(text, 'خارطة الطريق', 'رسائل للإدارة'),
-        executiveSummary: extractSection(text, 'رسائل للإدارة', null)
-    };
-    
-    return {
-        fullText: text,
-        sections: sections,
-        generatedAt: new Date().toISOString()
-    };
-}
-
-function extractSection(text, startMarker, endMarker) {
-    try {
-        const startIndex = text.indexOf(startMarker);
-        if (startIndex === -1) return '';
-        
-        const contentStart = startIndex + startMarker.length;
-        
-        if (endMarker) {
-            const endIndex = text.indexOf(endMarker, contentStart);
-            if (endIndex === -1) {
-                return text.substring(contentStart).trim();
-            }
-            return text.substring(contentStart, endIndex).trim();
-        }
-        
-        return text.substring(contentStart).trim();
-    } catch (error) {
-        console.error('Error extracting section:', error);
-        return '';
-    }
-}
-
-// Export for serverless
-export const config = {
-    api: {
-        bodyParser: true,
-        externalResolver: true
-    }
-};
