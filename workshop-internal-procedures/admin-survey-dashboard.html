@@ -1,0 +1,2398 @@
+<!DOCTYPE html> 
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - استبيان الإجراءات الداخلية | صناع الحياة</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5568d3;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        /* ============================================ */
+        /* Header */
+        /* ============================================ */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-title {
+            flex: 1;
+        }
+        
+        .header-title h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .header-title p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--light);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        /* ============================================ */
+        /* Stats Overview */
+        /* ============================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 0 0 0 100px;
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 600;
+        }
+        
+        .stat-trend {
+            font-size: 12px;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .stat-trend.up {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+        
+        .stat-trend.down {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+        
+        /* ============================================ */
+        /* Main Content */
+        /* ============================================ */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title .icon {
+            font-size: 28px;
+        }
+        
+        .section-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        /* ============================================ */
+        /* Filters */
+        /* ============================================ */
+        .filters {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 18px;
+        }
+        
+        /* ============================================ */
+        /* Charts */
+        /* ============================================ */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-small {
+            height: 300px;
+        }
+        
+        /* ============================================ */
+        /* Lists */
+        /* ============================================ */
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .list-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            border-right: 5px solid var(--primary);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .list-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .list-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .list-item-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+        }
+        
+        .list-item-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .list-item-content {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        .list-item-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .list-item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* ============================================ */
+        /* Priority List */
+        /* ============================================ */
+        .priority-list {
+            counter-reset: priority;
+        }
+        
+        .priority-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: all 0.3s;
+        }
+        
+        .priority-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .priority-number {
+            counter-increment: priority;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .priority-number::before {
+            content: counter(priority);
+        }
+        
+        .priority-content {
+            flex: 1;
+        }
+        
+        .priority-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        
+        .priority-count {
+            font-size: 13px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .priority-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .priority-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        /* ============================================ */
+        /* AI Insights */
+        /* ============================================ */
+        .ai-insights {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .ai-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .ai-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .ai-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--dark);
+        }
+        
+        .ai-content ul {
+            margin: 15px 0;
+            padding-right: 25px;
+        }
+        
+        .ai-content li {
+            margin-bottom: 10px;
+        }
+        
+        .ai-loading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .ai-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ============================================ */
+        /* Loading Overlay */
+        /* ============================================ */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        /* ============================================ */
+        /* Tabs */
+        /* ============================================ */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--light);
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            color: var(--primary);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ============================================ */
+        /* Empty State */
+        /* ============================================ */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state-subtext {
+            font-size: 14px;
+        }
+        
+        /* ============================================ */
+        /* Responsive */
+        /* ============================================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header-title h1 {
+                font-size: 22px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-card {
+                padding: 20px;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .priority-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .priority-number {
+                margin: 0 auto;
+            }
+        }
+        
+        /* ============================================ */
+        /* Print Styles */
+        /* ============================================ */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .header-actions,
+            .filters,
+            .btn {
+                display: none !important;
+            }
+            
+            .section-card {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري تحميل البيانات...</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">
+            <h1>🎯 لوحة التحكم - استبيان الإجراءات الداخلية</h1>
+            <p>ورشة: من الفوضى إلى النظام | 19 نوفمبر 2025</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="refreshData()">
+                🔄 تحديث البيانات
+            </button>
+            <button class="btn btn-success" onclick="triggerAIAnalysis()">
+                🤖 تحليل بالذكاء الاصطناعي
+            </button>
+            <button class="btn btn-primary" onclick="exportData()">
+                📥 تصدير التقرير
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-grid" id="stats-grid">
+        <!-- سيتم ملؤها بالـ JavaScript -->
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- AI Insights Section -->
+        <div class="section-card">
+            <div class="ai-insights" id="ai-insights">
+                <div class="ai-header">
+                    <div class="ai-icon">🤖</div>
+                    <div class="ai-title">التحليل الذكي بواسطة Claude AI</div>
+                </div>
+                <div class="ai-content" id="ai-content">
+                    <div class="ai-loading">
+                        <div class="ai-spinner"></div>
+                        <span>انقر على زر "تحليل بالذكاء الاصطناعي" للحصول على رؤى متعمقة...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="section-card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('overview')">📊 نظرة عامة</button>
+                <button class="tab" onclick="switchTab('bottlenecks')">🚧 الاختناقات</button>
+                <button class="tab" onclick="switchTab('priorities')">🎯 الأولويات</button>
+                <button class="tab" onclick="switchTab('departments')">🏢 الأقسام</button>
+                <button class="tab" onclick="switchTab('stories')">📖 القصص الواقعية</button>
+                <button class="tab" onclick="switchTab('responses')">📝 جميع الردود</button>
+            </div>
+
+            <!-- Tab: Overview -->
+            <div class="tab-content active" id="tab-overview">
+                <!-- سيتم ملؤه بالـ JavaScript -->
+            </div>
+
+            <!-- Tab: Bottlenecks -->
+            <div class="tab-content" id="tab-bottlenecks">
+                <!-- سيتم ملؤه بالـ JavaScript -->
+            </div>
+
+            <!-- Tab: Priorities -->
+            <div class="tab-content" id="tab-priorities">
+                <!-- سيتم ملؤه بالـ JavaScript -->
+            </div>
+
+            <!-- Tab: Departments -->
+            <div class="tab-content" id="tab-departments">
+                <!-- سيتم ملؤه بالـ JavaScript -->
+            </div>
+
+            <!-- Tab: Stories -->
+            <div class="tab-content" id="tab-stories">
+                <!-- سيتم ملؤه بالـ JavaScript -->
+            </div>
+
+            <!-- Tab: Responses -->
+            <div class="tab-content" id="tab-responses">
+                <!-- سيتم ملؤه بالـ JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+
+  <script>
+        // ============================================
+        // Initialize Firebase
+        // ============================================
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // ============================================
+        // Global Variables
+        // ============================================
+        let allResponses = [];
+        let filteredResponses = [];
+        let charts = {};
+        
+        // ============================================
+        // Load Data on Page Load
+        // ============================================
+        window.addEventListener('load', async function() {
+            showLoading();
+            await loadAllData();
+            hideLoading();
+        });
+        
+        // ============================================
+        // Show/Hide Loading
+        // ============================================
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.add('show');
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.remove('show');
+        }
+        
+        // ============================================
+        // Load All Data
+        // ============================================
+        async function loadAllData() {
+            try {
+                const snapshot = await db.collection('internal-procedures-survey')
+                    .orderBy('timestamp', 'desc')
+                    .get();
+                
+                allResponses = [];
+                snapshot.forEach(doc => {
+                    allResponses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                filteredResponses = [...allResponses];
+                
+                console.log('Loaded responses:', allResponses.length);
+                
+                // Render all sections
+                renderStats();
+                renderOverviewTab();
+                renderBottlenecksTab();
+                renderPrioritiesTab();
+                renderDepartmentsTab();
+                renderStoriesTab();
+                renderResponsesTab();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('حدث خطأ أثناء تحميل البيانات. الرجاء المحاولة مرة أخرى.');
+            }
+        }
+        
+        // ============================================
+        // Render Stats Overview
+        // ============================================
+        function renderStats() {
+            const total = allResponses.length;
+            
+            if (total === 0) {
+                document.getElementById('stats-grid').innerHTML = `
+                    <div class="stat-card" style="grid-column: 1 / -1;">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <div class="empty-state-text">لا توجد بيانات بعد</div>
+                            <div class="empty-state-subtext">سيتم عرض الإحصائيات بمجرد ملء الاستبيانات</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate stats
+            const avgRoleClarity = calculateAverage('role_clarity');
+            const avgCooperation = calculateAverage('cooperation_quality');
+            const avgExpectedImpact = calculateAverage('expected_impact');
+            const readinessAvg = calculateAverage('readiness_new_procedures');
+            
+            // Count by department
+            const deptCounts = countByField('department');
+            const topDept = Object.entries(deptCounts).sort((a, b) => b[1] - a[1])[0];
+            
+            // Count bottlenecks
+            const bottleneckMentions = allResponses.filter(r => 
+                r.bottleneck_story && r.bottleneck_story.trim().length > 0
+            ).length;
+            
+            // Count SLA needs
+            const slaImpactCounts = countByField('sla_impact');
+            const slaPositive = (slaImpactCounts['نعم، بشكل كبير جدًا'] || 0) + 
+                               (slaImpactCounts['نعم، بشكل ملحوظ'] || 0);
+            
+            const statsHTML = `
+                <div class="stat-card">
+                    <span class="stat-icon">📊</span>
+                    <div class="stat-value">${total}</div>
+                    <div class="stat-label">إجمالي الاستجابات</div>
+                    <div class="stat-trend up">📈 +${total} استجابة جديدة</div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">⭐</span>
+                    <div class="stat-value">${avgRoleClarity.toFixed(1)}/10</div>
+                    <div class="stat-label">متوسط وضوح الدور</div>
+                    <div class="stat-trend ${avgRoleClarity >= 7 ? 'up' : 'down'}">
+                        ${avgRoleClarity >= 7 ? '✅' : '⚠️'} 
+                        ${avgRoleClarity >= 7 ? 'جيد' : 'يحتاج تحسين'}
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🤝</span>
+                    <div class="stat-value">${avgCooperation.toFixed(1)}/10</div>
+                    <div class="stat-label">متوسط جودة التعاون</div>
+                    <div class="stat-trend ${avgCooperation >= 7 ? 'up' : 'down'}">
+                        ${avgCooperation >= 7 ? '✅' : '⚠️'} 
+                        ${avgCooperation >= 7 ? 'جيد' : 'يحتاج تحسين'}
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🎯</span>
+                    <div class="stat-value">${avgExpectedImpact.toFixed(1)}/10</div>
+                    <div class="stat-label">التأثير المتوقع للورشة</div>
+                    <div class="stat-trend ${avgExpectedImpact >= 8 ? 'up' : avgExpectedImpact >= 6 ? 'up' : 'down'}">
+                        ${avgExpectedImpact >= 8 ? '🔥' : avgExpectedImpact >= 6 ? '✅' : '⚠️'} 
+                        ${avgExpectedImpact >= 8 ? 'توقعات عالية جداً!' : avgExpectedImpact >= 6 ? 'توقعات إيجابية' : 'توقعات متواضعة'}
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🚧</span>
+                    <div class="stat-value">${bottleneckMentions}</div>
+                    <div class="stat-label">قصص اختناقات موثقة</div>
+                    <div class="stat-trend up">📝 ${((bottleneckMentions/total)*100).toFixed(0)}% من المشاركين</div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">📋</span>
+                    <div class="stat-value">${((slaPositive/total)*100).toFixed(0)}%</div>
+                    <div class="stat-label">يرون أن SLAs ستحسن الأداء</div>
+                    <div class="stat-trend up">✅ ${slaPositive} من ${total} شخص</div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🔥</span>
+                    <div class="stat-value">${readinessAvg.toFixed(1)}/10</div>
+                    <div class="stat-label">استعداد لإجراءات جديدة</div>
+                    <div class="stat-trend ${readinessAvg >= 7 ? 'up' : 'down'}">
+                        ${readinessAvg >= 7 ? '✅ استعداد عالي' : '⚠️ مقاومة محتملة'}
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-icon">🏢</span>
+                    <div class="stat-value">${Object.keys(deptCounts).length}</div>
+                    <div class="stat-label">أقسام مشاركة</div>
+                    <div class="stat-trend up">📊 أعلى مشاركة: ${topDept ? topDept[0] : 'N/A'}</div>
+                </div>
+            `;
+            
+            document.getElementById('stats-grid').innerHTML = statsHTML;
+        }
+        
+        // ============================================
+        // Render Overview Tab
+        // ============================================
+        function renderOverviewTab() {
+            const container = document.getElementById('tab-overview');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div class="empty-state-text">لا توجد بيانات للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = `
+                <h3 style="margin-bottom: 20px; color: var(--dark);">📊 التوزيعات الرئيسية</h3>
+                
+                <!-- Row 1: Department & Experience -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">توزيع المشاركين حسب القسم</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="chart-departments"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">توزيع الخبرات</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="chart-experience"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 2: Clarity & Cooperation -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">وضوح الدور والمسؤوليات (1-10)</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="chart-role-clarity"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">جودة التعاون بين الأقسام (1-10)</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="chart-cooperation"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 3: Procedures & Training -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">نسبة الإجراءات الموثقة</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="chart-documented"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 15px; color: var(--dark);">مدة تدريب موظف جديد</h4>
+                        <div class="chart-container chart-small">
+                            <canvas id="chart-training"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Row 4: Expected Impact -->
+                <div style="margin-bottom: 30px;">
+                    <h4 style="margin-bottom: 15px; color: var(--dark);">التأثير المتوقع للورشة (1-10)</h4>
+                    <div class="chart-container">
+                        <canvas id="chart-expected-impact"></canvas>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            // Render charts
+            renderDepartmentsChart();
+            renderExperienceChart();
+            renderRoleClarityChart();
+            renderCooperationChart();
+            renderDocumentedChart();
+            renderTrainingChart();
+            renderExpectedImpactChart();
+        }
+        
+        // ============================================
+        // Render Bottlenecks Tab
+        // ============================================
+        function renderBottlenecksTab() {
+            const container = document.getElementById('tab-bottlenecks');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🚧</div>
+                        <div class="empty-state-text">لا توجد بيانات للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Analyze time wasters
+            const timeWasters = {};
+            allResponses.forEach(r => {
+                if (r.time_wasters && Array.isArray(r.time_wasters)) {
+                    r.time_wasters.forEach(w => {
+                        timeWasters[w] = (timeWasters[w] || 0) + 1;
+                    });
+                }
+            });
+            
+            const sortedWasters = Object.entries(timeWasters)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            // Analyze slow departments
+            const slowDepts = countByField('slow_department');
+            const sortedSlowDepts = Object.entries(slowDepts)
+                .filter(([dept, count]) => dept !== 'لا يوجد تأخير' && dept !== 'أفضل عدم الإجابة' && dept !== '')
+                .sort((a, b) => b[1] - a[1]);
+            
+            // Analyze delay reasons
+            const delayReasons = countByField('delay_main_reason');
+            const sortedDelayReasons = Object.entries(delayReasons)
+                .sort((a, b) => b[1] - a[1]);
+            
+            // Collect bottleneck stories
+            const stories = allResponses
+                .filter(r => r.bottleneck_story && r.bottleneck_story.trim().length > 50)
+                .map(r => ({
+                    story: r.bottleneck_story,
+                    department: r.department,
+                    experience: r.experience
+                }));
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: var(--dark);">🚧 تحليل الاختناقات والعوائق</h3>
+                
+                <!-- Top Time Wasters -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>⏰</span>
+                        أكثر الأشياء التي تضيع الوقت وتعطل الإنجاز
+                    </h4>
+                    <div class="priority-list">
+            `;
+            
+            sortedWasters.forEach(([item, count]) => {
+                const percentage = ((count / allResponses.length) * 100).toFixed(0);
+                html += `
+                    <div class="priority-item">
+                        <div class="priority-number"></div>
+                        <div class="priority-content">
+                            <div class="priority-title">${item}</div>
+                            <div class="priority-count">
+                                <span>👥 ${count} شخص</span>
+                                <span>•</span>
+                                <span>${percentage}% من المشاركين</span>
+                            </div>
+                            <div class="priority-bar">
+                                <div class="priority-bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <!-- Slow Departments -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>🏢</span>
+                        الأقسام التي يواجه معها الموظفون تأخير أو صعوبة
+                    </h4>
+            `;
+            
+            if (sortedSlowDepts.length > 0) {
+                html += `<div class="priority-list">`;
+                sortedSlowDepts.forEach(([dept, count]) => {
+                    const percentage = ((count / allResponses.length) * 100).toFixed(0);
+                    html += `
+                        <div class="priority-item">
+                            <div class="priority-number"></div>
+                            <div class="priority-content">
+                                <div class="priority-title">${dept}</div>
+                                <div class="priority-count">
+                                    <span>👥 ${count} شكوى</span>
+                                    <span>•</span>
+                                    <span>${percentage}% من المشاركين</span>
+                                </div>
+                                <div class="priority-bar">
+                                    <div class="priority-bar-fill" style="width: ${percentage}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            } else {
+                html += `<p style="color: var(--gray);">✅ لا توجد شكاوى محددة</p>`;
+            }
+            
+            html += `
+                </div>
+                
+                <!-- Delay Reasons -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>⚠️</span>
+                        الأسباب الرئيسية للتأخير في الردود بين الأقسام
+                    </h4>
+                    <div class="chart-container chart-small">
+                        <canvas id="chart-delay-reasons"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Bottleneck Stories -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>📖</span>
+                        قصص واقعية عن الاختناقات (${stories.length} قصة)
+                    </h4>
+            `;
+            
+            if (stories.length > 0) {
+                html += `<div class="list-container">`;
+                stories.slice(0, 10).forEach((s, index) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">قصة #${index + 1}</div>
+                                <div class="list-item-badge">${s.department}</div>
+                            </div>
+                            <div class="list-item-content">${s.story}</div>
+                            <div class="list-item-meta">
+                                <span>👤 ${s.experience}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                
+                if (stories.length > 10) {
+                    html += `<p style="text-align: center; margin-top: 20px; color: var(--gray);">+ ${stories.length - 10} قصة أخرى</p>`;
+                }
+            } else {
+                html += `<p style="color: var(--gray);">لا توجد قصص موثقة</p>`;
+            }
+            
+            html += `</div>`;
+            
+            container.innerHTML = html;
+            
+            // Render delay reasons chart
+            renderDelayReasonsChart(sortedDelayReasons);
+        }
+        
+        // ============================================
+        // Render Priorities Tab
+        // ============================================
+        function renderPrioritiesTab() {
+            const container = document.getElementById('tab-priorities');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🎯</div>
+                        <div class="empty-state-text">لا توجد بيانات للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Collect SOP priorities
+            const sopPriorities = {};
+            allResponses.forEach(r => {
+                [r.sop_priority_1, r.sop_priority_2, r.sop_priority_3].forEach(sop => {
+                    if (sop && sop.trim()) {
+                        const key = sop.trim().toLowerCase();
+                        sopPriorities[key] = (sopPriorities[key] || 0) + 1;
+                    }
+                });
+            });
+            
+            const sortedSOPs = Object.entries(sopPriorities)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15);
+            
+            // Collect SLA priorities
+            const slaPriorities = {};
+            allResponses.forEach(r => {
+                [r.sla_priority_1, r.sla_priority_2, r.sla_priority_3].forEach(sla => {
+                    if (sla && sla.trim()) {
+                        const key = sla.trim().toLowerCase();
+                        slaPriorities[key] = (slaPriorities[key] || 0) + 1;
+                    }
+                });
+            });
+            
+            const sortedSLAs = Object.entries(slaPriorities)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15);
+            
+            // Collect magic fixes
+            const magicFixes = {};
+            allResponses.forEach(r => {
+                [r.magic_fix_1, r.magic_fix_2, r.magic_fix_3].forEach(fix => {
+                    if (fix && fix.trim().length > 10) {
+                        const key = fix.trim().substring(0, 100);
+                        magicFixes[key] = (magicFixes[key] || 0) + 1;
+                    }
+                });
+            });
+            
+            const sortedFixes = Object.entries(magicFixes)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: var(--dark);">🎯 الأولويات والمقترحات</h3>
+                
+                <!-- SOPs Priority -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>📋</span>
+                        أهم العمليات المحتاجة لـ SOPs موحدة (أعلى ${sortedSOPs.length} ذكراً)
+                    </h4>
+                    <div class="priority-list">
+            `;
+            
+            sortedSOPs.forEach(([sop, count]) => {
+                const percentage = ((count / allResponses.length) * 100).toFixed(0);
+                html += `
+                    <div class="priority-item">
+                        <div class="priority-number"></div>
+                        <div class="priority-content">
+                            <div class="priority-title">${sop}</div>
+                            <div class="priority-count">
+                                <span>👥 ${count} شخص</span>
+                                <span>•</span>
+                                <span>${percentage}% طلبوها</span>
+                            </div>
+                            <div class="priority-bar">
+                                <div class="priority-bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <!-- SLAs Priority -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>⏱️</span>
+                        أهم الإدارات المحتاجة لـ SLAs واضحة (أعلى ${sortedSLAs.length} ذكراً)
+                    </h4>
+                    <div class="priority-list">
+            `;
+            
+            sortedSLAs.forEach(([sla, count]) => {
+                const percentage = ((count / allResponses.length) * 100).toFixed(0);
+                html += `
+                    <div class="priority-item">
+                        <div class="priority-number"></div>
+                        <div class="priority-content">
+                            <div class="priority-title">${sla}</div>
+                            <div class="priority-count">
+                                <span>👥 ${count} شخص</span>
+                                <span>•</span>
+                                <span>${percentage}% طلبوها</span>
+                            </div>
+                            <div class="priority-bar">
+                                <div class="priority-bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <!-- Magic Fixes -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <span>✨</span>
+                        لو كان عندهم عصا سحرية - أهم 3 حاجات يصلحوها
+                    </h4>
+                    <div class="list-container">
+            `;
+            
+            sortedFixes.forEach(([fix, count], index) => {
+                html += `
+                    <div class="list-item">
+                        <div class="list-item-header">
+                            <div class="list-item-title">${fix}</div>
+                            <div class="list-item-badge">${count} شخص</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <!-- SLA Impact Chart -->
+                <div style="margin-bottom: 40px;">
+                    <h4 style="margin-bottom: 20px; color: var(--dark);">تأثير اتفاقيات SLA المتوقع على الأداء</h4>
+                    <div class="chart-container chart-small">
+                        <canvas id="chart-sla-impact"></canvas>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            // Render SLA impact chart
+            renderSLAImpactChart();
+        }
+        
+        // ============================================
+        // Render Departments Tab
+        // ============================================
+        function renderDepartmentsTab() {
+            const container = document.getElementById('tab-departments');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏢</div>
+                        <div class="empty-state-text">لا توجد بيانات للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Analyze by department
+            const depts = {};
+            allResponses.forEach(r => {
+                const dept = r.department || 'غير محدد';
+                if (!depts[dept]) {
+                    depts[dept] = {
+                        count: 0,
+                        roleClarity: [],
+                        cooperation: [],
+                        readiness: [],
+                        expectedImpact: []
+                    };
+                }
+                depts[dept].count++;
+                if (r.role_clarity) depts[dept].roleClarity.push(parseFloat(r.role_clarity));
+                if (r.cooperation_quality) depts[dept].cooperation.push(parseFloat(r.cooperation_quality));
+                if (r.readiness_new_procedures) depts[dept].readiness.push(parseFloat(r.readiness_new_procedures));
+                if (r.expected_impact) depts[dept].expectedImpact.push(parseFloat(r.expected_impact));
+            });
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: var(--dark);">🏢 تحليل حسب الأقسام</h3>
+                <div class="list-container">
+            `;
+            
+            Object.entries(depts)
+                .sort((a, b) => b[1].count - a[1].count)
+                .forEach(([dept, data]) => {
+                    const avgClarity = data.roleClarity.length > 0 
+                        ? (data.roleClarity.reduce((a, b) => a + b, 0) / data.roleClarity.length).toFixed(1)
+                        : 'N/A';
+                    const avgCoop = data.cooperation.length > 0
+                        ? (data.cooperation.reduce((a, b) => a + b, 0) / data.cooperation.length).toFixed(1)
+                        : 'N/A';
+                    const avgReadiness = data.readiness.length > 0
+                        ? (data.readiness.reduce((a, b) => a + b, 0) / data.readiness.length).toFixed(1)
+                        : 'N/A';
+                    const avgImpact = data.expectedImpact.length > 0
+                        ? (data.expectedImpact.reduce((a, b) => a + b, 0) / data.expectedImpact.length).toFixed(1)
+                        : 'N/A';
+                    
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">${dept}</div>
+                                <div class="list-item-badge">${data.count} مشارك</div>
+                            </div>
+                            <div class="list-item-meta">
+                                <span>⭐ وضوح الدور: ${avgClarity}/10</span>
+                                <span>🤝 التعاون: ${avgCoop}/10</span>
+                                <span>🔥 الاستعداد: ${avgReadiness}/10</span>
+                                <span>🎯 التأثير المتوقع: ${avgImpact}/10</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            
+            html += `</div>`;
+            
+            container.innerHTML = html;
+        }
+        
+        // ============================================
+        // Render Stories Tab
+        // ============================================
+        function renderStoriesTab() {
+            const container = document.getElementById('tab-stories');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📖</div>
+                        <div class="empty-state-text">لا توجد بيانات للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Collect all stories
+            const stories = {
+                bottlenecks: [],
+                unclearProcedures: [],
+                brokeProcedures: [],
+                positiveCoordination: [],
+                worstBottlenecks: []
+            };
+            
+            allResponses.forEach(r => {
+                if (r.bottleneck_story && r.bottleneck_story.trim().length > 20) {
+                    stories.bottlenecks.push({
+                        content: r.bottleneck_story,
+                        dept: r.department,
+                        exp: r.experience
+                    });
+                }
+                if (r.unclear_procedure_story && r.unclear_procedure_story.trim().length > 20) {
+                    stories.unclearProcedures.push({
+                        content: r.unclear_procedure_story,
+                        dept: r.department,
+                        exp: r.experience
+                    });
+                }
+                if (r.broke_procedure_details && r.broke_procedure_details.trim().length > 20) {
+                    stories.brokeProcedures.push({
+                        content: r.broke_procedure_details,
+                        dept: r.department,
+                        exp: r.experience
+                    });
+                }
+                if (r.positive_coordination_story && r.positive_coordination_story.trim().length > 20) {
+                    stories.positiveCoordination.push({
+                        content: r.positive_coordination_story,
+                        dept: r.department,
+                        exp: r.experience
+                    });
+                }
+                if (r.worst_bottleneck && r.worst_bottleneck.trim().length > 20) {
+                    stories.worstBottlenecks.push({
+                        content: r.worst_bottleneck,
+                        dept: r.department,
+                        exp: r.experience
+                    });
+                }
+            });
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: var(--dark);">📖 القصص الواقعية من الميدان</h3>
+            `;
+            
+            // Bottleneck stories
+            if (stories.bottlenecks.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>🚧</span>
+                            قصص اختناقات وتعطل (${stories.bottlenecks.length} قصة)
+                        </h4>
+                        <div class="list-container">
+                `;
+                stories.bottlenecks.forEach((s, i) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">قصة #${i + 1}</div>
+                                <div class="list-item-badge">${s.dept}</div>
+                            </div>
+                            <div class="list-item-content">${s.content}</div>
+                            <div class="list-item-meta">
+                                <span>👤 ${s.exp}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            
+            // Unclear procedures
+            if (stories.unclearProcedures.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>❓</span>
+                            إجراءات غير واضحة (${stories.unclearProcedures.length} قصة)
+                        </h4>
+                        <div class="list-container">
+                `;
+                stories.unclearProcedures.forEach((s, i) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">قصة #${i + 1}</div>
+                                <div class="list-item-badge">${s.dept}</div>
+                            </div>
+                            <div class="list-item-content">${s.content}</div>
+                            <div class="list-item-meta">
+                                <span>👤 ${s.exp}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            
+            // Broke procedures
+            if (stories.brokeProcedures.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>⚠️</span>
+                            مواقف كسر الإجراءات (${stories.brokeProcedures.length} قصة)
+                        </h4>
+                        <div class="list-container">
+                `;
+                stories.brokeProcedures.forEach((s, i) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">قصة #${i + 1}</div>
+                                <div class="list-item-badge">${s.dept}</div>
+                            </div>
+                            <div class="list-item-content">${s.content}</div>
+                            <div class="list-item-meta">
+                                <span>👤 ${s.exp}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            
+            // Positive coordination
+            if (stories.positiveCoordination.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>✅</span>
+                            قصص نجاح في التنسيق (${stories.positiveCoordination.length} قصة)
+                        </h4>
+                        <div class="list-container">
+                `;
+                stories.positiveCoordination.forEach((s, i) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">قصة نجاح #${i + 1}</div>
+                                <div class="list-item-badge">${s.dept}</div>
+                            </div>
+                            <div class="list-item-content">${s.content}</div>
+                            <div class="list-item-meta">
+                                <span>👤 ${s.exp}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            
+            // Worst bottlenecks
+            if (stories.worstBottlenecks.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>🔥</span>
+                            أسوأ الاختناقات في آخر 6 شهور (${stories.worstBottlenecks.length} قصة)
+                        </h4>
+                        <div class="list-container">
+                `;
+                stories.worstBottlenecks.forEach((s, i) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">قصة #${i + 1}</div>
+                                <div class="list-item-badge">${s.dept}</div>
+                            </div>
+                            <div class="list-item-content">${s.content}</div>
+                            <div class="list-item-meta">
+                                <span>👤 ${s.exp}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            
+            if (stories.bottlenecks.length === 0 && 
+                stories.unclearProcedures.length === 0 && 
+                stories.brokeProcedures.length === 0 && 
+                stories.positiveCoordination.length === 0 &&
+                stories.worstBottlenecks.length === 0) {
+                html += `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📖</div>
+                        <div class="empty-state-text">لا توجد قصص موثقة</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // ============================================
+        // Render Responses Tab
+        // ============================================
+        function renderResponsesTab() {
+            const container = document.getElementById('tab-responses');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div class="empty-state-text">لا توجد بيانات للعرض</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <h3 style="margin-bottom: 20px; color: var(--dark);">📝 جميع الردود التفصيلية (${allResponses.length})</h3>
+                
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">تصفية حسب القسم</label>
+                        <select class="filter-select" id="filter-dept" onchange="filterResponses()">
+                            <option value="">الكل</option>
+                            ${[...new Set(allResponses.map(r => r.department))].map(d => 
+                                `<option value="${d}">${d}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="search-input" placeholder="ابحث في الردود..." onkeyup="searchResponses()">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+                
+                <div id="responses-list" class="list-container">
+            `;
+            
+            allResponses.forEach((r, index) => {
+                html += `
+                    <div class="list-item" data-dept="${r.department}">
+                        <div class="list-item-header">
+                            <div class="list-item-title">استجابة #${index + 1}</div>
+                            <div class="list-item-badge">${r.department}</div>
+                        </div>
+                        <div class="list-item-meta" style="flex-wrap: wrap; margin-bottom: 15px;">
+                            <span>👤 ${r.experience}</span>
+                            <span>💼 ${r.work_nature}</span>
+                            <span>⭐ وضوح: ${r.role_clarity}/10</span>
+                            <span>🤝 تعاون: ${r.cooperation_quality}/10</span>
+                            <span>🎯 تأثير: ${r.expected_impact}/10</span>
+                        </div>
+                        <div class="list-item-content">
+                            <details>
+                                <summary style="cursor: pointer; font-weight: 600; padding: 10px; background: var(--light); border-radius: 8px; margin-bottom: 10px;">
+                                    عرض التفاصيل الكاملة ↓
+                                </summary>
+                                <div style="padding: 15px; background: white; border: 2px solid var(--light); border-radius: 8px; margin-top: 10px;">
+                                    ${Object.entries(r).map(([key, value]) => {
+                                        if (key === 'id' || key === 'timestamp' || key === 'createdAt' || key === 'analyzed') return '';
+                                        if (Array.isArray(value)) {
+                                            return `<p style="margin-bottom: 10px;"><strong>${formatFieldName(key)}:</strong> ${value.join(', ')}</p>`;
+                                        }
+                                        if (typeof value === 'string' && value.length > 0) {
+                                            return `<p style="margin-bottom: 10px;"><strong>${formatFieldName(key)}:</strong> ${value}</p>`;
+                                        }
+                                        return '';
+                                    }).join('')}
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            container.innerHTML = html;
+        }
+        
+        // ============================================
+        // Chart Rendering Functions
+        // ============================================
+        
+        function renderDepartmentsChart() {
+            const ctx = document.getElementById('chart-departments');
+            if (!ctx) return;
+            
+            const deptCounts = countByField('department');
+            const labels = Object.keys(deptCounts);
+            const data = Object.values(deptCounts);
+            
+            if (charts['departments']) charts['departments'].destroy();
+            
+            charts['departments'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                            '#43e97b', '#fa709a', '#fee140', '#30cfd0'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 12 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderExperienceChart() {
+            const ctx = document.getElementById('chart-experience');
+            if (!ctx) return;
+            
+            const expCounts = countByField('experience');
+            const expOrder = [
+                'أقل من 6 شهور',
+                '6 شهور - سنة',
+                '1-3 سنوات',
+                '3-5 سنوات',
+                'أكثر من 5 سنوات'
+            ];
+            const labels = expOrder.filter(e => expCounts[e]);
+            const data = labels.map(l => expCounts[l]);
+            
+            if (charts['experience']) charts['experience'].destroy();
+            
+            charts['experience'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: data,
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderRoleClarityChart() {
+            const ctx = document.getElementById('chart-role-clarity');
+            if (!ctx) return;
+            
+            const distribution = getScaleDistribution('role_clarity');
+            
+            if (charts['roleClarity']) charts['roleClarity'].destroy();
+            
+            charts['roleClarity'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: distribution,
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderCooperationChart() {
+            const ctx = document.getElementById('chart-cooperation');
+            if (!ctx) return;
+            
+            const distribution = getScaleDistribution('cooperation_quality');
+            
+            if (charts['cooperation']) charts['cooperation'].destroy();
+            
+            charts['cooperation'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: distribution,
+                        backgroundColor: 'rgba(23, 162, 184, 0.8)',
+                        borderColor: 'rgba(23, 162, 184, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderDocumentedChart() {
+            const ctx = document.getElementById('chart-documented');
+            if (!ctx) return;
+            
+            const docCounts = countByField('documented_procedures');
+            const order = ['أقل من 25%', '25-50%', '50-75%', '75%+'];
+            const labels = order.filter(o => docCounts[o]);
+            const data = labels.map(l => docCounts[l]);
+            
+            if (charts['documented']) charts['documented'].destroy();
+            
+            charts['documented'] = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#dc3545', '#ffc107', '#28a745', '#007bff'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderTrainingChart() {
+            const ctx = document.getElementById('chart-training');
+            if (!ctx) return;
+            
+            const trainCounts = countByField('training_duration');
+            const order = [
+                'أقل من أسبوع',
+                'أسبوع - أسبوعين',
+                'شهر',
+                '2-3 شهور',
+                'أكثر من 3 شهور'
+            ];
+            const labels = order.filter(o => trainCounts[o]);
+            const data = labels.map(l => trainCounts[l]);
+            
+            if (charts['training']) charts['training'].destroy();
+            
+            charts['training'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: data,
+                        backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderExpectedImpactChart() {
+            const ctx = document.getElementById('chart-expected-impact');
+            if (!ctx) return;
+            
+            const distribution = getScaleDistribution('expected_impact');
+            
+            if (charts['expectedImpact']) charts['expectedImpact'].destroy();
+            
+            charts['expectedImpact'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: distribution,
+                        backgroundColor: 'rgba(118, 75, 162, 0.2)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderDelayReasonsChart(sortedDelayReasons) {
+            const ctx = document.getElementById('chart-delay-reasons');
+            if (!ctx) return;
+            
+            const labels = sortedDelayReasons.map(r => r[0]);
+            const data = sortedDelayReasons.map(r => r[1]);
+            
+            if (charts['delayReasons']) charts['delayReasons'].destroy();
+            
+            charts['delayReasons'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: data,
+                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                        borderColor: 'rgba(220, 53, 69, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function renderSLAImpactChart() {
+            const ctx = document.getElementById('chart-sla-impact');
+            if (!ctx) return;
+            
+            const slaCounts = countByField('sla_impact');
+            const order = [
+                'نعم، بشكل كبير جدًا',
+                'نعم، بشكل ملحوظ',
+                'نعم، لكن بسيط',
+                'لا، لن يتغير شيء'
+            ];
+            const labels = order.filter(o => slaCounts[o]);
+            const data = labels.map(l => slaCounts[l]);
+            
+            if (charts['slaImpact']) charts['slaImpact'].destroy();
+            
+            charts['slaImpact'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#dc3545'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ============================================
+        // Helper Functions
+        // ============================================
+        
+        function calculateAverage(field) {
+            const values = allResponses
+                .map(r => parseFloat(r[field]))
+                .filter(v => !isNaN(v));
+            
+            if (values.length === 0) return 0;
+            return values.reduce((a, b) => a + b, 0) / values.length;
+        }
+        
+        function countByField(field) {
+            const counts = {};
+            allResponses.forEach(r => {
+                const value = r[field];
+                if (value) {
+                    counts[value] = (counts[value] || 0) + 1;
+                }
+            });
+            return counts;
+        }
+        
+        function getScaleDistribution(field) {
+            const distribution = Array(10).fill(0);
+            allResponses.forEach(r => {
+                const value = parseInt(r[field]);
+                if (value >= 1 && value <= 10) {
+                    distribution[value - 1]++;
+                }
+            });
+            return distribution;
+        }
+        
+        function formatFieldName(key) {
+            const names = {
+                'department': 'القسم',
+                'experience': 'الخبرة',
+                'work_nature': 'طبيعة العمل',
+                'role_clarity': 'وضوح الدور',
+                'cooperation_quality': 'جودة التعاون',
+                'expected_impact': 'التأثير المتوقع',
+                'readiness_new_procedures': 'الاستعداد للإجراءات الجديدة',
+                'documented_procedures': 'نسبة الإجراءات الموثقة',
+                'training_duration': 'مدة التدريب',
+                'bottleneck_story': 'قصة اختناق',
+                'magic_fix_1': 'الإصلاح الأول',
+                'magic_fix_2': 'الإصلاح الثاني',
+                'magic_fix_3': 'الإصلاح الثالث',
+                'sop_priority_1': 'أولوية SOP الأولى',
+                'sla_priority_1': 'أولوية SLA الأولى'
+            };
+            return names[key] || key;
+        }
+        
+        // ============================================
+        // Tab Switching
+        // ============================================
+        function switchTab(tabName) {
+            // Remove active from all tabs and contents
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            // Add active to clicked tab
+            event.target.classList.add('active');
+            
+            // Show corresponding content
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+        
+        // ============================================
+        // Filter and Search
+        // ============================================
+        function filterResponses() {
+            const deptFilter = document.getElementById('filter-dept').value;
+            const items = document.querySelectorAll('#responses-list .list-item');
+            
+            items.forEach(item => {
+                const dept = item.getAttribute('data-dept');
+                if (deptFilter === '' || dept === deptFilter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function searchResponses() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const items = document.querySelectorAll('#responses-list .list-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // ============================================
+        // Refresh Data
+        // ============================================
+        async function refreshData() {
+            showLoading();
+            await loadAllData();
+            hideLoading();
+            alert('✅ تم تحديث البيانات بنجاح!');
+        }
+        
+        // ============================================
+        // AI Analysis
+        // ============================================
+        async function triggerAIAnalysis() {
+            if (allResponses.length === 0) {
+                alert('⚠️ لا توجد بيانات للتحليل');
+                return;
+            }
+            
+            const aiContent = document.getElementById('ai-content');
+            aiContent.innerHTML = `
+                <div class="ai-loading">
+                    <div class="ai-spinner"></div>
+                    <span>جاري التحليل العميق بواسطة الذكاء الاصطناعي... هذا قد يستغرق 30-60 ثانية</span>
+                </div>
+            `;
+            
+            try {
+                // Call API
+                const response = await fetch('/api/analyze-internal-procedures-survey', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'analyze',
+                        responses: allResponses
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('فشل التحليل');
+                }
+                
+                const result = await response.json();
+                
+                // Display AI analysis
+                aiContent.innerHTML = `
+                    <div style="line-height: 1.8;">
+                        ${result.analysis.replace(/\n/g, '<br>')}
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('AI Analysis Error:', error);
+                aiContent.innerHTML = `
+                    <div style="color: var(--danger);">
+                        ❌ حدث خطأ أثناء التحليل. الرجاء المحاولة مرة أخرى.
+                    </div>
+                `;
+            }
+        }
+        
+        // ============================================
+        // Export Data
+        // ============================================
+        function exportData() {
+            if (allResponses.length === 0) {
+                alert('⚠️ لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            // Prepare data for export
+            const exportData = allResponses.map((r, index) => ({
+                'رقم الاستجابة': index + 1,
+                'التاريخ': r.timestamp ? new Date(r.timestamp).toLocaleString('ar-EG') : 'N/A',
+                'القسم': r.department || '',
+                'الخبرة': r.experience || '',
+                'طبيعة العمل': r.work_nature || '',
+                'وضوح الدور': r.role_clarity || '',
+                'جودة التعاون': r.cooperation_quality || '',
+                'التأثير المتوقع': r.expected_impact || '',
+                'الاستعداد للإجراءات الجديدة': r.readiness_new_procedures || '',
+                // Add more fields as needed
+            }));
+            
+            // Convert to CSV
+            const csv = convertToCSV(exportData);
+            
+            // Download
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `internal-procedures-survey-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            alert('✅ تم تصدير البيانات بنجاح!');
+        }
+        
+        function convertToCSV(data) {
+            if (data.length === 0) return '';
+            
+            const headers = Object.keys(data[0]);
+            const rows = data.map(row => 
+                headers.map(header => {
+                    const value = row[header];
+                    // Escape quotes and wrap in quotes if contains comma
+                    if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    }
+                    return value;
+                }).join(',')
+            );
+            
+            return [headers.join(','), ...rows].join('\n');
+        }
+        
+    </script>
+</body>
+</html>
