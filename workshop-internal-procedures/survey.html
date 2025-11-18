@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان: الإجراءات الداخلية والضوابط العامة | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 15px;
+        }
+        
+        .privacy-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-right: 5px solid #667eea;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Questions */
+        .question {
+            margin-bottom: 35px;
+        }
+        
+        .question-label {
+            display: block;
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .question-required {
+            color: #dc3545;
+            font-size: 14px;
+        }
+        
+        .question-helper {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Radio/Checkbox Options */
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            position: relative;
+            display: block;
+        }
+        
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .option label:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .option input:checked + label {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-color: #667eea;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .option label::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            border-radius: 50%;
+            margin-left: 12px;
+            transition: all 0.3s;
+        }
+        
+        .option input[type="checkbox"] + label::before {
+            border-radius: 4px;
+        }
+        
+        .option input:checked + label::before {
+            background: #667eea;
+            border-color: #667eea;
+            box-shadow: inset 0 0 0 3px white;
+        }
+        
+        /* Text Input */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Scale Rating */
+        .scale-container {
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .scale-options {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+        
+        .scale-option {
+            position: relative;
+            flex: 1;
+        }
+        
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .scale-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 45px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .scale-option label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .scale-option input:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.1);
+        }
+        
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        /* Validation Error */
+        .error-message {
+            display: none;
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff5f5;
+            border-right: 3px solid #dc3545;
+            border-radius: 5px;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .question-label {
+                font-size: 16px;
+            }
+            
+            .scale-options {
+                flex-wrap: wrap;
+            }
+            
+            .scale-option {
+                flex: 0 0 calc(20% - 6px);
+            }
+            
+            .navigation {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 معاً لتطبيق نظام محكم ومتطور</h1>
+            <p>صوتك يبني المستقبل</p>
+            <div class="meta">
+                <div>⏱️ الوقت المتوقع: 12-15 دقيقة</div>
+                <div class="privacy-badge">🔒 سرية تامة - لن يُطلب منك اسمك</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="progress-text">القسم 1 من 6</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <form id="survey-form">
+                
+                <!-- القسم الأول -->
+                <div class="section active" data-section="1">
+                    <div class="section-header">
+                        <div class="section-title">📌 القسم الأول: من أنت في المنظومة؟</div>
+                        <div class="section-subtitle">5 أسئلة</div>
+                    </div>
+                    
+                    <!-- السؤال 1 -->
+                    <div class="question">
+                        <label class="question-label">
+                            1. القسم/الإدارة التي تعمل بها:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="dept-cc-internal" name="department" value="الكول سنتر الداخلي" required>
+                                <label for="dept-cc-internal">الكول سنتر الداخلي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-cc-external" name="department" value="الكول سنتر الخارجي">
+                                <label for="dept-cc-external">الكول سنتر الخارجي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-direct" name="department" value="التحصيل المباشر">
+                                <label for="dept-direct">التحصيل المباشر (Direct)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-booths" name="department" value="منافذ التمويل">
+                                <label for="dept-booths">منافذ التمويل (Booths)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-online" name="department" value="الأونلاين">
+                                <label for="dept-online">الأونلاين (Online/Digital)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-network" name="department" value="النتورك">
+                                <label for="dept-network">النتورك (Network)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-data" name="department" value="البيانات والتقارير">
+                                <label for="dept-data">البيانات والتقارير</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-management" name="department" value="الإدارة/القيادة">
+                                <label for="dept-management">الإدارة/القيادة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-support" name="department" value="أقسام داعمة">
+                                <label for="dept-support">أقسام داعمة</label>
+                            </div>
+                        </div>
+                        <input type="text" id="dept-support-text" placeholder="حدد القسم..." style="display: none; margin-top: 10px;">
+                        <div class="error-message" id="error-q1">❌ الرجاء اختيار قسمك</div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="question">
+                        <label class="question-label">
+                            2. عدد سنوات خبرتك في المؤسسة:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="exp-less6" name="experience" value="أقل من 6 شهور" required>
+                                <label for="exp-less6">أقل من 6 شهور</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-6to1" name="experience" value="6 شهور - سنة">
+                                <label for="exp-6to1">6 شهور - سنة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-1to3" name="experience" value="1-3 سنوات">
+                                <label for="exp-1to3">1-3 سنوات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-3to5" name="experience" value="3-5 سنوات">
+                                <label for="exp-3to5">3-5 سنوات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-more5" name="experience" value="أكثر من 5 سنوات">
+                                <label for="exp-more5">أكثر من 5 سنوات</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q2">❌ الرجاء اختيار سنوات خبرتك</div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="question">
+                        <label class="question-label">
+                            3. طبيعة عملك اليومي:
+                            <span class="question-required">*</span>
+                            <div class="question-helper">(اختر الأقرب)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="work-exec" name="work_nature" value="تنفيذي بحت" required>
+                                <label for="work-exec">تنفيذي بحت (أنفذ إجراءات محددة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-exec-coord" name="work_nature" value="تنفيذي + تنسيق">
+                                <label for="work-exec-coord">تنفيذي + تنسيق مع أقسام أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-super" name="work_nature" value="إشرافي/قيادي">
+                                <label for="work-super">إشرافي/قيادي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-support" name="work_nature" value="دعم فني/إداري">
+                                <label for="work-support">دعم فني/إداري</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-analyst" name="work_nature" value="تحليلي/تقارير">
+                                <label for="work-analyst">تحليلي/تقارير</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q3">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="question">
+                        <label class="question-label">
+                            4. كم إدارة/قسم مختلف تتعامل معهم أسبوعياً في عملك؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="depts-0" name="departments_count" value="لا أتعامل مع أقسام أخرى" required>
+                                <label for="depts-0">لا أتعامل مع أقسام أخرى (عملي داخلي فقط)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="depts-1to2" name="departments_count" value="1-2 إدارة">
+                                <label for="depts-1to2">1-2 إدارة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="depts-3to4" name="departments_count" value="3-4 إدارات">
+                                <label for="depts-3to4">3-4 إدارات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="depts-5plus" name="departments_count" value="5+ إدارات">
+                                <label for="depts-5plus">5+ إدارات (تنسيق مكثف)</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q4">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. من 1 إلى 10، كيف تقيّم **وضوح** دورك ومسؤولياتك حاليًا؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>غير واضح تمامًا</span>
+                                <span>واضح بشكل تام</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-1" name="role_clarity" value="1" required>
+                                    <label for="clarity-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-2" name="role_clarity" value="2">
+                                    <label for="clarity-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-3" name="role_clarity" value="3">
+                                    <label for="clarity-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-4" name="role_clarity" value="4">
+                                    <label for="clarity-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-5" name="role_clarity" value="5">
+                                    <label for="clarity-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-6" name="role_clarity" value="6">
+                                    <label for="clarity-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-7" name="role_clarity" value="7">
+                                    <label for="clarity-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-8" name="role_clarity" value="8">
+                                    <label for="clarity-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-9" name="role_clarity" value="9">
+                                    <label for="clarity-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="clarity-10" name="role_clarity" value="10">
+                                    <label for="clarity-10">10</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q5">❌ الرجاء اختيار تقييم</div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+<!-- القسم الثاني: واقع الإجراءات الحالية -->
+<!-- ============================================ -->
+<div class="section" data-section="2">
+    <div class="section-header">
+        <div class="section-title">📋 القسم الثاني: واقع الإجراءات الحالية</div>
+        <div class="section-subtitle">8 أسئلة</div>
+    </div>
+    
+    <!-- Q6 -->
+    <div class="question">
+        <label class="question-label">
+            6. عندما تبدأ مهمة جديدة أو إجراء معين، أين تجد التعليمات؟
+            <span class="question-required">*</span>
+            <div class="question-helper">(اختر كل ما ينطبق)</div>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="checkbox" id="inst-ask" name="instruction_sources" value="لا يوجد توثيق - أسأل زميل">
+                <label for="inst-ask">لا يوجد توثيق - **أسأل زميل**</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="inst-old" name="instruction_sources" value="يوجد مستند قديم">
+                <label for="inst-old">يوجد **مستند قديم** (لكنه قد يكون غير محدّث)</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="inst-video" name="instruction_sources" value="يوجد فيديو تدريبي">
+                <label for="inst-video">يوجد **فيديو تدريبي**</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="inst-system" name="instruction_sources" value="مكتوبة في نظام إلكتروني">
+                <label for="inst-system">**مكتوبة في نظام إلكتروني** (CRM/SharePoint/...)</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="inst-oral" name="instruction_sources" value="شرح شفهي من المدير">
+                <label for="inst-oral">**شرح شفهي** من المدير فقط</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="inst-self" name="instruction_sources" value="أجتهد بنفسي">
+                <label for="inst-self">**أجتهد بنفسي** بناءً على الخبرة</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="inst-sop" name="instruction_sources" value="يوجد SOP واضحة">
+                <label for="inst-sop">يوجد **SOP واضحة ومحدثة**</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q6">❌ الرجاء اختيار خيار واحد على الأقل</div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question">
+        <label class="question-label">
+            7. كم نسبة الإجراءات في عملك اليومي التي **لها خطوات مكتوبة وواضحة**؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="proc-less25" name="documented_procedures" value="أقل من 25%" required>
+                <label for="proc-less25">أقل من 25% (معظم الشغل اجتهاد شخصي)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="proc-25to50" name="documented_procedures" value="25-50%">
+                <label for="proc-25to50">25-50% (نصف الإجراءات تقريبًا)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="proc-50to75" name="documented_procedures" value="50-75%">
+                <label for="proc-50to75">50-75% (أغلب الإجراءات موثقة)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="proc-75plus" name="documented_procedures" value="75%+">
+                <label for="proc-75plus">75%+ (كل شيء تقريبًا موثق)</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q7">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question">
+        <label class="question-label">
+            8. لو طلب منك **تدريب موظف جديد** على عملك... كم يستغرق حتى يكون مستقلًا؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="train-week" name="training_duration" value="أقل من أسبوع" required>
+                <label for="train-week">أقل من أسبوع (الإجراءات واضحة ومباشرة)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="train-2weeks" name="training_duration" value="أسبوع - أسبوعين">
+                <label for="train-2weeks">أسبوع - أسبوعين</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="train-month" name="training_duration" value="شهر">
+                <label for="train-month">شهر</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="train-3months" name="training_duration" value="2-3 شهور">
+                <label for="train-3months">2-3 شهور</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="train-more" name="training_duration" value="أكثر من 3 شهور">
+                <label for="train-more">أكثر من 3 شهور (الشغل معقد وغير موثق)</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q8">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question">
+        <label class="question-label">
+            9. أي من هذه **العبارات** تصف واقعك؟
+            <span class="question-required">*</span>
+            <div class="question-helper">(اختر حتى 3)</div>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="checkbox" id="real-change" name="reality_statements" value="الإجراءات تتغير كثيرًا">
+                <label for="real-change">"**الإجراءات تتغير كثيرًا** ومش دايمًا بنعرف"</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="real-own" name="reality_statements" value="كل واحد بيشتغل بطريقته">
+                <label for="real-own">"**كل واحد بيشتغل بطريقته** حتى لو نفس المهمة"</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="real-theory" name="reality_statements" value="إجراءات نظرية حلوة بس مش واقعية">
+                <label for="real-theory">فيه إجراءات **نظرية حلوة بس مش واقعية**</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="real-diff" name="reality_statements" value="إجابات مختلفة من أشخاص مختلفين">
+                <label for="real-diff">"**لما أسأل شخصين** عن نفس الإجراء، بيدوا إجابات مختلفة"</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="real-clear" name="reality_statements" value="الإجراءات واضحة ومطبقة">
+                <label for="real-clear">الإجراءات **واضحة ومطبقة** بانتظام</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="real-time" name="reality_statements" value="مفيش وقت نلتزم">
+                <label for="real-time">"**مفيش وقت نلتزم** بكل الخطوات - الضغط عالي"</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="real-who" name="reality_statements" value="مش عارف مين المسؤول">
+                <label for="real-who">"**مش عارف مين المسؤول** عن إيه بالضبط في بعض المراحل"</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q9">❌ الرجاء اختيار 1-3 خيارات</div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question">
+        <label class="question-label">
+            10. هل سبق وحدث أن **نفس المهمة اتعملت مرتين** بسبب سوء تنسيق أو عدم وضوح؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="dup-freq" name="duplicate_work" value="نعم، يحدث بشكل متكرر" required>
+                <label for="dup-freq">نعم، **يحدث بشكل متكرر**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="dup-some" name="duplicate_work" value="نعم، يحدث أحيانًا">
+                <label for="dup-some">نعم، **يحدث أحيانًا**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="dup-rare" name="duplicate_work" value="نعم، لكن نادرًا">
+                <label for="dup-rare">نعم، لكن **نادرًا**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="dup-no" name="duplicate_work" value="لا، لم يحدث">
+                <label for="dup-no">لا، **لم يحدث**</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q10">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="question">
+        <label class="question-label">
+            11. لما **تحتاج موافقة** على شيء (مشتريات، صلاحية، قرار)... كم المدة المعتادة؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="appr-day" name="approval_duration" value="نفس اليوم" required>
+                <label for="appr-day">**نفس اليوم** (سريع وواضح)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="appr-3days" name="approval_duration" value="1-3 أيام">
+                <label for="appr-3days">**1-3 أيام**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="appr-week" name="approval_duration" value="أسبوع">
+                <label for="appr-week">**أسبوع**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="appr-month" name="approval_duration" value="أسبوعين - شهر">
+                <label for="appr-month">**أسبوعين - شهر**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="appr-more" name="approval_duration" value="أكثر من شهر">
+                <label for="appr-more">**أكثر من شهر** (بطيء جدًا)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="appr-unclear" name="approval_duration" value="غير محدد">
+                <label for="appr-unclear">**غير محدد** (ممكن يكون سريع أو بطيء حسب الظروف)</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q11">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="question">
+        <label class="question-label">
+            12. برأيك، **أكبر سبب** لعدم الالتزام بالإجراءات (لو موجودة):
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="comp-complex" name="non_compliance_reason" value="الإجراءات معقدة وطويلة" required>
+                <label for="comp-complex">**الإجراءات معقدة وطويلة** جدًا</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="comp-time" name="non_compliance_reason" value="ضيق الوقت">
+                <label for="comp-time">**ضيق الوقت** والضغط لإنجاز الشغل</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="comp-unreal" name="non_compliance_reason" value="الإجراءات غير واقعية">
+                <label for="comp-unreal">**الإجراءات غير واقعية** أو غير منطقية</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="comp-monitor" name="non_compliance_reason" value="عدم وجود متابعة">
+                <label for="comp-monitor">**عدم وجود متابعة** أو محاسبة</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="comp-conv" name="non_compliance_reason" value="مش مقتنع">
+                <label for="comp-conv">**مش مقتنع** بجدوى الإجراء</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="comp-norm" name="non_compliance_reason" value="كل الناس بتكسرها">
+                <label for="comp-norm">**كل الناس بتكسرها** فبقت عادة</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="comp-unclear" name="non_compliance_reason" value="عدم وضوح الإجراء">
+                <label for="comp-unclear">**عدم وضوح الإجراء** من الأساس</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q12">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="question">
+        <label class="question-label">
+            13. من 1 إلى 10، لو طُلب منك **تطبيق إجراءات جديدة موحدة**... كم أنت مستعد؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="scale-container">
+            <div class="scale-labels">
+                <span>مقاومة شديدة</span>
+                <span>متحمس جدًا</span>
+            </div>
+            <div class="scale-options">
+                <div class="scale-option">
+                    <input type="radio" id="ready-1" name="readiness_new_procedures" value="1" required>
+                    <label for="ready-1">1</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-2" name="readiness_new_procedures" value="2">
+                    <label for="ready-2">2</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-3" name="readiness_new_procedures" value="3">
+                    <label for="ready-3">3</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-4" name="readiness_new_procedures" value="4">
+                    <label for="ready-4">4</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-5" name="readiness_new_procedures" value="5">
+                    <label for="ready-5">5</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-6" name="readiness_new_procedures" value="6">
+                    <label for="ready-6">6</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-7" name="readiness_new_procedures" value="7">
+                    <label for="ready-7">7</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-8" name="readiness_new_procedures" value="8">
+                    <label for="ready-8">8</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-9" name="readiness_new_procedures" value="9">
+                    <label for="ready-9">9</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="ready-10" name="readiness_new_procedures" value="10">
+                    <label for="ready-10">10</label>
+                </div>
+            </div>
+        </div>
+        <div class="error-message" id="error-q13">❌ الرجاء اختيار تقييم</div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- القسم الثالث: الاختناقات والـ Bottlenecks -->
+<!-- ============================================ -->
+<div class="section" data-section="3">
+    <div class="section-header">
+        <div class="section-title">🚧 القسم الثالث: الاختناقات والـ Bottlenecks</div>
+        <div class="section-subtitle">7 أسئلة</div>
+    </div>
+    
+    <!-- Q14 -->
+    <div class="question">
+        <label class="question-label">
+            14. ما **أكثر 3 أشياء** تضيع وقتك وتعطل إنجازك؟
+            <span class="question-required">*</span>
+            <div class="question-helper">(رتبهم: 1 = الأسوأ، 2 = الثاني، 3 = الثالث)</div>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="checkbox" id="waste-approval" name="time_wasters" value="انتظار موافقات">
+                <label for="waste-approval">**انتظار موافقات** من إدارات أخرى</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-tech" name="time_wasters" value="بطء الأنظمة">
+                <label for="waste-tech">**بطء أو تعطل الأنظمة التقنية** (CRM, POS, ...)</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-info" name="time_wasters" value="نقص المعلومات">
+                <label for="waste-info">**نقص المعلومات** أو صعوبة الوصول لها</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-dup" name="time_wasters" value="تكرار إدخال البيانات">
+                <label for="waste-dup">**تكرار إدخال نفس البيانات** في أكثر من نظام</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-unclear" name="time_wasters" value="طلبات غير واضحة">
+                <label for="waste-unclear">**طلبات غير واضحة** من المتبرعين أو الزملاء</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-coord" name="time_wasters" value="ضعف التنسيق">
+                <label for="waste-coord">**ضعف التنسيق** بين الأقسام</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-meet" name="time_wasters" value="اجتماعات بلا نتائج">
+                <label for="waste-meet">**كثرة الاجتماعات** بدون نتائج واضحة</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" id="waste-resources" name="time_wasters" value="عدم توفر موارد">
+                <label for="waste-resources">**عدم توفر موارد** (موظفين، أدوات، ميزانية)</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q14">❌ الرجاء اختيار 1-3 خيارات</div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="question">
+        <label class="question-label">
+            15. فيه **خطوة أو إجراء معين** بتحس إنه **زائد ومش مفيد** وبياخد وقت بلا داعي؟
+            <span class="question-required">*</span>
+        </label>
+        <textarea id="unnecessary_step_example" name="unnecessary_step_example" placeholder="اذكر مثال باختصار... (اختياري)" maxlength="300" rows="3"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q15">0</span> حرف (حد أقصى 300)
+        </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="question">
+        <label class="question-label">
+            16. أكثر **إدارة/قسم** بتواجه معاهم **تأخير أو صعوبة** في الحصول على دعم أو خدمة:
+            <div class="question-helper">(اختياري - لن نحاسب أحد!)</div>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="slow-it" name="slow_department" value="IT">
+                <label for="slow-it">**IT** (الدعم الفني/التطوير)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-finance" name="slow_department" value="المالية">
+                <label for="slow-finance">**المالية**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-purch" name="slow_department" value="المشتريات">
+                <label for="slow-purch">**المشتريات**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-hr" name="slow_department" value="HR">
+                <label for="slow-hr">**الموارد البشرية** (HR)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-log" name="slow_department" value="اللوجستيات">
+                <label for="slow-log">**اللوجستيات**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-comm" name="slow_department" value="الاتصال">
+                <label for="slow-comm">**الاتصال/التسويق**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-fund" name="slow_department" value="أقسام داخل التمويل">
+                <label for="slow-fund">**أقسام داخل التمويل نفسها**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-none" name="slow_department" value="لا يوجد تأخير">
+                <label for="slow-none">**لا يوجد تأخير** ملحوظ</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="slow-skip" name="slow_department" value="أفضل عدم الإجابة">
+                <label for="slow-skip">**أفضل عدم الإجابة**</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="question">
+        <label class="question-label">
+            17. لو القسم/الإدارة اللي اخترتها في السؤال السابق **كانت أسرع بـ 50%**... كم سيتحسن أداؤك؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="imp-huge" name="improvement_if_faster" value="تحسن هائل" required>
+                <label for="imp-huge">**تحسن هائل** (سأنجز ضعف الشغل)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="imp-notice" name="improvement_if_faster" value="تحسن ملحوظ">
+                <label for="imp-notice">**تحسن ملحوظ** (20-30%)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="imp-slight" name="improvement_if_faster" value="تحسن بسيط">
+                <label for="imp-slight">**تحسن بسيط**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="imp-none" name="improvement_if_faster" value="لن يتغير شيء">
+                <label for="imp-none">**لن يتغير شيء**</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q17">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="question">
+        <label class="question-label">
+            18. **أطول مدة** انتظرتها على **طلب حرج/عاجل** من إدارة أخرى:
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="wait-day" name="longest_wait" value="أقل من يوم" required>
+                <label for="wait-day">**أقل من يوم** (سريع)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="wait-3days" name="longest_wait" value="1-3 أيام">
+                <label for="wait-3days">**1-3 أيام**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="wait-week" name="longest_wait" value="أسبوع">
+                <label for="wait-week">**أسبوع**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="wait-month" name="longest_wait" value="أسبوعين - شهر">
+                <label for="wait-month">**أسبوعين - شهر**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="wait-more" name="longest_wait" value="أكثر من شهر">
+                <label for="wait-more">**أكثر من شهر**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="wait-never" name="longest_wait" value="لم أحصل على رد">
+                <label for="wait-never">**لم أحصل على رد** حتى الآن!</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q18">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="question">
+        <label class="question-label">
+            19. في رأيك، **السبب الرئيسي** للتأخير في الردود بين الأقسام:
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="delay-sla" name="delay_main_reason" value="عدم وجود التزام زمني" required>
+                <label for="delay-sla">**عدم وجود التزام زمني واضح** (مفيش SLA)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="delay-work" name="delay_main_reason" value="ضغط العمل">
+                <label for="delay-work">**ضغط العمل** على القسم الآخر</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="delay-who" name="delay_main_reason" value="عدم وضوح المسؤول">
+                <label for="delay-who">**عدم وضوح** من المسؤول بالضبط</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="delay-absent" name="delay_main_reason" value="غياب المسؤول">
+                <label for="delay-absent">**غياب المسؤول** أو صاحب القرار</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="delay-bureau" name="delay_main_reason" value="البيروقراطية">
+                <label for="delay-bureau">**البيروقراطية** وكثرة الموافقات</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="delay-priority" name="delay_main_reason" value="عدم فهم الأهمية">
+                <label for="delay-priority">**عدم فهم أهمية** الطلب أو أولويته</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="delay-comm" name="delay_main_reason" value="ضعف التواصل">
+                <label for="delay-comm">**ضعف التواصل** أو سوء الفهم</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q19">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="question">
+        <label class="question-label">
+            20. اذكر **موقف واحد محدد** تعطل فيه شغلك بسبب bottleneck أو اختناق:
+            <div class="question-helper">(مهم جدًا! - اختياري)</div>
+        </label>
+        <textarea id="bottleneck_story" name="bottleneck_story" placeholder="الموقف + السبب + كم استغرق الحل..." maxlength="500" rows="4"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q20">0</span> حرف (حد أقصى 500)
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- القسم الرابع: التعاون بين الأقسام -->
+<!-- ============================================ -->
+<div class="section" data-section="4">
+    <div class="section-header">
+        <div class="section-title">🤝 القسم الرابع: التعاون بين الأقسام والـ SLAs</div>
+        <div class="section-subtitle">6 أسئلة</div>
+    </div>
+    
+    <!-- Q21 -->
+    <div class="question">
+        <label class="question-label">
+            21. من 1 إلى 10، كيف تقيّم **جودة التعاون** بين قسمك والأقسام الأخرى؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="scale-container">
+            <div class="scale-labels">
+                <span>صعب جدًا ومعطل</span>
+                <span>ممتاز ومثمر</span>
+            </div>
+            <div class="scale-options">
+                <div class="scale-option">
+                    <input type="radio" id="coop-1" name="cooperation_quality" value="1" required>
+                    <label for="coop-1">1</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-2" name="cooperation_quality" value="2">
+                    <label for="coop-2">2</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-3" name="cooperation_quality" value="3">
+                    <label for="coop-3">3</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-4" name="cooperation_quality" value="4">
+                    <label for="coop-4">4</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-5" name="cooperation_quality" value="5">
+                    <label for="coop-5">5</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-6" name="cooperation_quality" value="6">
+                    <label for="coop-6">6</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-7" name="cooperation_quality" value="7">
+                    <label for="coop-7">7</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-8" name="cooperation_quality" value="8">
+                    <label for="coop-8">8</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-9" name="cooperation_quality" value="9">
+                    <label for="coop-9">9</label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="coop-10" name="cooperation_quality" value="10">
+                    <label for="coop-10">10</label>
+                </div>
+            </div>
+        </div>
+        <div class="error-message" id="error-q21">❌ الرجاء اختيار تقييم</div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="question">
+        <label class="question-label">
+            22. هل يوجد حاليًا **اتفاقيات واضحة** (مكتوبة أو شفهية) عن **زمن الاستجابة** بينك وبين الأقسام الأخرى؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="sla-written" name="sla_existence" value="نعم، مكتوبة وواضحة" required>
+                <label for="sla-written">نعم، **مكتوبة وواضحة** (SLAs رسمية)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="sla-verbal" name="sla_existence" value="نعم، لكن شفهية">
+                <label for="sla-verbal">نعم، لكن **شفهية** (اتفاق ضمني)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="sla-no" name="sla_existence" value="لا، كل طلب حسب الظروف">
+                <label for="sla-no">لا، **كل طلب حسب الظروف**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="sla-unknown" name="sla_existence" value="لا أعرف">
+                <label for="sla-unknown">**لا أعرف**</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q22">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="question">
+        <label class="question-label">
+            23. لو **طلبت شيء** من إدارة أخرى... هل **تعرف متى تتوقع الرد**؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="exp-always" name="response_expectation" value="نعم، دائمًا" required>
+                <label for="exp-always">نعم، **دائمًا** (واضح ومحدد)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="exp-sometimes" name="response_expectation" value="أحيانًا">
+                <label for="exp-sometimes">**أحيانًا** (يعتمد على الطلب)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="exp-rarely" name="response_expectation" value="نادرًا">
+                <label for="exp-rarely">**نادرًا** (مش واضح)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="exp-never" name="response_expectation" value="لا، أبدًا">
+                <label for="exp-never">لا، **أبدًا** (غير محدد)</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q23">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q24 -->
+    <div class="question">
+        <label class="question-label">
+            24. أكثر **سلوك سلبي** يحدث في التعامل بين الأقسام:
+            <span class="question-required">*</span>
+            <div class="question-helper">(اختر واحد فقط)</div>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="neg-blame" name="negative_behavior" value="رمي المسؤولية" required>
+                <label for="neg-blame">**رمي المسؤولية** على الآخرين</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="neg-delay" name="negative_behavior" value="التأخر في الردود">
+                <label for="neg-delay">**التأخر في الردود** دون تبرير</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="neg-respect" name="negative_behavior" value="عدم احترام المواعيد">
+                <label for="neg-respect">**عدم احترام المواعيد** أو الالتزامات</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="neg-cold" name="negative_behavior" value="التعامل الجاف">
+                <label for="neg-cold">**التعامل الجاف** أو غير المهني</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="neg-info" name="negative_behavior" value="نقص المعلومات">
+                <label for="neg-info">**نقص المعلومات** عند التسليم</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="neg-conflict" name="negative_behavior" value="تضارب التعليمات">
+                <label for="neg-conflict">**تضارب التعليمات** من أكثر من شخص</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="neg-none" name="negative_behavior" value="عدم وجود مشاكل">
+                <label for="neg-none">**عدم وجود مشاكل** ملحوظة</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q24">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q25 -->
+    <div class="question">
+        <label class="question-label">
+            25. لو كان عندك صلاحية **تغيير شيء واحد** في طريقة تعاملك مع الأقسام الأخرى، إيه هيكون؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="change-sla" name="one_change" value="التزام زمني واضح" required>
+                <label for="change-sla">**التزام زمني واضح** (SLA محددة)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="change-contact" name="one_change" value="نقطة اتصال واحدة">
+                <label for="change-contact">**نقطة اتصال واحدة** مسؤولة (مش أكثر من شخص)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="change-escal" name="one_change" value="نظام تصعيد سريع">
+                <label for="change-escal">**نظام تصعيد سريع** لما الأمور تتأخر</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="change-dash" name="one_change" value="لوحة مشتركة">
+                <label for="change-dash">**لوحة مشتركة** (Dashboard) نشوف فيها حالة الطلبات</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="change-comm" name="one_change" value="تواصل أفضل">
+                <label for="change-comm">**تواصل أفضل** (اجتماعات دورية منتظمة)</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="change-train" name="one_change" value="تدريب مشترك">
+                <label for="change-train">**تدريب مشترك** بين الأقسام لفهم بعض</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q25">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q26 -->
+    <div class="question">
+        <label class="question-label">
+            26. برأيك، لو وُضعت **اتفاقيات SLA واضحة** بين جميع الأقسام... هل سيتحسن الأداء؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="sla-huge" name="sla_impact" value="نعم، بشكل كبير جدًا" required>
+                <label for="sla-huge">نعم، **بشكل كبير جدًا**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="sla-notice" name="sla_impact" value="نعم، بشكل ملحوظ">
+                <label for="sla-notice">نعم، **بشكل ملحوظ**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="sla-slight" name="sla_impact" value="نعم، لكن بسيط">
+                <label for="sla-slight">نعم، لكن **بسيط**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="sla-no" name="sla_impact" value="لا، لن يتغير شيء">
+                <label for="sla-no">لا، **لن يتغير شيء** (المشكلة في مكان آخر)</label>
+            </div>
+        </div>
+        <div class="error-message" id="error-q26">❌ الرجاء الاختيار</div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- القسم الخامس: مواقف حقيقية -->
+<!-- ============================================ -->
+<div class="section" data-section="5">
+    <div class="section-header">
+        <div class="section-title">📖 القسم الخامس: مواقف حقيقية وقصص من الواقع</div>
+        <div class="section-subtitle">5 أسئلة</div>
+    </div>
+    
+    <!-- Q27 -->
+    <div class="question">
+        <label class="question-label">
+            27. اذكر **موقف حصل فعلًا** كان فيه **إجراء غير واضح** أدى لمشكلة أو تأخير:
+            <div class="question-helper">(اختياري - لكن مهم جدًا!)</div>
+        </label>
+        <textarea id="unclear_procedure_story" name="unclear_procedure_story" placeholder="الموقف + النتيجة..." maxlength="500" rows="4"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q27">0</span> حرف (حد أقصى 500)
+        </div>
+    </div>
+
+    <!-- Q28 -->
+    <div class="question">
+        <label class="question-label">
+            28. هل سبق أن **كسرت إجراء معين** (أو شفت حد يكسره) عشان تخلص الشغل؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="broke-yes" name="broke_procedure" value="نعم" required>
+                <label for="broke-yes">**نعم**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="broke-no" name="broke_procedure" value="لا">
+                <label for="broke-no">**لا**</label>
+            </div>
+        </div>
+        <div id="broke-details" style="display: none; margin-top: 15px;">
+            <textarea id="broke_procedure_details" name="broke_procedure_details" placeholder="الإجراء اللي اتكسر + السبب + النتيجة..." maxlength="400" rows="3"></textarea>
+            <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                <span id="char-count-q28">0</span> حرف (حد أقصى 400)
+            </div>
+        </div>
+        <div class="error-message" id="error-q28">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q29 -->
+    <div class="question">
+        <label class="question-label">
+            29. اذكر **موقف إيجابي** كان فيه **التنسيق بين الأقسام** كان ممتاز ونجح الشغل:
+            <div class="question-helper">(اختياري - لكن مهم!)</div>
+        </label>
+        <textarea id="positive_coordination_story" name="positive_coordination_story" placeholder="الموقف + إيه اللي خلى التنسيق ده ينجح؟..." maxlength="500" rows="4"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q29">0</span> حرف (حد أقصى 500)
+        </div>
+    </div>
+
+    <!-- Q30 -->
+    <div class="question">
+        <label class="question-label">
+            30. لو فيه **صراع أو تضارب** بين قناتين تمويل (مثلاً: Call Center و Online على نفس المتبرع)... إيه اللي بيحصل؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="options">
+            <div class="option">
+                <input type="radio" id="conf-freq" name="conflict_frequency" value="يحصل فعلًا وبشكل متكرر" required>
+                <label for="conf-freq">**يحصل فعلًا وبشكل متكرر**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="conf-some" name="conflict_frequency" value="يحصل أحيانًا">
+                <label for="conf-some">**يحصل أحيانًا**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="conf-rare" name="conflict_frequency" value="نادرًا جدًا">
+                <label for="conf-rare">**نادرًا جدًا**</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="conf-no" name="conflict_frequency" value="لا يحصل">
+                <label for="conf-no">**لا يحصل** (فيه نظام يمنع ده)</label>
+            </div>
+        </div>
+        <textarea id="conflict_resolution" name="conflict_resolution" placeholder="لو حصل... إزاي بيتحل؟ (اختياري)" maxlength="300" rows="2" style="margin-top: 15px;"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q30">0</span> حرف (حد أقصى 300)
+        </div>
+        <div class="error-message" id="error-q30">❌ الرجاء الاختيار</div>
+    </div>
+
+    <!-- Q31 -->
+    <div class="question">
+        <label class="question-label">
+            31. **أسوأ bottleneck** واجهته في آخر 6 شهور - ولسه فاكره كويس:
+            <div class="question-helper">(اختياري - لكن قيّم جدًا!)</div>
+        </label>
+        <textarea id="worst_bottleneck" name="worst_bottleneck" placeholder="المشكلة + كم وقت ضايع + اتحلت ولا لسه؟..." maxlength="500" rows="4"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q31">0</span> حرف (حد أقصى 500)
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- القسم السادس: التصورات والحلول -->
+<!-- ============================================ -->
+<div class="section" data-section="6">
+    <div class="section-header">
+        <div class="section-title">💡 القسم السادس: التصورات والحلول المقترحة</div>
+        <div class="section-subtitle">5 أسئلة</div>
+    </div>
+    
+    <!-- Q32 -->
+    <div class="question">
+        <label class="question-label">
+            32. لو عندك **عصا سحرية** وتقدر تصلح **3 حاجات فقط** في الإجراءات الداخلية... إيه هم؟
+            <span class="question-required">*</span>
+        </label>
+        <div style="margin-top: 15px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px;">الأولى (الأهم):</label>
+            <textarea id="magic_fix_1" name="magic_fix_1" placeholder="..." maxlength="200" rows="2" required></textarea>
+        </div>
+        <div style="margin-top: 15px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px;">الثانية:</label>
+            <textarea id="magic_fix_2" name="magic_fix_2" placeholder="..." maxlength="200" rows="2" required></textarea>
+        </div>
+        <div style="margin-top: 15px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px;">الثالثة:</label>
+            <textarea id="magic_fix_3" name="magic_fix_3" placeholder="..." maxlength="200" rows="2" required></textarea>
+        </div>
+        <div class="error-message" id="error-q32">❌ الرجاء ملء الثلاث حقول</div>
+    </div>
+
+    <!-- Q33 -->
+    <div class="question">
+        <label class="question-label">
+            33. بالنسبة لـ **SOPs** (الإجراءات الموحدة)... إيه **أهم 3 عمليات** محتاجة توثيق فوري؟
+            <span class="question-required">*</span>
+        </label>
+        <div style="margin-top: 15px;">
+            <input type="text" id="sop_priority_1" name="sop_priority_1" placeholder="1. ..." maxlength="100" required>
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="text" id="sop_priority_2" name="sop_priority_2" placeholder="2. ..." maxlength="100" required>
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="text" id="sop_priority_3" name="sop_priority_3" placeholder="3. ..." maxlength="100" required>
+        </div>
+        <div class="error-message" id="error-q33">❌ الرجاء ملء الثلاث حقول</div>
+    </div>
+
+    <!-- Q34 -->
+    <div class="question">
+        <label class="question-label">
+            34. بالنسبة لـ **SLAs** (اتفاقيات زمن الاستجابة)... إيه **أهم 3 إدارات** محتاجين معاهم SLA واضحة وموقعة؟
+            <span class="question-required">*</span>
+        </label>
+        <div style="margin-top: 15px;">
+            <input type="text" id="sla_priority_1" name="sla_priority_1" placeholder="1. ..." maxlength="100" required>
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="text" id="sla_priority_2" name="sla_priority_2" placeholder="2. ..." maxlength="100" required>
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="text" id="sla_priority_3" name="sla_priority_3" placeholder="3. ..." maxlength="100" required>
+        </div>
+        <div class="error-message" id="error-q34">❌ الرجاء ملء الثلاث حقول</div>
+    </div>
+
+    <!-- Q35 - مع الترجمة العربية -->
+    <div class="question">
+        <label class="question-label">
+            35. لو الورشة دي **نجحت** وبعد 3 شهور بقى فيه:
+            <ul style="margin: 10px 0; padding-right: 25px; line-height: 1.8;">
+                <li>SOPs واضحة</li>
+                <li>SLAs موقعة</li>
+                <li>Bottlenecks اتحلت</li>
+            </ul>
+            من 1 إلى 10، كم هيتحسن أداؤك؟
+            <span class="question-required">*</span>
+        </label>
+        <div class="scale-container">
+            <div class="scale-labels">
+                <span>مش هيفرق حاجة</span>
+                <span>فرق هائل!</span>
+            </div>
+            <div class="scale-options">
+                <div class="scale-option">
+                    <input type="radio" id="impact-1" name="expected_impact" value="1" required>
+                    <label for="impact-1">1<br><span style="font-size: 11px;">ضعيف</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-2" name="expected_impact" value="2">
+                    <label for="impact-2">2<br><span style="font-size: 11px;">ضعيف</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-3" name="expected_impact" value="3">
+                    <label for="impact-3">3<br><span style="font-size: 11px;">قليل</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-4" name="expected_impact" value="4">
+                    <label for="impact-4">4<br><span style="font-size: 11px;">قليل</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-5" name="expected_impact" value="5">
+                    <label for="impact-5">5<br><span style="font-size: 11px;">متوسط</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-6" name="expected_impact" value="6">
+                    <label for="impact-6">6<br><span style="font-size: 11px;">متوسط</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-7" name="expected_impact" value="7">
+                    <label for="impact-7">7<br><span style="font-size: 11px;">جيد</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-8" name="expected_impact" value="8">
+                    <label for="impact-8">8<br><span style="font-size: 11px;">جيد جداً</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-9" name="expected_impact" value="9">
+                    <label for="impact-9">9<br><span style="font-size: 11px;">ممتاز</span></label>
+                </div>
+                <div class="scale-option">
+                    <input type="radio" id="impact-10" name="expected_impact" value="10">
+                    <label for="impact-10">10<br><span style="font-size: 11px;">رائع</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="error-message" id="error-q35">❌ الرجاء اختيار تقييم</div>
+    </div>
+
+    <!-- Q36 -->
+    <div class="question">
+        <label class="question-label">
+            36. **رسالة أخيرة** لمدير الورشة (أشرف محمود) - إيه **أهم حاجة** لازم تطلع من الورشة دي؟
+            <div class="question-helper">(اختياري)</div>
+        </label>
+        <textarea id="final_message" name="final_message" placeholder="رسالتك..." maxlength="500" rows="4"></textarea>
+        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+            <span id="char-count-q36">0</span> حرف (حد أقصى 500)
+        </div>
+    </div>
+
+    <!-- رسالة الشكر النهائية -->
+    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; border: 2px solid #667eea;">
+        <h3 style="color: #667eea; font-size: 24px; margin-bottom: 15px;">🎉 شكراً لوقتك وصراحتك!</h3>
+        <p style="font-size: 16px; color: #666; line-height: 1.8; margin-bottom: 10px;">
+            كل كلمة كتبتها... ستُبنى عليها قرارات حقيقية في الورشة!
+        </p>
+        <p style="font-size: 14px; color: #888;">
+            📅 الورشة: 19 نوفمبر 2025 - من 12 ظهرًا<br>
+            🎯 الهدف: بناء نظام عمل محكم وواضح للجميع
+        </p>
+        <p style="font-size: 18px; color: #667eea; font-weight: 700; margin-top: 15px;">
+            صوتك اليوم = نظام أفضل غدًا 💪
+        </p>
+    </div>
+</div>
+                
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn btn-prev" id="prev-btn" style="display: none;">
+                        ← السابق
+                    </button>
+                    <button type="button" class="btn btn-next" id="next-btn">
+                        التالي →
+                    </button>
+                    <button type="submit" class="btn btn-submit" id="submit-btn" style="display: none;">
+                        ✅ إرسال الاستبيان
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري إرسال الاستبيان...</div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentSection = 1;
+        const totalSections = 6;
+        
+        // ... سأكمل الـ JavaScript في رد منفصل
+    </script>
+</body>
+</html>
