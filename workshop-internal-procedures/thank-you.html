@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شكراً لمشاركتك! | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background Circles */
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            animation-delay: 0s;
+        }
+        
+        .bg-circle:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            animation-delay: 5s;
+        }
+        
+        .bg-circle:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            right: 10%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Success Icon */
+        .success-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .checkmark-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .checkmark-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            position: relative;
+            animation: pop 0.3s ease-out 0.7s both;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 15px;
+            width: 12px;
+            height: 22px;
+            border: solid white;
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+            animation: checkDraw 0.3s ease-out 0.9s both;
+        }
+        
+        @keyframes checkDraw {
+            from {
+                height: 0;
+            }
+            to {
+                height: 22px;
+            }
+        }
+        
+        .success-title {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease-out 1s both;
+        }
+        
+        .success-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            animation: fadeIn 0.5s ease-out 1.2s both;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .message {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .message h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .message p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-right: 5px solid #667eea;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        
+        .info-content h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .info-content p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 15px;
+            border: 2px solid #667eea30;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 18px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 30px;
+            text-align: center;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .footer p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .footer strong {
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            position: absolute;
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .success-title {
+                font-size: 26px;
+            }
+            
+            .success-subtitle {
+                font-size: 16px;
+            }
+            
+            .message h2 {
+                font-size: 20px;
+            }
+            
+            .message p {
+                font-size: 15px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .stat {
+                padding: 15px;
+            }
+            
+            .stat-number {
+                font-size: 24px;
+            }
+            
+            .info-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    <div class="bg-circle"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <div class="checkmark-container">
+                <div class="checkmark-circle">
+                    <div class="checkmark"></div>
+                </div>
+            </div>
+            <h1 class="success-title">🎉 تم الإرسال بنجاح!</h1>
+            <p class="success-subtitle">شكراً لمشاركتك القيّمة</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Message -->
+            <div class="message">
+                <h2>صوتك وصل وهيصنع فرق حقيقي! 💪</h2>
+                <p>
+                    كل كلمة كتبتها ستُستخدم مباشرة في **ورشة العمل الاستراتيجية** 
+                    لبناء نظام عمل محكم ومتطور لإدارة التمويل.
+                </p>
+                <p style="margin-top: 15px; font-weight: 600; color: #667eea;">
+                    التحليل الذكي لردودك بدأ الآن! 🤖
+                </p>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">36</div>
+                    <div class="stat-label">سؤال تم الإجابة عليه</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">أقسام مكتملة</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">~15</div>
+                    <div class="stat-label">دقيقة من وقتك</div>
+                </div>
+            </div>
+            
+            <!-- Info Cards -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">📅</div>
+                    <div class="info-content">
+                        <h3>موعد الورشة</h3>
+                        <p><strong>19 نوفمبر 2025</strong> - من الساعة 12 ظهراً<br>
+                        مسئول الورشة: أشرف محمود</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <div class="info-content">
+                        <h3>ماذا سيحدث الآن؟</h3>
+                        <p>سيتم تحليل جميع الردود باستخدام الذكاء الاصطناعي لاستخراج أهم الـ Bottlenecks والحلول المقترحة</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">🔒</div>
+                    <div class="info-content">
+                        <h3>خصوصيتك مضمونة</h3>
+                        <p>جميع الردود **مجهولة تماماً** ولن يتم ربطها بأي شخص. سيتم استخدامها فقط لتحسين الإجراءات الداخلية</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="actions">
+                <a href="survey.html" class="btn btn-secondary">
+                    📝 ملء استبيان آخر
+                </a>
+                <button onclick="window.close()" class="btn btn-primary">
+                    ✅ إغلاق النافذة
+                </button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                <strong>مؤسسة صناع الحياة - مصر</strong><br>
+                معاً لتطبيق نظام محكم ومتطور 🚀
+            </p>
+            <p style="margin-top: 10px; font-size: 13px;">
+                الورشة: الإجراءات الداخلية والضوابط العامة<br>
+                "من الفوضى إلى النظام: بناء آليات عمل محكمة"
+            </p>
+        </div>
+    </div>
+    
+    <!-- Confetti Animation -->
+    <script>
+        // Generate confetti
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#28a745', '#ffc107', '#dc3545'];
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    // Remove after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 50);
+            }
+        }
+        
+        // Trigger confetti on load
+        window.addEventListener('load', createConfetti);
+        
+        // Auto-close option (optional - commented out)
+        // setTimeout(() => {
+        //     if (confirm('هل تريد إغلاق النافذة؟')) {
+        //         window.close();
+        //     }
+        // }, 10000); // 10 seconds
+    </script>
+</body>
+</html>
