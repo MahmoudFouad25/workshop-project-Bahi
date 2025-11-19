@@ -2933,6 +2933,9 @@
         // ============================================
         // AI Analysis
         // ============================================
+       // ============================================
+        // AI Analysis (Enhanced Error Handling)
+        // ============================================
         async function triggerAIAnalysis() {
             if (allResponses.length === 0) {
                 alert('⚠️ لا توجد بيانات للتحليل');
@@ -2948,6 +2951,10 @@
             `;
             
             try {
+                console.log('🚀 Starting AI analysis...');
+                console.log('📊 Total responses:', allResponses.length);
+                console.log('🔗 API URL:', '/api/analyze-internal-procedures-survey');
+                
                 // Call API
                 const response = await fetch('/api/analyze-internal-procedures-survey', {
                     method: 'POST',
@@ -2960,27 +2967,79 @@
                     })
                 });
                 
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response ok:', response.ok);
+                
+                // Get response text first
+                const responseText = await response.text();
+                console.log('📄 Response text length:', responseText.length);
+                console.log('📄 Response preview:', responseText.substring(0, 500));
+                
                 if (!response.ok) {
-                    throw new Error('فشل التحليل');
+                    // Try to parse error
+                    let errorMessage = 'فشل التحليل';
+                    try {
+                        const errorData = JSON.parse(responseText);
+                        errorMessage = errorData.message || errorData.error || 'فشل التحليل';
+                        console.error('❌ Error details:', errorData);
+                    } catch (e) {
+                        console.error('❌ Raw error response:', responseText);
+                    }
+                    throw new Error(errorMessage);
                 }
                 
-                const result = await response.json();
+                // Parse successful response
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                    console.log('✅ Response parsed successfully');
+                } catch (parseError) {
+                    console.error('❌ JSON parse error:', parseError);
+                    throw new Error('فشل تحليل الرد من الخادم');
+                }
+                
+                // Check if analysis exists
+                if (!result.analysis) {
+                    console.error('❌ No analysis in response:', result);
+                    throw new Error('الرد لا يحتوي على تحليل');
+                }
+                
+                console.log('✅ Analysis received, length:', result.analysis.length);
                 
                 // Display AI analysis
                 aiContent.innerHTML = `
-                    <div style="line-height: 1.8;">
-                        ${result.analysis.replace(/\n/g, '<br>')}
+                    <div style="line-height: 1.8; white-space: pre-wrap;">
+                        ${escapeHtml(result.analysis)}
                     </div>
                 `;
                 
+                console.log('✅ Analysis displayed successfully');
+                
             } catch (error) {
-                console.error('AI Analysis Error:', error);
+                console.error('❌ AI Analysis Error:', error);
+                console.error('❌ Error stack:', error.stack);
+                
+                // Display detailed error
                 aiContent.innerHTML = `
-                    <div style="color: var(--danger);">
-                        ❌ حدث خطأ أثناء التحليل. الرجاء المحاولة مرة أخرى.
+                    <div style="color: var(--danger); padding: 20px; background: #fff5f5; border-radius: 10px; border-right: 5px solid var(--danger);">
+                        <h4 style="margin-bottom: 15px;">❌ حدث خطأ أثناء التحليل</h4>
+                        <p style="margin-bottom: 10px;"><strong>الرسالة:</strong> ${error.message}</p>
+                        <p style="margin-bottom: 15px; font-size: 14px; color: #666;">
+                            الرجاء فتح Developer Console (اضغط F12) وأخذ screenshot من الأخطاء المعروضة.
+                        </p>
+                        <button class="btn btn-secondary" onclick="triggerAIAnalysis()" style="margin-top: 10px;">
+                            🔄 إعادة المحاولة
+                        </button>
                     </div>
                 `;
             }
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
       // ============================================
