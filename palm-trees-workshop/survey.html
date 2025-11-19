@@ -1,0 +1,3015 @@
+<!DOCTYPE html> 
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌴 استبيان بند النخيل 2026 | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '🌴';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: -20px;
+            left: -30px;
+            transform: rotate(-15deg);
+        }
+        
+        .header::after {
+            content: '🌴';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            bottom: -20px;
+            right: -30px;
+            transform: rotate(15deg);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .privacy-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .workshop-info {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71 0%, #27ae60 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-right: 5px solid #2ecc71;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Questions */
+        .question {
+            margin-bottom: 35px;
+        }
+        
+        .question-label {
+            display: block;
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .question-required {
+            color: #dc3545;
+            font-size: 14px;
+        }
+        
+        .question-helper {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Radio/Checkbox Options */
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            position: relative;
+            display: block;
+        }
+        
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .option label:hover {
+            background: #e9ecef;
+            border-color: #2ecc71;
+        }
+        
+        .option input:checked + label {
+            background: linear-gradient(135deg, #2ecc7115 0%, #27ae6015 100%);
+            border-color: #2ecc71;
+            font-weight: 600;
+            color: #2ecc71;
+        }
+        
+        .option label::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            border-radius: 50%;
+            margin-left: 12px;
+            transition: all 0.3s;
+        }
+        
+        .option input[type="checkbox"] + label::before {
+            border-radius: 4px;
+        }
+        
+        .option input:checked + label::before {
+            background: #2ecc71;
+            border-color: #2ecc71;
+            box-shadow: inset 0 0 0 3px white;
+        }
+        
+        /* Text Input */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2ecc71;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Scale Rating */
+        .scale-container {
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .scale-options {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+        
+        .scale-option {
+            position: relative;
+            flex: 1;
+        }
+        
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .scale-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 45px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .scale-option label:hover {
+            border-color: #2ecc71;
+            transform: translateY(-2px);
+        }
+        
+        .scale-option input:checked + label {
+            background: #2ecc71;
+            color: white;
+            border-color: #2ecc71;
+            transform: scale(1.1);
+        }
+        
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        /* Validation Error */
+        .error-message {
+            display: none;
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff5f5;
+            border-right: 3px solid #dc3545;
+            border-radius: 5px;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .question-label {
+                font-size: 16px;
+            }
+            
+            .scale-options {
+                flex-wrap: wrap;
+            }
+            
+            .scale-option {
+                flex: 0 0 calc(20% - 6px);
+            }
+            
+            .navigation {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌴 استبيان بند النخيل 2026 🌴</h1>
+            <p>"من التحدي إلى النجاح - صوتك يزرع المستقبل"</p>
+            <div class="workshop-info">
+                📅 ورشة العمل: 20 نوفمبر 2025 - 12 ظهراً<br>
+                🎯 الهدف: 60+ مليون جنيه من بند النخيل
+            </div>
+            <div class="meta">
+                <div>⏱️ الوقت المتوقع: 15-18 دقيقة</div>
+                <div class="privacy-badge">🔒 سرية تامة - لن يُطلب منك اسمك</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="progress-text">القسم 1 من 10</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <form id="survey-form">
+              <!-- ============================================ -->
+                <!-- القسم الأول: من أنت؟ -->
+                <!-- ============================================ -->
+                <div class="section active" data-section="1">
+                    <div class="section-header">
+                        <div class="section-title">📍 القسم الأول: من أنت في المنظومة؟</div>
+                        <div class="section-subtitle">5 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q1 -->
+                    <div class="question">
+                        <label class="question-label">
+                            1. القسم/الإدارة/القناة التي تعمل بها:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="dept-cc-internal" name="department" value="الكول سنتر الداخلي" required>
+                                <label for="dept-cc-internal">الكول سنتر الداخلي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-cc-external" name="department" value="الكول سنتر الخارجي">
+                                <label for="dept-cc-external">الكول سنتر الخارجي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-booths" name="department" value="منافذ التمويل">
+                                <label for="dept-booths">منافذ التمويل (Booths)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-online" name="department" value="الأونلاين">
+                                <label for="dept-online">الأونلاين (Online/Digital)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-network" name="department" value="النتورك">
+                                <label for="dept-network">النتورك (Network)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-direct" name="department" value="التحصيل المباشر">
+                                <label for="dept-direct">التحصيل المباشر</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-volunteers" name="department" value="حملات المتطوعين">
+                                <label for="dept-volunteers">حملات المتطوعين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-inkind" name="department" value="التبرعات العينية">
+                                <label for="dept-inkind">التبرعات العينية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-support" name="department" value="الأقسام الداعمة">
+                                <label for="dept-support">الأقسام الداعمة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="dept-admin" name="department" value="الفريق الإداري/القيادي">
+                                <label for="dept-admin">الفريق الإداري/القيادي</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q1">❌ الرجاء اختيار قسمك</div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="question">
+                        <label class="question-label">
+                            2. عدد سنوات خبرتك في إدارة التمويل:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="exp-less6" name="experience" value="أقل من 6 شهور" required>
+                                <label for="exp-less6">أقل من 6 شهور</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-6to1" name="experience" value="6 شهور - سنة">
+                                <label for="exp-6to1">6 شهور - سنة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-1to3" name="experience" value="1-3 سنوات">
+                                <label for="exp-1to3">1-3 سنوات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-3to5" name="experience" value="3-5 سنوات">
+                                <label for="exp-3to5">3-5 سنوات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="exp-more5" name="experience" value="أكثر من 5 سنوات">
+                                <label for="exp-more5">أكثر من 5 سنوات</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q2">❌ الرجاء اختيار سنوات خبرتك</div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="question">
+                        <label class="question-label">
+                            3. هل اشتغلت على بند النخيل في 2025؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="work-main" name="worked_on_palm" value="نعم، كان تركيزي الأساسي" required>
+                                <label for="work-main">نعم، كان تركيزي الأساسي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-side" name="worked_on_palm" value="نعم، بجانب بنود أخرى">
+                                <label for="work-side">نعم، بجانب بنود أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-limited" name="worked_on_palm" value="نعم، لكن بشكل محدود">
+                                <label for="work-limited">نعم، لكن بشكل محدود</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="work-no" name="worked_on_palm" value="لا، لم أعمل عليه مباشرة">
+                                <label for="work-no">لا، لم أعمل عليه مباشرة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q3">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="question">
+                        <label class="question-label">
+                            4. كم بند تمويلي تعمل عليه حالياً؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="items-1" name="items_count" value="بند النخيل فقط" required>
+                                <label for="items-1">بند النخيل فقط</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="items-2" name="items_count" value="النخيل + بند واحد آخر">
+                                <label for="items-2">النخيل + بند واحد آخر</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="items-3" name="items_count" value="النخيل + 2-3 بنود">
+                                <label for="items-3">النخيل + 2-3 بنود</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="items-many" name="items_count" value="أكثر من 3 بنود">
+                                <label for="items-many">أكثر من 3 بنود (تنوع عالي)</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q4">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. من 1 إلى 10، كيف تقيّم معرفتك ببند النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>معرفة ضعيفة جداً</span>
+                                <span>خبير في البند</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-1" name="palm_knowledge" value="1" required>
+                                    <label for="knowledge-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-2" name="palm_knowledge" value="2">
+                                    <label for="knowledge-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-3" name="palm_knowledge" value="3">
+                                    <label for="knowledge-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-4" name="palm_knowledge" value="4">
+                                    <label for="knowledge-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-5" name="palm_knowledge" value="5">
+                                    <label for="knowledge-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-6" name="palm_knowledge" value="6">
+                                    <label for="knowledge-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-7" name="palm_knowledge" value="7">
+                                    <label for="knowledge-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-8" name="palm_knowledge" value="8">
+                                    <label for="knowledge-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-9" name="palm_knowledge" value="9">
+                                    <label for="knowledge-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="knowledge-10" name="palm_knowledge" value="10">
+                                    <label for="knowledge-10">10</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q5">❌ الرجاء اختيار تقييم</div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الثاني: الفهم والمعرفة -->
+                <!-- ============================================ -->
+                <div class="section" data-section="2">
+                    <div class="section-header">
+                        <div class="section-title">📖 القسم الثاني: الفهم والمعرفة ببند النخيل</div>
+                        <div class="section-subtitle">7 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q6 -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. ما مدى فهمك لـ"قصة بند النخيل" وأثره الحقيقي؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="understand-5" name="understanding_level" value="5 - أفهمه بعمق" required>
+                                <label for="understand-5">5 - أفهمه بعمق وأستطيع شرحه بسهولة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="understand-4" name="understanding_level" value="4 - أفهم الفكرة الرئيسية">
+                                <label for="understand-4">4 - أفهم الفكرة الرئيسية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="understand-3" name="understanding_level" value="3 - فهم سطحي">
+                                <label for="understand-3">3 - فهم سطحي (أعرف الأساسيات فقط)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="understand-2" name="understanding_level" value="2 - فهم ضعيف">
+                                <label for="understand-2">2 - فهم ضعيف</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="understand-1" name="understanding_level" value="1 - لا أفهمه جيداً">
+                                <label for="understand-1">1 - لا أفهمه جيداً</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q6">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. هل المعلومات المتاحة لك عن البند كافية للترويج له بثقة؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="info-enough" name="info_sufficient" value="نعم، كافية تماماً" required>
+                                <label for="info-enough">نعم، كافية تماماً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="info-update" name="info_sufficient" value="نعم، لكن تحتاج تحديث">
+                                <label for="info-update">نعم، لكن تحتاج تحديث</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="info-partial" name="info_sufficient" value="جزئياً">
+                                <label for="info-partial">جزئياً (بعض المعلومات ناقصة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="info-no" name="info_sufficient" value="لا، غير كافية">
+                                <label for="info-no">لا، غير كافية على الإطلاق</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q7">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q8 -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. ما المعلومات الناقصة التي تحتاجها لتحسين أدائك؟
+                            <div class="question-helper">(يمكن اختيار أكثر من إجابة)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="need-stories" name="missing_info" value="قصص أثر حقيقية">
+                                <label for="need-stories">قصص أثر حقيقية ومُوثقة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-media" name="missing_info" value="صور/فيديوهات">
+                                <label for="need-media">صور/فيديوهات من المشاريع الفعلية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-content" name="missing_info" value="محتوى تسويقي">
+                                <label for="need-content">محتوى تسويقي جاهز (posts, designs)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-faq" name="missing_info" value="إجابات جاهزة">
+                                <label for="need-faq">إجابات جاهزة على الأسئلة الشائعة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-stages" name="missing_info" value="شرح مراحل التنفيذ">
+                                <label for="need-stages">شرح واضح لمراحل التنفيذ</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-data" name="missing_info" value="بيانات ملموسة">
+                                <label for="need-data">بيانات ملموسة (عدد النخيل، الأثر، إلخ)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-compare" name="missing_info" value="مقارنة بالمنافسين">
+                                <label for="need-compare">مقارنة واضحة بيننا وبين المنافسين</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-none" name="missing_info" value="لا أحتاج معلومات">
+                                <label for="need-none">لا أحتاج معلومات إضافية</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q9 -->
+                    <div class="question">
+                        <label class="question-label">
+                            9. هل تواجه صعوبة في شرح البند للمتبرعين؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="diff-always" name="explanation_difficulty" value="نعم، دائماً" required>
+                                <label for="diff-always">نعم، دائماً (صعب جداً)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="diff-sometimes" name="explanation_difficulty" value="نعم، أحياناً">
+                                <label for="diff-sometimes">نعم، أحياناً (حسب نوع المتبرع)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="diff-rarely" name="explanation_difficulty" value="نادراً">
+                                <label for="diff-rarely">نادراً (معظم الوقت واضح)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="diff-no" name="explanation_difficulty" value="لا، أبداً">
+                                <label for="diff-no">لا، أبداً (الشرح سهل)</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q9">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q10 -->
+                    <div class="question">
+                        <label class="question-label">
+                            10. ما **أصعب سؤال** يسأله المتبرعون عن بند النخيل... وتجد صعوبة في الإجابة عليه؟
+                            <div class="question-helper">(اختياري)</div>
+                        </label>
+                        <textarea id="hardest_question" name="hardest_question" placeholder="اكتب السؤال الأصعب..." maxlength="300" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q10">0</span> / 300 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q11 -->
+                    <div class="question">
+                        <label class="question-label">
+                            11. برأيك، ما الذي يجعل بند النخيل **أصعب** من البنود الأخرى في التسويق؟
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="hard-urgent" name="palm_difficulty" value="غير مُلِح">
+                                <label for="hard-urgent">غير مُلِح (مش Emergency)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-impact" name="palm_difficulty" value="الأثر بعيد المدى">
+                                <label for="hard-impact">الأثر بعيد المدى (مش فوري زي الإفطار)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-imagine" name="palm_difficulty" value="صعب تخيل الأثر">
+                                <label for="hard-imagine">صعب تخيل الأثر (مش ملموس زي اليتيم)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-compete" name="palm_difficulty" value="التنافس مع بنود موسمية">
+                                <label for="hard-compete">التنافس مع بنود موسمية قوية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-aware" name="palm_difficulty" value="قلة الوعي">
+                                <label for="hard-aware">قلة الوعي بأهمية النخيل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-content" name="palm_difficulty" value="ضعف المحتوى">
+                                <label for="hard-content">ضعف المحتوى التسويقي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-stories" name="palm_difficulty" value="غياب قصص الأثر">
+                                <label for="hard-stories">غياب قصص الأثر الواضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-price" name="palm_difficulty" value="السعر مرتفع">
+                                <label for="hard-price">السعر مرتفع مقارنة ببنود تانية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="hard-none" name="palm_difficulty" value="مش صعب">
+                                <label for="hard-none">مش صعب - النخيل بند قوي!</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q12 -->
+                    <div class="question">
+                        <label class="question-label">
+                            12. لو قارنت بند النخيل بالبنود الأخرى... **أي بند هو الأسهل في التسويق والإقناع؟**
+                            <div class="question-helper">(اختر واحد فقط)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="easy-ramadan" name="easiest_item" value="رمضان">
+                                <label for="easy-ramadan">رمضان (الإفطار، الكسوة، السلال)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="easy-sacrifice" name="easiest_item" value="الأضاحي">
+                                <label for="easy-sacrifice">الأضاحي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="easy-orphan" name="easiest_item" value="كفالة يتيم">
+                                <label for="easy-orphan">كفالة يتيم</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="easy-school" name="easiest_item" value="المدارس/التعليم">
+                                <label for="easy-school">المدارس/التعليم</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="easy-palm" name="easiest_item" value="النخيل">
+                                <label for="easy-palm">**النخيل** (هو الأسهل!)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="easy-winter" name="easiest_item" value="الشتاء">
+                                <label for="easy-winter">الشتاء (البطاطين، التدفئة)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الثالث: تحليل أداء 2025 -->
+                <!-- ============================================ -->
+                <div class="section" data-section="3">
+                    <div class="section-header">
+                        <div class="section-title">🔍 القسم الثالث: تحليل أداء 2025 - ليه ما حققناش المستهدف؟</div>
+                        <div class="section-subtitle">9 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q13 -->
+                    <div class="question">
+                        <label class="question-label">
+                            13. هل تعرف المستهدف المالي لبند النخيل في 2025؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="target-yes" name="know_target" value="نعم، أعرفه بالضبط" required>
+                                <label for="target-yes">نعم، أعرفه بالضبط</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="target-approx" name="know_target" value="أعرف تقريباً">
+                                <label for="target-approx">أعرف تقريباً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="target-heard" name="know_target" value="سمعت عنه">
+                                <label for="target-heard">سمعت عنه لكن مش متأكد</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="target-no" name="know_target" value="لا، لا أعرف">
+                                <label for="target-no">لا، لا أعرف</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q13">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q14 -->
+                    <div class="question">
+                        <label class="question-label">
+                            14. من وجهة نظرك... **لماذا لم نحقق المستهدف في 2025؟**
+                            <div class="question-helper">(اختر أهم 3 أسباب)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="fail-plan" name="failure_reasons" value="ضعف الخطة">
+                                <label for="fail-plan">ضعف الخطة الاستراتيجية من البداية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-content" name="failure_reasons" value="ضعف المحتوى">
+                                <label for="fail-content">ضعف المحتوى التسويقي والرسائل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-campaigns" name="failure_reasons" value="قلة الحملات">
+                                <label for="fail-campaigns">قلة الحملات المخصصة للنخيل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-focus" name="failure_reasons" value="التركيز على بنود أخرى">
+                                <label for="fail-focus">التركيز على بنود أخرى أكثر</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-compete" name="failure_reasons" value="المنافسة الشرسة">
+                                <label for="fail-compete">المنافسة الشرسة من مؤسسات أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-coord" name="failure_reasons" value="ضعف التنسيق">
+                                <label for="fail-coord">ضعف التنسيق مع إدارة المشروع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-doc" name="failure_reasons" value="تأخر التوثيق">
+                                <label for="fail-doc">تأخر التوثيق والتقارير</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-resources" name="failure_reasons" value="قلة الموارد">
+                                <label for="fail-resources">قلة الموارد (موظفين، ميزانية)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-incentive" name="failure_reasons" value="عدم وجود حوافز">
+                                <label for="fail-incentive">عدم وجود حوافز كافية للفريق</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-unreal" name="failure_reasons" value="المستهدف غير واقعي">
+                                <label for="fail-unreal">المستهدف كان غير واقعي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-track" name="failure_reasons" value="ضعف المتابعة">
+                                <label for="fail-track">ضعف المتابعة والقياس المستمر</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="fail-external" name="failure_reasons" value="ظروف خارجية">
+                                <label for="fail-external">ظروف خارجية (اقتصادية، سياسية)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q15 -->
+                    <div class="question">
+                        <label class="question-label">
+                            15. ما أكثر **فترة زمنية** كان فيها الأداء **قوي** في 2025؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="strong-q1" name="strong_period" value="Q1 (يناير-مارس)" required>
+                                <label for="strong-q1">Q1 (يناير - مارس)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="strong-q2" name="strong_period" value="Q2 (أبريل-يونيو)">
+                                <label for="strong-q2">Q2 (أبريل - يونيو)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="strong-q3" name="strong_period" value="Q3 (يوليو-سبتمبر)">
+                                <label for="strong-q3">Q3 (يوليو - سبتمبر)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="strong-q4" name="strong_period" value="Q4 (أكتوبر-ديسمبر)">
+                                <label for="strong-q4">Q4 (أكتوبر - ديسمبر)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="strong-same" name="strong_period" value="الأداء ثابت">
+                                <label for="strong-same">مفيش فترة واضحة - الأداء كان ثابت</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="strong-none" name="strong_period" value="كل السنة ضعيفة">
+                                <label for="strong-none">مفيش فترة قوية - كل السنة كانت ضعيفة</label>
+                            </div>
+                        </div>
+                        <textarea id="strong_period_reason" name="strong_period_reason" placeholder="ليه كانت قوية في رأيك؟ (اختياري)" maxlength="200" rows="2" style="margin-top: 15px;"></textarea>
+                        <div class="error-message" id="error-q15">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q16 -->
+                    <div class="question">
+                        <label class="question-label">
+                            16. ما أكثر **فترة زمنية** كان فيها الأداء **ضعيف** في 2025؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="weak-q1" name="weak_period" value="Q1 (يناير-مارس)" required>
+                                <label for="weak-q1">Q1 (يناير - مارس)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weak-q2" name="weak_period" value="Q2 (أبريل-يونيو)">
+                                <label for="weak-q2">Q2 (أبريل - يونيو)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weak-q3" name="weak_period" value="Q3 (يوليو-سبتمبر)">
+                                <label for="weak-q3">Q3 (يوليو - سبتمبر)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="weak-q4" name="weak_period" value="Q4 (أكتوبر-ديسمبر)">
+                                <label for="weak-q4">Q4 (أكتوبر - ديسمبر)</label>
+                            </div>
+                        </div>
+                        <textarea id="weak_period_reason" name="weak_period_reason" placeholder="ليه كانت ضعيفة في رأيك؟ (اختياري)" maxlength="200" rows="2" style="margin-top: 15px;"></textarea>
+                        <div class="error-message" id="error-q16">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q17 -->
+                    <div class="question">
+                        <label class="question-label">
+                            17. هل تقليص مدة التوثيق من **40 يوم إلى 15 يوم** ساهم في تحسين الأداء؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="doc-huge" name="documentation_impact" value="نعم، بشكل كبير جداً" required>
+                                <label for="doc-huge">نعم، بشكل كبير جداً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="doc-notice" name="documentation_impact" value="نعم، بشكل ملحوظ">
+                                <label for="doc-notice">نعم، بشكل ملحوظ</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="doc-slight" name="documentation_impact" value="نعم، لكن بسيط">
+                                <label for="doc-slight">نعم، لكن بسيط</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="doc-no" name="documentation_impact" value="لم يؤثر">
+                                <label for="doc-no">لم يؤثر على الإطلاق</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="doc-unknown" name="documentation_impact" value="لا أعرف">
+                                <label for="doc-unknown">لا أعرف (لم ألاحظ)</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q17">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q18 -->
+                    <div class="question">
+                        <label class="question-label">
+                            18. هل الإعلان عن **"سحب العمرة"** أثّر إيجابياً على عدد المتبرعين؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="draw-yes" name="umrah_draw_impact" value="نعم، زاد العدد بشكل واضح" required>
+                                <label for="draw-yes">نعم، زاد العدد بشكل واضح</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="draw-limited" name="umrah_draw_impact" value="نعم، لكن بشكل محدود">
+                                <label for="draw-limited">نعم، لكن بشكل محدود</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="draw-no" name="umrah_draw_impact" value="لا، لم يؤثر">
+                                <label for="draw-no">لا، لم يؤثر</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="draw-unknown" name="umrah_draw_impact" value="لا أعرف">
+                                <label for="draw-unknown">لا أعرف</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q18">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q19 -->
+                    <div class="question">
+                        <label class="question-label">
+                            19. ما أصعب **مرحلة** في التعامل مع متبرعي النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="stage-reach" name="hardest_stage" value="التواصل الأول" required>
+                                <label for="stage-reach">التواصل الأول (الوصول للمتبرع)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="stage-explain" name="hardest_stage" value="شرح البند">
+                                <label for="stage-explain">شرح البند وإقناعه بالقيمة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="stage-follow" name="hardest_stage" value="المتابعة">
+                                <label for="stage-follow">المتابعة والتذكير</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="stage-close" name="hardest_stage" value="إغلاق التبرع">
+                                <label for="stage-close">إغلاق التبرع (Conversion)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="stage-after" name="hardest_stage" value="ما بعد التبرع">
+                                <label for="stage-after">ما بعد التبرع (الاحتفاظ والتكرار)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="stage-none" name="hardest_stage" value="لا يوجد صعوبة">
+                                <label for="stage-none">لا يوجد صعوبة واضحة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q19">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q20 -->
+                    <div class="question">
+                        <label class="question-label">
+                            20. اذكر **موقف واحد محدد** حصل في 2025 يوضح سبب ضعف النتائج:
+                            <div class="question-helper">(مهم جدًا - كن محدد قدر الإمكان)</div>
+                        </label>
+                        <textarea id="situation_2025" name="situation_2025" placeholder="الموقف + السبب الحقيقي..." maxlength="500" rows="4"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q20">0</span> / 500 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q21 -->
+                    <div class="question">
+                        <label class="question-label">
+                            21. لو رجع بيك الزمن لبداية 2025... **إيه أول حاجة كنت هتعملها مختلف؟**
+                            <div class="question-helper">(كن صريح!)</div>
+                        </label>
+                        <textarea id="would_change" name="would_change" placeholder="أول حاجة كنت هغيرها..." maxlength="400" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q21">0</span> / 400 حرف
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================ -->
+                <!-- القسم الرابع: المنافسة -->
+                <!-- ============================================ -->
+                <div class="section" data-section="4">
+                    <div class="section-header">
+                        <div class="section-title">🏆 القسم الرابع: المنافسة - الخارجية والداخلية</div>
+                        <div class="section-subtitle">6 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q22 -->
+                    <div class="question">
+                        <label class="question-label">
+                            22. هل تعرف أسماء المؤسسات المنافسة التي لديها نفس بند النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="comp-many" name="know_competitors" value="نعم، أعرف 3+ مؤسسات" required>
+                                <label for="comp-many">نعم، أعرف 3+ مؤسسات منافسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comp-few" name="know_competitors" value="نعم، أعرف 1-2 مؤسسات">
+                                <label for="comp-few">نعم، أعرف 1-2 مؤسسات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comp-heard" name="know_competitors" value="سمعت لكن مش متأكد">
+                                <label for="comp-heard">سمعت لكن مش متأكد</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="comp-no" name="know_competitors" value="لا، لا أعرف">
+                                <label for="comp-no">لا، لا أعرف</label>
+                            </div>
+                        </div>
+                        <textarea id="competitor_names" name="competitor_names" placeholder="لو تعرف، اذكر 1-3 منافسين (اختياري)..." maxlength="200" rows="2" style="margin-top: 15px;"></textarea>
+                        <div class="error-message" id="error-q22">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q23 -->
+                    <div class="question">
+                        <label class="question-label">
+                            23. من تجربتك... **ما الذي يميز "نخيل صناع الحياة" عن المنافسين؟**
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="adv-price" name="our_advantages" value="السعر الأفضل">
+                                <label for="adv-price">السعر الأفضل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-quality" name="our_advantages" value="جودة التنفيذ أعلى">
+                                <label for="adv-quality">جودة التنفيذ أعلى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-speed" name="our_advantages" value="سرعة التوثيق">
+                                <label for="adv-speed">سرعة التوثيق والتقارير</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-trans" name="our_advantages" value="الشفافية والمصداقية">
+                                <label for="adv-trans">الشفافية والمصداقية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-brand" name="our_advantages" value="قوة العلامة التجارية">
+                                <label for="adv-brand">قوة العلامة التجارية (صناع الحياة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-stories" name="our_advantages" value="قصص الأثر الواضحة">
+                                <label for="adv-stories">قصص الأثر الواضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-ease" name="our_advantages" value="سهولة التبرع">
+                                <label for="adv-ease">سهولة عملية التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-follow" name="our_advantages" value="التواصل والمتابعة">
+                                <label for="adv-follow">التواصل والمتابعة بعد التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-none" name="our_advantages" value="مفيش ميزة واضحة">
+                                <label for="adv-none">**مفيش ميزة واضحة - المنافسين أقوى!**</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="adv-unknown" name="our_advantages" value="لا أعرف بالضبط">
+                                <label for="adv-unknown">لا أعرف بالضبط</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q24 -->
+                    <div class="question">
+                        <label class="question-label">
+                            24. هل سبق وواجهت **اعتراض** من متبرع بسبب المقارنة مع مؤسسة منافسة؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="obj-often" name="competitor_objection" value="نعم، يحدث كثيراً" required>
+                                <label for="obj-often">نعم، يحدث كثيراً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-sometimes" name="competitor_objection" value="نعم، يحدث أحياناً">
+                                <label for="obj-sometimes">نعم، يحدث أحياناً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-rare" name="competitor_objection" value="نادراً جداً">
+                                <label for="obj-rare">نادراً جداً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-no" name="competitor_objection" value="لا، لم يحدث">
+                                <label for="obj-no">لا، لم يحدث</label>
+                            </div>
+                        </div>
+                        <textarea id="common_objection" name="common_objection" placeholder="لو حدث، ما كان الاعتراض الأكثر تكراراً؟ (اختياري)" maxlength="300" rows="2" style="margin-top: 15px;"></textarea>
+                        <div class="error-message" id="error-q24">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q25 -->
+                    <div class="question">
+                        <label class="question-label">
+                            25. بخصوص **المنافسة الداخلية**... **أي بند "ياكل" من حصة النخيل؟**
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="int-ramadan" name="internal_competition" value="رمضان">
+                                <label for="int-ramadan">رمضان (الإفطار، الكسوة، السلال)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="int-sacrifice" name="internal_competition" value="الأضاحي">
+                                <label for="int-sacrifice">الأضاحي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="int-orphan" name="internal_competition" value="كفالة يتيم">
+                                <label for="int-orphan">كفالة يتيم</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="int-school" name="internal_competition" value="المدارس">
+                                <label for="int-school">المدارس/التعليم</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="int-winter" name="internal_competition" value="الشتاء">
+                                <label for="int-winter">الشتاء (البطاطين)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="int-seasonal" name="internal_competition" value="بنود موسمية أخرى">
+                                <label for="int-seasonal">بنود موسمية أخرى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="int-none" name="internal_competition" value="مفيش منافسة داخلية">
+                                <label for="int-none">**مفيش منافسة داخلية - كل بند له جمهوره**</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q26 -->
+                    <div class="question">
+                        <label class="question-label">
+                            26. هل تشعر بـ**تضارب** أو **تشتت** عند التعامل مع أكثر من بند في نفس الوقت؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="conf-always" name="items_conflict" value="نعم، دائماً" required>
+                                <label for="conf-always">نعم، دائماً - يصعب التركيز</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="conf-sometimes" name="items_conflict" value="نعم، أحياناً">
+                                <label for="conf-sometimes">نعم، أحياناً - خصوصاً في المواسم</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="conf-rare" name="items_conflict" value="نادراً">
+                                <label for="conf-rare">نادراً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="conf-no" name="items_conflict" value="لا، أستطيع إدارة البنود">
+                                <label for="conf-no">لا، أستطيع إدارة البنود المتعددة بسهولة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q26">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q27 -->
+                    <div class="question">
+                        <label class="question-label">
+                            27. في رأيك، **كيف يمكن تسويق النخيل بجانب بنود أخرى بدون تضارب؟**
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="sol-time" name="multi_item_solution" value="فترات زمنية منفصلة" required>
+                                <label for="sol-time">تخصيص فترات زمنية منفصلة لكل بند</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sol-cross" name="multi_item_solution" value="Cross-selling">
+                                <label for="sol-cross">Cross-selling ("تبرعت برمضان؟ تبرع بنخلة!")</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sol-bundle" name="multi_item_solution" value="حزم مجمعة">
+                                <label for="sol-bundle">حزم مجمعة ("حزمة الخير الشاملة")</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sol-teams" name="multi_item_solution" value="فصل الفرق">
+                                <label for="sol-teams">فصل الفرق (فريق للنخيل، فريق للبنود الأخرى)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sol-focus" name="multi_item_solution" value="التركيز على بند واحد">
+                                <label for="sol-focus">التركيز على بند واحد فقط في كل موسم</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sol-unknown" name="multi_item_solution" value="لا أعرف">
+                                <label for="sol-unknown">لا أعرف</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q27">❌ الرجاء الاختيار</div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الخامس: التسويق والمحتوى -->
+                <!-- ============================================ -->
+                <div class="section" data-section="5">
+                    <div class="section-header">
+                        <div class="section-title">📢 القسم الخامس: التسويق والمحتوى والرسائل</div>
+                        <div class="section-subtitle">7 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q28 -->
+                    <div class="question">
+                        <label class="question-label">
+                            28. من 1 إلى 10، كيف تقيّم **جودة المحتوى التسويقي** لبند النخيل في 2025؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>ضعيف جداً</span>
+                                <span>ممتاز</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="content-1" name="content_quality" value="1" required>
+                                    <label for="content-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-2" name="content_quality" value="2">
+                                    <label for="content-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-3" name="content_quality" value="3">
+                                    <label for="content-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-4" name="content_quality" value="4">
+                                    <label for="content-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-5" name="content_quality" value="5">
+                                    <label for="content-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-6" name="content_quality" value="6">
+                                    <label for="content-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-7" name="content_quality" value="7">
+                                    <label for="content-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-8" name="content_quality" value="8">
+                                    <label for="content-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-9" name="content_quality" value="9">
+                                    <label for="content-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="content-10" name="content_quality" value="10">
+                                    <label for="content-10">10</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q28">❌ الرجاء اختيار تقييم</div>
+                    </div>
+
+                    <!-- Q29 -->
+                    <div class="question">
+                        <label class="question-label">
+                            29. ما نوع المحتوى الأكثر **تأثيراً** على المتبرعين في بند النخيل؟
+                            <div class="question-helper">(اختر واحد فقط - الأقوى)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="type-stories" name="most_effective_content" value="قصص أثر حقيقية" required>
+                                <label for="type-stories">قصص أثر حقيقية (Story)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="type-videos" name="most_effective_content" value="فيديوهات">
+                                <label for="type-videos">فيديوهات من المشاريع الفعلية</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="type-before" name="most_effective_content" value="صور قبل/بعد">
+                                <label for="type-before">صور قبل/بعد</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="type-info" name="most_effective_content" value="Infographics">
+                                <label for="type-info">Infographics (معلومات مرئية)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="type-test" name="most_effective_content" value="شهادات المستفيدين">
+                                <label for="type-test">شهادات المستفيدين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="type-data" name="most_effective_content" value="بيانات وأرقام">
+                                <label for="type-data">بيانات وأرقام ملموسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="type-live" name="most_effective_content" value="Live من الميدان">
+                                <label for="type-live">Live من الميدان</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q29">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q30 -->
+                    <div class="question">
+                        <label class="question-label">
+                            30. هل الرسائل التسويقية الحالية **واضحة** و**مُقنِعة**؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="msg-great" name="messages_clarity" value="نعم، واضحة ومقنعة جداً" required>
+                                <label for="msg-great">نعم، واضحة ومقنعة جداً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg-improve" name="messages_clarity" value="نعم، لكن تحتاج تحسين">
+                                <label for="msg-improve">نعم، لكن تحتاج تحسين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg-unclear" name="messages_clarity" value="غير واضحة بما يكفي">
+                                <label for="msg-unclear">غير واضحة بما يكفي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg-weak" name="messages_clarity" value="ضعيفة وغير مقنعة">
+                                <label for="msg-weak">ضعيفة وغير مقنعة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg-unknown" name="messages_clarity" value="لا أعرف">
+                                <label for="msg-unknown">لا أعرف - لم أراها</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q30">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q31 -->
+                    <div class="question">
+                        <label class="question-label">
+                            31. أي من هذه **الرسائل التسويقية** تعتقد أنها الأقوى لبند النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="msg1" name="best_message" value="نخلة واحدة = حياة كاملة" required>
+                                <label for="msg1">"نخلة واحدة = حياة كاملة تتغير"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg2" name="best_message" value="من صحراء إلى واحة">
+                                <label for="msg2">"من صحراء جرداء إلى واحة خضراء"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg3" name="best_message" value="استثمار + صدقة + دخل">
+                                <label for="msg3">"استثمار + صدقة جارية + دخل مستدام"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg4" name="best_message" value="كل نخلة = أسرة">
+                                <label for="msg4">"كل نخلة = أسرة تعيش بكرامة"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg5" name="best_message" value="ازرع نخلة احصد حياة">
+                                <label for="msg5">"ازرع نخلة... احصد حياة"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg6" name="best_message" value="مصدر دخل كامل">
+                                <label for="msg6">"مش مجرد شجرة، دي مصدر دخل كامل"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="msg-weak" name="best_message" value="كلها ضعيفة">
+                                <label for="msg-weak">**كلها ضعيفة - محتاجين رسالة أقوى!**</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q31">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q32 -->
+                    <div class="question">
+                        <label class="question-label">
+                            32. ما **أكثر اعتراض** تسمعه من المتبرعين عند عرض بند النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="obj-price" name="main_objection" value="السعر غالي" required>
+                                <label for="obj-price">"السعر غالي"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-slow" name="main_objection" value="الأثر بعيد">
+                                <label for="obj-slow">"مش شايف الفايدة بسرعة (الأثر بعيد)"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-urgent" name="main_objection" value="فيه بنود أهم">
+                                <label for="obj-urgent">"فيه بنود أهم وأسرع (رمضان، يتيم)"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-trust" name="main_objection" value="مش مقتنع بالتنفيذ">
+                                <label for="obj-trust">"مش مقتنع إن النخيل فعلاً بيتزرع"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-where" name="main_objection" value="مش واضح هيوصل فين">
+                                <label for="obj-where">"مش واضح هيوصل فين بالضبط"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-instant" name="main_objection" value="عايز نتيجة فورية">
+                                <label for="obj-instant">"عايز أشوف نتيجة فورية"</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="obj-none" name="main_objection" value="مفيش اعتراضات">
+                                <label for="obj-none">مفيش اعتراضات واضحة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q32">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q33 -->
+                    <div class="question">
+                        <label class="question-label">
+                            33. هل لديك **إجابات جاهزة ومُقنِعة** على الاعتراضات الشائعة؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="ans-yes" name="ready_answers" value="نعم، دائماً" required>
+                                <label for="ans-yes">نعم، دائماً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="ans-need" name="ready_answers" value="نعم، لكن تحتاج تطوير">
+                                <label for="ans-need">نعم، لكن تحتاج تطوير</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="ans-sometimes" name="ready_answers" value="أحياناً">
+                                <label for="ans-sometimes">أحياناً (حسب الاعتراض)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="ans-no" name="ready_answers" value="لا، أجتهد">
+                                <label for="ans-no">لا، أجتهد في كل مرة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q33">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q34 -->
+                    <div class="question">
+                        <label class="question-label">
+                            34. لو كان عندك ميزانية إعلانات محدودة للنخيل... **على أي قناة ستركز؟**
+                            <div class="question-helper">(اختر 2 فقط)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="ch-fb" name="ad_channels" value="Facebook Ads">
+                                <label for="ch-fb">Facebook Ads</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-ig" name="ad_channels" value="Instagram Ads">
+                                <label for="ch-ig">Instagram Ads</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-google" name="ad_channels" value="Google Ads">
+                                <label for="ch-google">Google Ads (Search)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-yt" name="ad_channels" value="YouTube Ads">
+                                <label for="ch-yt">YouTube Ads</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-inf" name="ad_channels" value="Influencers">
+                                <label for="ch-inf">Influencers/المشاهير</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-sms" name="ad_channels" value="SMS Campaigns">
+                                <label for="ch-sms">SMS Campaigns</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-bill" name="ad_channels" value="إعلانات الشوارع">
+                                <label for="ch-bill">إعلانات الشوارع (Billboards)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-email" name="ad_channels" value="Email Marketing">
+                                <label for="ch-email">Email Marketing</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="ch-wom" name="ad_channels" value="Word of Mouth">
+                                <label for="ch-wom">**الكلام الشفهي (Word of Mouth)**</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم السادس: التنسيق مع إدارة المشروع -->
+                <!-- ============================================ -->
+                <div class="section" data-section="6">
+                    <div class="section-header">
+                        <div class="section-title">🤝 القسم السادس: التنسيق مع إدارة المشروع/البرامج</div>
+                        <div class="section-subtitle">5 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q35 -->
+                    <div class="question">
+                        <label class="question-label">
+                            35. من 1 إلى 10، كيف تقيّم **التنسيق** بين إدارة التمويل وإدارة المشروع/البرامج؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>ضعيف جداً - تعطيل مستمر</span>
+                                <span>ممتاز - تنسيق سلس</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-1" name="coordination_quality" value="1" required>
+                                    <label for="coord-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-2" name="coordination_quality" value="2">
+                                    <label for="coord-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-3" name="coordination_quality" value="3">
+                                    <label for="coord-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-4" name="coordination_quality" value="4">
+                                    <label for="coord-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-5" name="coordination_quality" value="5">
+                                    <label for="coord-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-6" name="coordination_quality" value="6">
+                                    <label for="coord-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-7" name="coordination_quality" value="7">
+                                    <label for="coord-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-8" name="coordination_quality" value="8">
+                                    <label for="coord-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-9" name="coordination_quality" value="9">
+                                    <label for="coord-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="coord-10" name="coordination_quality" value="10">
+                                    <label for="coord-10">10</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q35">❌ الرجاء اختيار تقييم</div>
+                    </div>
+
+                    <!-- Q36 -->
+                    <div class="question">
+                        <label class="question-label">
+                            36. ما أكثر **مشكلة تنسيقية** بين التمويل والبرامج؟
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="prob-doc" name="coordination_problems" value="تأخر التوثيق">
+                                <label for="prob-doc">تأخر التوثيق والتقارير من البرامج</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-quality" name="coordination_problems" value="ضعف جودة الصور">
+                                <label for="prob-quality">ضعف جودة الصور/الفيديوهات</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-numbers" name="coordination_problems" value="عدم وضوح الأعداد">
+                                <label for="prob-numbers">عدم وضوح الأعداد المتاحة للزراعة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-exec" name="coordination_problems" value="تأخر التنفيذ">
+                                <label for="prob-exec">تأخر التنفيذ الفعلي بعد جمع الأموال</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-conflict" name="coordination_problems" value="تضارب المعلومات">
+                                <label for="prob-conflict">تضارب في المعلومات</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-comm" name="coordination_problems" value="ضعف التواصل">
+                                <label for="prob-comm">ضعف التواصل المستمر</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-understand" name="coordination_problems" value="عدم فهم احتياجات التمويل">
+                                <label for="prob-understand">عدم فهم البرامج لاحتياجات التمويل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="prob-none" name="coordination_problems" value="لا يوجد مشاكل">
+                                <label for="prob-none">**لا يوجد مشاكل - التنسيق ممتاز!**</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q37 -->
+                    <div class="question">
+                        <label class="question-label">
+                            37. هل يوجد حالياً **اتفاقية واضحة (SLA)** بين التمويل والبرامج بخصوص النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="sla-written" name="sla_existence" value="نعم، موجودة ومكتوبة" required>
+                                <label for="sla-written">نعم، موجودة ومكتوبة وواضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sla-verbal" name="sla_existence" value="نعم، لكن شفهية">
+                                <label for="sla-verbal">نعم، لكن شفهية (غير موثقة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sla-not" name="sla_existence" value="نعم، لكن غير مُلزِمة">
+                                <label for="sla-not">نعم، لكن غير مُلزِمة (لا يتم الالتزام بها)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sla-no" name="sla_existence" value="لا، لا يوجد">
+                                <label for="sla-no">لا، لا يوجد SLA واضحة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="sla-unknown" name="sla_existence" value="لا أعرف">
+                                <label for="sla-unknown">لا أعرف</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q37">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q38 -->
+                    <div class="question">
+                        <label class="question-label">
+                            38. في حالة وجود مشكلة من البرامج... ما الذي يحدث عادة؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="solve-fast" name="problem_resolution" value="يتم حلها بسرعة" required>
+                                <label for="solve-fast">يتم حلها بسرعة (خلال 1-3 أيام)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="solve-slow" name="problem_resolution" value="تأخذ وقت طويل">
+                                <label for="solve-slow">تأخذ وقت طويل (أسبوع - أسبوعين)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="solve-worse" name="problem_resolution" value="تتفاقم">
+                                <label for="solve-worse">تتفاقم وتؤثر على الأداء</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="solve-skip" name="problem_resolution" value="لا يتم حلها">
+                                <label for="solve-skip">لا يتم حلها - نتجاوزها ونكمل</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="solve-never" name="problem_resolution" value="لم تحدث مشاكل">
+                                <label for="solve-never">لم تحدث مشاكل من قبل</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q38">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q39 -->
+                    <div class="question">
+                        <label class="question-label">
+                            39. ما الذي تحتاجه من إدارة المشروع/البرامج لتحسين أدائك؟
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="need-reports" name="needs_from_programs" value="تقارير دورية">
+                                <label for="need-reports">تقارير دورية منتظمة (أسبوعية/شهرية)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-visuals" name="needs_from_programs" value="صور وفيديوهات">
+                                <label for="need-visuals">صور وفيديوهات عالية الجودة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-impact" name="needs_from_programs" value="قصص أثر موثقة">
+                                <label for="need-impact">قصص أثر موثقة بالأسماء والمناطق</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-clear-data" name="needs_from_programs" value="بيانات واضحة">
+                                <label for="need-clear-data">بيانات واضحة (عدد النخيل، المستفيدين)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-fast" name="needs_from_programs" value="سرعة التوثيق">
+                                <label for="need-fast">سرعة في التوثيق (أقل من 15 يوم)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-visits" name="needs_from_programs" value="زيارات ميدانية">
+                                <label for="need-visits">زيارات ميدانية للفرق التسويقية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-contact" name="needs_from_programs" value="نقطة اتصال واحدة">
+                                <label for="need-contact">نقطة اتصال واحدة مسؤولة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-commit" name="needs_from_programs" value="الالتزام بالمواعيد">
+                                <label for="need-commit">الالتزام بالمواعيد المتفق عليها</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-nothing" name="needs_from_programs" value="لا أحتاج شيء">
+                                <label for="need-nothing">**لا أحتاج شيء - كل شيء تمام!**</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================ -->
+                <!-- القسم السابع: الموسمية والتوقيت -->
+                <!-- ============================================ -->
+                <div class="section" data-section="7">
+                    <div class="section-header">
+                        <div class="section-title">⏰ القسم السابع: الموسمية والتوقيت الأمثل</div>
+                        <div class="section-subtitle">4 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q40 -->
+                    <div class="question">
+                        <label class="question-label">
+                            40. متى تعتقد أن **أفضل وقت** للتركيز على بند النخيل؟
+                            <div class="question-helper">(اختر حتى 2 فترات)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="time-q1" name="best_timing" value="Q1 (يناير-مارس)">
+                                <label for="time-q1">يناير - مارس (Q1) - بداية السنة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="time-q2" name="best_timing" value="Q2 (أبريل-يونيو)">
+                                <label for="time-q2">أبريل - يونيو (Q2) - قبل الصيف</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="time-q3" name="best_timing" value="Q3 (يوليو-سبتمبر)">
+                                <label for="time-q3">يوليو - سبتمبر (Q3) - موسم الزراعة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="time-q4" name="best_timing" value="Q4 (أكتوبر-ديسمبر)">
+                                <label for="time-q4">أكتوبر - ديسمبر (Q4) - نهاية السنة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="time-all" name="best_timing" value="طول السنة">
+                                <label for="time-all">**طول السنة بدون توقف** - النخيل مش موسمي!</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="time-ramadan" name="best_timing" value="رمضان">
+                                <label for="time-ramadan">**رمضان** - الناس بتتبرع أكتر</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="time-unknown" name="best_timing" value="لا أعرف">
+                                <label for="time-unknown">لا أعرف</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q41 -->
+                    <div class="question">
+                        <label class="question-label">
+                            41. في رأيك، هل يجب أن يكون النخيل بند **موسمي** أم **مستمر طول السنة**؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="approach-seasonal" name="seasonal_approach" value="موسمي" required>
+                                <label for="approach-seasonal">موسمي (حملة مركزة في فترة محددة - أقوى)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="approach-peak" name="seasonal_approach" value="مستمر مع peak seasons">
+                                <label for="approach-peak">مستمر طول السنة (لكن مع peak seasons)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="approach-continuous" name="seasonal_approach" value="مستمر بدون تمييز">
+                                <label for="approach-continuous">مستمر طول السنة بدون تمييز</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="approach-unknown" name="seasonal_approach" value="لا أعرف">
+                                <label for="approach-unknown">لا أعرف</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q41">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q42 -->
+                    <div class="question">
+                        <label class="question-label">
+                            42. هل الحملات الموسمية الكبرى (رمضان، الأضاحي) **تساعد** أم **تعيق** بند النخيل؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="camp-help" name="campaigns_effect" value="تساعد" required>
+                                <label for="camp-help">تساعد - الزخم العام يرفع كل البنود</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="camp-hinder" name="campaigns_effect" value="تعيق">
+                                <label for="camp-hinder">تعيق - بتسحب التركيز والموارد</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="camp-neutral" name="campaigns_effect" value="محايدة">
+                                <label for="camp-neutral">محايدة - مالهاش تأثير واضح</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="camp-depends" name="campaigns_effect" value="يعتمد على التنسيق">
+                                <label for="camp-depends">يعتمد على كيفية التنسيق</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q42">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q43 -->
+                    <div class="question">
+                        <label class="question-label">
+                            43. لو كان القرار بيدك... **كيف ستوزع التركيز على النخيل طوال 2026؟**
+                            <div class="question-helper">(المجموع يجب أن يكون 100%)</div>
+                        </label>
+                        <div style="display: grid; gap: 15px; margin-top: 15px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <label style="flex: 0 0 200px; font-weight: 600;">Q1 (يناير - مارس):</label>
+                                <input type="number" id="dist_q1" name="dist_q1" min="0" max="100" placeholder="%" style="flex: 1; max-width: 100px;">
+                                <span>%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <label style="flex: 0 0 200px; font-weight: 600;">Q2 (أبريل - يونيو):</label>
+                                <input type="number" id="dist_q2" name="dist_q2" min="0" max="100" placeholder="%" style="flex: 1; max-width: 100px;">
+                                <span>%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <label style="flex: 0 0 200px; font-weight: 600;">Q3 (يوليو - سبتمبر):</label>
+                                <input type="number" id="dist_q3" name="dist_q3" min="0" max="100" placeholder="%" style="flex: 1; max-width: 100px;">
+                                <span>%</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <label style="flex: 0 0 200px; font-weight: 600;">Q4 (أكتوبر - ديسمبر):</label>
+                                <input type="number" id="dist_q4" name="dist_q4" min="0" max="100" placeholder="%" style="flex: 1; max-width: 100px;">
+                                <span>%</span>
+                            </div>
+                            <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; text-align: center; font-weight: 600; font-size: 18px;">
+                                المجموع: <span id="total-percentage" style="color: #2ecc71;">0</span>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الثامن: الجاهزية لـ 60 مليون -->
+                <!-- ============================================ -->
+                <div class="section" data-section="8">
+                    <div class="section-header">
+                        <div class="section-title">💪 القسم الثامن: الجاهزية لتحقيق 60 مليون في 2026</div>
+                        <div class="section-subtitle">6 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q44 -->
+                    <div class="question">
+                        <label class="question-label">
+                            44. من 1 إلى 10، ما مدى **جاهزيتك الشخصية** لتحقيق مستهدف 60 مليون؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>غير جاهز أبداً</span>
+                                <span>جاهز بنسبة 100%</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-1" name="personal_readiness" value="1" required>
+                                    <label for="ready-personal-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-2" name="personal_readiness" value="2">
+                                    <label for="ready-personal-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-3" name="personal_readiness" value="3">
+                                    <label for="ready-personal-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-4" name="personal_readiness" value="4">
+                                    <label for="ready-personal-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-5" name="personal_readiness" value="5">
+                                    <label for="ready-personal-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-6" name="personal_readiness" value="6">
+                                    <label for="ready-personal-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-7" name="personal_readiness" value="7">
+                                    <label for="ready-personal-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-8" name="personal_readiness" value="8">
+                                    <label for="ready-personal-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-9" name="personal_readiness" value="9">
+                                    <label for="ready-personal-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-personal-10" name="personal_readiness" value="10">
+                                    <label for="ready-personal-10">10</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q44">❌ الرجاء اختيار تقييم</div>
+                    </div>
+
+                    <!-- Q45 -->
+                    <div class="question">
+                        <label class="question-label">
+                            45. من 1 إلى 10، ما مدى **جاهزية الفريق ككل** لتحقيق هذا المستهدف؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>غير جاهز أبداً</span>
+                                <span>جاهز بنسبة 100%</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-1" name="team_readiness" value="1" required>
+                                    <label for="ready-team-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-2" name="team_readiness" value="2">
+                                    <label for="ready-team-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-3" name="team_readiness" value="3">
+                                    <label for="ready-team-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-4" name="team_readiness" value="4">
+                                    <label for="ready-team-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-5" name="team_readiness" value="5">
+                                    <label for="ready-team-5">5</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-6" name="team_readiness" value="6">
+                                    <label for="ready-team-6">6</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-7" name="team_readiness" value="7">
+                                    <label for="ready-team-7">7</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-8" name="team_readiness" value="8">
+                                    <label for="ready-team-8">8</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-9" name="team_readiness" value="9">
+                                    <label for="ready-team-9">9</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-team-10" name="team_readiness" value="10">
+                                    <label for="ready-team-10">10</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q45">❌ الرجاء اختيار تقييم</div>
+                    </div>
+
+                    <!-- Q46 -->
+                    <div class="question">
+                        <label class="question-label">
+                            46. هل تعتقد أن تحقيق **60 مليون جنيه من النخيل** في 2026 **ممكن**؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="possible-yes" name="target_possible" value="نعم، ممكن وواقعي" required>
+                                <label for="possible-yes">نعم، ممكن وواقعي تماماً</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="possible-effort" name="target_possible" value="نعم، لكن يحتاج جهد">
+                                <label for="possible-effort">نعم، لكن يحتاج جهد استثنائي</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="possible-conditions" name="target_possible" value="ممكن، لكن بشروط">
+                                <label for="possible-conditions">ممكن، لكن بشروط (ميزانية، فريق، خطة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="possible-hard" name="target_possible" value="صعب جداً">
+                                <label for="possible-hard">صعب جداً لكن ليس مستحيل</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="possible-no" name="target_possible" value="غير ممكن">
+                                <label for="possible-no">غير ممكن - المستهدف مبالغ فيه</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q46">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q47 -->
+                    <div class="question">
+                        <label class="question-label">
+                            47. ما **أهم 3 أشياء** يجب توفيرها لتحقيق المستهدف؟
+                            <div class="question-helper">(اختر 3 فقط - الأهم)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="req-plan" name="success_requirements" value="خطة استراتيجية واضحة">
+                                <label for="req-plan">خطة استراتيجية واضحة ومفصلة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-content" name="success_requirements" value="محتوى تسويقي قوي">
+                                <label for="req-content">محتوى تسويقي قوي وجذاب</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-ads" name="success_requirements" value="حملات إعلانية مكثفة">
+                                <label for="req-ads">حملات إعلانية مكثفة (ميزانية كافية)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-training" name="success_requirements" value="تدريب الفريق">
+                                <label for="req-training">تدريب الفريق على البند</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-coord" name="success_requirements" value="تنسيق ممتاز مع البرامج">
+                                <label for="req-coord">تنسيق ممتاز مع البرامج</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-incentive" name="success_requirements" value="حوافز للفريق">
+                                <label for="req-incentive">حوافز للفريق التنفيذي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-tools" name="success_requirements" value="أدوات وأنظمة أفضل">
+                                <label for="req-tools">أدوات وأنظمة تقنية أفضل</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-tracking" name="success_requirements" value="متابعة وقياس مستمر">
+                                <label for="req-tracking">متابعة وقياس مستمر (Dashboard)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-stories" name="success_requirements" value="قصص أثر قوية">
+                                <label for="req-stories">قصص أثر قوية وموثقة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="req-diff" name="success_requirements" value="تمييز عن المنافسين">
+                                <label for="req-diff">تمييز واضح عن المنافسين</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q48 -->
+                    <div class="question">
+                        <label class="question-label">
+                            48. ما الذي يجب أن **نتوقف** عن فعله فوراً لنجاح بند النخيل؟
+                            <div class="question-helper">(اختياري)</div>
+                        </label>
+                        <textarea id="should_stop" name="should_stop" placeholder="اكتب ما يجب التوقف عنه..." maxlength="400" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q48">0</span> / 400 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q49 -->
+                    <div class="question">
+                        <label class="question-label">
+                            49. ما الذي يجب أن **نبدأ** في فعله فوراً لنجاح بند النخيل؟
+                            <div class="question-helper">(اختياري)</div>
+                        </label>
+                        <textarea id="should_start" name="should_start" placeholder="اكتب ما يجب البدء فيه..." maxlength="400" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q49">0</span> / 400 حرف
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم التاسع: لو كنت أنت المتبرع -->
+                <!-- ============================================ -->
+                <div class="section" data-section="9">
+                    <div class="section-header">
+                        <div class="section-title">🎯 القسم التاسع: لو كنت أنت المتبرع...</div>
+                        <div class="section-subtitle">4 أسئلة - تخيّل أنك متبرع عادي</div>
+                    </div>
+                    
+                    <!-- Q50 -->
+                    <div class="question">
+                        <label class="question-label">
+                            50. ما الذي سيجعلك **تتبرع** في بند النخيل لأول مرة؟
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="donate-story" name="reasons_to_donate" value="قصة أثر مؤثرة">
+                                <label for="donate-story">قصة أثر حقيقية ومؤثرة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-video" name="reasons_to_donate" value="فيديو من الميدان">
+                                <label for="donate-video">فيديو من الميدان يوضح النتائج</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-trust" name="reasons_to_donate" value="ثقة في المؤسسة">
+                                <label for="donate-trust">ثقة في المؤسسة (صناع الحياة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-impact" name="reasons_to_donate" value="وضوح الأثر">
+                                <label for="donate-impact">وضوح الأثر طويل المدى</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-price" name="reasons_to_donate" value="سعر مناسب">
+                                <label for="donate-price">سعر مناسب ومرن (إمكانية التقسيط)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-testimonial" name="reasons_to_donate" value="شهادات متبرعين">
+                                <label for="donate-testimonial">شهادات من متبرعين سابقين</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-ease" name="reasons_to_donate" value="سهولة التبرع">
+                                <label for="donate-ease">سهولة عملية التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-difference" name="reasons_to_donate" value="شعور بالفرق">
+                                <label for="donate-difference">شعور بأن تبرعي سيحدث فرق حقيقي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="donate-recommend" name="reasons_to_donate" value="توصية من موثوق">
+                                <label for="donate-recommend">توصية من شخص موثوق</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q51 -->
+                    <div class="question">
+                        <label class="question-label">
+                            51. ما الذي سيجعلك **تكرر** التبرع في النخيل مرة أخرى؟
+                            <div class="question-helper">(اختر حتى 3)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="repeat-report" name="reasons_to_repeat" value="تقرير واضح عن الأثر">
+                                <label for="repeat-report">تقرير واضح عن أثر تبرعي السابق</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-media" name="reasons_to_repeat" value="صور/فيديو من نخلتي">
+                                <label for="repeat-media">صور/فيديو من النخلة اللي تبرعت بيها</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-follow" name="reasons_to_repeat" value="متابعة شخصية">
+                                <label for="repeat-follow">متابعة شخصية ومستمرة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-results" name="reasons_to_repeat" value="رؤية نتائج ملموسة">
+                                <label for="repeat-results">رؤية نتائج ملموسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-appreciation" name="reasons_to_repeat" value="شعور بالتقدير">
+                                <label for="repeat-appreciation">شعور بالتقدير من المؤسسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-easy" name="reasons_to_repeat" value="سهولة التبرع المتكرر">
+                                <label for="repeat-easy">سهولة التبرع المتكرر (اشتراك)</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-trust" name="reasons_to_repeat" value="ثقة مستمرة">
+                                <label for="repeat-trust">ثقة مستمرة في الشفافية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="repeat-visit" name="reasons_to_repeat" value="دعوة لزيارة المشروع">
+                                <label for="repeat-visit">دعوة لزيارة المشروع ميدانياً</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q52 -->
+                    <div class="question">
+                        <label class="question-label">
+                            52. ما الذي سيجعلك **ترشح غيرك** للتبرع في النخيل؟
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="refer-experience" name="reasons_to_refer" value="تجربة ممتازة">
+                                <label for="refer-experience">تجربة تبرع ممتازة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-impact" name="reasons_to_refer" value="أثر واضح">
+                                <label for="refer-impact">أثر واضح وموثق</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-story" name="reasons_to_refer" value="قصة نجاح ألهمتني">
+                                <label for="refer-story">قصة نجاح ألهمتني</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-trust" name="reasons_to_refer" value="ثقة كاملة">
+                                <label for="refer-trust">ثقة كاملة في المؤسسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-ease" name="reasons_to_refer" value="سهولة وبساطة">
+                                <label for="refer-ease">سهولة وبساطة التبرع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="refer-pride" name="reasons_to_refer" value="شعور بالفخر">
+                                <label for="refer-pride">شعور بالفخر لأني ساهمت</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q53 -->
+                    <div class="question">
+                        <label class="question-label">
+                            53. ما الذي سيجعلك **تتوقف** عن التبرع في النخيل نهائياً؟
+                            <div class="question-helper">(اختر حتى 2)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="stop-noimpact" name="reasons_to_stop" value="عدم رؤية أثر">
+                                <label for="stop-noimpact">عدم رؤية أي أثر حقيقي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-delay" name="reasons_to_stop" value="تأخر التقارير">
+                                <label for="stop-delay">تأخر أو عدم وصول التقارير</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-trust" name="reasons_to_stop" value="فقدان الثقة">
+                                <label for="stop-trust">فقدان الثقة في الشفافية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-compare" name="reasons_to_stop" value="مقارنة سلبية">
+                                <label for="stop-compare">مقارنة سلبية مع مؤسسة منافسة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-spam" name="reasons_to_stop" value="تواصل مزعج">
+                                <label for="stop-spam">تواصل مزعج أو إلحاح زائد</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-respect" name="reasons_to_stop" value="عدم الاحترام">
+                                <label for="stop-respect">عدم الاحترام أو سوء المعاملة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="stop-quality" name="reasons_to_stop" value="ضعف التنفيذ">
+                                <label for="stop-quality">ضعف جودة التنفيذ</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم العاشر: مقترحاتك وحلولك -->
+                <!-- ============================================ -->
+                <div class="section" data-section="10">
+                    <div class="section-header">
+                        <div class="section-title">💡 القسم العاشر: مقترحاتك وحلولك</div>
+                        <div class="section-subtitle">4 أسئلة أخيرة</div>
+                    </div>
+                    
+                    <!-- Q54 -->
+                    <div class="question">
+                        <label class="question-label">
+                            54. لو كان عندك **عصا سحرية** وتقدر تصلح **3 أشياء فقط** في بند النخيل... إيه هم؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px;">الأول (الأهم):</label>
+                            <textarea id="magic_fix_1" name="magic_fix_1" placeholder="..." maxlength="200" rows="2" required></textarea>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px;">الثاني:</label>
+                            <textarea id="magic_fix_2" name="magic_fix_2" placeholder="..." maxlength="200" rows="2" required></textarea>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px;">الثالث:</label>
+                            <textarea id="magic_fix_3" name="magic_fix_3" placeholder="..." maxlength="200" rows="2" required></textarea>
+                        </div>
+                        <div class="error-message" id="error-q54">❌ الرجاء ملء الثلاث حقول</div>
+                    </div>
+
+                    <!-- Q55 -->
+                    <div class="question">
+                        <label class="question-label">
+                            55. ما **الفكرة الإبداعية الواحدة** التي تعتقد أنها ستُحدث فرق كبير في تسويق النخيل؟
+                            <div class="question-helper">(كن مبدعاً!)</div>
+                        </label>
+                        <textarea id="creative_idea" name="creative_idea" placeholder="مثال: حملة معينة، شراكة، تقنية، محتوى، حافز، إلخ..." maxlength="500" rows="4"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q55">0</span> / 500 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q56 -->
+                    <div class="question">
+                        <label class="question-label">
+                            56. ما **الميزة التنافسية الأقوى** التي يجب أن نركز عليها لتمييز "نخيل صناع الحياة"؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="edge-trans" name="competitive_edge" value="الشفافية المطلقة" required>
+                                <label for="edge-trans">الشفافية المطلقة (تتبع كل نخلة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="edge-speed" name="competitive_edge" value="السرعة في التنفيذ">
+                                <label for="edge-speed">السرعة في التنفيذ والتوثيق</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="edge-quality" name="competitive_edge" value="جودة التنفيذ الأعلى">
+                                <label for="edge-quality">جودة التنفيذ الأعلى</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="edge-price" name="competitive_edge" value="السعر الأفضل">
+                                <label for="edge-price">السعر الأفضل</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="edge-stories" name="competitive_edge" value="قصص الأثر الأقوى">
+                                <label for="edge-stories">قصص الأثر الأقوى</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="edge-brand" name="competitive_edge" value="قوة العلامة التجارية">
+                                <label for="edge-brand">قوة العلامة التجارية (صناع الحياة)</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="edge-sustain" name="competitive_edge" value="الأثر المستدام">
+                                <label for="edge-sustain">الأثر المستدام (مش مجرد صدقة)</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q56">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q57 -->
+                    <div class="question">
+                        <label class="question-label">
+                            57. **رسالة أخيرة** لفريق الورشة (20 نوفمبر): **ما أهم حاجة لازم تطلع من الورشة دي؟**
+                            <div class="question-helper">(كلمتك الأخيرة - كن صريح وواضح!)</div>
+                        </label>
+                        <textarea id="final_message" name="final_message" placeholder="رسالتك للفريق..." maxlength="500" rows="4"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q57">0</span> / 500 حرف
+                        </div>
+                    </div>
+
+                    <!-- رسالة الشكر النهائية -->
+                    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; border: 2px solid #2ecc71;">
+                        <h3 style="color: #2ecc71; font-size: 24px; margin-bottom: 15px;">🎉 شكراً لوقتك وصراحتك!</h3>
+                        <p style="font-size: 16px; color: #666; line-height: 1.8; margin-bottom: 10px;">
+                            **صوتك اليوم = نخيل أكثر غداً = حياة أفضل للآلاف! 🌴**
+                        </p>
+                        <p style="font-size: 14px; color: #888;">
+                            📅 الورشة: 20 نوفمبر 2025 - من 12 ظهرًا<br>
+                            🎯 الهدف: 60+ مليون جنيه من بند النخيل في 2026
+                        </p>
+                        <p style="font-size: 18px; color: #2ecc71; font-weight: 700; margin-top: 15px;">
+                            كل كلمة كتبتها... ستزرع مستقبل أفضل! 💚
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn btn-prev" id="prev-btn" style="display: none;">
+                        ← السابق
+                    </button>
+                    <button type="button" class="btn btn-next" id="next-btn">
+                        التالي →
+                    </button>
+                    <button type="submit" class="btn btn-submit" id="submit-btn" style="display: none;">
+                        ✅ إرسال الاستبيان
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري إرسال الاستبيان...</div>
+        </div>
+    </div>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentSection = 1;
+        const totalSections = 10;
+        
+        // ============================================
+        // DOM Elements
+        // ============================================
+        const sections = document.querySelectorAll('.section');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const form = document.getElementById('survey-form');
+
+        // ============================================
+        // Character Counters for Textareas
+        // ============================================
+        const textareaCounters = [
+            { id: 'hardest_question', countId: 'char-count-q10' },
+            { id: 'situation_2025', countId: 'char-count-q20' },
+            { id: 'would_change', countId: 'char-count-q21' },
+            { id: 'should_stop', countId: 'char-count-q48' },
+            { id: 'should_start', countId: 'char-count-q49' },
+            { id: 'creative_idea', countId: 'char-count-q55' },
+            { id: 'final_message', countId: 'char-count-q57' }
+        ];
+
+        textareaCounters.forEach(item => {
+            const textarea = document.getElementById(item.id);
+            const counter = document.getElementById(item.countId);
+            if (textarea && counter) {
+                textarea.addEventListener('input', function() {
+                    counter.textContent = this.value.length;
+                });
+            }
+        });
+
+        // ============================================
+        // Q43: Percentage Calculator
+        // ============================================
+        const q1Input = document.getElementById('dist_q1');
+        const q2Input = document.getElementById('dist_q2');
+        const q3Input = document.getElementById('dist_q3');
+        const q4Input = document.getElementById('dist_q4');
+        const totalDisplay = document.getElementById('total-percentage');
+
+        function updateTotal() {
+            const q1 = parseInt(q1Input.value) || 0;
+            const q2 = parseInt(q2Input.value) || 0;
+            const q3 = parseInt(q3Input.value) || 0;
+            const q4 = parseInt(q4Input.value) || 0;
+            const total = q1 + q2 + q3 + q4;
+            
+            totalDisplay.textContent = total;
+            
+            if (total === 100) {
+                totalDisplay.style.color = '#2ecc71';
+            } else if (total > 100) {
+                totalDisplay.style.color = '#e74c3c';
+            } else {
+                totalDisplay.style.color = '#f39c12';
+            }
+        }
+
+        if (q1Input && q2Input && q3Input && q4Input) {
+            [q1Input, q2Input, q3Input, q4Input].forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
+        }
+
+        // ============================================
+        // Update Progress Bar
+        // ============================================
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `القسم ${currentSection} من ${totalSections}`;
+        }
+
+        // ============================================
+        // Show Section
+        // ============================================
+        function showSection(sectionNum) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update buttons
+            if (sectionNum === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'flex';
+            }
+            
+            if (sectionNum === totalSections) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+            
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================
+        // Validate Current Section
+        // ============================================
+        function validateSection(sectionNum) {
+            const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            if (!section) return true;
+            
+            const requiredInputs = section.querySelectorAll('input[required], textarea[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+            
+            // Hide all error messages first
+            section.querySelectorAll('.error-message').forEach(err => {
+                err.classList.remove('show');
+            });
+            
+            // Check each required field
+            requiredInputs.forEach(input => {
+                const fieldName = input.name;
+                
+                if (input.type === 'radio') {
+                    const radioGroup = section.querySelectorAll(`input[name="${fieldName}"]`);
+                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                    
+                    if (!isChecked) {
+                        isValid = false;
+                        const question = input.closest('.question');
+                        if (question && !firstInvalidField) {
+                            const errorMsg = question.querySelector('.error-message');
+                            if (errorMsg) {
+                                errorMsg.classList.add('show');
+                                firstInvalidField = input;
+                            }
+                        }
+                    }
+                } else if (input.type === 'text' || input.tagName === 'TEXTAREA') {
+                    if (input.required && !input.value.trim()) {
+                        isValid = false;
+                        const question = input.closest('.question');
+                        if (question && !firstInvalidField) {
+                            const errorMsg = question.querySelector('.error-message');
+                            if (errorMsg) {
+                                errorMsg.classList.add('show');
+                            }
+                            firstInvalidField = input;
+                        }
+                    }
+                }
+            });
+            
+            // Special validation for Q54 (3 textareas)
+            if (sectionNum === 10) {
+                const fix1 = document.getElementById('magic_fix_1');
+                const fix2 = document.getElementById('magic_fix_2');
+                const fix3 = document.getElementById('magic_fix_3');
+                
+                if (!fix1.value.trim() || !fix2.value.trim() || !fix3.value.trim()) {
+                    isValid = false;
+                    const errorMsg = section.querySelector('#error-q54');
+                    if (errorMsg && !firstInvalidField) {
+                        errorMsg.classList.add('show');
+                        firstInvalidField = fix1;
+                    }
+                }
+            }
+            
+            // Scroll to first invalid field
+            if (!isValid && firstInvalidField) {
+                setTimeout(() => {
+                    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+            
+            return isValid;
+        }
+
+        // ============================================
+        // Navigation: Next Button
+        // ============================================
+        nextBtn.addEventListener('click', function() {
+            if (validateSection(currentSection)) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        });
+
+        // ============================================
+        // Navigation: Previous Button
+        // ============================================
+        prevBtn.addEventListener('click', function() {
+            currentSection--;
+            showSection(currentSection);
+        });
+
+        // ============================================
+        // Collect Form Data
+        // ============================================
+        function collectFormData() {
+            const formData = {
+                timestamp: new Date().toISOString(),
+                
+                // Section 1
+                department: getRadioValue('department'),
+                experience: getRadioValue('experience'),
+                worked_on_palm: getRadioValue('worked_on_palm'),
+                items_count: getRadioValue('items_count'),
+                palm_knowledge: getRadioValue('palm_knowledge'),
+                
+                // Section 2
+                understanding_level: getRadioValue('understanding_level'),
+                info_sufficient: getRadioValue('info_sufficient'),
+                missing_info: getCheckboxValues('missing_info'),
+                explanation_difficulty: getRadioValue('explanation_difficulty'),
+                hardest_question: document.getElementById('hardest_question').value.trim(),
+                palm_difficulty: getCheckboxValues('palm_difficulty'),
+                easiest_item: getRadioValue('easiest_item'),
+                
+                // Section 3
+                know_target: getRadioValue('know_target'),
+                failure_reasons: getCheckboxValues('failure_reasons'),
+                strong_period: getRadioValue('strong_period'),
+                strong_period_reason: document.getElementById('strong_period_reason').value.trim(),
+                weak_period: getRadioValue('weak_period'),
+                weak_period_reason: document.getElementById('weak_period_reason').value.trim(),
+                documentation_impact: getRadioValue('documentation_impact'),
+                umrah_draw_impact: getRadioValue('umrah_draw_impact'),
+                hardest_stage: getRadioValue('hardest_stage'),
+                situation_2025: document.getElementById('situation_2025').value.trim(),
+                would_change: document.getElementById('would_change').value.trim(),
+                
+                // Section 4
+                know_competitors: getRadioValue('know_competitors'),
+                competitor_names: document.getElementById('competitor_names').value.trim(),
+                our_advantages: getCheckboxValues('our_advantages'),
+                competitor_objection: getRadioValue('competitor_objection'),
+                common_objection: document.getElementById('common_objection').value.trim(),
+                internal_competition: getCheckboxValues('internal_competition'),
+                items_conflict: getRadioValue('items_conflict'),
+                multi_item_solution: getRadioValue('multi_item_solution'),
+                
+                // Section 5
+                content_quality: getRadioValue('content_quality'),
+                most_effective_content: getRadioValue('most_effective_content'),
+                messages_clarity: getRadioValue('messages_clarity'),
+                best_message: getRadioValue('best_message'),
+                main_objection: getRadioValue('main_objection'),
+                ready_answers: getRadioValue('ready_answers'),
+                ad_channels: getCheckboxValues('ad_channels'),
+                
+                // Section 6
+                coordination_quality: getRadioValue('coordination_quality'),
+                coordination_problems: getCheckboxValues('coordination_problems'),
+                sla_existence: getRadioValue('sla_existence'),
+                problem_resolution: getRadioValue('problem_resolution'),
+                needs_from_programs: getCheckboxValues('needs_from_programs'),
+                
+                // Section 7
+                best_timing: getCheckboxValues('best_timing'),
+                seasonal_approach: getRadioValue('seasonal_approach'),
+                campaigns_effect: getRadioValue('campaigns_effect'),
+                dist_q1: document.getElementById('dist_q1').value || '0',
+                dist_q2: document.getElementById('dist_q2').value || '0',
+                dist_q3: document.getElementById('dist_q3').value || '0',
+                dist_q4: document.getElementById('dist_q4').value || '0',
+                
+                // Section 8
+                personal_readiness: getRadioValue('personal_readiness'),
+                team_readiness: getRadioValue('team_readiness'),
+                target_possible: getRadioValue('target_possible'),
+                success_requirements: getCheckboxValues('success_requirements'),
+                should_stop: document.getElementById('should_stop').value.trim(),
+                should_start: document.getElementById('should_start').value.trim(),
+                
+                // Section 9
+                reasons_to_donate: getCheckboxValues('reasons_to_donate'),
+                reasons_to_repeat: getCheckboxValues('reasons_to_repeat'),
+                reasons_to_refer: getCheckboxValues('reasons_to_refer'),
+                reasons_to_stop: getCheckboxValues('reasons_to_stop'),
+                
+                // Section 10
+                magic_fix_1: document.getElementById('magic_fix_1').value.trim(),
+                magic_fix_2: document.getElementById('magic_fix_2').value.trim(),
+                magic_fix_3: document.getElementById('magic_fix_3').value.trim(),
+                creative_idea: document.getElementById('creative_idea').value.trim(),
+                competitive_edge: getRadioValue('competitive_edge'),
+                final_message: document.getElementById('final_message').value.trim()
+            };
+            
+            return formData;
+        }
+
+        function getRadioValue(name) {
+            const radio = document.querySelector(`input[name="${name}"]:checked`);
+            return radio ? radio.value : '';
+        }
+
+        function getCheckboxValues(name) {
+            const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // ============================================
+        // Form Submit
+        // ============================================
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Final validation
+            if (!validateSection(10)) {
+                return;
+            }
+            
+            // Show loading
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Collect data
+                const surveyData = collectFormData();
+                
+                // Save to Firestore
+                const docRef = await db.collection('palm-trees-survey').add({
+                    ...surveyData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    analyzed: false
+                });
+                
+                console.log('Survey saved with ID:', docRef.id);
+                
+                // Redirect to thank you page
+                setTimeout(() => {
+                    window.location.href = 'thank-you.html';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error submitting survey:', error);
+                loadingOverlay.classList.remove('show');
+                alert('عذراً، حدث خطأ أثناء إرسال الاستبيان. الرجاء المحاولة مرة أخرى.');
+            }
+        });
+
+        // ============================================
+        // Initialize
+        // ============================================
+        showSection(1);
+        
+    </script>
+</body>
+</html>
