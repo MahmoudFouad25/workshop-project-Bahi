@@ -1034,8 +1034,11 @@
             <button class="btn btn-secondary" onclick="refreshData()">
                 🔄 تحديث البيانات
             </button>
-            <button class="btn btn-success" onclick="triggerAIAnalysis()">
-                🤖 تحليل بالذكاء الاصطناعي
+            <button class="btn btn-success" onclick="loadExistingAnalysis()">
+                📊 عرض آخر تحليل
+            </button>
+            <button class="btn btn-secondary" onclick="forceNewAnalysis()" style="background: #6c757d;">
+                🆕 تحليل جديد (يسحب من الرصيد)
             </button>
             <button class="btn btn-primary" onclick="exportData()">
                 📥 تصدير التقرير
@@ -1061,8 +1064,9 @@
                 <div class="ai-content" id="ai-content">
                     <div class="ai-loading">
                         <div class="ai-spinner"></div>
-                        <span>انقر على زر "تحليل بالذكاء الاصطناعي" للحصول على رؤى متعمقة...</span>
+                        <span>جاري تحميل التحليل من Firebase...</span>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -1181,7 +1185,161 @@
                 console.error('Error loading data:', error);
                 alert('حدث خطأ أثناء تحميل البيانات. الرجاء المحاولة مرة أخرى.');
             }
+            // Auto-load AI analysis from Firebase
+                await autoLoadAnalysis();
         }
+      // ============================================
+        // Auto-Load Analysis on Page Load
+        // ============================================
+        async function autoLoadAnalysis() {
+            console.log('🔍 Auto-loading analysis from Firebase...');
+            
+            try {
+                const snapshot = await db.collection('internal-procedures-analysis')
+                    .orderBy('timestamp', 'desc')
+                    .limit(1)
+                    .get();
+                
+                if (snapshot.empty) {
+                    console.log('⚠️ No analysis found in Firebase');
+                    const aiContent = document.getElementById('ai-content');
+                    aiContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--gray);">
+                            <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                            <p style="font-size: 16px; margin-bottom: 15px;">لا يوجد تحليل محفوظ</p>
+                            <button class="btn btn-primary" onclick="forceNewAnalysis()">
+                                🤖 إنشاء تحليل جديد
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const doc = snapshot.docs[0];
+                const data = doc.data();
+                
+                console.log('✅ Found analysis, timestamp:', data.timestamp);
+                
+                if (data.fullText) {
+                    const docTime = data.timestamp?.toDate();
+                    const timeAgo = docTime ? formatTimeAgo(docTime) : 'غير معروف';
+                    
+                    displayAnalysis(data.fullText, true, timeAgo, data.totalResponses);
+                } else {
+                    throw new Error('التحليل موجود لكن النص فارغ');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error auto-loading analysis:', error);
+                const aiContent = document.getElementById('ai-content');
+                aiContent.innerHTML = `
+                    <div style="color: var(--danger); padding: 20px; text-align: center;">
+                        <p>❌ فشل تحميل التحليل</p>
+                        <button class="btn btn-secondary" onclick="autoLoadAnalysis()">
+                            🔄 إعادة المحاولة
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // ============================================
+        // Force New Analysis (Use with Caution!)
+        // ============================================
+        async function forceNewAnalysis() {
+            const confirmed = confirm(
+                '⚠️ تحذير: هذا سيقوم بإنشاء تحليل جديد وسحب من رصيد Claude API.\n\n' +
+                'يوجد بالفعل ' + (await countAnalyses()) + ' تحليل محفوظ في Firebase.\n\n' +
+                'هل أنت متأكد من رغبتك في إنشاء تحليل جديد؟'
+            );
+            
+            if (!confirmed) return;
+            
+            await triggerAIAnalysis();
+        }
+        
+        // ============================================
+        // Count Existing Analyses
+        // ============================================
+        async function countAnalyses() {
+            try {
+                const snapshot = await db.collection('internal-procedures-analysis').get();
+                return snapshot.size;
+            } catch (error) {
+                return 0;
+            }
+        }
+        
+        // ============================================
+        // Display Analysis (Updated)
+        // ============================================
+        function displayAnalysis(analysisText, fromCache, timeAgo, totalResponses) {
+            const aiContent = document.getElementById('ai-content');
+            
+            // Format the text
+            const formattedText = formatAnalysisText(analysisText);
+            
+            aiContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; border-right: 5px solid #4caf50;">
+                    <div>
+                        <strong style="font-size: 16px;">✅ التحليل محفوظ من Firebase</strong>
+                        <div style="font-size: 13px; color: #555; margin-top: 5px;">
+                            📅 ${timeAgo} • 📊 ${totalResponses} استجابة
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="forceNewAnalysis()" style="font-size: 13px; padding: 8px 16px;">
+                        🆕 تحليل جديد
+                    </button>
+                </div>
+                <div style="line-height: 1.9; white-space: pre-wrap; font-size: 15px; color: #333;">
+                    ${formattedText}
+                </div>
+            `;
+            
+            console.log('✅ Analysis displayed successfully');
+        }
+        
+        // ============================================
+        // Format Time Ago
+        // ============================================
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (days > 0) return `منذ ${days} يوم`;
+            if (hours > 0) return `منذ ${hours} ساعة`;
+            if (minutes > 0) return `منذ ${minutes} دقيقة`;
+            return 'الآن';
+        }
+        
+        // ============================================
+        // Format Analysis Text (Enhanced)
+        // ============================================
+        function formatAnalysisText(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            let formatted = div.innerHTML;
+            
+            // Convert markdown-style headers to HTML
+            formatted = formatted.replace(/^#{1}\s+(.+)$/gm, '<h2 style="color: var(--primary); margin-top: 30px; margin-bottom: 15px; font-size: 24px; border-bottom: 3px solid var(--primary); padding-bottom: 10px;">$1</h2>');
+            formatted = formatted.replace(/^#{2}\s+(.+)$/gm, '<h3 style="color: var(--dark); margin-top: 25px; margin-bottom: 12px; font-size: 20px;">$1</h3>');
+            formatted = formatted.replace(/^#{3}\s+(.+)$/gm, '<h4 style="color: var(--dark); margin-top: 20px; margin-bottom: 10px; font-size: 18px;">$1</h4>');
+            
+            // Bold text
+            formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // Convert line breaks
+            formatted = formatted.replace(/\n\n/g, '<br><br>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+
         
         // ============================================
         // Render Stats Overview
