@@ -1153,7 +1153,7 @@
         async function loadAllData() {
             try {
                 const snapshot = await db.collection('internal-procedures-survey')
-                    .orderBy('timestamp', 'desc')
+                    .orderBy('timestamp', 'asc')
                     .get();
                 
                 allResponses = [];
@@ -2884,6 +2884,37 @@
                         ❌ حدث خطأ أثناء التحليل. الرجاء المحاولة مرة أخرى.
                     </div>
                 `;
+            }
+        }
+
+      // ============================================
+        // Delete Response
+        // ============================================
+        async function deleteResponse(responseId) {
+            // Confirm deletion
+            const confirmed = confirm('⚠️ هل أنت متأكد من حذف هذه الاستجابة؟\n\nسيتم حذفها نهائياً من قاعدة البيانات وسيؤثر على جميع الإحصائيات والتحليلات.');
+            
+            if (!confirmed) return;
+            
+            showLoading();
+            
+            try {
+                // Delete from Firestore
+                await db.collection('internal-procedures-survey').doc(responseId).delete();
+                
+                console.log('Response deleted:', responseId);
+                
+                // Reload all data
+                await loadAllData();
+                
+                hideLoading();
+                
+                alert('✅ تم حذف الاستجابة بنجاح!\n\nتم تحديث جميع الإحصائيات والتحليلات.');
+                
+            } catch (error) {
+                console.error('Error deleting response:', error);
+                hideLoading();
+                alert('❌ حدث خطأ أثناء الحذف. الرجاء المحاولة مرة أخرى.');
             }
         }
         
