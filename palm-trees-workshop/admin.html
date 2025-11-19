@@ -2024,3 +2024,1063 @@
             });
         }
       
+
+        // ============================================
+        // Competition Charts
+        // ============================================
+        function createCompetitionCharts() {
+            // Know Competitors
+            const compCounts = countValues('know_competitors');
+            createChart('chart-know-competitors', 'doughnut', {
+                labels: Object.keys(compCounts),
+                datasets: [{
+                    data: Object.values(compCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c']
+                }]
+            });
+            
+            // Our Advantages
+            const advCounts = countValues('our_advantages');
+            const sortedAdv = Object.entries(advCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-our-advantages', 'bar', {
+                labels: sortedAdv.map(a => a[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedAdv.map(a => a[1]),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Competitor Objections
+            const objCounts = countValues('competitor_objection');
+            createChart('chart-competitor-objections', 'bar', {
+                labels: Object.keys(objCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(objCounts),
+                    backgroundColor: '#e74c3c'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Internal Competition
+            const internalCounts = countValues('internal_competition');
+            const sortedInternal = Object.entries(internalCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-internal-competition', 'bar', {
+                labels: sortedInternal.map(i => i[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedInternal.map(i => i[1]),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Items Conflict
+            const conflictCounts = countValues('items_conflict');
+            createChart('chart-items-conflict', 'doughnut', {
+                labels: Object.keys(conflictCounts),
+                datasets: [{
+                    data: Object.values(conflictCounts),
+                    backgroundColor: ['#e74c3c', '#f39c12', '#3498db', '#2ecc71']
+                }]
+            });
+            
+            // Multi-Item Solution
+            const solutionCounts = countValues('multi_item_solution');
+            createChart('chart-multi-item-solution', 'bar', {
+                labels: Object.keys(solutionCounts),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: Object.values(solutionCounts),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Marketing Charts
+        // ============================================
+        function createMarketingCharts() {
+            // Content Quality (1-10)
+            const contentRatings = filteredResponses
+                .map(r => parseInt(r.content_quality))
+                .filter(r => !isNaN(r));
+            
+            const contentCounts = {};
+            for (let i = 1; i <= 10; i++) {
+                contentCounts[i] = contentRatings.filter(r => r === i).length;
+            }
+            
+            createChart('chart-content-quality', 'bar', {
+                labels: Object.keys(contentCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(contentCounts),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            });
+            
+            // Content Quality Stats
+            if (contentRatings.length > 0) {
+                const avg = (contentRatings.reduce((a, b) => a + b, 0) / contentRatings.length).toFixed(1);
+                const low = contentRatings.filter(r => r <= 4).length;
+                const medium = contentRatings.filter(r => r >= 5 && r <= 7).length;
+                const high = contentRatings.filter(r => r >= 8).length;
+                
+                document.getElementById('content-quality-stats').innerHTML = `
+                    متوسط التقييم: <strong>${avg}/10</strong><br>
+                    ضعيف (1-4): <strong>${low}</strong> | 
+                    متوسط (5-7): <strong>${medium}</strong> | 
+                    ممتاز (8-10): <strong>${high}</strong>
+                `;
+            }
+            
+            // Most Effective Content
+            const effectiveCounts = countValues('most_effective_content');
+            createChart('chart-effective-content', 'bar', {
+                labels: Object.keys(effectiveCounts),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: Object.values(effectiveCounts),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Messages Clarity
+            const clarityCounts = countValues('messages_clarity');
+            createChart('chart-messages-clarity', 'doughnut', {
+                labels: Object.keys(clarityCounts),
+                datasets: [{
+                    data: Object.values(clarityCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c', '#95a5a6']
+                }]
+            });
+            
+            // Best Message
+            const messageCounts = countValues('best_message');
+            const sortedMessages = Object.entries(messageCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-best-message', 'bar', {
+                labels: sortedMessages.map(m => m[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedMessages.map(m => m[1]),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Main Objection
+            const objectionCounts = countValues('main_objection');
+            const sortedObjections = Object.entries(objectionCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-main-objection', 'bar', {
+                labels: sortedObjections.map(o => o[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedObjections.map(o => o[1]),
+                    backgroundColor: '#e74c3c'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Ready Answers
+            const answersCounts = countValues('ready_answers');
+            createChart('chart-ready-answers', 'bar', {
+                labels: Object.keys(answersCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(answersCounts),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Ad Channels
+            const channelsCounts = countValues('ad_channels');
+            const sortedChannels = Object.entries(channelsCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-ad-channels', 'bar', {
+                labels: sortedChannels.map(c => c[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedChannels.map(c => c[1]),
+                    backgroundColor: '#9b59b6'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Coordination Charts
+        // ============================================
+        function createCoordinationCharts() {
+            // Coordination Quality (1-10)
+            const coordRatings = filteredResponses
+                .map(r => parseInt(r.coordination_quality))
+                .filter(r => !isNaN(r));
+            
+            const coordCounts = {};
+            for (let i = 1; i <= 10; i++) {
+                coordCounts[i] = coordRatings.filter(r => r === i).length;
+            }
+            
+            createChart('chart-coordination-quality', 'bar', {
+                labels: Object.keys(coordCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(coordCounts),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            });
+            
+            // Coordination Stats
+            if (coordRatings.length > 0) {
+                const avg = (coordRatings.reduce((a, b) => a + b, 0) / coordRatings.length).toFixed(1);
+                const poor = coordRatings.filter(r => r <= 4).length;
+                const average = coordRatings.filter(r => r >= 5 && r <= 7).length;
+                const excellent = coordRatings.filter(r => r >= 8).length;
+                
+                document.getElementById('coordination-stats').innerHTML = `
+                    متوسط التقييم: <strong>${avg}/10</strong><br>
+                    ضعيف (1-4): <strong>${poor}</strong> | 
+                    متوسط (5-7): <strong>${average}</strong> | 
+                    ممتاز (8-10): <strong>${excellent}</strong>
+                `;
+            }
+            
+            // Coordination Problems
+            const problemsCounts = countValues('coordination_problems');
+            const sortedProblems = Object.entries(problemsCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-coordination-problems', 'bar', {
+                labels: sortedProblems.map(p => p[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedProblems.map(p => p[1]),
+                    backgroundColor: '#e74c3c'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // SLA Existence
+            const slaCounts = countValues('sla_existence');
+            createChart('chart-sla-existence', 'doughnut', {
+                labels: Object.keys(slaCounts),
+                datasets: [{
+                    data: Object.values(slaCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c', '#95a5a6']
+                }]
+            });
+            
+            // Problem Resolution
+            const resolutionCounts = countValues('problem_resolution');
+            createChart('chart-problem-resolution', 'bar', {
+                labels: Object.keys(resolutionCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(resolutionCounts),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Needs from Programs
+            const needsCounts = countValues('needs_from_programs');
+            const sortedNeeds = Object.entries(needsCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-needs-from-programs', 'bar', {
+                labels: sortedNeeds.map(n => n[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedNeeds.map(n => n[1]),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Timing Charts
+        // ============================================
+        function createTimingCharts() {
+            // Best Timing
+            const timingCounts = countValues('best_timing');
+            const sortedTiming = Object.entries(timingCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-best-timing', 'bar', {
+                labels: sortedTiming.map(t => t[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedTiming.map(t => t[1]),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Seasonal Approach
+            const seasonalCounts = countValues('seasonal_approach');
+            createChart('chart-seasonal-approach', 'doughnut', {
+                labels: Object.keys(seasonalCounts),
+                datasets: [{
+                    data: Object.values(seasonalCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#95a5a6']
+                }]
+            });
+            
+            // Campaigns Effect
+            const effectCounts = countValues('campaigns_effect');
+            createChart('chart-campaigns-effect', 'pie', {
+                labels: Object.keys(effectCounts),
+                datasets: [{
+                    data: Object.values(effectCounts),
+                    backgroundColor: ['#2ecc71', '#e74c3c', '#95a5a6', '#3498db']
+                }]
+            });
+            
+            // Quarterly Distribution
+            const q1Values = filteredResponses.map(r => parseInt(r.dist_q1) || 0);
+            const q2Values = filteredResponses.map(r => parseInt(r.dist_q2) || 0);
+            const q3Values = filteredResponses.map(r => parseInt(r.dist_q3) || 0);
+            const q4Values = filteredResponses.map(r => parseInt(r.dist_q4) || 0);
+            
+            const avgQ1 = q1Values.length > 0 ? (q1Values.reduce((a, b) => a + b, 0) / q1Values.length).toFixed(0) : 0;
+            const avgQ2 = q2Values.length > 0 ? (q2Values.reduce((a, b) => a + b, 0) / q2Values.length).toFixed(0) : 0;
+            const avgQ3 = q3Values.length > 0 ? (q3Values.reduce((a, b) => a + b, 0) / q3Values.length).toFixed(0) : 0;
+            const avgQ4 = q4Values.length > 0 ? (q4Values.reduce((a, b) => a + b, 0) / q4Values.length).toFixed(0) : 0;
+            
+            createChart('chart-quarterly-distribution', 'bar', {
+                labels: ['Q1 (يناير-مارس)', 'Q2 (أبريل-يونيو)', 'Q3 (يوليو-سبتمبر)', 'Q4 (أكتوبر-ديسمبر)'],
+                datasets: [{
+                    label: 'متوسط التركيز المقترح (%)',
+                    data: [avgQ1, avgQ2, avgQ3, avgQ4],
+                    backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c']
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Quarterly Analysis
+            const quarters = [
+                { name: 'Q1', value: avgQ1 },
+                { name: 'Q2', value: avgQ2 },
+                { name: 'Q3', value: avgQ3 },
+                { name: 'Q4', value: avgQ4 }
+            ];
+            const maxQuarter = quarters.reduce((max, q) => q.value > max.value ? q : max);
+            
+            document.getElementById('quarterly-analysis').innerHTML = `
+                الربع الأعلى تركيزاً مقترحاً: <strong>${maxQuarter.name}</strong> بنسبة <strong>${maxQuarter.value}%</strong><br>
+                التوزيع: Q1 (${avgQ1}%) | Q2 (${avgQ2}%) | Q3 (${avgQ3}%) | Q4 (${avgQ4}%)
+            `;
+        }
+        
+        // ============================================
+        // Readiness Charts
+        // ============================================
+        function createReadinessCharts() {
+            // Personal vs Team Readiness Comparison
+            const personalRatings = filteredResponses
+                .map(r => parseInt(r.personal_readiness))
+                .filter(r => !isNaN(r));
+            
+            const teamRatings = filteredResponses
+                .map(r => parseInt(r.team_readiness))
+                .filter(r => !isNaN(r));
+            
+            const avgPersonal = personalRatings.length > 0 ? 
+                (personalRatings.reduce((a, b) => a + b, 0) / personalRatings.length).toFixed(1) : 0;
+            
+            const avgTeam = teamRatings.length > 0 ? 
+                (teamRatings.reduce((a, b) => a + b, 0) / teamRatings.length).toFixed(1) : 0;
+            
+            createChart('chart-readiness-comparison', 'bar', {
+                labels: ['الجاهزية الشخصية', 'جاهزية الفريق'],
+                datasets: [{
+                    label: 'متوسط التقييم (1-10)',
+                    data: [avgPersonal, avgTeam],
+                    backgroundColor: ['#2ecc71', '#3498db']
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }
+            });
+            
+            // Readiness Gap Analysis
+            const gap = (avgPersonal - avgTeam).toFixed(1);
+            document.getElementById('readiness-gap-analysis').innerHTML = `
+                متوسط الجاهزية الشخصية: <strong>${avgPersonal}/10</strong><br>
+                متوسط جاهزية الفريق: <strong>${avgTeam}/10</strong><br>
+                الفجوة: <strong>${Math.abs(gap)}</strong> نقطة ${gap > 0 ? '(الجاهزية الشخصية أعلى)' : '(جاهزية الفريق أعلى)'}
+            `;
+            
+            // Personal Readiness Distribution
+            const personalCounts = {};
+            for (let i = 1; i <= 10; i++) {
+                personalCounts[i] = personalRatings.filter(r => r === i).length;
+            }
+            
+            createChart('chart-personal-readiness', 'bar', {
+                labels: Object.keys(personalCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(personalCounts),
+                    backgroundColor: '#2ecc71'
+                }]
+            });
+            
+            // Team Readiness Distribution
+            const teamCounts = {};
+            for (let i = 1; i <= 10; i++) {
+                teamCounts[i] = teamRatings.filter(r => r === i).length;
+            }
+            
+            createChart('chart-team-readiness', 'bar', {
+                labels: Object.keys(teamCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(teamCounts),
+                    backgroundColor: '#3498db'
+                }]
+            });
+            
+            // Target Possible
+            const possibleCounts = countValues('target_possible');
+            createChart('chart-target-possible', 'bar', {
+                labels: Object.keys(possibleCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(possibleCounts),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Success Requirements
+            const reqCounts = countValues('success_requirements');
+            const sortedReq = Object.entries(reqCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-success-requirements', 'bar', {
+                labels: sortedReq.map(r => r[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedReq.map(r => r[1]),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Donor Perspective Charts
+        // ============================================
+        function createDonorPerspectiveCharts() {
+            // Reasons to Donate
+            const donateCounts = countValues('reasons_to_donate');
+            const sortedDonate = Object.entries(donateCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-reasons-donate', 'bar', {
+                labels: sortedDonate.map(d => d[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedDonate.map(d => d[1]),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Reasons to Repeat
+            const repeatCounts = countValues('reasons_to_repeat');
+            const sortedRepeat = Object.entries(repeatCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-reasons-repeat', 'bar', {
+                labels: sortedRepeat.map(r => r[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedRepeat.map(r => r[1]),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Reasons to Refer
+            const referCounts = countValues('reasons_to_refer');
+            const sortedRefer = Object.entries(referCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-reasons-refer', 'bar', {
+                labels: sortedRefer.map(r => r[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedRefer.map(r => r[1]),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Reasons to Stop
+            const stopCounts = countValues('reasons_to_stop');
+            const sortedStop = Object.entries(stopCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-reasons-stop', 'bar', {
+                labels: sortedStop.map(s => s[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedStop.map(s => s[1]),
+                    backgroundColor: '#e74c3c'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Suggestions Charts
+        // ============================================
+        function createSuggestionsCharts() {
+            // Competitive Edge
+            const edgeCounts = countValues('competitive_edge');
+            const sortedEdge = Object.entries(edgeCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-competitive-edge', 'bar', {
+                labels: sortedEdge.map(e => e[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedEdge.map(e => e[1]),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Populate Text Lists
+        // ============================================
+        function populateTextLists() {
+            // Hardest Questions
+            populateList('hardest-questions-list', 'hardest_question');
+            
+            // Period Reasons
+            const periodReasons = filteredResponses
+                .filter(r => r.strong_period_reason || r.weak_period_reason)
+                .map(r => {
+                    let html = '';
+                    if (r.strong_period_reason) {
+                        html += `<strong>قوي (${r.strong_period}):</strong> ${r.strong_period_reason}<br>`;
+                    }
+                    if (r.weak_period_reason) {
+                        html += `<strong>ضعيف (${r.weak_period}):</strong> ${r.weak_period_reason}`;
+                    }
+                    return html;
+                });
+            
+            const periodContainer = document.getElementById('period-reasons-text');
+            if (periodReasons.length > 0) {
+                periodContainer.innerHTML = periodReasons.map((r, i) => 
+                    `<div style="padding: 15px; margin-bottom: 10px; background: white; border-radius: 8px; border-right: 3px solid #3498db;">
+                        <strong>#${i + 1}</strong><br>${r}
+                    </div>`
+                ).join('');
+            } else {
+                periodContainer.innerHTML = '<p style="color: #999;">لا توجد إجابات</p>';
+            }
+            
+            // Situations 2025
+            populateList('situations-2025-list', 'situation_2025');
+            
+            // Would Change
+            populateList('would-change-list', 'would_change');
+            
+            // Competitor Names
+            const compNames = filteredResponses
+                .map(r => r.competitor_names)
+                .filter(c => c && c.trim())
+                .join(', ');
+            
+            document.getElementById('competitor-names-list').innerHTML = compNames || 
+                '<p style="color: #999;">لا توجد أسماء محددة</p>';
+            
+            // Common Objections
+            populateList('common-objections-list', 'common_objection');
+            
+            // Should Stop
+            populateList('should-stop-list', 'should_stop');
+            
+            // Should Start
+            populateList('should-start-list', 'should_start');
+            
+            // Magic Fixes (3 fields)
+            const magicFixes = filteredResponses
+                .filter(r => r.magic_fix_1 || r.magic_fix_2 || r.magic_fix_3)
+                .map(r => {
+                    return `
+                        <div style="padding: 20px; margin-bottom: 15px; background: white; border-radius: 10px; border: 2px solid #f39c12;">
+                            ${r.magic_fix_1 ? `<div style="margin-bottom: 10px;"><strong>1️⃣ الأول (الأهم):</strong><br>${r.magic_fix_1}</div>` : ''}
+                            ${r.magic_fix_2 ? `<div style="margin-bottom: 10px;"><strong>2️⃣ الثاني:</strong><br>${r.magic_fix_2}</div>` : ''}
+                            ${r.magic_fix_3 ? `<div><strong>3️⃣ الثالث:</strong><br>${r.magic_fix_3}</div>` : ''}
+                        </div>
+                    `;
+                });
+            
+            document.getElementById('magic-fixes-list').innerHTML = magicFixes.length > 0 ? 
+                magicFixes.join('') : '<p style="color: white;">لا توجد إجابات</p>';
+            
+            // Creative Ideas
+            populateList('creative-ideas-list', 'creative_idea', 'white');
+            
+            // Final Messages
+            populateList('final-messages-list', 'final_message', 'white');
+        }
+        
+        function populateList(containerId, fieldName, textColor = '#666') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const items = filteredResponses
+                .map(r => r[fieldName])
+                .filter(item => item && item.trim());
+            
+            if (items.length > 0) {
+                container.innerHTML = items.map((item, i) => 
+                    `<div style="padding: 15px; margin-bottom: 10px; background: ${textColor === 'white' ? 'rgba(255,255,255,0.2)' : 'white'}; border-radius: 8px; border-right: 3px solid ${textColor === 'white' ? 'white' : '#2ecc71'}; color: ${textColor};">
+                        <strong>#${i + 1}</strong><br>${item}
+                    </div>`
+                ).join('');
+            } else {
+                container.innerHTML = `<p style="color: ${textColor === 'white' ? 'rgba(255,255,255,0.7)' : '#999'};">لا توجد إجابات</p>`;
+            }
+        }
+
+        // ============================================
+        // Populate Raw Data Table
+        // ============================================
+        function populateRawDataTable() {
+            const tbody = document.getElementById('raw-data-tbody');
+            if (!tbody) return;
+            
+            if (filteredResponses.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="padding: 40px; text-align: center; color: var(--gray);">
+                            لا توجد بيانات
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = filteredResponses.map((response, index) => {
+                const date = response.timestamp ? new Date(response.timestamp).toLocaleDateString('ar-EG') : '-';
+                
+                return `
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <td style="padding: 12px; border: 1px solid #ddd;">${index + 1}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; white-space: nowrap;">${date}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">${response.department || '-'}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">${response.experience || '-'}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">${response.palm_knowledge || '-'}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">${response.personal_readiness || '-'}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">${response.team_readiness || '-'}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd;">${response.target_possible || '-'}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; white-space: nowrap;">
+                            <button onclick="viewFullResponse('${response.id}')" style="padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px;">
+                                👁️ عرض
+                            </button>
+                            <button onclick="deleteResponse('${response.id}')" style="padding: 6px 12px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                🗑️ حذف
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // ============================================
+        // View Full Response
+        // ============================================
+        function viewFullResponse(responseId) {
+            const response = allResponses.find(r => r.id === responseId);
+            if (!response) return;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
+                direction: rtl;
+            `;
+            
+            content.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #e0e0e0;">
+                    <h2 style="margin: 0; color: var(--dark);">📋 تفاصيل الاستجابة</h2>
+                    <button onclick="this.closest('[style*=fixed]').remove()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                        ✖ إغلاق
+                    </button>
+                </div>
+                <div style="font-size: 14px; line-height: 2;">
+                    ${Object.entries(response)
+                        .filter(([key]) => key !== 'id')
+                        .map(([key, value]) => {
+                            let displayValue = value;
+                            if (Array.isArray(value)) {
+                                displayValue = value.join('، ');
+                            }
+                            return `
+                                <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-right: 3px solid #2ecc71;">
+                                    <strong style="color: var(--dark);">${key}:</strong><br>
+                                    <span style="color: #666;">${displayValue || '-'}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+        }
+        
+        // ============================================
+        // Delete Response
+        // ============================================
+        async function deleteResponse(responseId) {
+            if (!confirm('هل أنت متأكد من حذف هذه الاستجابة؟')) {
+                return;
+            }
+            
+            try {
+                await db.collection('palm-trees-survey').doc(responseId).delete();
+                alert('تم الحذف بنجاح');
+                loadAllData();
+            } catch (error) {
+                console.error('Error deleting:', error);
+                alert('حدث خطأ في الحذف');
+            }
+        }
+        
+        // ============================================
+        // Delete All Responses
+        // ============================================
+        async function deleteAllResponses() {
+            const confirmation = prompt('⚠️ تحذير: سيتم حذف جميع البيانات!\n\nاكتب "DELETE" بالأحرف الكبيرة للتأكيد:');
+            
+            if (confirmation !== 'DELETE') {
+                alert('تم الإلغاء');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const snapshot = await db.collection('palm-trees-survey').get();
+                const batch = db.batch();
+                
+                snapshot.docs.forEach(doc => {
+                    batch.delete(doc.ref);
+                });
+                
+                await batch.commit();
+                
+                alert('تم حذف جميع البيانات بنجاح');
+                loadAllData();
+                
+            } catch (error) {
+                console.error('Error deleting all:', error);
+                alert('حدث خطأ في حذف البيانات');
+                showLoading(false);
+            }
+        }
+        
+        // ============================================
+        // Export to Excel
+        // ============================================
+        function exportToExcel() {
+            if (filteredResponses.length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            // Prepare data for Excel
+            const excelData = filteredResponses.map((response, index) => {
+                const row = {
+                    '#': index + 1,
+                    'التاريخ': response.timestamp ? new Date(response.timestamp).toLocaleDateString('ar-EG') : '-',
+                    'القسم': response.department || '-',
+                    'سنوات الخبرة': response.experience || '-',
+                    'عمل على النخيل 2025': response.worked_on_palm || '-',
+                    'عدد البنود': response.items_count || '-',
+                    'مستوى المعرفة (1-10)': response.palm_knowledge || '-',
+                    'مستوى الفهم': response.understanding_level || '-',
+                    'كفاية المعلومات': response.info_sufficient || '-',
+                    'المعلومات الناقصة': Array.isArray(response.missing_info) ? response.missing_info.join('، ') : '-',
+                    'صعوبة الشرح': response.explanation_difficulty || '-',
+                    'أصعب سؤال': response.hardest_question || '-',
+                    'صعوبة النخيل': Array.isArray(response.palm_difficulty) ? response.palm_difficulty.join('، ') : '-',
+                    'أسهل بند': response.easiest_item || '-',
+                    'معرفة المستهدف': response.know_target || '-',
+                    'أسباب الفشل': Array.isArray(response.failure_reasons) ? response.failure_reasons.join('، ') : '-',
+                    'أقوى فترة': response.strong_period || '-',
+                    'سبب القوة': response.strong_period_reason || '-',
+                    'أضعف فترة': response.weak_period || '-',
+                    'سبب الضعف': response.weak_period_reason || '-',
+                    'تأثير التوثيق': response.documentation_impact || '-',
+                    'تأثير سحب العمرة': response.umrah_draw_impact || '-',
+                    'أصعب مرحلة': response.hardest_stage || '-',
+                    'موقف 2025': response.situation_2025 || '-',
+                    'ما سيتغير': response.would_change || '-',
+                    'معرفة المنافسين': response.know_competitors || '-',
+                    'أسماء المنافسين': response.competitor_names || '-',
+                    'مميزاتنا': Array.isArray(response.our_advantages) ? response.our_advantages.join('، ') : '-',
+                    'اعتراضات المنافسين': response.competitor_objection || '-',
+                    'الاعتراض الشائع': response.common_objection || '-',
+                    'المنافسة الداخلية': Array.isArray(response.internal_competition) ? response.internal_competition.join('، ') : '-',
+                    'تضارب البنود': response.items_conflict || '-',
+                    'حل البنود المتعددة': response.multi_item_solution || '-',
+                    'جودة المحتوى (1-10)': response.content_quality || '-',
+                    'أكثر محتوى فعال': response.most_effective_content || '-',
+                    'وضوح الرسائل': response.messages_clarity || '-',
+                    'أفضل رسالة': response.best_message || '-',
+                    'الاعتراض الرئيسي': response.main_objection || '-',
+                    'جاهزية الإجابات': response.ready_answers || '-',
+                    'القنوات الإعلانية': Array.isArray(response.ad_channels) ? response.ad_channels.join('، ') : '-',
+                    'جودة التنسيق (1-10)': response.coordination_quality || '-',
+                    'مشاكل التنسيق': Array.isArray(response.coordination_problems) ? response.coordination_problems.join('، ') : '-',
+                    'وجود SLA': response.sla_existence || '-',
+                    'حل المشاكل': response.problem_resolution || '-',
+                    'احتياجات من البرامج': Array.isArray(response.needs_from_programs) ? response.needs_from_programs.join('، ') : '-',
+                    'أفضل توقيت': Array.isArray(response.best_timing) ? response.best_timing.join('، ') : '-',
+                    'نهج موسمي/مستمر': response.seasonal_approach || '-',
+                    'تأثير الحملات': response.campaigns_effect || '-',
+                    'توزيع Q1 (%)': response.dist_q1 || '-',
+                    'توزيع Q2 (%)': response.dist_q2 || '-',
+                    'توزيع Q3 (%)': response.dist_q3 || '-',
+                    'توزيع Q4 (%)': response.dist_q4 || '-',
+                    'الجاهزية الشخصية (1-10)': response.personal_readiness || '-',
+                    'جاهزية الفريق (1-10)': response.team_readiness || '-',
+                    'هل الهدف ممكن': response.target_possible || '-',
+                    'متطلبات النجاح': Array.isArray(response.success_requirements) ? response.success_requirements.join('، ') : '-',
+                    'ما يجب التوقف عنه': response.should_stop || '-',
+                    'ما يجب البدء فيه': response.should_start || '-',
+                    'أسباب التبرع': Array.isArray(response.reasons_to_donate) ? response.reasons_to_donate.join('، ') : '-',
+                    'أسباب التكرار': Array.isArray(response.reasons_to_repeat) ? response.reasons_to_repeat.join('، ') : '-',
+                    'أسباب الترشيح': Array.isArray(response.reasons_to_refer) ? response.reasons_to_refer.join('، ') : '-',
+                    'أسباب التوقف': Array.isArray(response.reasons_to_stop) ? response.reasons_to_stop.join('، ') : '-',
+                    'الإصلاح 1': response.magic_fix_1 || '-',
+                    'الإصلاح 2': response.magic_fix_2 || '-',
+                    'الإصلاح 3': response.magic_fix_3 || '-',
+                    'الفكرة الإبداعية': response.creative_idea || '-',
+                    'الميزة التنافسية': response.competitive_edge || '-',
+                    'الرسالة النهائية': response.final_message || '-'
+                };
+                
+                return row;
+            });
+            
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            
+            // Set column widths
+            const colWidths = Object.keys(excelData[0] || {}).map(() => ({ wch: 20 }));
+            ws['!cols'] = colWidths;
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'استبيان بند النخيل');
+            
+            // Generate filename with date
+            const date = new Date().toLocaleDateString('ar-EG').replace(/\//g, '-');
+            const filename = `Palm_Trees_Survey_${date}.xlsx`;
+            
+            // Download
+            XLSX.writeFile(wb, filename);
+        }
+        
+        // ============================================
+        // Export Section Data
+        // ============================================
+        function exportSectionData(sectionName) {
+            alert(`تصدير قسم ${sectionName} - قريباً!`);
+        }
+        
+        // ============================================
+        // Export Raw Data
+        // ============================================
+        function exportRawData() {
+            exportToExcel();
+        }
+        
+        // ============================================
+        // AI Analysis
+        // ============================================
+        async function triggerAIAnalysis() {
+            if (filteredResponses.length === 0) {
+                alert('لا توجد بيانات لتحليلها');
+                return;
+            }
+            
+            const btn = document.getElementById('ai-analysis-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري التحليل...';
+            
+            document.getElementById('ai-analysis-placeholder').style.display = 'none';
+            document.getElementById('ai-analysis-container').style.display = 'block';
+            
+            // Mock AI Analysis - في الواقع ستتصل بـ Vercel Function
+            setTimeout(() => {
+                performMockAIAnalysis();
+                btn.disabled = false;
+                btn.textContent = '🧠 تشغيل التحليل الذكي';
+            }, 2000);
+        }
+        
+        function performMockAIAnalysis() {
+            // Critical Issues
+            const failureReasons = countValues('failure_reasons');
+            const topFailures = Object.entries(failureReasons)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            document.getElementById('ai-critical-issues').innerHTML = topFailures.map((f, i) => 
+                `${i + 1}. <strong>${f[0]}</strong> - تم ذكره ${f[1]} مرة<br>`
+            ).join('');
+            
+            // Quick Wins
+            const quickWins = [
+                'تقليص مدة التوثيق أثبت فعاليته - استمروا في هذا النهج',
+                'تدريب الفريق على إجابات الاعتراضات الشائعة',
+                'توفير محتوى تسويقي جاهز (صور، فيديوهات، posts)',
+                'إنشاء SLA واضحة بين التمويل والبرامج',
+                'تحديد فترات زمنية واضحة للتركيز على النخيل'
+            ];
+            
+            document.getElementById('ai-quick-wins').innerHTML = quickWins.map((w, i) => 
+                `${i + 1}. ${w}<br>`
+            ).join('');
+            
+            // Patterns
+            const patterns = [
+                'فجوة بين الجاهزية الشخصية وجاهزية الفريق - يحتاج بناء ثقة جماعية',
+                'نقص المعلومات المتاحة يعيق الأداء - خاصة قصص الأثر والبيانات الملموسة',
+                'المنافسة الداخلية (بنود أخرى) أكثر تأثيراً من المنافسة الخارجية',
+                'الأداء يتأثر بشكل كبير بالتنسيق مع إدارة البرامج',
+                'الفريق لديه أفكار إبداعية قوية لكن تحتاج إلى تنفيذ'
+            ];
+            
+            document.getElementById('ai-patterns').innerHTML = patterns.map((p, i) => 
+                `${i + 1}. ${p}<br>`
+            ).join('');
+            
+            // Recommendations
+            const recommendations = [
+                '<strong>توصية استراتيجية 1:</strong> بناء خطة تسويق مخصصة للنخيل بفترات تركيز واضحة (Q3 يبدو الأقوى)',
+                '<strong>توصية استراتيجية 2:</strong> إنشاء "بنك محتوى" شامل: قصص أثر، فيديوهات، إجابات جاهزة، بيانات',
+                '<strong>توصية استراتيجية 3:</strong> تحسين التنسيق مع البرامج من خلال SLA واضحة ونقطة اتصال مخصصة',
+                '<strong>توصية استراتيجية 4:</strong> برنامج تدريبي مكثف على شرح البند والإجابة على الاعتراضات',
+                '<strong>توصية استراتيجية 5:</strong> استخدام الأفكار الإبداعية من الفريق - تحويلها لخطط تنفيذية',
+                '<strong>توصية استراتيجية 6:</strong> وضع نظام حوافز مرتبط بأداء النخيل لزيادة التحفيز',
+                '<strong>توصية استراتيجية 7:</strong> التركيز على الميزة التنافسية الأقوى (حسب رأي الفريق) في كل الرسائل'
+            ];
+            
+            document.getElementById('ai-recommendations').innerHTML = recommendations.map(r => 
+                `${r}<br><br>`
+            ).join('');
+        }
+        
+        // ============================================
+        // Export AI Analysis
+        // ============================================
+        function exportAIAnalysis() {
+            const container = document.getElementById('ai-analysis-container');
+            if (container.style.display === 'none') {
+                alert('الرجاء تشغيل التحليل الذكي أولاً');
+                return;
+            }
+            
+            alert('تصدير التحليل الذكي - قريباً!');
+        }
+        
+    </script>
+</body>
+</html>
