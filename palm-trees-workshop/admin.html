@@ -2734,8 +2734,15 @@
                 `;
                 return;
             }
+
+            // Sort by date - newest first
+            const sortedResponses = [...filteredResponses].sort((a, b) => {
+                const dateA = a.timestamp ? new Date(a.timestamp) : new Date(0);
+                const dateB = b.timestamp ? new Date(b.timestamp) : new Date(0);
+                return dateB - dateA; // Newest first
+            });
             
-            tbody.innerHTML = filteredResponses.map((response, index) => {
+            tbody.innerHTML = sortedResponses.map((response, index) => {
                 const date = response.timestamp ? new Date(response.timestamp).toLocaleDateString('ar-EG') : '-';
                 
                 return `
@@ -2764,10 +2771,14 @@
         // ============================================
         // View Full Response
         // ============================================
+        // ============================================
+        // View Full Response - ENHANCED VERSION
+        // ============================================
         function viewFullResponse(responseId) {
             const response = allResponses.find(r => r.id === responseId);
             if (!response) return;
             
+            // Create modal overlay
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -2775,54 +2786,261 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0,0,0,0.8);
+                background: rgba(0,0,0,0.85);
                 z-index: 10000;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 padding: 20px;
+                animation: fadeIn 0.3s ease-out;
             `;
             
+            // Create modal content
             const content = document.createElement('div');
             content.style.cssText = `
                 background: white;
-                border-radius: 15px;
-                padding: 30px;
-                max-width: 800px;
-                max-height: 80vh;
-                overflow-y: auto;
+                border-radius: 20px;
+                padding: 0;
+                max-width: 1000px;
+                width: 100%;
+                max-height: 85vh;
+                overflow: hidden;
                 direction: rtl;
+                box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+                animation: slideUp 0.3s ease-out;
             `;
             
+            // Format date
+            const date = response.timestamp ? 
+                new Date(response.timestamp).toLocaleString('ar-EG', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : 'غير متوفر';
+            
+            // Build organized sections
+            const sections = buildResponseSections(response);
+            
             content.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #e0e0e0;">
-                    <h2 style="margin: 0; color: var(--dark);">📋 تفاصيل الاستجابة</h2>
-                    <button onclick="this.closest('[style*=fixed]').remove()" style="padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #27ae60;">
+                    <div>
+                        <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700;">📋 تفاصيل الاستجابة الكاملة</h2>
+                        <p style="margin: 0; font-size: 14px; opacity: 0.95;">🕐 تاريخ الإرسال: ${date}</p>
+                    </div>
+                    <button onclick="this.closest('[style*=fixed]').remove()" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='white'; this.style.color='#2ecc71'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.color='white'">
                         ✖ إغلاق
                     </button>
                 </div>
-                <div style="font-size: 14px; line-height: 2;">
-                    ${Object.entries(response)
-                        .filter(([key]) => key !== 'id')
-                        .map(([key, value]) => {
-                            let displayValue = value;
-                            if (Array.isArray(value)) {
-                                displayValue = value.join('، ');
-                            }
-                            return `
-                                <div style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-right: 3px solid #2ecc71;">
-                                    <strong style="color: var(--dark);">${key}:</strong><br>
-                                    <span style="color: #666;">${displayValue || '-'}</span>
-                                </div>
-                            `;
-                        }).join('')}
+                
+                <!-- Content -->
+                <div style="padding: 30px; overflow-y: auto; max-height: calc(85vh - 100px);">
+                    ${sections}
+                </div>
+                
+                <!-- Footer -->
+                <div style="background: #f8f9fa; padding: 20px 30px; border-top: 2px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-size: 13px; color: #666;">
+                        🆔 معرف الاستجابة: <code style="background: #e0e0e0; padding: 3px 8px; border-radius: 5px; font-family: monospace;">${response.id}</code>
+                    </div>
+                    <button onclick="exportSingleResponse('${response.id}')" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        📥 تصدير هذه الاستجابة
+                    </button>
                 </div>
             `;
             
             modal.appendChild(content);
             document.body.appendChild(modal);
+            
+            // Close on outside click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
         }
         
+        // ============================================
+        // Build Response Sections
+        // ============================================
+        function buildResponseSections(response) {
+            let html = '';
+            
+            // Section 1: الهوية والخلفية
+            html += createSection('👤 القسم الأول: من أنت في المنظومة؟', '#2ecc71', [
+                { label: 'القسم/الإدارة', value: response.department },
+                { label: 'سنوات الخبرة', value: response.experience },
+                { label: 'هل عمل على النخيل 2025', value: response.worked_on_palm },
+                { label: 'عدد البنود التي يعمل عليها', value: response.items_count },
+                { label: 'مستوى المعرفة ببند النخيل (1-10)', value: response.palm_knowledge, highlight: true }
+            ]);
+            
+            // Section 2: الفهم والمعرفة
+            html += createSection('📖 القسم الثاني: الفهم والمعرفة', '#3498db', [
+                { label: 'مستوى فهم قصة البند', value: response.understanding_level },
+                { label: 'كفاية المعلومات المتاحة', value: response.info_sufficient },
+                { label: 'المعلومات الناقصة', value: response.missing_info, type: 'array' },
+                { label: 'صعوبة الشرح للمتبرعين', value: response.explanation_difficulty },
+                { label: 'أصعب سؤال من المتبرعين', value: response.hardest_question, type: 'text' },
+                { label: 'ما يجعل النخيل أصعب', value: response.palm_difficulty, type: 'array' },
+                { label: 'أسهل بند في التسويق', value: response.easiest_item }
+            ]);
+            
+            // Section 3: تحليل أداء 2025
+            html += createSection('🔍 القسم الثالث: تحليل أداء 2025', '#f39c12', [
+                { label: 'معرفة المستهدف المالي', value: response.know_target },
+                { label: 'أسباب عدم تحقيق المستهدف', value: response.failure_reasons, type: 'array' },
+                { label: 'أقوى فترة في 2025', value: response.strong_period },
+                { label: 'سبب قوة الفترة', value: response.strong_period_reason, type: 'text' },
+                { label: 'أضعف فترة في 2025', value: response.weak_period },
+                { label: 'سبب ضعف الفترة', value: response.weak_period_reason, type: 'text' },
+                { label: 'تأثير تقليص التوثيق', value: response.documentation_impact },
+                { label: 'تأثير سحب العمرة', value: response.umrah_draw_impact },
+                { label: 'أصعب مرحلة', value: response.hardest_stage },
+                { label: 'موقف يوضح ضعف 2025', value: response.situation_2025, type: 'text' },
+                { label: 'ما سيتغير لو رجع الزمن', value: response.would_change, type: 'text' }
+            ]);
+            
+            // Section 4: المنافسة
+            html += createSection('🏆 القسم الرابع: المنافسة', '#9b59b6', [
+                { label: 'معرفة المنافسين', value: response.know_competitors },
+                { label: 'أسماء المنافسين', value: response.competitor_names, type: 'text' },
+                { label: 'مميزاتنا عن المنافسين', value: response.our_advantages, type: 'array' },
+                { label: 'اعتراضات بسبب المنافسين', value: response.competitor_objection },
+                { label: 'الاعتراض الشائع', value: response.common_objection, type: 'text' },
+                { label: 'المنافسة الداخلية', value: response.internal_competition, type: 'array' },
+                { label: 'تضارب البنود', value: response.items_conflict },
+                { label: 'حل البنود المتعددة', value: response.multi_item_solution }
+            ]);
+            
+            // Section 5: التسويق والمحتوى
+            html += createSection('📢 القسم الخامس: التسويق والمحتوى', '#e74c3c', [
+                { label: 'جودة المحتوى التسويقي (1-10)', value: response.content_quality, highlight: true },
+                { label: 'أكثر محتوى فعّال', value: response.most_effective_content },
+                { label: 'وضوح الرسائل', value: response.messages_clarity },
+                { label: 'أفضل رسالة تسويقية', value: response.best_message },
+                { label: 'الاعتراض الرئيسي', value: response.main_objection },
+                { label: 'جاهزية الإجابات', value: response.ready_answers },
+                { label: 'القنوات الإعلانية المفضلة', value: response.ad_channels, type: 'array' }
+            ]);
+            
+            // Section 6: التنسيق
+            html += createSection('🤝 القسم السادس: التنسيق مع البرامج', '#1abc9c', [
+                { label: 'جودة التنسيق (1-10)', value: response.coordination_quality, highlight: true },
+                { label: 'مشاكل التنسيق', value: response.coordination_problems, type: 'array' },
+                { label: 'وجود SLA', value: response.sla_existence },
+                { label: 'حل المشاكل', value: response.problem_resolution },
+                { label: 'احتياجات من البرامج', value: response.needs_from_programs, type: 'array' }
+            ]);
+            
+            // Section 7: الموسمية والتوقيت
+            html += createSection('⏰ القسم السابع: الموسمية والتوقيت', '#34495e', [
+                { label: 'أفضل توقيت للنخيل', value: response.best_timing, type: 'array' },
+                { label: 'نهج موسمي أم مستمر', value: response.seasonal_approach },
+                { label: 'تأثير الحملات الموسمية', value: response.campaigns_effect },
+                { label: 'توزيع Q1 (%)', value: response.dist_q1 },
+                { label: 'توزيع Q2 (%)', value: response.dist_q2 },
+                { label: 'توزيع Q3 (%)', value: response.dist_q3 },
+                { label: 'توزيع Q4 (%)', value: response.dist_q4 }
+            ]);
+            
+            // Section 8: الجاهزية
+            html += createSection('💪 القسم الثامن: الجاهزية لـ60 مليون', '#27ae60', [
+                { label: 'الجاهزية الشخصية (1-10)', value: response.personal_readiness, highlight: true },
+                { label: 'جاهزية الفريق (1-10)', value: response.team_readiness, highlight: true },
+                { label: 'هل الهدف ممكن؟', value: response.target_possible },
+                { label: 'متطلبات النجاح', value: response.success_requirements, type: 'array' },
+                { label: 'ما يجب التوقف عنه', value: response.should_stop, type: 'text' },
+                { label: 'ما يجب البدء فيه', value: response.should_start, type: 'text' }
+            ]);
+            
+            // Section 9: لو كنت المتبرع
+            html += createSection('🎯 القسم التاسع: لو كنت أنت المتبرع', '#2980b9', [
+                { label: 'أسباب التبرع لأول مرة', value: response.reasons_to_donate, type: 'array' },
+                { label: 'أسباب تكرار التبرع', value: response.reasons_to_repeat, type: 'array' },
+                { label: 'أسباب ترشيح الغير', value: response.reasons_to_refer, type: 'array' },
+                { label: 'أسباب التوقف نهائياً', value: response.reasons_to_stop, type: 'array' }
+            ]);
+            
+            // Section 10: المقترحات
+            html += createSection('💡 القسم العاشر: المقترحات والحلول', '#d35400', [
+                { label: 'العصا السحرية - الإصلاح الأول (الأهم)', value: response.magic_fix_1, type: 'text', important: true },
+                { label: 'العصا السحرية - الإصلاح الثاني', value: response.magic_fix_2, type: 'text', important: true },
+                { label: 'العصا السحرية - الإصلاح الثالث', value: response.magic_fix_3, type: 'text', important: true },
+                { label: 'الفكرة الإبداعية', value: response.creative_idea, type: 'text' },
+                { label: 'الميزة التنافسية الأقوى', value: response.competitive_edge },
+                { label: 'الرسالة النهائية للورشة', value: response.final_message, type: 'text', important: true }
+            ]);
+            
+            return html;
+        }
+        
+        // ============================================
+        // Create Section Helper
+        // ============================================
+        function createSection(title, color, fields) {
+            let html = `
+                <div style="margin-bottom: 30px; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+                    <div style="background: ${color}; color: white; padding: 15px 20px; font-weight: 700; font-size: 18px;">
+                        ${title}
+                    </div>
+                    <div style="background: white; padding: 20px;">
+            `;
+            
+            fields.forEach((field, index) => {
+                if (!field.value || field.value === '-' || field.value === '') return;
+                
+                let valueHtml = '';
+                
+                if (field.type === 'array') {
+                    // Array values
+                    const arr = Array.isArray(field.value) ? field.value : 
+                                (typeof field.value === 'string' ? field.value.split('، ') : []);
+                    if (arr.length > 0) {
+                        valueHtml = '<ul style="margin: 8px 0 0 0; padding-right: 25px;">' + 
+                            arr.map(item => `<li style="margin: 5px 0; color: #444;">${item}</li>`).join('') + 
+                            '</ul>';
+                    }
+                } else if (field.type === 'text') {
+                    // Long text
+                    valueHtml = `<div style="margin-top: 8px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-right: 3px solid ${color}; color: #333; line-height: 1.8; white-space: pre-wrap;">${field.value}</div>`;
+                } else {
+                    // Simple value
+                    valueHtml = `<span style="color: ${field.highlight ? color : '#444'}; font-weight: ${field.highlight ? '700' : '600'}; font-size: ${field.highlight ? '18px' : '16px'};">${field.value}</span>`;
+                }
+                
+                const bgColor = field.important ? '#fff3cd' : (index % 2 === 0 ? '#ffffff' : '#f8f9fa');
+                const borderColor = field.important ? '#ffc107' : 'transparent';
+                
+                html += `
+                    <div style="padding: 15px; margin-bottom: 10px; background: ${bgColor}; border-radius: 8px; border-right: 3px solid ${borderColor};">
+                        <div style="font-size: 14px; color: #666; margin-bottom: ${field.type ? '5px' : '8px'}; font-weight: 600;">
+                            ${field.important ? '⭐ ' : ''}${field.label}:
+                        </div>
+                        ${valueHtml}
+                    </div>
+                `;
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        // ============================================
+        // Export Single Response
+        // ============================================
+        function exportSingleResponse(responseId) {
+            const response = allResponses.find(r => r.id === responseId);
+            if (!response) return;
+            
+            alert('تصدير استجابة واحدة - قريباً!');
+        }
         // ============================================
         // Delete Response
         // ============================================
