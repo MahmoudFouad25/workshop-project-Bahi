@@ -1573,12 +1573,12 @@
                 return;
             }
             
-            // Collect SOP priorities
+            // Collect SOP priorities with filtering
             const sopPriorities = {};
             allResponses.forEach(r => {
                 [r.sop_priority_1, r.sop_priority_2, r.sop_priority_3].forEach(sop => {
-                    if (sop && sop.trim()) {
-                        const key = sop.trim().toLowerCase();
+                    if (isValidResponse(sop)) {
+                        const key = sop.trim();
                         sopPriorities[key] = (sopPriorities[key] || 0) + 1;
                     }
                 });
@@ -1588,12 +1588,12 @@
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 15);
             
-            // Collect SLA priorities
+            // Collect SLA priorities with filtering
             const slaPriorities = {};
             allResponses.forEach(r => {
                 [r.sla_priority_1, r.sla_priority_2, r.sla_priority_3].forEach(sla => {
-                    if (sla && sla.trim()) {
-                        const key = sla.trim().toLowerCase();
+                    if (isValidResponse(sla)) {
+                        const key = sla.trim();
                         slaPriorities[key] = (slaPriorities[key] || 0) + 1;
                     }
                 });
@@ -1603,12 +1603,12 @@
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 15);
             
-            // Collect magic fixes
+            // Collect magic fixes with filtering
             const magicFixes = {};
             allResponses.forEach(r => {
                 [r.magic_fix_1, r.magic_fix_2, r.magic_fix_3].forEach(fix => {
-                    if (fix && fix.trim().length > 10) {
-                        const key = fix.trim().substring(0, 100);
+                    if (isValidResponse(fix, 10)) { // minimum 10 chars for magic fixes
+                        const key = fix.trim();
                         magicFixes[key] = (magicFixes[key] || 0) + 1;
                     }
                 });
@@ -1620,98 +1620,148 @@
             
             let html = `
                 <h3 style="margin-bottom: 20px; color: var(--dark);">🎯 الأولويات والمقترحات</h3>
-                
-                <!-- SOPs Priority -->
-                <div style="margin-bottom: 40px;">
-                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
-                        <span>📋</span>
-                        أهم العمليات المحتاجة لـ SOPs موحدة (أعلى ${sortedSOPs.length} ذكراً)
-                    </h4>
-                    <div class="priority-list">
             `;
             
-            sortedSOPs.forEach(([sop, count]) => {
-                const percentage = ((count / allResponses.length) * 100).toFixed(0);
+            // SOPs Priority
+            if (sortedSOPs.length > 0) {
                 html += `
-                    <div class="priority-item">
-                        <div class="priority-number"></div>
-                        <div class="priority-content">
-                            <div class="priority-title">${sop}</div>
-                            <div class="priority-count">
-                                <span>👥 ${count} شخص</span>
-                                <span>•</span>
-                                <span>${percentage}% طلبوها</span>
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>📋</span>
+                            أهم العمليات المحتاجة لـ SOPs موحدة (${sortedSOPs.length} عملية)
+                        </h4>
+                        <div class="priority-list">
+                `;
+                
+                sortedSOPs.forEach(([sop, count]) => {
+                    const percentage = ((count / allResponses.length) * 100).toFixed(0);
+                    html += `
+                        <div class="priority-item">
+                            <div class="priority-number"></div>
+                            <div class="priority-content">
+                                <div class="priority-title">${sop}</div>
+                                <div class="priority-count">
+                                    <span>👥 ${count} شخص</span>
+                                    <span>•</span>
+                                    <span>${percentage}% طلبوها</span>
+                                </div>
+                                <div class="priority-bar">
+                                    <div class="priority-bar-fill" style="width: ${percentage}%"></div>
+                                </div>
                             </div>
-                            <div class="priority-bar">
-                                <div class="priority-bar-fill" style="width: ${percentage}%"></div>
-                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
                         </div>
                     </div>
                 `;
-            });
-            
-            html += `
-                    </div>
-                </div>
-                
-                <!-- SLAs Priority -->
-                <div style="margin-bottom: 40px;">
-                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
-                        <span>⏱️</span>
-                        أهم الإدارات المحتاجة لـ SLAs واضحة (أعلى ${sortedSLAs.length} ذكراً)
-                    </h4>
-                    <div class="priority-list">
-            `;
-            
-            sortedSLAs.forEach(([sla, count]) => {
-                const percentage = ((count / allResponses.length) * 100).toFixed(0);
+            } else {
                 html += `
-                    <div class="priority-item">
-                        <div class="priority-number"></div>
-                        <div class="priority-content">
-                            <div class="priority-title">${sla}</div>
-                            <div class="priority-count">
-                                <span>👥 ${count} شخص</span>
-                                <span>•</span>
-                                <span>${percentage}% طلبوها</span>
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>📋</span>
+                            أهم العمليات المحتاجة لـ SOPs موحدة
+                        </h4>
+                        <p style="color: var(--gray); padding: 20px; background: var(--light); border-radius: 10px;">
+                            ⚠️ لا توجد ردود واضحة ومفيدة. معظم المشاركين كتبوا "لا أعرف" أو تركوا الحقل فارغاً.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            // SLAs Priority
+            if (sortedSLAs.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>⏱️</span>
+                            أهم الإدارات المحتاجة لـ SLAs واضحة (${sortedSLAs.length} إدارة)
+                        </h4>
+                        <div class="priority-list">
+                `;
+                
+                sortedSLAs.forEach(([sla, count]) => {
+                    const percentage = ((count / allResponses.length) * 100).toFixed(0);
+                    html += `
+                        <div class="priority-item">
+                            <div class="priority-number"></div>
+                            <div class="priority-content">
+                                <div class="priority-title">${sla}</div>
+                                <div class="priority-count">
+                                    <span>👥 ${count} شخص</span>
+                                    <span>•</span>
+                                    <span>${percentage}% طلبوها</span>
+                                </div>
+                                <div class="priority-bar">
+                                    <div class="priority-bar-fill" style="width: ${percentage}%"></div>
+                                </div>
                             </div>
-                            <div class="priority-bar">
-                                <div class="priority-bar-fill" style="width: ${percentage}%"></div>
-                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
                         </div>
                     </div>
                 `;
-            });
-            
-            html += `
-                    </div>
-                </div>
-                
-                <!-- Magic Fixes -->
-                <div style="margin-bottom: 40px;">
-                    <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
-                        <span>✨</span>
-                        لو كان عندهم عصا سحرية - أهم 3 حاجات يصلحوها
-                    </h4>
-                    <div class="list-container">
-            `;
-            
-            sortedFixes.forEach(([fix, count], index) => {
+            } else {
                 html += `
-                    <div class="list-item">
-                        <div class="list-item-header">
-                            <div class="list-item-title">${fix}</div>
-                            <div class="list-item-badge">${count} شخص</div>
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>⏱️</span>
+                            أهم الإدارات المحتاجة لـ SLAs واضحة
+                        </h4>
+                        <p style="color: var(--gray); padding: 20px; background: var(--light); border-radius: 10px;">
+                            ⚠️ لا توجد ردود واضحة ومفيدة. معظم المشاركين كتبوا "لا أعرف" أو تركوا الحقل فارغاً.
+                        </p>
+                    </div>
+                `;
+            }
+            
+            // Magic Fixes
+            if (sortedFixes.length > 0) {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>✨</span>
+                            لو كان عندهم عصا سحرية - أهم الإصلاحات المقترحة
+                        </h4>
+                        <div class="list-container">
+                `;
+                
+                sortedFixes.forEach(([fix, count], index) => {
+                    html += `
+                        <div class="list-item">
+                            <div class="list-item-header">
+                                <div class="list-item-title">${fix}</div>
+                                <div class="list-item-badge">${count} شخص</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
                         </div>
                     </div>
                 `;
-            });
-            
-            html += `
+            } else {
+                html += `
+                    <div style="margin-bottom: 40px;">
+                        <h4 style="margin-bottom: 20px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                            <span>✨</span>
+                            لو كان عندهم عصا سحرية - أهم الإصلاحات المقترحة
+                        </h4>
+                        <p style="color: var(--gray); padding: 20px; background: var(--light); border-radius: 10px;">
+                            ⚠️ لا توجد ردود واضحة ومفيدة.
+                        </p>
                     </div>
-                </div>
-                
-                <!-- SLA Impact Chart -->
+                `;
+            }
+            
+            // SLA Impact Chart
+            html += `
                 <div style="margin-bottom: 40px;">
                     <h4 style="margin-bottom: 20px; color: var(--dark);">تأثير اتفاقيات SLA المتوقع على الأداء</h4>
                     <div class="chart-container chart-small">
@@ -1726,6 +1776,52 @@
             renderSLAImpactChart();
         }
         
+        // ============================================
+        // Helper: Validate Response (Filter Garbage)
+        // ============================================
+        function isValidResponse(value, minLength = 3) {
+            if (!value) return false;
+            
+            const cleaned = value.trim().toLowerCase();
+            
+            // Empty or too short
+            if (cleaned.length < minLength) return false;
+            
+            // Only dots
+            if (/^\.+$/.test(cleaned)) return false;
+            
+            // Only commas
+            if (/^،+$/.test(cleaned)) return false;
+            
+            // Common garbage responses
+            const garbageWords = [
+                'لا أعرف',
+                'لا اعرف',
+                'مش عارف',
+                'معرفش',
+                'لا اعلم',
+                'لا أعلم',
+                'لا يوجد',
+                'لايوجد',
+                'تم',
+                'لا',
+                'لأ',
+                'مفيش',
+                'مافيش',
+                '...',
+                '..',
+                '،،',
+                '،،،'
+            ];
+            
+            if (garbageWords.includes(cleaned)) return false;
+            
+            // Single character (except Arabic numbers)
+            if (cleaned.length === 1 && !/[٠-٩0-9]/.test(cleaned)) return false;
+            
+            return true;
+        }
+
         // ============================================
         // Render Departments Tab
         // ============================================
