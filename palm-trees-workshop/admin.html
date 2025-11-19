@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Dashboard | استبيان بند النخيل 2026</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gray: #95a5a6;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* ============================================ */
+        /* Header */
+        /* ============================================ */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        /* Loading Indicator in Header */
+        .loading-indicator {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .loading-indicator.active {
+            display: flex;
+        }
+        
+        .loading-spinner-small {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ============================================ */
+        /* Main Container */
+        /* ============================================ */
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 40px 40px;
+        }
+        
+        /* ============================================ */
+        /* Overview Stats Cards */
+        /* ============================================ */
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+        
+        .stat-card.secondary::before {
+            background: linear-gradient(90deg, var(--secondary) 0%, #2980b9 100%);
+        }
+        
+        .stat-card.warning::before {
+            background: linear-gradient(90deg, var(--warning) 0%, #e67e22 100%);
+        }
+        
+        .stat-card.danger::before {
+            background: linear-gradient(90deg, var(--danger) 0%, #c0392b 100%);
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(39, 174, 96, 0.1) 100%);
+        }
+        
+        .stat-card.secondary .stat-icon {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(41, 128, 185, 0.1) 100%);
+        }
+        
+        .stat-card.warning .stat-icon {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1) 0%, rgba(230, 126, 34, 0.1) 100%);
+        }
+        
+        .stat-card.danger .stat-icon {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.1) 100%);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .stat-change {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .stat-change.positive {
+            color: var(--success);
+        }
+        
+        .stat-change.negative {
+            color: var(--danger);
+        }
+        
+        /* ============================================ */
+        /* Section Cards */
+        /* ============================================ */
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* ============================================ */
+        /* Filters & Controls */
+        /* ============================================ */
+        .filters {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .filter-select,
+        .filter-input {
+            padding: 12px 16px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .filter-select:focus,
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+        }
+        
+        /* ============================================ */
+        /* Loading Overlay */
+        /* ============================================ */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .loading-text {
+            font-size: 18px;
+        }
+        
+        /* ============================================ */
+        /* Responsive */
+        /* ============================================ */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-left h1 {
+                font-size: 22px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .overview-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ============================================ */
+        /* Print Styles */
+        /* ============================================ */
+        @media print {
+            .header-actions,
+            .section-actions,
+            .filters,
+            .btn {
+                display: none !important;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري تحميل البيانات...</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>🌴 Dashboard | استبيان بند النخيل 2026</h1>
+                <p>ورشة العمل: 20 نوفمبر 2025 | الهدف: 60+ مليون جنيه</p>
+            </div>
+            <div class="header-actions">
+                <div class="loading-indicator" id="header-loading">
+                    <div class="loading-spinner-small"></div>
+                    <span>تحديث...</span>
+                </div>
+                <button class="btn btn-white" onclick="refreshData()">
+                    🔄 تحديث البيانات
+                </button>
+                <button class="btn btn-outline" onclick="exportToExcel()">
+                    📊 تصدير Excel
+                </button>
+                <button class="btn btn-outline" onclick="window.print()">
+                    🖨️ طباعة
+                </button>
+                <a href="survey.html" class="btn btn-white" target="_blank">
+                    👁️ معاينة الاستبيان
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Overview Statistics -->
+        <div class="overview-stats" id="overview-stats">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">👥</div>
+                </div>
+                <div class="stat-label">إجمالي المشاركين</div>
+                <div class="stat-value" id="total-responses">-</div>
+                <div class="stat-change">من أصل 150 موظف مستهدف</div>
+            </div>
+            
+            <div class="stat-card secondary">
+                <div class="stat-header">
+                    <div class="stat-icon">✅</div>
+                </div>
+                <div class="stat-label">نسبة الإكمال</div>
+                <div class="stat-value" id="completion-rate">-</div>
+                <div class="stat-change" id="completion-change">حساب تلقائي</div>
+            </div>
+            
+            <div class="stat-card warning">
+                <div class="stat-header">
+                    <div class="stat-icon">⏱️</div>
+                </div>
+                <div class="stat-label">متوسط الوقت</div>
+                <div class="stat-value" id="avg-time">-</div>
+                <div class="stat-change">من 15-18 دقيقة متوقعة</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">⭐</div>
+                </div>
+                <div class="stat-label">معدل الجاهزية للهدف</div>
+                <div class="stat-value" id="readiness-avg">-</div>
+                <div class="stat-change">من 10 (الجاهزية الشخصية)</div>
+            </div>
+        </div>
+        <!-- Filters Section -->
+        <div class="filters">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">🏢 فلترة حسب القسم:</label>
+                    <select class="filter-select" id="filter-department" onchange="applyFilters()">
+                        <option value="all">جميع الأقسام</option>
+                        <option value="الكول سنتر الداخلي">الكول سنتر الداخلي</option>
+                        <option value="الكول سنتر الخارجي">الكول سنتر الخارجي</option>
+                        <option value="منافذ التمويل">منافذ التمويل (Booths)</option>
+                        <option value="الأونلاين">الأونلاين (Online/Digital)</option>
+                        <option value="النتورك">النتورك (Network)</option>
+                        <option value="التحصيل المباشر">التحصيل المباشر</option>
+                        <option value="حملات المتطوعين">حملات المتطوعين</option>
+                        <option value="التبرعات العينية">التبرعات العينية</option>
+                        <option value="الأقسام الداعمة">الأقسام الداعمة</option>
+                        <option value="الفريق الإداري/القيادي">الفريق الإداري/القيادي</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">📅 فلترة حسب سنوات الخبرة:</label>
+                    <select class="filter-select" id="filter-experience" onchange="applyFilters()">
+                        <option value="all">جميع المستويات</option>
+                        <option value="أقل من 6 شهور">أقل من 6 شهور</option>
+                        <option value="6 شهور - سنة">6 شهور - سنة</option>
+                        <option value="1-3 سنوات">1-3 سنوات</option>
+                        <option value="3-5 سنوات">3-5 سنوات</option>
+                        <option value="أكثر من 5 سنوات">أكثر من 5 سنوات</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">🎯 فلترة حسب الجاهزية:</label>
+                    <select class="filter-select" id="filter-readiness" onchange="applyFilters()">
+                        <option value="all">جميع المستويات</option>
+                        <option value="high">عالية (8-10)</option>
+                        <option value="medium">متوسطة (5-7)</option>
+                        <option value="low">منخفضة (1-4)</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">🔍 بحث:</label>
+                    <input type="text" class="filter-input" id="filter-search" placeholder="ابحث في الإجابات..." oninput="applyFilters()">
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 1: التوزيع الديموغرافي -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">📊</span>
+                        التوزيع الديموغرافي للمشاركين
+                    </div>
+                    <div class="section-subtitle">من هم المشاركون في الاستبيان؟</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('demographics')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px;">
+                <!-- Chart: Distribution by Department -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        🏢 التوزيع حسب القسم/الإدارة
+                    </h3>
+                    <canvas id="chart-departments" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <!-- Chart: Distribution by Experience -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        📅 التوزيع حسب سنوات الخبرة
+                    </h3>
+                    <canvas id="chart-experience" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <!-- Chart: Worked on Palm 2025 -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        🌴 هل عمل على بند النخيل في 2025؟
+                    </h3>
+                    <canvas id="chart-worked-palm" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <!-- Chart: Number of Items -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        🎯 عدد البنود التي يعمل عليها
+                    </h3>
+                    <canvas id="chart-items-count" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Knowledge Rating Distribution -->
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📈 توزيع مستوى المعرفة ببند النخيل (1-10)
+                </h3>
+                <canvas id="chart-knowledge-rating" style="max-height: 250px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-right: 4px solid var(--primary);">
+                    <strong>📊 إحصائيات المعرفة:</strong><br>
+                    <span id="knowledge-stats">جاري الحساب...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 2: الفهم والمعرفة -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">📖</span>
+                        الفهم والمعرفة ببند النخيل
+                    </div>
+                    <div class="section-subtitle">ما مدى فهم الفريق للبند؟</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('understanding')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px;">
+                <!-- Understanding Level -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        🎯 مستوى الفهم لقصة بند النخيل
+                    </h3>
+                    <canvas id="chart-understanding" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <!-- Info Sufficient -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        📋 كفاية المعلومات المتاحة
+                    </h3>
+                    <canvas id="chart-info-sufficient" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Missing Information -->
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ⚠️ المعلومات الناقصة الأكثر طلباً
+                </h3>
+                <canvas id="chart-missing-info" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Explanation Difficulty -->
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    💬 صعوبة شرح البند للمتبرعين
+                </h3>
+                <canvas id="chart-explanation-difficulty" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Hardest Questions from Donors -->
+            <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; border-right: 4px solid var(--warning);">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🔥 أصعب الأسئلة من المتبرعين (نصوص مفتوحة)
+                </h3>
+                <div id="hardest-questions-list" style="max-height: 400px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Palm Difficulty Factors -->
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🚧 ما يجعل بند النخيل أصعب من البنود الأخرى
+                </h3>
+                <canvas id="chart-palm-difficulty" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Easiest Item Comparison -->
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ✅ أسهل بند في التسويق والإقناع (مقارنة)
+                </h3>
+                <canvas id="chart-easiest-item" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 3: تحليل أداء 2025 -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">🔍</span>
+                        تحليل أداء 2025 - لماذا لم نحقق المستهدف؟
+                    </div>
+                    <div class="section-subtitle">تحليل عميق للأداء السابق</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('performance-2025')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Know Target -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🎯 هل يعرف الفريق المستهدف المالي لـ2025؟
+                </h3>
+                <canvas id="chart-know-target" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Failure Reasons -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ❌ أسباب عدم تحقيق المستهدف في 2025 (أهم 3 أسباب)
+                </h3>
+                <canvas id="chart-failure-reasons" style="max-height: 350px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #f8d7da; border-radius: 10px; border-right: 4px solid var(--danger);">
+                    <strong>🚨 التحليل الحرج:</strong><br>
+                    <span id="critical-analysis">جاري التحليل...</span>
+                </div>
+            </div>
+            
+            <!-- Performance by Quarter -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        📈 أقوى فترة في 2025
+                    </h3>
+                    <canvas id="chart-strong-period" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        📉 أضعف فترة في 2025
+                    </h3>
+                    <canvas id="chart-weak-period" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Period Reasons (Text) -->
+            <div style="margin-bottom: 30px; padding: 20px; background: #e7f3ff; border-radius: 10px; border-right: 4px solid var(--secondary);">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    💡 أسباب القوة والضعف في الفترات (نصوص مفتوحة)
+                </h3>
+                <div id="period-reasons-text" style="max-height: 300px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Documentation Impact -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📄 تأثير تقليص مدة التوثيق (40 → 15 يوم)
+                </h3>
+                <canvas id="chart-doc-impact" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Umrah Draw Impact -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🕋 تأثير سحب العمرة على عدد المتبرعين
+                </h3>
+                <canvas id="chart-umrah-impact" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Hardest Stage -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🎪 أصعب مرحلة في التعامل مع متبرعي النخيل
+                </h3>
+                <canvas id="chart-hardest-stage" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Real Situations 2025 -->
+            <div style="padding: 20px; background: #fff3cd; border-radius: 10px; border-right: 4px solid var(--warning);">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📝 مواقف حقيقية توضح سبب ضعف النتائج في 2025
+                </h3>
+                <div id="situations-2025-list" style="max-height: 400px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Would Change (If went back to 2025) -->
+            <div style="margin-top: 30px; padding: 20px; background: #d4edda; border-radius: 10px; border-right: 4px solid var(--success);">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🔄 لو رجع الزمن لبداية 2025... أول حاجة سيغيرونها
+                </h3>
+                <div id="would-change-list" style="max-height: 400px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 4: المنافسة -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">🏆</span>
+                        المنافسة - الخارجية والداخلية
+                    </div>
+                    <div class="section-subtitle">كيف نتميز ونتفوق؟</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('competition')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Know Competitors -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    👁️ معرفة الفريق بالمنافسين
+                </h3>
+                <canvas id="chart-know-competitors" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Competitor Names -->
+            <div style="margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; border-right: 4px solid var(--gray);">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🏢 أسماء المؤسسات المنافسة المذكورة
+                </h3>
+                <div id="competitor-names-list">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Our Advantages -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ⭐ ما يميز "نخيل صناع الحياة" عن المنافسين
+                </h3>
+                <canvas id="chart-our-advantages" style="max-height: 350px;"></canvas>
+            </div>
+            
+            <!-- Competitor Objections -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    💬 تكرار اعتراضات المتبرعين بسبب المنافسين
+                </h3>
+                <canvas id="chart-competitor-objections" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Common Objections Text -->
+            <div style="margin-bottom: 30px; padding: 20px; background: #fff3cd; border-radius: 10px; border-right: 4px solid var(--warning);">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🗣️ أكثر الاعتراضات تكراراً من المتبرعين
+                </h3>
+                <div id="common-objections-list" style="max-height: 300px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Internal Competition -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🔄 المنافسة الداخلية - البنود التي تأكل من حصة النخيل
+                </h3>
+                <canvas id="chart-internal-competition" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Items Conflict -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    😵 تضارب/تشتت عند التعامل مع بنود متعددة
+                </h3>
+                <canvas id="chart-items-conflict" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Multi-Item Solution -->
+            <div>
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    💡 حلول مقترحة لتسويق النخيل بجانب بنود أخرى
+                </h3>
+                <canvas id="chart-multi-item-solution" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 5: التسويق والمحتوى -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">📢</span>
+                        التسويق والمحتوى والرسائل
+                    </div>
+                    <div class="section-subtitle">ما مدى فعالية المحتوى التسويقي؟</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('marketing')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Content Quality Rating -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ⭐ تقييم جودة المحتوى التسويقي (1-10)
+                </h3>
+                <canvas id="chart-content-quality" style="max-height: 250px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-right: 4px solid var(--secondary);">
+                    <strong>📊 إحصائيات تقييم المحتوى:</strong><br>
+                    <span id="content-quality-stats">جاري الحساب...</span>
+                </div>
+            </div>
+            
+            <!-- Most Effective Content -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🎯 أكثر أنواع المحتوى تأثيراً على المتبرعين
+                </h3>
+                <canvas id="chart-effective-content" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Messages Clarity -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    💬 وضوح وإقناع الرسائل التسويقية الحالية
+                </h3>
+                <canvas id="chart-messages-clarity" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Best Message -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🏆 أقوى رسالة تسويقية لبند النخيل
+                </h3>
+                <canvas id="chart-best-message" style="max-height: 350px;"></canvas>
+            </div>
+            
+            <!-- Main Objections -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ⚠️ أكثر اعتراض من المتبرعين عند عرض البند
+                </h3>
+                <canvas id="chart-main-objection" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Ready Answers -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ✅ جاهزية إجابات الفريق على الاعتراضات
+                </h3>
+                <canvas id="chart-ready-answers" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Ad Channels Priority -->
+            <div>
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📱 أولوية القنوات الإعلانية (لو كانت ميزانية محدودة)
+                </h3>
+                <canvas id="chart-ad-channels" style="max-height: 350px;"></canvas>
+            </div>
+        </div>
+        <!-- ============================================ -->
+        <!-- Section 6: التنسيق مع إدارة المشروع -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">🤝</span>
+                        التنسيق مع إدارة المشروع/البرامج
+                    </div>
+                    <div class="section-subtitle">مدى التعاون والتنسيق بين الإدارات</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('coordination')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Coordination Quality Rating -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ⭐ تقييم جودة التنسيق (1-10)
+                </h3>
+                <canvas id="chart-coordination-quality" style="max-height: 250px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-right: 4px solid var(--secondary);">
+                    <strong>📊 إحصائيات التنسيق:</strong><br>
+                    <span id="coordination-stats">جاري الحساب...</span>
+                </div>
+            </div>
+            
+            <!-- Coordination Problems -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🚧 أكثر المشاكل التنسيقية بين التمويل والبرامج
+                </h3>
+                <canvas id="chart-coordination-problems" style="max-height: 350px;"></canvas>
+            </div>
+            
+            <!-- SLA Existence -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📋 وجود اتفاقية واضحة (SLA) بين التمويل والبرامج
+                </h3>
+                <canvas id="chart-sla-existence" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Problem Resolution -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ⚙️ ماذا يحدث عند وجود مشكلة من البرامج؟
+                </h3>
+                <canvas id="chart-problem-resolution" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Needs from Programs -->
+            <div>
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📝 ما يحتاجه الفريق من إدارة المشروع/البرامج
+                </h3>
+                <canvas id="chart-needs-from-programs" style="max-height: 350px;"></canvas>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 7: الموسمية والتوقيت -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">⏰</span>
+                        الموسمية والتوقيت الأمثل
+                    </div>
+                    <div class="section-subtitle">متى نركز على بند النخيل؟</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('timing')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Best Timing -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📅 أفضل وقت للتركيز على بند النخيل
+                </h3>
+                <canvas id="chart-best-timing" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Seasonal Approach -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🔄 هل يجب أن يكون النخيل موسمي أم مستمر؟
+                </h3>
+                <canvas id="chart-seasonal-approach" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Campaigns Effect -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📊 تأثير الحملات الموسمية (رمضان، أضاحي) على النخيل
+                </h3>
+                <canvas id="chart-campaigns-effect" style="max-height: 250px;"></canvas>
+            </div>
+            
+            <!-- Quarterly Distribution -->
+            <div>
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📈 توزيع التركيز المقترح على النخيل خلال 2026 (%)
+                </h3>
+                <canvas id="chart-quarterly-distribution" style="max-height: 300px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #e7f3ff; border-radius: 10px; border-right: 4px solid var(--secondary);">
+                    <strong>💡 التحليل:</strong><br>
+                    <span id="quarterly-analysis">جاري التحليل...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 8: الجاهزية لـ60 مليون -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">💪</span>
+                        الجاهزية لتحقيق 60 مليون في 2026
+                    </div>
+                    <div class="section-subtitle">هل نحن مستعدون فعلاً؟</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('readiness')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Readiness Comparison -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📊 مقارنة الجاهزية الشخصية vs جاهزية الفريق (1-10)
+                </h3>
+                <canvas id="chart-readiness-comparison" style="max-height: 300px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 10px; border-right: 4px solid var(--primary);">
+                    <strong>📈 فجوة الجاهزية:</strong><br>
+                    <span id="readiness-gap-analysis">جاري الحساب...</span>
+                </div>
+            </div>
+            
+            <!-- Personal Readiness Distribution -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        👤 توزيع الجاهزية الشخصية
+                    </h3>
+                    <canvas id="chart-personal-readiness" style="max-height: 250px;"></canvas>
+                </div>
+                
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        👥 توزيع جاهزية الفريق
+                    </h3>
+                    <canvas id="chart-team-readiness" style="max-height: 250px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Target Possible -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🎯 هل تحقيق 60 مليون ممكن؟
+                </h3>
+                <canvas id="chart-target-possible" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Success Requirements -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    ✅ أهم 3 أشياء يجب توفيرها لتحقيق المستهدف
+                </h3>
+                <canvas id="chart-success-requirements" style="max-height: 350px;"></canvas>
+            </div>
+            
+            <!-- Should Stop/Start -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div style="padding: 20px; background: #f8d7da; border-radius: 10px; border-right: 4px solid var(--danger);">
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        ❌ ما يجب التوقف عنه فوراً
+                    </h3>
+                    <div id="should-stop-list" style="max-height: 350px; overflow-y: auto;">
+                        جاري التحميل...
+                    </div>
+                </div>
+                
+                <div style="padding: 20px; background: #d4edda; border-radius: 10px; border-right: 4px solid var(--success);">
+                    <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                        ✅ ما يجب البدء فيه فوراً
+                    </h3>
+                    <div id="should-start-list" style="max-height: 350px; overflow-y: auto;">
+                        جاري التحميل...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 9: لو كنت أنت المتبرع -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">🎯</span>
+                        لو كنت أنت المتبرع...
+                    </div>
+                    <div class="section-subtitle">وجهة نظر المتبرعين من داخل الفريق</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('donor-perspective')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Reasons to Donate -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    💚 ما يجعلني أتبرع في النخيل لأول مرة
+                </h3>
+                <canvas id="chart-reasons-donate" style="max-height: 350px;"></canvas>
+            </div>
+            
+            <!-- Reasons to Repeat -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🔁 ما يجعلني أكرر التبرع
+                </h3>
+                <canvas id="chart-reasons-repeat" style="max-height: 350px;"></canvas>
+            </div>
+            
+            <!-- Reasons to Refer -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    📢 ما يجعلني أرشح غيري للتبرع
+                </h3>
+                <canvas id="chart-reasons-refer" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Reasons to Stop -->
+            <div>
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🛑 ما يجعلني أتوقف عن التبرع نهائياً
+                </h3>
+                <canvas id="chart-reasons-stop" style="max-height: 300px;"></canvas>
+                <div style="margin-top: 15px; padding: 15px; background: #f8d7da; border-radius: 10px; border-right: 4px solid var(--danger);">
+                    <strong>⚠️ تحذيرات حرجة:</strong> هذه العوامل يجب تجنبها بأي ثمن!
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section 10: المقترحات والحلول -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">💡</span>
+                        مقترحات وحلول الفريق
+                    </div>
+                    <div class="section-subtitle">الأفكار الإبداعية من الميدان</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportSectionData('suggestions')">
+                        📥 تصدير القسم
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Magic Wand - 3 Fixes -->
+            <div style="margin-bottom: 30px; padding: 25px; background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); border-radius: 15px; border: 3px solid var(--warning);">
+                <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700; text-align: center;">
+                    ✨ العصا السحرية - أهم 3 أشياء للإصلاح
+                </h3>
+                <div id="magic-fixes-list" style="max-height: 500px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Creative Ideas -->
+            <div style="margin-bottom: 30px; padding: 25px; background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); border-radius: 15px; color: white;">
+                <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 700; text-align: center;">
+                    🚀 الأفكار الإبداعية للتسويق
+                </h3>
+                <div id="creative-ideas-list" style="max-height: 500px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+            
+            <!-- Competitive Edge -->
+            <div style="margin-bottom: 30px;">
+                <h3 style="margin-bottom: 15px; color: var(--dark); font-size: 16px; font-weight: 600;">
+                    🏆 الميزة التنافسية الأقوى للتركيز عليها
+                </h3>
+                <canvas id="chart-competitive-edge" style="max-height: 300px;"></canvas>
+            </div>
+            
+            <!-- Final Messages -->
+            <div style="padding: 25px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 15px; color: white; box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);">
+                <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 700; text-align: center;">
+                    💬 رسائل الفريق لورشة 20 نوفمبر
+                </h3>
+                <div id="final-messages-list" style="max-height: 500px; overflow-y: auto;">
+                    جاري التحميل...
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section: AI Analysis & Insights -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">🤖</span>
+                        تحليل الذكاء الاصطناعي والرؤى العميقة
+                    </div>
+                    <div class="section-subtitle">تحليل تلقائي شامل لكل البيانات</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="triggerAIAnalysis()" id="ai-analysis-btn">
+                        🧠 تشغيل التحليل الذكي
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportAIAnalysis()">
+                        📥 تصدير التحليل
+                    </button>
+                </div>
+            </div>
+            
+            <div id="ai-analysis-container" style="display: none;">
+                <!-- Top 5 Critical Issues -->
+                <div style="margin-bottom: 30px; padding: 25px; background: #f8d7da; border-radius: 15px; border-right: 5px solid var(--danger);">
+                    <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
+                        🚨 أهم 5 قضايا حرجة
+                    </h3>
+                    <div id="ai-critical-issues" style="font-size: 15px; line-height: 2;">
+                        جاري التحليل...
+                    </div>
+                </div>
+                
+                <!-- Quick Wins -->
+                <div style="margin-bottom: 30px; padding: 25px; background: #d4edda; border-radius: 15px; border-right: 5px solid var(--success);">
+                    <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
+                        ⚡ Quick Wins - نتائج سريعة
+                    </h3>
+                    <div id="ai-quick-wins" style="font-size: 15px; line-height: 2;">
+                        جاري التحليل...
+                    </div>
+                </div>
+                
+                <!-- Patterns & Trends -->
+                <div style="margin-bottom: 30px; padding: 25px; background: #e7f3ff; border-radius: 15px; border-right: 5px solid var(--secondary);">
+                    <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
+                        📈 الأنماط والاتجاهات المكتشفة
+                    </h3>
+                    <div id="ai-patterns" style="font-size: 15px; line-height: 2;">
+                        جاري التحليل...
+                    </div>
+                </div>
+                
+                <!-- Strategic Recommendations -->
+                <div style="padding: 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                    <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 700;">
+                        🎯 التوصيات الاستراتيجية للورشة
+                    </h3>
+                    <div id="ai-recommendations" style="font-size: 15px; line-height: 2;">
+                        جاري التحليل...
+                    </div>
+                </div>
+            </div>
+            
+            <div id="ai-analysis-placeholder" style="text-align: center; padding: 60px 20px; color: var(--gray);">
+                <div style="font-size: 64px; margin-bottom: 20px;">🤖</div>
+                <h3 style="font-size: 20px; margin-bottom: 10px;">التحليل الذكي غير مفعّل بعد</h3>
+                <p style="font-size: 15px;">اضغط على "تشغيل التحليل الذكي" للحصول على رؤى عميقة من البيانات</p>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- Section: Raw Data Table -->
+        <!-- ============================================ -->
+        <div class="section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">📋</span>
+                        جدول البيانات الخام (Raw Data)
+                    </div>
+                    <div class="section-subtitle">جميع الاستجابات بالتفصيل</div>
+                </div>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="exportRawData()">
+                        📥 تصدير الجدول
+                    </button>
+                    <button class="btn btn-warning" onclick="deleteAllResponses()">
+                        🗑️ حذف جميع البيانات
+                    </button>
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table id="raw-data-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <thead style="background: var(--primary); color: white; position: sticky; top: 0;">
+                        <tr>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">#</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">التاريخ</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">القسم</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">الخبرة</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">المعرفة (1-10)</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">الجاهزية الشخصية</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">جاهزية الفريق</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">هل الهدف ممكن؟</th>
+                            <th style="padding: 12px; text-align: right; border: 1px solid #ddd;">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="raw-data-tbody">
+                        <tr>
+                            <td colspan="9" style="padding: 40px; text-align: center; color: var(--gray);">
+                                جاري تحميل البيانات...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+    <!-- Main JavaScript -->
+    <script>
+        // ============================================
+        // Initialize Firebase
+        // ============================================
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // ============================================
+        // Global Variables
+        // ============================================
+        let allResponses = [];
+        let filteredResponses = [];
+        let charts = {};
+        
+        // ============================================
+        // Page Load
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllData();
+        });
+        
+        // ============================================
+        // Load All Data
+        // ============================================
+        async function loadAllData() {
+            showLoading(true);
+            
+            try {
+                const snapshot = await db.collection('palm-trees-survey').get();
+                
+                allResponses = [];
+                snapshot.forEach(doc => {
+                    allResponses.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                console.log(`Loaded ${allResponses.length} responses`);
+                
+                filteredResponses = [...allResponses];
+                
+                // Update UI
+                updateOverviewStats();
+                createAllCharts();
+                populateTextLists();
+                populateRawDataTable();
+                
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showLoading(false);
+                alert('حدث خطأ في تحميل البيانات. الرجاء المحاولة مرة أخرى.');
+            }
+        }
+        
+        // ============================================
+        // Refresh Data
+        // ============================================
+        function refreshData() {
+            loadAllData();
+        }
+        
+        // ============================================
+        // Show/Hide Loading
+        // ============================================
+        function showLoading(show) {
+            const overlay = document.getElementById('loading-overlay');
+            const headerLoading = document.getElementById('header-loading');
+            
+            if (show) {
+                overlay.classList.add('active');
+                headerLoading.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+                headerLoading.classList.remove('active');
+            }
+        }
+        
+        // ============================================
+        // Update Overview Stats
+        // ============================================
+        function updateOverviewStats() {
+            const total = filteredResponses.length;
+            document.getElementById('total-responses').textContent = total;
+            
+            // Completion Rate
+            const targetParticipants = 150;
+            const completionRate = ((total / targetParticipants) * 100).toFixed(1);
+            document.getElementById('completion-rate').textContent = completionRate + '%';
+            document.getElementById('completion-change').textContent = `من أصل ${targetParticipants} موظف`;
+            
+            // Average Time (mock - we don't track actual time)
+            document.getElementById('avg-time').textContent = '~16 دقيقة';
+            
+            // Average Readiness
+            const readinessValues = filteredResponses
+                .map(r => parseInt(r.personal_readiness))
+                .filter(r => !isNaN(r));
+            
+            if (readinessValues.length > 0) {
+                const avgReadiness = (readinessValues.reduce((a, b) => a + b, 0) / readinessValues.length).toFixed(1);
+                document.getElementById('readiness-avg').textContent = avgReadiness + '/10';
+            } else {
+                document.getElementById('readiness-avg').textContent = '-';
+            }
+        }
+        
+        // ============================================
+        // Apply Filters
+        // ============================================
+        function applyFilters() {
+            const deptFilter = document.getElementById('filter-department').value;
+            const expFilter = document.getElementById('filter-experience').value;
+            const readinessFilter = document.getElementById('filter-readiness').value;
+            const searchText = document.getElementById('filter-search').value.toLowerCase();
+            
+            filteredResponses = allResponses.filter(response => {
+                // Department filter
+                if (deptFilter !== 'all' && response.department !== deptFilter) {
+                    return false;
+                }
+                
+                // Experience filter
+                if (expFilter !== 'all' && response.experience !== expFilter) {
+                    return false;
+                }
+                
+                // Readiness filter
+                if (readinessFilter !== 'all') {
+                    const readiness = parseInt(response.personal_readiness);
+                    if (readinessFilter === 'high' && readiness < 8) return false;
+                    if (readinessFilter === 'medium' && (readiness < 5 || readiness > 7)) return false;
+                    if (readinessFilter === 'low' && readiness > 4) return false;
+                }
+                
+                // Search filter
+                if (searchText) {
+                    const searchableText = JSON.stringify(response).toLowerCase();
+                    if (!searchableText.includes(searchText)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            // Re-render everything
+            updateOverviewStats();
+            createAllCharts();
+            populateTextLists();
+            populateRawDataTable();
+        }
+        
+        // ============================================
+        // Count Values Helper
+        // ============================================
+        function countValues(fieldName) {
+            const counts = {};
+            
+            filteredResponses.forEach(response => {
+                const value = response[fieldName];
+                if (value) {
+                    if (Array.isArray(value)) {
+                        value.forEach(v => {
+                            counts[v] = (counts[v] || 0) + 1;
+                        });
+                    } else {
+                        counts[value] = (counts[value] || 0) + 1;
+                    }
+                }
+            });
+            
+            return counts;
+        }
+        
+        // ============================================
+        // Create Chart Helper
+        // ============================================
+        function createChart(canvasId, type, data, options = {}) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            // Destroy existing chart
+            if (charts[canvasId]) {
+                charts[canvasId].destroy();
+            }
+            
+            const ctx = canvas.getContext('2d');
+            charts[canvasId] = new Chart(ctx, {
+                type: type,
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                                    size: 12
+                                },
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            rtl: true,
+                            titleFont: {
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            },
+                            bodyFont: {
+                                family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                            }
+                        }
+                    },
+                    ...options
+                }
+            });
+        }
+        
+        // ============================================
+        // Create All Charts
+        // ============================================
+        function createAllCharts() {
+            createDemographicsCharts();
+            createUnderstandingCharts();
+            createPerformance2025Charts();
+            createCompetitionCharts();
+            createMarketingCharts();
+            createCoordinationCharts();
+            createTimingCharts();
+            createReadinessCharts();
+            createDonorPerspectiveCharts();
+            createSuggestionsCharts();
+        }
+        
+        // ============================================
+        // Demographics Charts
+        // ============================================
+        function createDemographicsCharts() {
+            // Departments
+            const deptCounts = countValues('department');
+            createChart('chart-departments', 'doughnut', {
+                labels: Object.keys(deptCounts),
+                datasets: [{
+                    data: Object.values(deptCounts),
+                    backgroundColor: [
+                        '#2ecc71', '#3498db', '#9b59b6', '#f39c12',
+                        '#e74c3c', '#1abc9c', '#34495e', '#16a085',
+                        '#27ae60', '#2980b9'
+                    ]
+                }]
+            });
+            
+            // Experience
+            const expOrder = [
+                'أقل من 6 شهور',
+                '6 شهور - سنة',
+                '1-3 سنوات',
+                '3-5 سنوات',
+                'أكثر من 5 سنوات'
+            ];
+            const expCounts = countValues('experience');
+            createChart('chart-experience', 'bar', {
+                labels: expOrder,
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: expOrder.map(exp => expCounts[exp] || 0),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            });
+            
+            // Worked on Palm
+            const workedCounts = countValues('worked_on_palm');
+            createChart('chart-worked-palm', 'pie', {
+                labels: Object.keys(workedCounts),
+                datasets: [{
+                    data: Object.values(workedCounts),
+                    backgroundColor: ['#2ecc71', '#27ae60', '#f39c12', '#95a5a6']
+                }]
+            });
+            
+            // Items Count
+            const itemsCounts = countValues('items_count');
+            createChart('chart-items-count', 'doughnut', {
+                labels: Object.keys(itemsCounts),
+                datasets: [{
+                    data: Object.values(itemsCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c']
+                }]
+            });
+            
+            // Knowledge Rating (1-10)
+            const knowledgeRatings = filteredResponses
+                .map(r => parseInt(r.palm_knowledge))
+                .filter(r => !isNaN(r));
+            
+            const knowledgeCounts = {};
+            for (let i = 1; i <= 10; i++) {
+                knowledgeCounts[i] = knowledgeRatings.filter(r => r === i).length;
+            }
+            
+            createChart('chart-knowledge-rating', 'bar', {
+                labels: Object.keys(knowledgeCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(knowledgeCounts),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            });
+            
+            // Knowledge Stats
+            if (knowledgeRatings.length > 0) {
+                const avg = (knowledgeRatings.reduce((a, b) => a + b, 0) / knowledgeRatings.length).toFixed(1);
+                const min = Math.min(...knowledgeRatings);
+                const max = Math.max(...knowledgeRatings);
+                const low = knowledgeRatings.filter(r => r <= 4).length;
+                const medium = knowledgeRatings.filter(r => r >= 5 && r <= 7).length;
+                const high = knowledgeRatings.filter(r => r >= 8).length;
+                
+                document.getElementById('knowledge-stats').innerHTML = `
+                    متوسط المعرفة: <strong>${avg}/10</strong> | 
+                    الحد الأدنى: <strong>${min}</strong> | 
+                    الحد الأقصى: <strong>${max}</strong><br>
+                    معرفة ضعيفة (1-4): <strong>${low}</strong> | 
+                    معرفة متوسطة (5-7): <strong>${medium}</strong> | 
+                    معرفة عالية (8-10): <strong>${high}</strong>
+                `;
+            }
+        }
+        
+        // ============================================
+        // Understanding Charts
+        // ============================================
+        function createUnderstandingCharts() {
+            // Understanding Level
+            const understandingOrder = [
+                '5 - أفهمه بعمق',
+                '4 - أفهم الفكرة الرئيسية',
+                '3 - فهم سطحي',
+                '2 - فهم ضعيف',
+                '1 - لا أفهمه جيداً'
+            ];
+            const understandingCounts = countValues('understanding_level');
+            createChart('chart-understanding', 'bar', {
+                labels: understandingOrder,
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: understandingOrder.map(u => understandingCounts[u] || 0),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Info Sufficient
+            const infoCounts = countValues('info_sufficient');
+            createChart('chart-info-sufficient', 'pie', {
+                labels: Object.keys(infoCounts),
+                datasets: [{
+                    data: Object.values(infoCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c']
+                }]
+            });
+            
+            // Missing Info
+            const missingCounts = countValues('missing_info');
+            const sortedMissing = Object.entries(missingCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            createChart('chart-missing-info', 'bar', {
+                labels: sortedMissing.map(m => m[0]),
+                datasets: [{
+                    label: 'عدد الطلبات',
+                    data: sortedMissing.map(m => m[1]),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Explanation Difficulty
+            const diffCounts = countValues('explanation_difficulty');
+            createChart('chart-explanation-difficulty', 'doughnut', {
+                labels: Object.keys(diffCounts),
+                datasets: [{
+                    data: Object.values(diffCounts),
+                    backgroundColor: ['#e74c3c', '#f39c12', '#3498db', '#2ecc71']
+                }]
+            });
+            
+            // Palm Difficulty
+            const palmDiffCounts = countValues('palm_difficulty');
+            const sortedPalmDiff = Object.entries(palmDiffCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+            
+            createChart('chart-palm-difficulty', 'bar', {
+                labels: sortedPalmDiff.map(p => p[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedPalmDiff.map(p => p[1]),
+                    backgroundColor: '#e74c3c'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Easiest Item
+            const easiestCounts = countValues('easiest_item');
+            createChart('chart-easiest-item', 'bar', {
+                labels: Object.keys(easiestCounts),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: Object.values(easiestCounts),
+                    backgroundColor: '#2ecc71'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+        
+        // ============================================
+        // Performance 2025 Charts
+        // ============================================
+        function createPerformance2025Charts() {
+            // Know Target
+            const targetCounts = countValues('know_target');
+            createChart('chart-know-target', 'doughnut', {
+                labels: Object.keys(targetCounts),
+                datasets: [{
+                    data: Object.values(targetCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c']
+                }]
+            });
+            
+            // Failure Reasons
+            const failureCounts = countValues('failure_reasons');
+            const sortedFailure = Object.entries(failureCounts)
+                .sort((a, b) => b[1] - a[1]);
+            
+            createChart('chart-failure-reasons', 'bar', {
+                labels: sortedFailure.map(f => f[0]),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: sortedFailure.map(f => f[1]),
+                    backgroundColor: '#e74c3c'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Critical Analysis
+            if (sortedFailure.length > 0) {
+                const top3 = sortedFailure.slice(0, 3);
+                document.getElementById('critical-analysis').innerHTML = `
+                    الأسباب الثلاثة الأكثر تكراراً:<br>
+                    1️⃣ <strong>${top3[0][0]}</strong> (${top3[0][1]} ذكر)<br>
+                    ${top3[1] ? `2️⃣ <strong>${top3[1][0]}</strong> (${top3[1][1]} ذكر)<br>` : ''}
+                    ${top3[2] ? `3️⃣ <strong>${top3[2][0]}</strong> (${top3[2][1]} ذكر)` : ''}
+                `;
+            }
+            
+            // Strong Period
+            const strongCounts = countValues('strong_period');
+            createChart('chart-strong-period', 'pie', {
+                labels: Object.keys(strongCounts),
+                datasets: [{
+                    data: Object.values(strongCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c', '#9b59b6', '#95a5a6']
+                }]
+            });
+            
+            // Weak Period
+            const weakCounts = countValues('weak_period');
+            createChart('chart-weak-period', 'pie', {
+                labels: Object.keys(weakCounts),
+                datasets: [{
+                    data: Object.values(weakCounts),
+                    backgroundColor: ['#e74c3c', '#f39c12', '#95a5a6', '#34495e']
+                }]
+            });
+            
+            // Documentation Impact
+            const docCounts = countValues('documentation_impact');
+            createChart('chart-doc-impact', 'bar', {
+                labels: Object.keys(docCounts),
+                datasets: [{
+                    label: 'عدد الموظفين',
+                    data: Object.values(docCounts),
+                    backgroundColor: '#3498db'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+            
+            // Umrah Impact
+            const umrahCounts = countValues('umrah_draw_impact');
+            createChart('chart-umrah-impact', 'doughnut', {
+                labels: Object.keys(umrahCounts),
+                datasets: [{
+                    data: Object.values(umrahCounts),
+                    backgroundColor: ['#2ecc71', '#3498db', '#95a5a6', '#e0e0e0']
+                }]
+            });
+            
+            // Hardest Stage
+            const stageCounts = countValues('hardest_stage');
+            createChart('chart-hardest-stage', 'bar', {
+                labels: Object.keys(stageCounts),
+                datasets: [{
+                    label: 'عدد الاختيارات',
+                    data: Object.values(stageCounts),
+                    backgroundColor: '#f39c12'
+                }]
+            }, {
+                indexAxis: 'y'
+            });
+        }
+      
