@@ -2934,7 +2934,7 @@
         // AI Analysis
         // ============================================
        // ============================================
-        // AI Analysis (Enhanced Error Handling)
+        // AI Analysis (with Firebase Cache)
         // ============================================
         async function triggerAIAnalysis() {
             if (allResponses.length === 0) {
@@ -2951,9 +2951,19 @@
             `;
             
             try {
-                console.log('🚀 Starting AI analysis...');
+                console.log('🔍 Checking for existing analysis in Firebase...');
+                
+                // Check if analysis already exists in Firebase
+                const existingAnalysis = await checkExistingAnalysis();
+                
+                if (existingAnalysis) {
+                    console.log('✅ Found existing analysis in Firebase!');
+                    displayAnalysis(existingAnalysis.fullText, true);
+                    return;
+                }
+                
+                console.log('🚀 No existing analysis found, calling AI API...');
                 console.log('📊 Total responses:', allResponses.length);
-                console.log('🔗 API URL:', '/api/analyze-internal-procedures-survey');
                 
                 // Call API
                 const response = await fetch('/api/analyze-internal-procedures-survey', {
@@ -2968,72 +2978,196 @@
                 });
                 
                 console.log('📡 Response status:', response.status);
-                console.log('📡 Response ok:', response.ok);
                 
-                // Get response text first
+                // Get response text
                 const responseText = await response.text();
-                console.log('📄 Response text length:', responseText.length);
-                console.log('📄 Response preview:', responseText.substring(0, 500));
+                console.log('📄 Response length:', responseText.length);
+                console.log('📄 Response preview:', responseText.substring(0, 300));
                 
                 if (!response.ok) {
-                    // Try to parse error
                     let errorMessage = 'فشل التحليل';
                     try {
                         const errorData = JSON.parse(responseText);
-                        errorMessage = errorData.message || errorData.error || 'فشل التحليل';
+                        errorMessage = errorData.message || errorData.error || errorMessage;
                         console.error('❌ Error details:', errorData);
                     } catch (e) {
-                        console.error('❌ Raw error response:', responseText);
+                        console.error('❌ Raw error:', responseText);
                     }
                     throw new Error(errorMessage);
                 }
                 
-                // Parse successful response
+                // Parse response
                 let result;
                 try {
                     result = JSON.parse(responseText);
                     console.log('✅ Response parsed successfully');
                 } catch (parseError) {
-                    console.error('❌ JSON parse error:', parseError);
+                    console.error('❌ Parse error:', parseError);
                     throw new Error('فشل تحليل الرد من الخادم');
                 }
                 
-                // Check if analysis exists
                 if (!result.analysis) {
-                    console.error('❌ No analysis in response:', result);
+                    console.error('❌ No analysis in response');
                     throw new Error('الرد لا يحتوي على تحليل');
                 }
                 
                 console.log('✅ Analysis received, length:', result.analysis.length);
                 
-                // Display AI analysis
-                aiContent.innerHTML = `
-                    <div style="line-height: 1.8; white-space: pre-wrap;">
-                        ${escapeHtml(result.analysis)}
-                    </div>
-                `;
-                
-                console.log('✅ Analysis displayed successfully');
+                // Display analysis
+                displayAnalysis(result.analysis, false);
                 
             } catch (error) {
                 console.error('❌ AI Analysis Error:', error);
                 console.error('❌ Error stack:', error.stack);
                 
-                // Display detailed error
                 aiContent.innerHTML = `
                     <div style="color: var(--danger); padding: 20px; background: #fff5f5; border-radius: 10px; border-right: 5px solid var(--danger);">
                         <h4 style="margin-bottom: 15px;">❌ حدث خطأ أثناء التحليل</h4>
                         <p style="margin-bottom: 10px;"><strong>الرسالة:</strong> ${error.message}</p>
                         <p style="margin-bottom: 15px; font-size: 14px; color: #666;">
-                            الرجاء فتح Developer Console (اضغط F12) وأخذ screenshot من الأخطاء المعروضة.
+                            الرجاء فتح Developer Console (F12) وأخذ screenshot من الأخطاء.
                         </p>
-                        <button class="btn btn-secondary" onclick="triggerAIAnalysis()" style="margin-top: 10px;">
-                            🔄 إعادة المحاولة
-                        </button>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="loadExistingAnalysis()">
+                                📥 تحميل من Firebase
+                            </button>
+                            <button class="btn btn-secondary" onclick="triggerAIAnalysis()">
+                                🔄 إعادة المحاولة
+                            </button>
+                        </div>
                     </div>
                 `;
             }
         }
+        
+        // ============================================
+        // Check if Analysis Already Exists
+        // ============================================
+        async function checkExistingAnalysis() {
+            try {
+                const snapshot = await db.collection('internal-procedures-analysis')
+                    .orderBy('timestamp', 'desc')
+                    .limit(1)
+                    .get();
+                
+                if (snapshot.empty) {
+                    return null;
+                }
+                
+                const doc = snapshot.docs[0];
+                const data = doc.data();
+                
+                // Check if it's recent (within last 24 hours)
+                const docTime = data.timestamp?.toDate();
+                if (docTime) {
+                    const hoursSince = (Date.now() - docTime.getTime()) / (1000 * 60 * 60);
+                    if (hoursSince < 24) {
+                        console.log(`✅ Found analysis from ${hoursSince.toFixed(1)} hours ago`);
+                        return data;
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error checking existing analysis:', error);
+                return null;
+            }
+        }
+        
+        // ============================================
+        // Load Existing Analysis from Firebase
+        // ============================================
+        async function loadExistingAnalysis() {
+            const aiContent = document.getElementById('ai-content');
+            aiContent.innerHTML = `
+                <div class="ai-loading">
+                    <div class="ai-spinner"></div>
+                    <span>جاري تحميل التحليل من Firebase...</span>
+                </div>
+            `;
+            
+            try {
+                const snapshot = await db.collection('internal-procedures-analysis')
+                    .orderBy('timestamp', 'desc')
+                    .limit(1)
+                    .get();
+                
+                if (snapshot.empty) {
+                    aiContent.innerHTML = `
+                        <div style="color: var(--warning); padding: 20px;">
+                            ⚠️ لا يوجد تحليل محفوظ في Firebase
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const doc = snapshot.docs[0];
+                const data = doc.data();
+                
+                if (data.fullText) {
+                    displayAnalysis(data.fullText, true);
+                } else {
+                    throw new Error('التحليل موجود لكن النص فارغ');
+                }
+                
+            } catch (error) {
+                console.error('Error loading analysis:', error);
+                aiContent.innerHTML = `
+                    <div style="color: var(--danger); padding: 20px;">
+                        ❌ فشل تحميل التحليل من Firebase: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // ============================================
+        // Display Analysis
+        // ============================================
+        function displayAnalysis(analysisText, fromCache) {
+            const aiContent = document.getElementById('ai-content');
+            
+            // Format the text
+            const formattedText = formatAnalysisText(analysisText);
+            
+            aiContent.innerHTML = `
+                ${fromCache ? `
+                    <div style="background: #e8f5e9; padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; border-right: 5px solid #4caf50;">
+                        <strong>✅ تم تحميل التحليل من Firebase</strong>
+                        <span style="font-size: 13px; color: #666; margin-right: 10px;">(لم يتم سحب من الرصيد)</span>
+                    </div>
+                ` : `
+                    <div style="background: #e3f2fd; padding: 12px 20px; border-radius: 10px; margin-bottom: 20px; border-right: 5px solid #2196f3;">
+                        <strong>🆕 تحليل جديد</strong>
+                        <span style="font-size: 13px; color: #666; margin-right: 10px;">(تم الحفظ في Firebase)</span>
+                    </div>
+                `}
+                <div style="line-height: 1.9; white-space: pre-wrap; font-size: 15px;">
+                    ${formattedText}
+                </div>
+            `;
+            
+            console.log('✅ Analysis displayed successfully');
+        }
+        
+        // ============================================
+        // Format Analysis Text
+        // ============================================
+        function formatAnalysisText(text) {
+            // Escape HTML
+            const div = document.createElement('div');
+            div.textContent = text;
+            let formatted = div.innerHTML;
+            
+            // Add some basic formatting
+            // Bold headers
+            formatted = formatted.replace(/^(#+\s+.+)$/gm, '<strong>$1</strong>');
+            
+            // Preserve line breaks
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+
         
         // Helper function to escape HTML
         function escapeHtml(text) {
