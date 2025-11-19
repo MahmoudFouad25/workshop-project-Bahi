@@ -695,6 +695,302 @@
                 margin: 0 auto;
             }
         }
+
+        /* ============================================ */
+        /* Response Cards Styling */
+        /* ============================================ */
+        .response-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .response-card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .response-card-header {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .response-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .response-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .response-meta {
+            font-size: 13px;
+            color: var(--gray);
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-icon-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+        
+        .btn-icon-danger:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        /* Quick Stats */
+        .response-quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px 25px;
+            background: white;
+        }
+        
+        .quick-stat {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .quick-stat-icon {
+            font-size: 28px;
+        }
+        
+        .quick-stat-content {
+            flex: 1;
+        }
+        
+        .quick-stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 3px;
+        }
+        
+        .quick-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Details Section */
+        .response-details {
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .response-summary {
+            padding: 18px 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary);
+            background: white;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .response-summary:hover {
+            background: var(--light);
+        }
+        
+        .response-details[open] .response-summary {
+            background: var(--light);
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .response-details-content {
+            padding: 25px;
+            background: #fafafa;
+        }
+        
+        /* Detail Sections */
+        .detail-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-right: 5px solid var(--primary);
+        }
+        
+        .detail-section-warning {
+            border-right-color: #ffc107;
+            background: #fffef8;
+        }
+        
+        .detail-section-info {
+            border-right-color: #17a2b8;
+            background: #f8fdff;
+        }
+        
+        .detail-section-success {
+            border-right-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .detail-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .detail-icon {
+            font-size: 24px;
+        }
+        
+        /* Detail Grid */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .detail-item {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--dark);
+            min-width: 150px;
+        }
+        
+        .detail-value {
+            color: var(--gray);
+            flex: 1;
+        }
+        
+        .detail-item-text {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-right: 3px solid var(--primary);
+        }
+        
+        .detail-label-text {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        
+        .detail-value-text {
+            color: var(--gray);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        
+        .detail-item-special {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item-special strong {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .priority-badge {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-right: 3px solid var(--primary);
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        /* Detail Rating */
+        .detail-rating {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-rating-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .detail-rating-value {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .detail-rating-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .detail-rating-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
         
         /* ============================================ */
         /* Print Styles */
@@ -1743,7 +2039,12 @@
             }
             
             let html = `
-                <h3 style="margin-bottom: 20px; color: var(--dark);">📝 جميع الردود التفصيلية (${allResponses.length})</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: var(--dark); margin: 0;">📝 جميع الردود التفصيلية (${allResponses.length})</h3>
+                    <button class="btn btn-secondary" onclick="refreshData()">
+                        🔄 تحديث
+                    </button>
+                </div>
                 
                 <!-- Filters -->
                 <div class="filters">
@@ -1767,45 +2068,292 @@
             `;
             
             allResponses.forEach((r, index) => {
-                html += `
-                    <div class="list-item" data-dept="${r.department}">
-                        <div class="list-item-header">
-                            <div class="list-item-title">استجابة #${index + 1}</div>
-                            <div class="list-item-badge">${r.department}</div>
-                        </div>
-                        <div class="list-item-meta" style="flex-wrap: wrap; margin-bottom: 15px;">
-                            <span>👤 ${r.experience}</span>
-                            <span>💼 ${r.work_nature}</span>
-                            <span>⭐ وضوح: ${r.role_clarity}/10</span>
-                            <span>🤝 تعاون: ${r.cooperation_quality}/10</span>
-                            <span>🎯 تأثير: ${r.expected_impact}/10</span>
-                        </div>
-                        <div class="list-item-content">
-                            <details>
-                                <summary style="cursor: pointer; font-weight: 600; padding: 10px; background: var(--light); border-radius: 8px; margin-bottom: 10px;">
-                                    عرض التفاصيل الكاملة ↓
-                                </summary>
-                                <div style="padding: 15px; background: white; border: 2px solid var(--light); border-radius: 8px; margin-top: 10px;">
-                                    ${Object.entries(r).map(([key, value]) => {
-                                        if (key === 'id' || key === 'timestamp' || key === 'createdAt' || key === 'analyzed') return '';
-                                        if (Array.isArray(value)) {
-                                            return `<p style="margin-bottom: 10px;"><strong>${formatFieldName(key)}:</strong> ${value.join(', ')}</p>`;
-                                        }
-                                        if (typeof value === 'string' && value.length > 0) {
-                                            return `<p style="margin-bottom: 10px;"><strong>${formatFieldName(key)}:</strong> ${value}</p>`;
-                                        }
-                                        return '';
-                                    }).join('')}
-                                </div>
-                            </details>
-                        </div>
-                    </div>
-                `;
+                html += createResponseCard(r, index);
             });
             
             html += `</div>`;
             
             container.innerHTML = html;
+        }
+        
+        // ============================================
+        // Create Beautiful Response Card
+        // ============================================
+        function createResponseCard(response, index) {
+            return `
+                <div class="response-card" data-dept="${response.department}" data-id="${response.id}">
+                    <!-- Card Header -->
+                    <div class="response-card-header">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div class="response-number">
+                                #${index + 1}
+                            </div>
+                            <div>
+                                <div class="response-title">${response.department}</div>
+                                <div class="response-meta">
+                                    <span>👤 ${response.experience}</span>
+                                    <span>•</span>
+                                    <span>💼 ${response.work_nature}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-icon btn-icon-danger" onclick="deleteResponse('${response.id}')" title="حذف الاستجابة">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="response-quick-stats">
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon">⭐</div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-label">وضوح الدور</div>
+                                <div class="quick-stat-value">${response.role_clarity}/10</div>
+                            </div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon">🤝</div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-label">جودة التعاون</div>
+                                <div class="quick-stat-value">${response.cooperation_quality}/10</div>
+                            </div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon">🔥</div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-label">الاستعداد</div>
+                                <div class="quick-stat-value">${response.readiness_new_procedures}/10</div>
+                            </div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon">🎯</div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-label">التأثير المتوقع</div>
+                                <div class="quick-stat-value">${response.expected_impact}/10</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Details Toggle -->
+                    <details class="response-details">
+                        <summary class="response-summary">
+                            📋 عرض التفاصيل الكاملة
+                        </summary>
+                        
+                        <div class="response-details-content">
+                            ${formatResponseDetails(response)}
+                        </div>
+                    </details>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // Format Response Details Beautifully
+        // ============================================
+        function formatResponseDetails(r) {
+            let html = '';
+            
+            // Section 1: معلومات أساسية
+            html += `
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <span class="detail-icon">👤</span>
+                        معلومات المشارك
+                    </div>
+                    <div class="detail-grid">
+                        ${createDetailItem('القسم/الإدارة', r.department)}
+                        ${createDetailItem('سنوات الخبرة', r.experience)}
+                        ${createDetailItem('طبيعة العمل', r.work_nature)}
+                        ${createDetailItem('عدد الأقسام المتعامل معها', r.departments_count)}
+                    </div>
+                </div>
+            `;
+            
+            // Section 2: التقييمات
+            html += `
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <span class="detail-icon">📊</span>
+                        التقييمات (من 1 إلى 10)
+                    </div>
+                    <div class="detail-grid">
+                        ${createRatingItem('وضوح الدور والمسؤوليات', r.role_clarity)}
+                        ${createRatingItem('جودة التعاون بين الأقسام', r.cooperation_quality)}
+                        ${createRatingItem('الاستعداد لإجراءات جديدة', r.readiness_new_procedures)}
+                        ${createRatingItem('التأثير المتوقع للورشة', r.expected_impact)}
+                    </div>
+                </div>
+            `;
+            
+            // Section 3: واقع الإجراءات
+            html += `
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <span class="detail-icon">📋</span>
+                        واقع الإجراءات الحالية
+                    </div>
+                    <div class="detail-list">
+                        ${createDetailItem('مصادر التعليمات', Array.isArray(r.instruction_sources) ? r.instruction_sources.join('، ') : r.instruction_sources)}
+                        ${createDetailItem('نسبة الإجراءات الموثقة', r.documented_procedures)}
+                        ${createDetailItem('مدة تدريب موظف جديد', r.training_duration)}
+                        ${createDetailItem('تكرار المهام المزدوجة', r.duplicate_work)}
+                        ${createDetailItem('مدة الحصول على موافقات', r.approval_duration)}
+                        ${createDetailItem('سبب عدم الالتزام بالإجراءات', r.non_compliance_reason)}
+                    </div>
+                </div>
+            `;
+            
+            // Section 4: الاختناقات
+            const hasBottleneckData = (r.time_wasters && r.time_wasters.length > 0) || 
+                                     (r.slow_department && r.slow_department !== 'أفضل عدم الإجابة') ||
+                                     (r.bottleneck_story && r.bottleneck_story.trim() !== '.' && r.bottleneck_story.trim() !== '');
+            
+            if (hasBottleneckData) {
+                html += `
+                    <div class="detail-section detail-section-warning">
+                        <div class="detail-section-title">
+                            <span class="detail-icon">🚧</span>
+                            الاختناقات والعوائق
+                        </div>
+                        <div class="detail-list">
+                            ${r.time_wasters && r.time_wasters.length > 0 ? createDetailItem('أكثر ما يضيع الوقت', Array.isArray(r.time_wasters) ? r.time_wasters.join('، ') : r.time_wasters) : ''}
+                            ${r.slow_department && r.slow_department !== 'أفضل عدم الإجابة' ? createDetailItem('القسم الأبطأ في الاستجابة', r.slow_department) : ''}
+                            ${r.improvement_if_faster ? createDetailItem('التحسن المتوقع لو كان أسرع', r.improvement_if_faster) : ''}
+                            ${r.longest_wait ? createDetailItem('أطول مدة انتظار', r.longest_wait) : ''}
+                            ${r.delay_main_reason ? createDetailItem('السبب الرئيسي للتأخير', r.delay_main_reason) : ''}
+                            ${r.bottleneck_story && r.bottleneck_story.trim() !== '.' && r.bottleneck_story.trim() !== '' ? createTextItem('قصة اختناق حقيقية', r.bottleneck_story) : ''}
+                            ${r.unnecessary_step_example && r.unnecessary_step_example.trim() !== '' ? createTextItem('خطوة زائدة غير مفيدة', r.unnecessary_step_example) : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Section 5: التعاون والـ SLAs
+            html += `
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <span class="detail-icon">🤝</span>
+                        التعاون والـ SLAs
+                    </div>
+                    <div class="detail-list">
+                        ${createDetailItem('وجود اتفاقيات SLA حالياً', r.sla_existence)}
+                        ${createDetailItem('توقع موعد الرد', r.response_expectation)}
+                        ${createDetailItem('أكثر سلوك سلبي', r.negative_behavior)}
+                        ${createDetailItem('التغيير المطلوب', r.one_change)}
+                        ${createDetailItem('تأثير SLAs المتوقع', r.sla_impact)}
+                    </div>
+                </div>
+            `;
+            
+            // Section 6: القصص والمواقف
+            const hasStories = (r.unclear_procedure_story && r.unclear_procedure_story.trim() !== '.' && r.unclear_procedure_story.trim() !== '') ||
+                              (r.broke_procedure === 'نعم' && r.broke_procedure_details) ||
+                              (r.positive_coordination_story && r.positive_coordination_story.trim() !== '.' && r.positive_coordination_story.trim() !== '') ||
+                              (r.worst_bottleneck && r.worst_bottleneck.trim() !== '.' && r.worst_bottleneck.trim() !== '');
+            
+            if (hasStories) {
+                html += `
+                    <div class="detail-section detail-section-info">
+                        <div class="detail-section-title">
+                            <span class="detail-icon">📖</span>
+                            القصص والمواقف الواقعية
+                        </div>
+                        <div class="detail-list">
+                            ${r.unclear_procedure_story && r.unclear_procedure_story.trim() !== '.' && r.unclear_procedure_story.trim() !== '' ? createTextItem('موقف: إجراء غير واضح', r.unclear_procedure_story) : ''}
+                            ${r.broke_procedure === 'نعم' && r.broke_procedure_details ? createTextItem('موقف: كسر إجراء', r.broke_procedure_details) : ''}
+                            ${r.positive_coordination_story && r.positive_coordination_story.trim() !== '.' && r.positive_coordination_story.trim() !== '' ? createTextItem('موقف إيجابي: تنسيق ممتاز', r.positive_coordination_story) : ''}
+                            ${r.worst_bottleneck && r.worst_bottleneck.trim() !== '.' && r.worst_bottleneck.trim() !== '' ? createTextItem('أسوأ اختناق (6 شهور)', r.worst_bottleneck) : ''}
+                            ${r.conflict_frequency ? createDetailItem('تضارب قنوات التمويل', r.conflict_frequency) : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Section 7: الأولويات والمقترحات
+            html += `
+                <div class="detail-section detail-section-success">
+                    <div class="detail-section-title">
+                        <span class="detail-icon">🎯</span>
+                        الأولويات والمقترحات
+                    </div>
+                    <div class="detail-list">
+                        <div class="detail-item-special">
+                            <strong>✨ لو كان عنده عصا سحرية - 3 حاجات يصلحها:</strong>
+                            ${r.magic_fix_1 && r.magic_fix_1.trim() !== '.' && r.magic_fix_1.trim() !== '' ? `<div class="priority-badge">1️⃣ ${r.magic_fix_1}</div>` : ''}
+                            ${r.magic_fix_2 && r.magic_fix_2.trim() !== '.' && r.magic_fix_2.trim() !== '' ? `<div class="priority-badge">2️⃣ ${r.magic_fix_2}</div>` : ''}
+                            ${r.magic_fix_3 && r.magic_fix_3.trim() !== '.' && r.magic_fix_3.trim() !== '' ? `<div class="priority-badge">3️⃣ ${r.magic_fix_3}</div>` : ''}
+                        </div>
+                        
+                        <div class="detail-item-special">
+                            <strong>📋 أهم 3 عمليات تحتاج SOPs:</strong>
+                            ${r.sop_priority_1 && r.sop_priority_1.trim() !== '.' && r.sop_priority_1.trim() !== '' ? `<div class="priority-badge">1️⃣ ${r.sop_priority_1}</div>` : ''}
+                            ${r.sop_priority_2 && r.sop_priority_2.trim() !== '.' && r.sop_priority_2.trim() !== '' ? `<div class="priority-badge">2️⃣ ${r.sop_priority_2}</div>` : ''}
+                            ${r.sop_priority_3 && r.sop_priority_3.trim() !== '.' && r.sop_priority_3.trim() !== '' ? `<div class="priority-badge">3️⃣ ${r.sop_priority_3}</div>` : ''}
+                        </div>
+                        
+                        <div class="detail-item-special">
+                            <strong>⏱️ أهم 3 إدارات تحتاج SLAs:</strong>
+                            ${r.sla_priority_1 && r.sla_priority_1.trim() !== '.' && r.sla_priority_1.trim() !== '' ? `<div class="priority-badge">1️⃣ ${r.sla_priority_1}</div>` : ''}
+                            ${r.sla_priority_2 && r.sla_priority_2.trim() !== '.' && r.sla_priority_2.trim() !== '' ? `<div class="priority-badge">2️⃣ ${r.sla_priority_2}</div>` : ''}
+                            ${r.sla_priority_3 && r.sla_priority_3.trim() !== '.' && r.sla_priority_3.trim() !== '' ? `<div class="priority-badge">3️⃣ ${r.sla_priority_3}</div>` : ''}
+                        </div>
+                        
+                        ${r.final_message && r.final_message.trim() !== '.' && r.final_message.trim() !== '' ? createTextItem('💬 رسالة للمدير', r.final_message) : ''}
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        // ============================================
+        // Helper: Create Detail Item
+        // ============================================
+        function createDetailItem(label, value) {
+            if (!value || value === '' || value === '.' || value === 'undefined') return '';
+            return `
+                <div class="detail-item">
+                    <span class="detail-label">${label}:</span>
+                    <span class="detail-value">${value}</span>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // Helper: Create Text Item (for long text)
+        // ============================================
+        function createTextItem(label, value) {
+            if (!value || value === '' || value === '.' || value === 'undefined') return '';
+            return `
+                <div class="detail-item-text">
+                    <div class="detail-label-text">${label}:</div>
+                    <div class="detail-value-text">${value}</div>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // Helper: Create Rating Item
+        // ============================================
+        function createRatingItem(label, value) {
+            if (!value) return '';
+            const percentage = (parseFloat(value) / 10) * 100;
+            const color = percentage >= 70 ? '#28a745' : percentage >= 50 ? '#ffc107' : '#dc3545';
+            
+            return `
+                <div class="detail-rating">
+                    <div class="detail-rating-header">
+                        <span class="detail-label">${label}</span>
+                        <span class="detail-rating-value" style="color: ${color};">${value}/10</span>
+                    </div>
+                    <div class="detail-rating-bar">
+                        <div class="detail-rating-fill" style="width: ${percentage}%; background: ${color};"></div>
+                    </div>
+                </div>
+            `;
         }
         
         // ============================================
