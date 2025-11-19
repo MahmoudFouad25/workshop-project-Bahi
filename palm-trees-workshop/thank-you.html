@@ -1,0 +1,396 @@
+<!DOCTYPE html> 
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شكراً لمشاركتك! 🌴 | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+        }
+        
+        /* Animated Background Palm Trees */
+        .bg-palm {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.05;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .bg-palm:nth-child(1) {
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+        
+        .bg-palm:nth-child(2) {
+            bottom: 10%;
+            left: 10%;
+            animation-delay: 5s;
+        }
+        
+        .bg-palm:nth-child(3) {
+            top: 50%;
+            right: 5%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Success Icon */
+        .success-icon {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .checkmark-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .checkmark-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            position: relative;
+            animation: pop 0.3s ease-out 0.7s both;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 15px;
+            width: 12px;
+            height: 22px;
+            border: solid white;
+            border-width: 0 4px 4px 0;
+            transform: rotate(45deg);
+            animation: checkDraw 0.3s ease-out 0.9s both;
+        }
+        
+        @keyframes checkDraw {
+            from {
+                height: 0;
+            }
+            to {
+                height: 22px;
+            }
+        }
+        
+        .success-title {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease-out 1s both;
+        }
+        
+        .success-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            animation: fadeIn 0.5s ease-out 1.2s both;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .message {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .message h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .message p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #2ecc7115 0%, #27ae6015 100%);
+            border-radius: 15px;
+            border: 2px solid #2ecc7130;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2ecc71;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-right: 5px solid #2ecc71;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .info-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        
+        .info-content h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .info-content p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f8f9fa;
+            padding: 25px 30px;
+            text-align: center;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .footer p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .footer strong {
+            color: #2ecc71;
+            font-weight: 700;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .success-title {
+                font-size: 26px;
+            }
+            
+            .success-subtitle {
+                font-size: 16px;
+            }
+            
+            .message h2 {
+                font-size: 20px;
+            }
+            
+            .message p {
+                font-size: 15px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-palm">🌴</div>
+    <div class="bg-palm">🌴</div>
+    <div class="bg-palm">🌴</div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <div class="checkmark-container">
+                <div class="checkmark-circle">
+                    <div class="checkmark"></div>
+                </div>
+            </div>
+            <h1 class="success-title">🎉 تم الإرسال بنجاح!</h1>
+            <p class="success-subtitle">شكراً لمشاركتك القيّمة</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Message -->
+            <div class="message">
+                <h2>صوتك وصل وهيصنع فرق حقيقي! 💪</h2>
+                <p>
+                    كل كلمة كتبتها ستُستخدم مباشرة في **ورشة العمل الاستراتيجية** 
+                    لبناء خطة متكاملة لتحقيق 60+ مليون جنيه من بند النخيل.
+                </p>
+                <p style="margin-top: 15px; font-weight: 600; color: #2ecc71;">
+                    التحليل الذكي لردودك بدأ الآن! 🤖
+                </p>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">57</div>
+                    <div class="stat-label">سؤال تم الإجابة عليه</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">أقسام مكتملة</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">~18</div>
+                    <div class="stat-label">دقيقة من وقتك</div>
+                </div>
+            </div>
+            
+            <!-- Info Cards -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">📅</div>
+                    <div class="info-content">
+                        <h3>موعد الورشة</h3>
+                        <p><strong>20 نوفمبر 2025</strong> - من الساعة 12 ظهراً</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <div class="info-content">
+                        <h3>ماذا سيحدث الآن؟</h3>
+                        <p>سيتم تحليل جميع الردود باستخدام الذكاء الاصطناعي لاستخراج أهم التحديات والحلول المقترحة</p>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">🔒</div>
+                    <div class="info-content">
+                        <h3>خصوصيتك مضمونة</h3>
+                        <p>جميع الردود **مجهولة تماماً** ولن يتم ربطها بأي شخص</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                <strong>مؤسسة صناع الحياة - مصر 🌴</strong><br>
+                من التحدي إلى النجاح: 60+ مليون جنيه من بند النخيل 2026
+            </p>
+            <p style="margin-top: 10px; font-size: 13px;">
+                صوتك اليوم = نخيل أكثر غداً = حياة أفضل للآلاف! 💚
+            </p>
+        </div>
+    </div>
+</body>
+</html>
