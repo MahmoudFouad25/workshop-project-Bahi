@@ -1520,26 +1520,50 @@
       // ============================================
         // Load All Data - ULTIMATE FIX
         // ============================================
+        // ============================================
+        // Load All Data - WITH DEBUGGING
+        // ============================================
         async function loadAllData() {
             showLoading(true);
             
             try {
-                console.log('🔄 Loading data...');
+                console.log('🔄 Starting data load...');
+                console.log('📍 Collection: palm-trees-survey');
+                console.log('📍 Database:', db);
                 
-                // Get data from default source (cache then server)
+                // Get data
                 const snapshot = await db.collection('palm-trees-survey').get();
+                
+                console.log('📊 Snapshot received');
+                console.log('📊 Empty?', snapshot.empty);
+                console.log('📊 Size:', snapshot.size);
+                console.log('📊 Docs:', snapshot.docs.length);
+                console.log('📊 From cache?', snapshot.metadata.fromCache);
                 
                 allResponses = [];
                 
                 if (snapshot.empty) {
-                    console.warn('⚠️ No data found');
+                    console.error('❌ Snapshot is empty!');
+                    console.log('🔍 Trying to diagnose...');
+                    
+                    // Try to get collection reference
+                    const collectionRef = db.collection('palm-trees-survey');
+                    console.log('📁 Collection ref:', collectionRef);
+                    
                     document.getElementById('total-responses').textContent = '0';
                     showLoading(false);
-                    alert('لا توجد بيانات. الرجاء ملء الاستبيان أولاً.');
+                    
+                    alert('⚠️ لا توجد بيانات في قاعدة البيانات.\n\n' +
+                          'احتمالات:\n' +
+                          '1. لم يتم ملء أي استجابات بعد\n' +
+                          '2. اسم الـ Collection مختلف\n' +
+                          '3. مشكلة في الاتصال\n\n' +
+                          'افتح Console (F12) لمزيد من التفاصيل.');
                     return;
                 }
                 
                 snapshot.forEach(doc => {
+                    console.log('📄 Document ID:', doc.id);
                     allResponses.push({
                         id: doc.id,
                         ...doc.data()
@@ -1547,7 +1571,7 @@
                 });
                 
                 console.log(`✅ Successfully loaded ${allResponses.length} responses`);
-                console.log(`📍 Data source: ${snapshot.metadata.fromCache ? 'Cache' : 'Server'}`);
+                console.log('📍 Data source:', snapshot.metadata.fromCache ? 'Cache' : 'Server');
                 
                 filteredResponses = [...allResponses];
                 
@@ -1561,12 +1585,16 @@
                 
             } catch (error) {
                 console.error('❌ Error loading data:', error);
+                console.error('❌ Error code:', error.code);
+                console.error('❌ Error message:', error.message);
                 showLoading(false);
                 
-                // Show user-friendly error
-                alert('حدث خطأ في تحميل البيانات.\n\nالحلول المقترحة:\n1. تأكد من اتصالك بالإنترنت\n2. اضغط Ctrl+Shift+R للتحديث الكامل\n3. جرّب في متصفح آخر\n\nإذا استمرت المشكلة، تواصل مع الدعم الفني.');
+                alert('❌ حدث خطأ في تحميل البيانات:\n\n' + 
+                      error.message + '\n\n' +
+                      'افتح Console (F12) لمزيد من التفاصيل.');
             }
         }
+
         // ============================================
         // Refresh Data
         // ============================================
