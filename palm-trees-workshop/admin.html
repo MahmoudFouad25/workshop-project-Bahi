@@ -484,6 +484,22 @@
                 page-break-inside: avoid;
             }
         }
+
+        /* Spinner Animation */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 20px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -3270,6 +3286,9 @@
         // ============================================
         // AI Analysis
         // ============================================
+        // ============================================
+        // AI Analysis - REAL IMPLEMENTATION
+        // ============================================
         async function triggerAIAnalysis() {
             if (filteredResponses.length === 0) {
                 alert('لا توجد بيانات لتحليلها');
@@ -3277,18 +3296,169 @@
             }
             
             const btn = document.getElementById('ai-analysis-btn');
+            const originalText = btn.textContent;
             btn.disabled = true;
-            btn.textContent = '⏳ جاري التحليل...';
+            btn.textContent = '⏳ جاري التحليل بالذكاء الاصطناعي...';
             
             document.getElementById('ai-analysis-placeholder').style.display = 'none';
             document.getElementById('ai-analysis-container').style.display = 'block';
             
-            // Mock AI Analysis - في الواقع ستتصل بـ Vercel Function
-            setTimeout(() => {
-                performMockAIAnalysis();
+            // Show loading in all sections
+            document.getElementById('ai-critical-issues').innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p>جاري تحليل القضايا الحرجة...</p></div>';
+            document.getElementById('ai-quick-wins').innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p>جاري البحث عن نتائج سريعة...</p></div>';
+            document.getElementById('ai-patterns').innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p>جاري اكتشاف الأنماط...</p></div>';
+            document.getElementById('ai-recommendations').innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p>جاري إعداد التوصيات الاستراتيجية...</p></div>';
+            
+            try {
+                console.log('🤖 Sending data to AI...');
+                console.log(`📊 Analyzing ${filteredResponses.length} responses`);
+                
+                // Call Vercel Function
+                const response = await fetch('/api/analyze-palm-survey', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        responses: filteredResponses
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Analysis failed: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                console.log('✅ Analysis received:', result);
+                
+                if (result.success && result.analysis) {
+                    displayAIAnalysis(result.analysis);
+                } else {
+                    throw new Error('Invalid analysis response');
+                }
+                
                 btn.disabled = false;
-                btn.textContent = '🧠 تشغيل التحليل الذكي';
-            }, 2000);
+                btn.textContent = '✅ التحليل مكتمل';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 3000);
+                
+            } catch (error) {
+                console.error('❌ AI Analysis error:', error);
+                
+                // Show error
+                document.getElementById('ai-critical-issues').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--danger);">
+                        <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                        <h3>حدث خطأ في التحليل</h3>
+                        <p style="color: #666; margin: 15px 0;">${error.message}</p>
+                        <button onclick="triggerAIAnalysis()" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 15px;">
+                            🔄 إعادة المحاولة
+                        </button>
+                    </div>
+                `;
+                
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+        
+        // ============================================
+        // Display AI Analysis Results
+        // ============================================
+        function displayAIAnalysis(analysis) {
+            // Critical Issues
+            if (analysis.criticalIssues) {
+                document.getElementById('ai-critical-issues').innerHTML = `
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        ${analysis.criticalIssues}
+                    </ul>
+                `;
+            }
+            
+            // Quick Wins
+            if (analysis.quickWins) {
+                document.getElementById('ai-quick-wins').innerHTML = `
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        ${analysis.quickWins}
+                    </ul>
+                `;
+            }
+            
+            // Patterns
+            if (analysis.patterns) {
+                document.getElementById('ai-patterns').innerHTML = `
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        ${analysis.patterns}
+                    </ul>
+                `;
+            }
+            
+            // Strategic Recommendations
+            if (analysis.recommendations) {
+                document.getElementById('ai-recommendations').innerHTML = analysis.recommendations;
+            }
+            
+            // Add additional sections if available
+            let additionalHTML = '';
+            
+            if (analysis.competitiveAdvantage) {
+                additionalHTML += `
+                    <div style="margin-top: 30px; padding: 25px; background: #fff3cd; border-radius: 15px; border-right: 5px solid #ffc107;">
+                        <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
+                            🏆 الميزة التنافسية
+                        </h3>
+                        <div style="font-size: 15px; line-height: 2;">
+                            ${analysis.competitiveAdvantage}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (analysis.donorJourney) {
+                additionalHTML += `
+                    <div style="margin-top: 30px; padding: 25px; background: #e7f3ff; border-radius: 15px; border-right: 5px solid var(--secondary);">
+                        <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
+                            🎯 رحلة المتبرع
+                        </h3>
+                        <div style="font-size: 15px; line-height: 2;">
+                            ${analysis.donorJourney}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (analysis.readinessGap) {
+                additionalHTML += `
+                    <div style="margin-top: 30px; padding: 25px; background: #f8d7da; border-radius: 15px; border-right: 5px solid var(--danger);">
+                        <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
+                            📊 تحليل فجوة الجاهزية
+                        </h3>
+                        <div style="font-size: 15px; line-height: 2;">
+                            ${analysis.readinessGap}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (analysis.actionPlan) {
+                additionalHTML += `
+                    <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 15px; color: white;">
+                        <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 700;">
+                            ⚡ أولويات خطة العمل
+                        </h3>
+                        <div style="font-size: 15px; line-height: 2;">
+                            ${analysis.actionPlan}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (additionalHTML) {
+                document.getElementById('ai-recommendations').innerHTML += additionalHTML;
+            }
         }
         
         function performMockAIAnalysis() {
