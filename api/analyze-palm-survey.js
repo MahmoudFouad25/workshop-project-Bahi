@@ -3,7 +3,7 @@
 // Powered by Claude API
 // ============================================
 
-const Anthropic = require('@anthropic-ai/sdk');
+import Anthropic from '@anthropic-ai/sdk';
 
 // CORS headers
 const headers = {
@@ -13,7 +13,7 @@ const headers = {
     'Content-Type': 'application/json'
 };
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
     // Handle CORS preflight
     if (req.method === 'OPTIONS') {
         return res.status(200).json({ ok: true });
@@ -95,7 +95,7 @@ module.exports = async (req, res) => {
             headers
         });
     }
-};
+}
 
 // ============================================
 // Prepare Data Summary
