@@ -1,6 +1,6 @@
 // ============================================
 // Palm Trees Survey AI Analysis
-// Powered by Claude API
+// Powered by Claude API - ES Module Version
 // ============================================
 
 import Anthropic from '@anthropic-ai/sdk';
