@@ -1533,7 +1533,12 @@
                 console.log('📍 Database:', db);
                 
                 // Get data
-                const snapshot = await db.collection('palm-trees-survey').get();
+                const snapshot = await db.collection('palm-trees-survey')
+    .get({ source: 'default' })
+    .catch(async (error) => {
+        console.error('Server failed, trying cache:', error);
+        return await db.collection('palm-trees-survey').get({ source: 'cache' });
+    });
                 
                 console.log('📊 Snapshot received');
                 console.log('📊 Empty?', snapshot.empty);
