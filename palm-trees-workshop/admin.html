@@ -1488,10 +1488,20 @@
         // ============================================
         // Initialize Firebase
         // ============================================
-        firebase.initializeApp(firebaseConfig);
+        // ============================================
+        // Initialize Firebase - FIXED
+        // ============================================
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
         const db = firebase.firestore();
-        // Force clear cache on every load
-db.clearPersistence().catch(() => {});
+        
+        // Configure Firestore settings
+        db.settings({
+            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+            merge: true
+        });
         
         // ============================================
         // Global Variables
@@ -1507,21 +1517,17 @@ db.clearPersistence().catch(() => {});
             loadAllData();
         });
         
-        // ============================================
-        // Load All Data
-        // ============================================
-        // ============================================
-        // Load All Data - FIXED VERSION
+      // ============================================
+        // Load All Data - ULTIMATE FIX
         // ============================================
         async function loadAllData() {
             showLoading(true);
             
             try {
-                console.log('🔄 Starting fresh data load...');
+                console.log('🔄 Loading data...');
                 
-                // Force get from server, not cache
-                const snapshot = await db.collection('palm-trees-survey')
-                    .get({ source: 'server' });
+                // Get data from default source (cache then server)
+                const snapshot = await db.collection('palm-trees-survey').get();
                 
                 allResponses = [];
                 
@@ -1529,6 +1535,7 @@ db.clearPersistence().catch(() => {});
                     console.warn('⚠️ No data found');
                     document.getElementById('total-responses').textContent = '0';
                     showLoading(false);
+                    alert('لا توجد بيانات. الرجاء ملء الاستبيان أولاً.');
                     return;
                 }
                 
@@ -1539,7 +1546,8 @@ db.clearPersistence().catch(() => {});
                     });
                 });
                 
-                console.log(`✅ Loaded ${allResponses.length} responses`);
+                console.log(`✅ Successfully loaded ${allResponses.length} responses`);
+                console.log(`📍 Data source: ${snapshot.metadata.fromCache ? 'Cache' : 'Server'}`);
                 
                 filteredResponses = [...allResponses];
                 
@@ -1552,40 +1560,13 @@ db.clearPersistence().catch(() => {});
                 showLoading(false);
                 
             } catch (error) {
-                console.error('❌ Load error:', error);
+                console.error('❌ Error loading data:', error);
                 showLoading(false);
                 
-                // Fallback: try cache if server fails
-                console.log('🔄 Trying cache fallback...');
-                try {
-                    const cacheSnapshot = await db.collection('palm-trees-survey')
-                        .get({ source: 'cache' });
-                    
-                    if (!cacheSnapshot.empty) {
-                        allResponses = [];
-                        cacheSnapshot.forEach(doc => {
-                            allResponses.push({
-                                id: doc.id,
-                                ...doc.data()
-                            });
-                        });
-                        
-                        console.log(`✅ Loaded ${allResponses.length} from cache`);
-                        filteredResponses = [...allResponses];
-                        updateOverviewStats();
-                        createAllCharts();
-                        populateTextLists();
-                        populateRawDataTable();
-                    } else {
-                        alert('لا توجد بيانات. الرجاء التحقق من الاتصال بالإنترنت.');
-                    }
-                } catch (cacheError) {
-                    console.error('❌ Cache also failed:', cacheError);
-                    alert('خطأ في تحميل البيانات. الرجاء إعادة المحاولة.');
-                }
+                // Show user-friendly error
+                alert('حدث خطأ في تحميل البيانات.\n\nالحلول المقترحة:\n1. تأكد من اتصالك بالإنترنت\n2. اضغط Ctrl+Shift+R للتحديث الكامل\n3. جرّب في متصفح آخر\n\nإذا استمرت المشكلة، تواصل مع الدعم الفني.');
             }
         }
-        
         // ============================================
         // Refresh Data
         // ============================================
