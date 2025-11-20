@@ -1600,6 +1600,7 @@
                 createAllCharts();
                 populateTextLists();
                 populateRawDataTable();
+                loadSavedAnalysis();
                 
                 showLoading(false);
                 
@@ -3286,8 +3287,8 @@
         // ============================================
         // AI Analysis
         // ============================================
-        // ============================================
-        // AI Analysis - REAL IMPLEMENTATION
+       // ============================================
+        // AI Analysis - WITH AUTO-SAVE & CORRECT COLORS
         // ============================================
         async function triggerAIAnalysis() {
             if (filteredResponses.length === 0) {
@@ -3333,16 +3334,23 @@
                 console.log('✅ Analysis received:', result);
                 
                 if (result.success && result.analysis) {
+                    // Display analysis
                     displayAIAnalysis(result.analysis);
+                    
+                    // Save to Firebase
+                    console.log('💾 Saving analysis to Firebase...');
+                    await saveAnalysisToFirebase(result);
+                    console.log('✅ Analysis saved successfully!');
+                    
+                    btn.textContent = '✅ التحليل مكتمل ومحفوظ';
                 } else {
                     throw new Error('Invalid analysis response');
                 }
                 
                 btn.disabled = false;
-                btn.textContent = '✅ التحليل مكتمل';
                 
                 setTimeout(() => {
-                    btn.textContent = originalText;
+                    btn.textContent = '🔄 تحديث التحليل';
                 }, 3000);
                 
             } catch (error) {
@@ -3365,99 +3373,194 @@
             }
         }
         
-        // ============================================
-        // Display AI Analysis Results
+      // ============================================
+        // Display AI Analysis Results - FIXED COLORS
         // ============================================
         function displayAIAnalysis(analysis) {
-            // Critical Issues
+            // Critical Issues - مع الألوان الصحيحة
             if (analysis.criticalIssues) {
-                document.getElementById('ai-critical-issues').innerHTML = `
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        ${analysis.criticalIssues}
-                    </ul>
-                `;
+                // تأكد إن النصوص لونها غامق
+                let criticalHTML = analysis.criticalIssues;
+                // إذا كان فيه نصوص بيضاء، غيّرها لرمادي غامق
+                criticalHTML = criticalHTML.replace(/color:\s*white/gi, 'color: #333');
+                criticalHTML = criticalHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                document.getElementById('ai-critical-issues').innerHTML = criticalHTML;
             }
             
-            // Quick Wins
+            // Quick Wins - مع الألوان الصحيحة
             if (analysis.quickWins) {
-                document.getElementById('ai-quick-wins').innerHTML = `
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        ${analysis.quickWins}
-                    </ul>
-                `;
+                let quickWinsHTML = analysis.quickWins;
+                quickWinsHTML = quickWinsHTML.replace(/color:\s*white/gi, 'color: #333');
+                quickWinsHTML = quickWinsHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                document.getElementById('ai-quick-wins').innerHTML = quickWinsHTML;
             }
             
-            // Patterns
+            // Patterns - مع الألوان الصحيحة
             if (analysis.patterns) {
-                document.getElementById('ai-patterns').innerHTML = `
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        ${analysis.patterns}
-                    </ul>
-                `;
+                let patternsHTML = analysis.patterns;
+                patternsHTML = patternsHTML.replace(/color:\s*white/gi, 'color: #333');
+                patternsHTML = patternsHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                document.getElementById('ai-patterns').innerHTML = patternsHTML;
             }
             
             // Strategic Recommendations
             if (analysis.recommendations) {
-                document.getElementById('ai-recommendations').innerHTML = analysis.recommendations;
-            }
-            
-            // Add additional sections if available
-            let additionalHTML = '';
-            
-            if (analysis.competitiveAdvantage) {
-                additionalHTML += `
-                    <div style="margin-top: 30px; padding: 25px; background: #fff3cd; border-radius: 15px; border-right: 5px solid #ffc107;">
-                        <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
-                            🏆 الميزة التنافسية
-                        </h3>
-                        <div style="font-size: 15px; line-height: 2;">
-                            ${analysis.competitiveAdvantage}
+                let recommendationsHTML = analysis.recommendations;
+                recommendationsHTML = recommendationsHTML.replace(/color:\s*white/gi, 'color: #333');
+                recommendationsHTML = recommendationsHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                
+                // Add additional sections if available
+                if (analysis.competitiveAdvantage) {
+                    let compHTML = analysis.competitiveAdvantage;
+                    compHTML = compHTML.replace(/color:\s*white/gi, 'color: #333');
+                    compHTML = compHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                    
+                    recommendationsHTML += `
+                        <div style="margin-top: 30px; padding: 25px; background: #fff3cd; border-radius: 15px; border-right: 5px solid #ffc107;">
+                            <h3 style="margin-bottom: 20px; color: #333; font-size: 18px; font-weight: 700;">
+                                🏆 الميزة التنافسية
+                            </h3>
+                            <div style="font-size: 15px; line-height: 2;">
+                                ${compHTML}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }
-            
-            if (analysis.donorJourney) {
-                additionalHTML += `
-                    <div style="margin-top: 30px; padding: 25px; background: #e7f3ff; border-radius: 15px; border-right: 5px solid var(--secondary);">
-                        <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
-                            🎯 رحلة المتبرع
-                        </h3>
-                        <div style="font-size: 15px; line-height: 2;">
-                            ${analysis.donorJourney}
+                    `;
+                }
+                
+                if (analysis.donorJourney) {
+                    let donorHTML = analysis.donorJourney;
+                    donorHTML = donorHTML.replace(/color:\s*white/gi, 'color: #333');
+                    donorHTML = donorHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                    
+                    recommendationsHTML += `
+                        <div style="margin-top: 30px; padding: 25px; background: #e7f3ff; border-radius: 15px; border-right: 5px solid #3498db;">
+                            <h3 style="margin-bottom: 20px; color: #333; font-size: 18px; font-weight: 700;">
+                                🎯 رحلة المتبرع
+                            </h3>
+                            <div style="font-size: 15px; line-height: 2;">
+                                ${donorHTML}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }
-            
-            if (analysis.readinessGap) {
-                additionalHTML += `
-                    <div style="margin-top: 30px; padding: 25px; background: #f8d7da; border-radius: 15px; border-right: 5px solid var(--danger);">
-                        <h3 style="margin-bottom: 20px; color: var(--dark); font-size: 18px; font-weight: 700;">
-                            📊 تحليل فجوة الجاهزية
-                        </h3>
-                        <div style="font-size: 15px; line-height: 2;">
-                            ${analysis.readinessGap}
+                    `;
+                }
+                
+                if (analysis.readinessGap) {
+                    let gapHTML = analysis.readinessGap;
+                    gapHTML = gapHTML.replace(/color:\s*white/gi, 'color: #333');
+                    gapHTML = gapHTML.replace(/color:\s*#fff/gi, 'color: #333');
+                    
+                    recommendationsHTML += `
+                        <div style="margin-top: 30px; padding: 25px; background: #f8d7da; border-radius: 15px; border-right: 5px solid #e74c3c;">
+                            <h3 style="margin-bottom: 20px; color: #333; font-size: 18px; font-weight: 700;">
+                                📊 تحليل فجوة الجاهزية
+                            </h3>
+                            <div style="font-size: 15px; line-height: 2;">
+                                ${gapHTML}
+                            </div>
                         </div>
-                    </div>
-                `;
-            }
-            
-            if (analysis.actionPlan) {
-                additionalHTML += `
-                    <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); border-radius: 15px; color: white;">
-                        <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 700;">
-                            ⚡ أولويات خطة العمل
-                        </h3>
-                        <div style="font-size: 15px; line-height: 2;">
-                            ${analysis.actionPlan}
+                    `;
+                }
+                
+                if (analysis.actionPlan) {
+                    let actionHTML = analysis.actionPlan;
+                    // خطة العمل نخليها بخلفية خضراء مع نصوص واضحة
+                    actionHTML = actionHTML.replace(/color:\s*white/gi, 'color: #333');
+                    actionHTML = actionHTML.replace(/background:\s*rgba\(255,255,255,0\.95\)/gi, 'background: white');
+                    
+                    recommendationsHTML += `
+                        <div style="margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-radius: 15px; border-right: 5px solid #2ecc71;">
+                            <h3 style="margin-bottom: 20px; color: #155724; font-size: 18px; font-weight: 700;">
+                                ⚡ أولويات خطة العمل
+                            </h3>
+                            <div style="font-size: 15px; line-height: 2;">
+                                ${actionHTML}
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
+                
+                document.getElementById('ai-recommendations').innerHTML = recommendationsHTML;
             }
-            
-            if (additionalHTML) {
-                document.getElementById('ai-recommendations').innerHTML += additionalHTML;
+        }
+        // ============================================
+        // Save Analysis to Firebase
+        // ============================================
+        async function saveAnalysisToFirebase(result) {
+            try {
+                const analysisData = {
+                    analysis: result.analysis,
+                    metadata: result.metadata,
+                    responsesCount: filteredResponses.length,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Save with fixed ID (so we overwrite old analysis)
+                await db.collection('palm-trees-analysis')
+                    .doc('latest')
+                    .set(analysisData);
+                
+                console.log('✅ Saved to palm-trees-analysis/latest');
+            } catch (error) {
+                console.error('❌ Error saving analysis:', error);
+                // Don't throw - analysis still displayed even if save fails
+            }
+        }
+        
+        // ============================================
+        // Load Saved Analysis
+        // ============================================
+        async function loadSavedAnalysis() {
+            try {
+                console.log('🔍 Checking for saved analysis...');
+                
+                const doc = await db.collection('palm-trees-analysis')
+                    .doc('latest')
+                    .get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    console.log('✅ Found saved analysis:', data);
+                    
+                    // Hide placeholder, show container
+                    document.getElementById('ai-analysis-placeholder').style.display = 'none';
+                    document.getElementById('ai-analysis-container').style.display = 'block';
+                    
+                    // Display the saved analysis
+                    displayAIAnalysis(data.analysis);
+                    
+                    // Update button text
+                    const btn = document.getElementById('ai-analysis-btn');
+                    btn.textContent = '🔄 تحديث التحليل';
+                    
+                    // Show info about when it was created
+                    const timestamp = data.createdAt ? new Date(data.createdAt).toLocaleString('ar-EG') : 'غير معروف';
+                    const infoBox = document.createElement('div');
+                    infoBox.style.cssText = `
+                        background: #e7f3ff;
+                        padding: 15px;
+                        border-radius: 10px;
+                        margin-bottom: 20px;
+                        border-right: 4px solid #3498db;
+                        text-align: center;
+                    `;
+                    infoBox.innerHTML = `
+                        <strong style="color: #333;">📅 آخر تحليل:</strong> ${timestamp} | 
+                        <strong style="color: #333;">📊 عدد الاستجابات:</strong> ${data.responsesCount || 'غير معروف'}
+                        <button onclick="triggerAIAnalysis()" style="margin-right: 15px; padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">
+                            🔄 تحديث التحليل
+                        </button>
+                    `;
+                    
+                    const container = document.getElementById('ai-analysis-container');
+                    container.insertBefore(infoBox, container.firstChild);
+                    
+                } else {
+                    console.log('ℹ️ No saved analysis found');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error loading saved analysis:', error);
             }
         }
         
