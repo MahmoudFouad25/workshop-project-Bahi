@@ -1490,6 +1490,8 @@
         // ============================================
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        // Force clear cache on every load
+db.clearPersistence().catch(() => {});
         
         // ============================================
         // Global Variables
@@ -1508,13 +1510,28 @@
         // ============================================
         // Load All Data
         // ============================================
+        // ============================================
+        // Load All Data - FIXED VERSION
+        // ============================================
         async function loadAllData() {
             showLoading(true);
             
             try {
-                const snapshot = await db.collection('palm-trees-survey').get();
+                console.log('🔄 Starting fresh data load...');
+                
+                // Force get from server, not cache
+                const snapshot = await db.collection('palm-trees-survey')
+                    .get({ source: 'server' });
                 
                 allResponses = [];
+                
+                if (snapshot.empty) {
+                    console.warn('⚠️ No data found');
+                    document.getElementById('total-responses').textContent = '0';
+                    showLoading(false);
+                    return;
+                }
+                
                 snapshot.forEach(doc => {
                     allResponses.push({
                         id: doc.id,
@@ -1522,7 +1539,7 @@
                     });
                 });
                 
-                console.log(`Loaded ${allResponses.length} responses`);
+                console.log(`✅ Loaded ${allResponses.length} responses`);
                 
                 filteredResponses = [...allResponses];
                 
@@ -1535,9 +1552,37 @@
                 showLoading(false);
                 
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('❌ Load error:', error);
                 showLoading(false);
-                alert('حدث خطأ في تحميل البيانات. الرجاء المحاولة مرة أخرى.');
+                
+                // Fallback: try cache if server fails
+                console.log('🔄 Trying cache fallback...');
+                try {
+                    const cacheSnapshot = await db.collection('palm-trees-survey')
+                        .get({ source: 'cache' });
+                    
+                    if (!cacheSnapshot.empty) {
+                        allResponses = [];
+                        cacheSnapshot.forEach(doc => {
+                            allResponses.push({
+                                id: doc.id,
+                                ...doc.data()
+                            });
+                        });
+                        
+                        console.log(`✅ Loaded ${allResponses.length} from cache`);
+                        filteredResponses = [...allResponses];
+                        updateOverviewStats();
+                        createAllCharts();
+                        populateTextLists();
+                        populateRawDataTable();
+                    } else {
+                        alert('لا توجد بيانات. الرجاء التحقق من الاتصال بالإنترنت.');
+                    }
+                } catch (cacheError) {
+                    console.error('❌ Cache also failed:', cacheError);
+                    alert('خطأ في تحميل البيانات. الرجاء إعادة المحاولة.');
+                }
             }
         }
         
