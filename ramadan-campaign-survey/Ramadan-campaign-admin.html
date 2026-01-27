@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 لوحة التحكم - استبيان حملة رمضان | Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #666;
+        }
+        
+        .tab-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Section */
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        th {
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .chart-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        /* Insight Cards */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 5px solid #667eea;
+        }
+        
+        .insight-card h3 {
+            font-size: 18px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .insight-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .insight-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+        }
+        
+        .insight-card li:last-child {
+            border-bottom: none;
+        }
+        
+        .insight-card .count {
+            float: left;
+            background: #667eea;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        /* AI Analysis Section */
+        .ai-analysis {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-right: 5px solid #ff9a76;
+        }
+        
+        .ai-analysis h3 {
+            color: #d84315;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .ai-analysis .analysis-text {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+        
+        /* Recommendation Cards */
+        .recommendations {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .recommendation-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 4px solid #4caf50;
+        }
+        
+        .recommendation-card h4 {
+            color: #4caf50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .recommendation-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Priority Badge */
+        .priority-high {
+            background: #f44336;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .priority-medium {
+            background: #ff9800;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .priority-low {
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        /* Response Detail */
+        .response-detail {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-right: 3px solid #667eea;
+        }
+        
+        .response-detail h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .response-detail p {
+            color: #666;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .response-detail .timestamp {
+            color: #999;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 لوحة التحكم - استبيان حملة رمضان "الناس لبعضها"</h1>
+            <p>تحليل شامل لإجابات المشاركين | 58 مليون جنيه | 26 محافظة | 5000 متطوع</p>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="icon">👥</div>
+                <div class="number" id="total-responses">0</div>
+                <div class="label">إجمالي المشاركين</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📍</div>
+                <div class="number" id="total-governorates">0</div>
+                <div class="label">عدد المحافظات</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">⭐</div>
+                <div class="number" id="avg-readiness">0</div>
+                <div class="label">متوسط الجاهزية (من 5)</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📋</div>
+                <div class="number" id="with-plans">0%</div>
+                <div class="label">لديهم خطة جاهزة</div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn btn-success" onclick="exportToExcel()">
+                📥 تصدير إلى Excel
+            </button>
+            <button class="btn btn-primary" onclick="generateAIAnalysis()">
+                🤖 تحليل AI متقدم
+            </button>
+            <button class="btn btn-warning" onclick="location.reload()">
+                🔄 تحديث البيانات
+            </button>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('overview')">📊 نظرة عامة</button>
+            <button class="tab-btn" onclick="showTab('responses')">📋 الإجابات التفصيلية</button>
+            <button class="tab-btn" onclick="showTab('challenges')">⚠️ التحديات</button>
+            <button class="tab-btn" onclick="showTab('objections')">💬 الاعتراضات</button>
+            <button class="tab-btn" onclick="showTab('needs')">🎯 احتياجات الورشة</button>
+            <button class="tab-btn" onclick="showTab('insights')">💡 رؤى وتوصيات</button>
+        </div>
+        
+        <!-- Tab: Overview -->
+        <div id="overview-tab" class="tab-content active">
+            <div class="section">
+                <h2 class="section-title">📊 التوزيعات الإحصائية</h2>
+                
+                <div class="charts-grid">
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">توزيع الأدوار</h3>
+                        <canvas id="rolesChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">مستوى الجاهزية</h3>
+                        <canvas id="readinessChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">حالة التخطيط</h3>
+                        <canvas id="planningChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">تقسيم المستهدفات</h3>
+                        <canvas id="targetsChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">تسكين القادة</h3>
+                        <canvas id="boardChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-wrapper">
+                        <h3 class="chart-title">عدد المتطوعين</h3>
+                        <canvas id="volunteersChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab: Detailed Responses -->
+        <div id="responses-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">📋 جميع الإجابات التفصيلية</h2>
+                <div id="responses-container"></div>
+            </div>
+        </div>
+        
+        <!-- Tab: Challenges -->
+        <div id="challenges-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">⚠️ أكبر التحديات المذكورة</h2>
+                <div id="challenges-analysis"></div>
+            </div>
+        </div>
+        
+        <!-- Tab: Objections -->
+        <div id="objections-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">💬 الاعتراضات الأكثر تكراراً</h2>
+                <div id="objections-analysis"></div>
+            </div>
+        </div>
+        
+        <!-- Tab: Workshop Needs -->
+        <div id="needs-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">🎯 احتياجات المشاركين من الورشة</h2>
+                <div id="needs-analysis"></div>
+            </div>
+        </div>
+        
+        <!-- Tab: Insights -->
+        <div id="insights-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">💡 رؤى وتوصيات لتصميم الورشة</h2>
+                <div id="insights-container"></div>
+            </div>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>جاري تحميل البيانات...</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Config -->
+    <script src="../config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Global Data
+        let allResponses = [];
+        let charts = {};
+        
+        // Load Data
+        async function loadData() {
+            try {
+                const snapshot = await db.collection('ramadan-campaign-survey')
+                    .orderBy('timestamp', 'desc')
+                    .get();
+                
+                allResponses = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                console.log('Loaded responses:', allResponses.length);
+                
+                if (allResponses.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                
+                // Update UI
+                updateStats();
+                createCharts();
+                displayResponses();
+                analyzeChallenges();
+                analyzeObjections();
+                analyzeNeeds();
+                generateInsights();
+                
+                document.getElementById('loading').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<p style="color: red;">حدث خطأ في تحميل البيانات. الرجاء المحاولة مرة أخرى.</p>';
+            }
+        }
+        
+        // Update Stats
+        function updateStats() {
+            // Total responses
+            document.getElementById('total-responses').textContent = allResponses.length;
+            
+            // Unique governorates
+            const governorates = new Set(allResponses.map(r => r.governorate).filter(g => g));
+            document.getElementById('total-governorates').textContent = governorates.size;
+            
+            // Average readiness
+            const readinessValues = allResponses
+                .map(r => parseInt(r.readiness))
+                .filter(r => !isNaN(r));
+            const avgReadiness = readinessValues.length > 0 
+                ? (readinessValues.reduce((a, b) => a + b, 0) / readinessValues.length).toFixed(1)
+                : 0;
+            document.getElementById('avg-readiness').textContent = avgReadiness;
+            
+            // With complete plans
+            const withPlans = allResponses.filter(r => r.has_plan === 'نعم، خطة تفصيلية جاهزة').length;
+            const planPercentage = allResponses.length > 0 
+                ? Math.round((withPlans / allResponses.length) * 100)
+                : 0;
+            document.getElementById('with-plans').textContent = planPercentage + '%';
+        }
+        
+        // Create Charts
+        function createCharts() {
+            createRolesChart();
+            createReadinessChart();
+            createPlanningChart();
+            createTargetsChart();
+            createBoardChart();
+            createVolunteersChart();
+        }
+        
+        function createRolesChart() {
+            const ctx = document.getElementById('rolesChart');
+            const roleCounts = countValues('role');
+            
+            charts.roles = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(roleCounts),
+                    datasets: [{
+                        data: Object.values(roleCounts),
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f093fb',
+                            '#4facfe',
+                            '#43e97b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createReadinessChart() {
+            const ctx = document.getElementById('readinessChart');
+            const readinessCounts = {};
+            
+            for (let i = 1; i <= 5; i++) {
+                readinessCounts[i] = allResponses.filter(r => parseInt(r.readiness) === i).length;
+            }
+            
+            charts.readiness = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1', '2', '3', '4', '5'],
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: Object.values(readinessCounts),
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createPlanningChart() {
+            const ctx = document.getElementById('planningChart');
+            const planCounts = countValues('has_plan');
+            
+            charts.planning = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(planCounts),
+                    datasets: [{
+                        data: Object.values(planCounts),
+                        backgroundColor: [
+                            '#4caf50',
+                            '#ff9800',
+                            '#f44336',
+                            '#9e9e9e'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createTargetsChart() {
+            const ctx = document.getElementById('targetsChart');
+            const targetCounts = countValues('target_divided');
+            
+            charts.targets = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(targetCounts),
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: Object.values(targetCounts),
+                        backgroundColor: 'rgba(118, 75, 162, 0.8)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createBoardChart() {
+            const ctx = document.getElementById('boardChart');
+            const boardCounts = countValues('board_setup');
+            
+            charts.board = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(boardCounts),
+                    datasets: [{
+                        data: Object.values(boardCounts),
+                        backgroundColor: [
+                            '#38ef7d',
+                            '#ffd93d',
+                            '#ff6b9d',
+                            '#c471ed'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createVolunteersChart() {
+            const ctx = document.getElementById('volunteersChart');
+            const volCounts = countValues('volunteers_count');
+            
+            charts.volunteers = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(volCounts),
+                    datasets: [{
+                        label: 'عدد المشاركين',
+                        data: Object.values(volCounts),
+                        backgroundColor: 'rgba(67, 233, 123, 0.8)',
+                        borderColor: 'rgba(67, 233, 123, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Display Responses
+        function displayResponses() {
+            const container = document.getElementById('responses-container');
+            
+            if (allResponses.length === 0) {
+                container.innerHTML = '<p class="empty-state-text">لا توجد إجابات بعد</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            allResponses.forEach((response, index) => {
+                html += `
+                    <div class="response-detail">
+                        <h4>المشارك #${index + 1}: ${response.name || 'غير محدد'}</h4>
+                        <p><strong>المحافظة:</strong> ${response.governorate || 'غير محدد'}</p>
+                        <p><strong>الدور:</strong> ${response.role || 'غير محدد'} ${response.role_other ? '(' + response.role_other + ')' : ''}</p>
+                        <p><strong>الجاهزية:</strong> ${response.readiness || 'غير محدد'} من 5</p>
+                        <p><strong>الخطة:</strong> ${response.has_plan || 'غير محدد'}</p>
+                        <p><strong>تقسيم المستهدفات:</strong> ${response.target_divided || 'غير محدد'}</p>
+                        <p><strong>Timeline:</strong> ${response.has_timeline || 'غير محدد'}</p>
+                        <p><strong>تسكين القادة:</strong> ${response.board_setup || 'غير محدد'}</p>
+                        <p><strong>عدد المتطوعين:</strong> ${response.volunteers_count || 'غير محدد'}</p>
+                        
+                        ${response.challenge_1 ? `<p><strong>التحدي الأول:</strong> ${response.challenge_1}</p>` : ''}
+                        ${response.challenge_2 ? `<p><strong>التحدي الثاني:</strong> ${response.challenge_2}</p>` : ''}
+                        ${response.challenge_3 ? `<p><strong>التحدي الثالث:</strong> ${response.challenge_3}</p>` : ''}
+                        
+                        ${response.workshop_needs && response.workshop_needs.length > 0 ? 
+                            `<p><strong>احتياجات الورشة:</strong> ${response.workshop_needs.join(', ')}</p>` : ''}
+                        
+                        ${response.past_problem ? `<p><strong>أكبر مشكلة سابقة:</strong> ${response.past_problem}</p>` : ''}
+                        
+                        ${response.volunteer_objections && response.volunteer_objections.length > 0 ? 
+                            `<p><strong>اعتراضات المتطوعين:</strong> ${response.volunteer_objections.join(', ')}</p>` : ''}
+                        
+                        ${response.donor_objections && response.donor_objections.length > 0 ? 
+                            `<p><strong>اعتراضات المتبرعين:</strong> ${response.donor_objections.join(', ')}</p>` : ''}
+                        
+                        ${response.volunteer_response ? `<p><strong>الرد على المتطوع:</strong> ${response.volunteer_response}</p>` : ''}
+                        ${response.donor_response ? `<p><strong>الرد على المتبرع:</strong> ${response.donor_response}</p>` : ''}
+                        
+                        <p class="timestamp">⏰ ${new Date(response.timestamp).toLocaleString('ar-EG')}</p>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Analyze Challenges
+        function analyzeChallenges() {
+            const container = document.getElementById('challenges-analysis');
+            
+            const allChallenges = [];
+            allResponses.forEach(r => {
+                if (r.challenge_1) allChallenges.push(r.challenge_1);
+                if (r.challenge_2) allChallenges.push(r.challenge_2);
+                if (r.challenge_3) allChallenges.push(r.challenge_3);
+            });
+            
+            if (allChallenges.length === 0) {
+                container.innerHTML = '<p class="empty-state-text">لا توجد تحديات مذكورة</p>';
+                return;
+            }
+            
+            // Count keywords in challenges
+            const keywords = {};
+            const commonWords = ['في', 'من', 'على', 'إلى', 'أو', 'و', 'ال', 'لا', 'ما', 'هو', 'هي'];
+            
+            allChallenges.forEach(challenge => {
+                const words = challenge.split(/\s+/)
+                    .filter(w => w.length > 3 && !commonWords.includes(w));
+                
+                words.forEach(word => {
+                    keywords[word] = (keywords[word] || 0) + 1;
+                });
+            });
+            
+            // Sort by frequency
+            const sortedKeywords = Object.entries(keywords)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 20);
+            
+            let html = `
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h3>🔴 أكثر الكلمات تكراراً في التحديات</h3>
+                        <ul>
+            `;
+            
+            sortedKeywords.forEach(([word, count]) => {
+                html += `<li>${word} <span class="count">${count}</span></li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h3>📝 جميع التحديات المذكورة</h3>
+                        <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            allChallenges.forEach((challenge, index) => {
+                html += `<p style="padding: 8px 0; border-bottom: 1px solid #eee;">${index + 1}. ${challenge}</p>`;
+            });
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        // Analyze Objections
+        function analyzeObjections() {
+            const container = document.getElementById('objections-analysis');
+            
+            const volObjections = {};
+            const donObjections = {};
+            
+            allResponses.forEach(r => {
+                if (r.volunteer_objections && Array.isArray(r.volunteer_objections)) {
+                    r.volunteer_objections.forEach(obj => {
+                        volObjections[obj] = (volObjections[obj] || 0) + 1;
+                    });
+                }
+                
+                if (r.donor_objections && Array.isArray(r.donor_objections)) {
+                    r.donor_objections.forEach(obj => {
+                        donObjections[obj] = (donObjections[obj] || 0) + 1;
+                    });
+                }
+            });
+            
+            const sortedVol = Object.entries(volObjections).sort((a, b) => b[1] - a[1]);
+            const sortedDon = Object.entries(donObjections).sort((a, b) => b[1] - a[1]);
+            
+            let html = `
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h3>👥 اعتراضات المتطوعين الأكثر تكراراً</h3>
+                        <ul>
+            `;
+            
+            sortedVol.forEach(([obj, count]) => {
+                html += `<li>${obj} <span class="count">${count}</span></li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                    
+                    <div class="insight-card">
+                        <h3>💰 اعتراضات المتبرعين الأكثر تكراراً</h3>
+                        <ul>
+            `;
+            
+            sortedDon.forEach(([obj, count]) => {
+                html += `<li>${obj} <span class="count">${count}</span></li>`;
+            });
+            
+            html += `
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="section" style="margin-top: 30px;">
+                    <h3 class="section-title">💬 أمثلة على الردود الفعلية</h3>
+            `;
+            
+            // Show sample responses
+            const responsesWithAnswers = allResponses.filter(r => r.volunteer_response || r.donor_response);
+            
+            if (responsesWithAnswers.length > 0) {
+                html += '<div class="insights-grid">';
+                
+                responsesWithAnswers.slice(0, 6).forEach(r => {
+                    if (r.volunteer_response) {
+                        html += `
+                            <div class="insight-card">
+                                <h3>رد على متطوع تعبان:</h3>
+                                <p>"${r.volunteer_response}"</p>
+                            </div>
+                        `;
+                    }
+                    
+                    if (r.donor_response) {
+                        html += `
+                            <div class="insight-card">
+                                <h3>رد على متبرع قال الأسعار غالية:</h3>
+                                <p>"${r.donor_response}"</p>
+                            </div>
+                        `;
+                    }
+                });
+                
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            container.innerHTML = html;
+        }
+        
+        // Analyze Needs
+        function analyzeNeeds() {
+            const container = document.getElementById('needs-analysis');
+            
+            const needsCounts = {};
+            
+            allResponses.forEach(r => {
+                if (r.workshop_needs && Array.isArray(r.workshop_needs)) {
+                    r.workshop_needs.forEach(need => {
+                        needsCounts[need] = (needsCounts[need] || 0) + 1;
+                    });
+                }
+            });
+            
+            const sortedNeeds = Object.entries(needsCounts).sort((a, b) => b[1] - a[1]);
+            
+            let html = `
+                <div class="insight-card">
+                    <h3>🎯 الاحتياجات الأكثر طلباً</h3>
+                    <ul>
+            `;
+            
+            sortedNeeds.forEach(([need, count]) => {
+                const percentage = Math.round((count / allResponses.length) * 100);
+                html += `<li>${need} <span class="count">${count} (${percentage}%)</span></li>`;
+            });
+            
+            html += `
+                    </ul>
+                </div>
+            `;
+            
+            // Add past problems
+            const pastProblems = allResponses
+                .filter(r => r.past_problem && r.past_problem.trim())
+                .map(r => r.past_problem);
+            
+            if (pastProblems.length > 0) {
+                html += `
+                    <div class="section" style="margin-top: 30px;">
+                        <h3 class="section-title">⚠️ أكبر المشاكل من التجارب السابقة</h3>
+                        <div style="max-height: 400px; overflow-y: auto;">
+                `;
+                
+                pastProblems.forEach((problem, index) => {
+                    html += `
+                        <div class="response-detail">
+                            <p>${index + 1}. ${problem}</p>
+                        </div>
+                    `;
+                });
+                
+                html += '</div></div>';
+            }
+            
+            // Add tools needed
+            const toolsNeeded = allResponses
+                .filter(r => r.needed_tools && r.needed_tools.trim())
+                .map(r => r.needed_tools);
+            
+            if (toolsNeeded.length > 0) {
+                html += `
+                    <div class="section" style="margin-top: 30px;">
+                        <h3 class="section-title">🛠️ الأدوات والنماذج المطلوبة</h3>
+                        <div style="max-height: 400px; overflow-y: auto;">
+                `;
+                
+                toolsNeeded.forEach((tool, index) => {
+                    html += `
+                        <div class="response-detail">
+                            <p>${index + 1}. ${tool}</p>
+                        </div>
+                    `;
+                });
+                
+                html += '</div></div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        // Generate Insights
+        function generateInsights() {
+            const container = document.getElementById('insights-container');
+            
+            // Calculate key metrics
+            const avgReadiness = parseFloat(document.getElementById('avg-readiness').textContent);
+            const withPlansPercent = parseInt(document.getElementById('with-plans').textContent);
+            
+            const withTimeline = allResponses.filter(r => r.has_timeline === 'نعم، جاهز ومكتوب').length;
+            const timelinePercent = Math.round((withTimeline / allResponses.length) * 100);
+            
+            const withBoard = allResponses.filter(r => r.board_setup === 'نعم، كل واحد عارف دوره').length;
+            const boardPercent = Math.round((withBoard / allResponses.length) * 100);
+            
+            const readyHighly = allResponses.filter(r => parseInt(r.readiness) >= 4).length;
+            const highReadyPercent = Math.round((readyHighly / allResponses.length) * 100);
+            
+            let html = `
+                <div class="recommendations">
+                    <div class="recommendation-card">
+                        <h4><span class="priority-high">أولوية عالية</span>التخطيط والتنظيم</h4>
+                        <p><strong>المشكلة:</strong> ${100 - withPlansPercent}% من المشاركين ليس لديهم خطة تفصيلية جاهزة.</p>
+                        <p><strong>التوصية:</strong> يجب تخصيص جزء كبير من الورشة (على الأقل ساعة) لتعليم التخطيط العملي مع نماذج جاهزة يمكن استخدامها فوراً.</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4><span class="priority-high">أولوية عالية</span>التفويض وتسكين القادة</h4>
+                        <p><strong>المشكلة:</strong> ${100 - boardPercent}% لم يسكنوا القادة بشكل واضح أو لم يسكنوهم على الإطلاق.</p>
+                        <p><strong>التوصية:</strong> تمرين عملي على تسكين الفريق على البورد مع توضيح المسؤوليات والأدوار بدقة.</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4><span class="priority-medium">أولوية متوسطة</span>Timeline والمتابعة</h4>
+                        <p><strong>المشكلة:</strong> ${100 - timelinePercent}% ليس لديهم Timeline واضح مكتوب.</p>
+                        <p><strong>التوصية:</strong> تقديم نموذج Timeline جاهز يمكن تخصيصه لكل محافظة، مع شرح كيفية تقسيم المستهدفات على الأسابيع.</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4><span class="priority-high">أولوية عالية</span>الردود على الاعتراضات</h4>
+                        <p><strong>الحاجة:</strong> المشاركون يواجهون اعتراضات متكررة من المتطوعين والمتبرعين.</p>
+                        <p><strong>التوصية:</strong> تخصيص 20-30 دقيقة لتدريب عملي على الرد على الاعتراضات باستخدام نموذج FEEL-FOUND-FIX مع أمثلة حقيقية.</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4><span class="priority-medium">أولوية متوسطة</span>التحفيز والاحتفاظ بالمتطوعين</h4>
+                        <p><strong>التحدي:</strong> تسرب المتطوعين وقلة التحفيز من أكثر التحديات المذكورة.</p>
+                        <p><strong>التوصية:</strong> مشاركة الأدوات الـ 5 للتحفيز (Daily Check-in, Progress Board, Buddy System, Weekly Celebration, Personal Appreciation) مع أمثلة تطبيقية.</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4><span class="priority-low">للمتابعة</span>مستوى الجاهزية</h4>
+                        <p><strong>الملاحظة:</strong> متوسط الجاهزية ${avgReadiness} من 5، و${highReadyPercent}% لديهم جاهزية عالية (4-5).</p>
+                        <p><strong>التوصية:</strong> استثمار في من لديهم جاهزية عالية كـ "Champions" يساعدون الآخرين بعد الورشة.</p>
+                    </div>
+                </div>
+                
+                <div class="ai-analysis">
+                    <h3>🤖 تحليل AI - نقاط رئيسية</h3>
+                    <div class="analysis-text" id="ai-quick-analysis">
+                        <p><strong>1. التركيز الأساسي للورشة:</strong></p>
+                        <p>• التخطيط العملي (60% من الوقت)<br>
+                        • التفويض وتسكين القادة (25%)<br>
+                        • التحفيز والردود على الاعتراضات (15%)</p>
+                        
+                        <p><strong>2. المخرجات المطلوبة:</strong></p>
+                        <p>• كل مشارك يخرج بخطة تفصيلية مكتوبة<br>
+                        • نموذج Timeline جاهز<br>
+                        • Board structure واضح<br>
+                        • Script جاهز للرد على 5 اعتراضات رئيسية</p>
+                        
+                        <p><strong>3. التحديات الرئيسية:</strong></p>
+                        <p>بناءً على التحليل، أكبر 3 تحديات هي:<br>
+                        • ضعف التخطيط المسبق<br>
+                        • عدم وضوح الأدوار والمسؤوليات<br>
+                        • تسرب المتطوعين وضعف التحفيز</p>
+                        
+                        <p><strong>4. التوصية النهائية:</strong></p>
+                        <p>الورشة يجب أن تكون 80% عملية تطبيقية و20% نظرية فقط. كل مشارك يجب أن يشتغل على خطته الفعلية خلال الورشة.</p>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        // Generate AI Analysis
+        async function generateAIAnalysis() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = '⏳ جاري التحليل...';
+            
+            try {
+                // Prepare data summary for AI
+                const summary = {
+                    total: allResponses.length,
+                    avgReadiness: parseFloat(document.getElementById('avg-readiness').textContent),
+                    withPlans: document.getElementById('with-plans').textContent,
+                    challenges: [],
+                    needs: {},
+                    objections: {}
+                };
+                
+                // Collect data
+                allResponses.forEach(r => {
+                    if (r.challenge_1) summary.challenges.push(r.challenge_1);
+                    if (r.challenge_2) summary.challenges.push(r.challenge_2);
+                    if (r.challenge_3) summary.challenges.push(r.challenge_3);
+                    
+                    if (r.workshop_needs && Array.isArray(r.workshop_needs)) {
+                        r.workshop_needs.forEach(need => {
+                            summary.needs[need] = (summary.needs[need] || 0) + 1;
+                        });
+                    }
+                });
+                
+                alert('تم إنشاء التحليل الأولي! للحصول على تحليل AI متقدم، يمكنك نسخ البيانات وتحليلها باستخدام Claude AI.');
+                
+                // Copy summary to clipboard
+                const summaryText = JSON.stringify(summary, null, 2);
+                navigator.clipboard.writeText(summaryText);
+                
+                alert('تم نسخ ملخص البيانات! يمكنك لصقها في Claude AI للحصول على تحليل متقدم.');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في التحليل');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🤖 تحليل AI متقدم';
+            }
+        }
+        
+        // Export to Excel
+        function exportToExcel() {
+            if (allResponses.length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+            
+            // Prepare data for Excel
+            const excelData = allResponses.map((r, index) => ({
+                'الرقم': index + 1,
+                'الاسم': r.name || '',
+                'المحافظة': r.governorate || '',
+                'الدور': r.role || '',
+                'دور آخر': r.role_other || '',
+                'الخطة': r.has_plan || '',
+                'تقسيم المستهدفات': r.target_divided || '',
+                'Timeline': r.has_timeline || '',
+                'تسكين القادة': r.board_setup || '',
+                'عدد المتطوعين': r.volunteers_count || '',
+                'الجاهزية': r.readiness || '',
+                'التحدي الأول': r.challenge_1 || '',
+                'التحدي الثاني': r.challenge_2 || '',
+                'التحدي الثالث': r.challenge_3 || '',
+                'احتياجات الورشة': Array.isArray(r.workshop_needs) ? r.workshop_needs.join(', ') : '',
+                'أكبر مشكلة سابقة': r.past_problem || '',
+                'أمثلة ناجحة': r.success_example || '',
+                'أدوات محتاجة': r.needed_tools || '',
+                'اعتراضات المتطوعين': Array.isArray(r.volunteer_objections) ? r.volunteer_objections.join(', ') : '',
+                'اعتراضات المتبرعين': Array.isArray(r.donor_objections) ? r.donor_objections.join(', ') : '',
+                'رد على المتطوع': r.volunteer_response || '',
+                'رد على المتبرع': r.donor_response || '',
+                'التاريخ': new Date(r.timestamp).toLocaleString('ar-EG')
+            }));
+            
+            // Create workbook
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'الإجابات');
+            
+            // Add statistics sheet
+            const stats = [
+                ['إحصائية', 'القيمة'],
+                ['إجمالي المشاركين', allResponses.length],
+                ['عدد المحافظات', document.getElementById('total-governorates').textContent],
+                ['متوسط الجاهزية', document.getElementById('avg-readiness').textContent],
+                ['لديهم خطة جاهزة', document.getElementById('with-plans').textContent]
+            ];
+            
+            const wsStats = XLSX.utils.aoa_to_sheet(stats);
+            XLSX.utils.book_append_sheet(wb, wsStats, 'الإحصائيات');
+            
+            // Download
+            const fileName = `ramadan-campaign-survey_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            alert('✅ تم تصدير البيانات بنجاح!');
+        }
+        
+        // Helper Functions
+        function countValues(field) {
+            const counts = {};
+            allResponses.forEach(r => {
+                const value = r[field] || 'غير محدد';
+                counts[value] = (counts[value] || 0) + 1;
+            });
+            return counts;
+        }
+        
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function showEmptyState() {
+            document.getElementById('loading').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📝</div>
+                    <div class="empty-state-text">لا توجد إجابات بعد</div>
+                    <p style="color: #999; font-size: 14px;">سيتم عرض التحليلات عندما يبدأ المشاركون بملء الاستبيان</p>
+                </div>
+            `;
+        }
+        
+        // Initialize
+        window.addEventListener('load', loadData);
+    </script>
+</body>
+</html>
