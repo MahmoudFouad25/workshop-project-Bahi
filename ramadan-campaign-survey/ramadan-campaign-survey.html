@@ -1,0 +1,1379 @@
+<!DOCTYPE html> 
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 استبيان ورشة قادة الحملة - رمضان 2025 | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '🌙';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            top: -20px;
+            left: -30px;
+            transform: rotate(-15deg);
+        }
+        
+        .header::after {
+            content: '💙';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.1;
+            bottom: -20px;
+            right: -30px;
+            transform: rotate(15deg);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .privacy-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .workshop-info {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8e44ad 0%, #3498db 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-right: 5px solid #8e44ad;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Questions */
+        .question {
+            margin-bottom: 35px;
+        }
+        
+        .question-label {
+            display: block;
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .question-required {
+            color: #dc3545;
+            font-size: 14px;
+        }
+        
+        .question-helper {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Radio/Checkbox Options */
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .option {
+            position: relative;
+            display: block;
+        }
+        
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .option label {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        .option label:hover {
+            background: #e9ecef;
+            border-color: #8e44ad;
+        }
+        
+        .option input:checked + label {
+            background: linear-gradient(135deg, #8e44ad15 0%, #3498db15 100%);
+            border-color: #8e44ad;
+            font-weight: 600;
+            color: #8e44ad;
+        }
+        
+        .option label::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #999;
+            border-radius: 50%;
+            margin-left: 12px;
+            transition: all 0.3s;
+        }
+        
+        .option input[type="checkbox"] + label::before {
+            border-radius: 4px;
+        }
+        
+        .option input:checked + label::before {
+            background: #8e44ad;
+            border-color: #8e44ad;
+            box-shadow: inset 0 0 0 3px white;
+        }
+        
+        /* Text Input */
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #8e44ad;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Scale Rating */
+        .scale-container {
+            margin-top: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .scale-options {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+        }
+        
+        .scale-option {
+            position: relative;
+            flex: 1;
+        }
+        
+        .scale-option input {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .scale-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 45px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .scale-option label:hover {
+            border-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+        
+        .scale-option input:checked + label {
+            background: #8e44ad;
+            color: white;
+            border-color: #8e44ad;
+            transform: scale(1.1);
+        }
+        
+        /* Navigation Buttons */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #8e44ad 0%, #3498db 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(142, 68, 173, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+        
+        /* Validation Error */
+        .error-message {
+            display: none;
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff5f5;
+            border-right: 3px solid #dc3545;
+            border-radius: 5px;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .question-label {
+                font-size: 16px;
+            }
+            
+            .scale-options {
+                flex-wrap: wrap;
+            }
+            
+            .scale-option {
+                flex: 0 0 calc(20% - 6px);
+            }
+            
+            .navigation {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌙 استبيان ورشة قادة الحملة 💙</h1>
+            <p>حملة رمضان "الناس لبعضها"</p>
+            <div class="workshop-info">
+                📅 الورشة التدريبية قريباً<br>
+                🎯 المستهدف: 58 مليون جنيه<br>
+                📍 26 محافظة | 5000 متطوع
+            </div>
+            <div class="meta">
+                <div>⏱️ الوقت المتوقع: 8-10 دقائق</div>
+                <div class="privacy-badge">📝 إجاباتك ستساعدنا نصمم ورشة مفيدة فعلاً</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="progress-text">القسم 1 من 4</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <form id="survey-form">
+                <!-- ============================================ -->
+                <!-- القسم الأول: من أنت؟ -->
+                <!-- ============================================ -->
+                <div class="section active" data-section="1">
+                    <div class="section-header">
+                        <div class="section-title">📍 القسم الأول: من أنت؟</div>
+                        <div class="section-subtitle">3 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q1 -->
+                    <div class="question">
+                        <label class="question-label">
+                            1. الاسم:
+                            <span class="question-required">*</span>
+                        </label>
+                        <input type="text" id="name" name="name" placeholder="اكتب اسمك..." required>
+                        <div class="error-message" id="error-q1">❌ الرجاء كتابة اسمك</div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="question">
+                        <label class="question-label">
+                            2. المحافظة:
+                            <span class="question-required">*</span>
+                        </label>
+                        <input type="text" id="governorate" name="governorate" placeholder="اكتب محافظتك..." required>
+                        <div class="error-message" id="error-q2">❌ الرجاء كتابة محافظتك</div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="question">
+                        <label class="question-label">
+                            3. دورك في الحملة:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="role-lead" name="role" value="مسؤول الحملة في المحافظة" required>
+                                <label for="role-lead">مسؤول الحملة في المحافظة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="role-team" name="role" value="قائد فريق">
+                                <label for="role-team">قائد فريق</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="role-item" name="role" value="مسؤول بند معين">
+                                <label for="role-item">مسؤول بند معين</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="role-funding" name="role" value="إدارة جمع التبرعات">
+                                <label for="role-funding">إدارة جمع التبرعات</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="role-other" name="role" value="غير ذلك">
+                                <label for="role-other">غير ذلك</label>
+                            </div>
+                        </div>
+                        <input type="text" id="role_other_text" name="role_other_text" placeholder="حدد دورك (اختياري)..." style="margin-top: 15px; display: none;">
+                        <div class="error-message" id="error-q3">❌ الرجاء اختيار دورك</div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الثاني: وضعك الحالي -->
+                <!-- ============================================ -->
+                <div class="section" data-section="2">
+                    <div class="section-header">
+                        <div class="section-title">📊 القسم الثاني: وضعك الحالي</div>
+                        <div class="section-subtitle">7 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q4 -->
+                    <div class="question">
+                        <label class="question-label">
+                            4. هل عندك خطة مكتوبة للحملة؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="plan-complete" name="has_plan" value="نعم، خطة تفصيلية جاهزة" required>
+                                <label for="plan-complete">نعم، خطة تفصيلية جاهزة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="plan-partial" name="has_plan" value="نعم، لكن لسه مش مكتملة">
+                                <label for="plan-partial">نعم، لكن لسه مش مكتملة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="plan-no" name="has_plan" value="لأ، لسه مبدأناش">
+                                <label for="plan-no">لأ، لسه مبدأناش</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="plan-unsure" name="has_plan" value="مش متأكد إيه المطلوب بالظبط">
+                                <label for="plan-unsure">مش متأكد إيه المطلوب بالظبط</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q4">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. هل قسمت المستهدف المالي على البنود؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="target-clear" name="target_divided" value="نعم، وكل بند ليه مستهدف واضح" required>
+                                <label for="target-clear">نعم، وكل بند ليه مستهدف واضح</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="target-general" name="target_divided" value="قسمته بشكل عام بس مش دقيق">
+                                <label for="target-general">قسمته بشكل عام بس مش دقيق</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="target-no" name="target_divided" value="لأ، لسه">
+                                <label for="target-no">لأ، لسه</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="target-unknown" name="target_divided" value="مش عارف المستهدف المالي لمحافظتي أصلاً">
+                                <label for="target-unknown">مش عارف المستهدف المالي لمحافظتي أصلاً</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q5">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. هل عندك Timeline واضح للحملة (أسبوع بأسبوع)؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="timeline-yes" name="has_timeline" value="نعم، جاهز ومكتوب" required>
+                                <label for="timeline-yes">نعم، جاهز ومكتوب</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="timeline-idea" name="has_timeline" value="عندي فكرة عامة بس مش مكتوبة">
+                                <label for="timeline-idea">عندي فكرة عامة بس مش مكتوبة</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="timeline-no" name="has_timeline" value="لأ">
+                                <label for="timeline-no">لأ</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="timeline-how" name="has_timeline" value="مش عارف أعمله إزاي">
+                                <label for="timeline-how">مش عارف أعمله إزاي</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q6">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. هل سكّنت القادة على البورد (مسؤول كل بند/فريق)؟
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="board-complete" name="board_setup" value="نعم، كل واحد عارف دوره" required>
+                                <label for="board-complete">نعم، كل واحد عارف دوره</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="board-unclear" name="board_setup" value="سكّنت ناس بس مش واضح دور كل واحد">
+                                <label for="board-unclear">سكّنت ناس بس مش واضح دور كل واحد</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="board-no" name="board_setup" value="لأ، لسه">
+                                <label for="board-no">لأ، لسه</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="board-lack" name="board_setup" value="معنديش ناس كفاية أصلاً">
+                                <label for="board-lack">معنديش ناس كفاية أصلاً</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q7">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q8 -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. عدد المتطوعين الفعليين اللي معاك دلوقتي:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="vol-less10" name="volunteers_count" value="أقل من 10" required>
+                                <label for="vol-less10">أقل من 10</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="vol-10-20" name="volunteers_count" value="10-20">
+                                <label for="vol-10-20">10-20</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="vol-21-40" name="volunteers_count" value="21-40">
+                                <label for="vol-21-40">21-40</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="vol-more40" name="volunteers_count" value="أكثر من 40">
+                                <label for="vol-more40">أكثر من 40</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q8">❌ الرجاء الاختيار</div>
+                    </div>
+
+                    <!-- Q9 -->
+                    <div class="question">
+                        <label class="question-label">
+                            9. من 1 إلى 5، قيّم جاهزيتك لبدء الحملة:
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-labels">
+                                <span>1 = مش جاهز خالص</span>
+                                <span>5 = جاهز 100%</span>
+                            </div>
+                            <div class="scale-options">
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-1" name="readiness" value="1" required>
+                                    <label for="ready-1">1</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-2" name="readiness" value="2">
+                                    <label for="ready-2">2</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-3" name="readiness" value="3">
+                                    <label for="ready-3">3</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-4" name="readiness" value="4">
+                                    <label for="ready-4">4</label>
+                                </div>
+                                <div class="scale-option">
+                                    <input type="radio" id="ready-5" name="readiness" value="5">
+                                    <label for="ready-5">5</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q9">❌ الرجاء اختيار تقييم</div>
+                    </div>
+
+                    <!-- Q10 -->
+                    <div class="question">
+                        <label class="question-label">
+                            10. إيه أكبر 3 تحديات بتواجهك دلوقتي؟
+                            <div class="question-helper">(رتبهم من الأكبر للأصغر)</div>
+                        </label>
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px;">التحدي الأول (الأكبر):</label>
+                            <textarea id="challenge_1" name="challenge_1" placeholder="اكتب التحدي الأكبر..." maxlength="200" rows="2"></textarea>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px;">التحدي الثاني:</label>
+                            <textarea id="challenge_2" name="challenge_2" placeholder="اكتب التحدي الثاني..." maxlength="200" rows="2"></textarea>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; font-weight: 600; margin-bottom: 8px;">التحدي الثالث:</label>
+                            <textarea id="challenge_3" name="challenge_3" placeholder="اكتب التحدي الثالث..." maxlength="200" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الثالث: احتياجك من الورشة -->
+                <!-- ============================================ -->
+                <div class="section" data-section="3">
+                    <div class="section-header">
+                        <div class="section-title">🎯 القسم الثالث: احتياجك من الورشة</div>
+                        <div class="section-subtitle">5 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q11 -->
+                    <div class="question">
+                        <label class="question-label">
+                            11. من الموضوعات دي، إيه اللي محتاجه أكتر؟
+                            <div class="question-helper">(اختر 2 فقط)</div>
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="need-planning" name="workshop_needs" value="إزاي أخطط للحملة بشكل عملي">
+                                <label for="need-planning">إزاي أخطط للحملة بشكل عملي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-targets" name="workshop_needs" value="إزاي أقسم المستهدفات على البنود والأسابيع">
+                                <label for="need-targets">إزاي أقسم المستهدفات على البنود والأسابيع</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-delegation" name="workshop_needs" value="إزاي أسكّن القادة وأفوض صح">
+                                <label for="need-delegation">إزاي أسكّن القادة وأفوض صح</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-motivation" name="workshop_needs" value="إزاي أحافظ على المتطوعين وأحفزهم">
+                                <label for="need-motivation">إزاي أحافظ على المتطوعين وأحفزهم</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-retention" name="workshop_needs" value="إزاي أحل مشاكل التسرب والإحباط">
+                                <label for="need-retention">إزاي أحل مشاكل التسرب والإحباط</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="need-tracking" name="workshop_needs" value="إزاي أتابع التقدم وأعرف احنا ماشيين صح">
+                                <label for="need-tracking">إزاي أتابع التقدم وأعرف احنا ماشيين صح</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q11">❌ الرجاء اختيار موضوعين فقط</div>
+                    </div>
+
+                    <!-- Q12 -->
+                    <div class="question">
+                        <label class="question-label">
+                            12. لو عندك تجربة سابقة في حملة رمضان، إيه أكبر مشكلة واجهتك؟
+                            <div class="question-helper">(اختياري)</div>
+                        </label>
+                        <textarea id="past_problem" name="past_problem" placeholder="اكتب أكبر مشكلة واجهتك..." maxlength="300" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q12">0</span> / 300 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q13 -->
+                    <div class="question">
+                        <label class="question-label">
+                            13. هل عندك أمثلة ناجحة من حملات سابقة عايز تشاركها مع الورشة؟
+                            <div class="question-helper">(اختياري)</div>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="example-yes" name="has_example" value="نعم">
+                                <label for="example-yes">نعم</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="example-no" name="has_example" value="لأ">
+                                <label for="example-no">لأ</label>
+                            </div>
+                        </div>
+                        <textarea id="success_example" name="success_example" placeholder="اكتب المثال الناجح باختصار..." maxlength="300" rows="3" style="margin-top: 15px; display: none;"></textarea>
+                    </div>
+
+                    <!-- Q14 -->
+                    <div class="question">
+                        <label class="question-label">
+                            14. هل في أدوات أو نماذج محددة محتاجها دلوقتي؟
+                            <div class="question-helper">(مثال: نموذج تقسيم المستهدفات، نموذج تسكين الفريق، إلخ)</div>
+                        </label>
+                        <textarea id="needed_tools" name="needed_tools" placeholder="اكتب الأدوات أو النماذج اللي محتاجها..." maxlength="300" rows="3"></textarea>
+                    </div>
+
+                    <!-- Q15 -->
+                    <div class="question">
+                        <label class="question-label">
+                            15. رسالة أخيرة أو سؤال عايز تسأله قبل الورشة:
+                            <div class="question-helper">(اختياري)</div>
+                        </label>
+                        <textarea id="final_question" name="final_question" placeholder="اكتب رسالتك أو سؤالك..." maxlength="400" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q15">0</span> / 400 حرف
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- القسم الرابع: الاعتراضات -->
+                <!-- ============================================ -->
+                <div class="section" data-section="4">
+                    <div class="section-header">
+                        <div class="section-title">💬 القسم الرابع: الاعتراضات اللي بنواجهها</div>
+                        <div class="section-subtitle">4 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q16 -->
+                    <div class="question">
+                        <label class="question-label">
+                            16. إيه أكتر 3 اعتراضات بتسمعها من المتطوعين؟
+                            <div class="question-helper">(اختر 3 فقط)</div>
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-time" name="volunteer_objections" value="مفيش وقت / مشغول">
+                                <label for="vol-obj-time">مفيش وقت / مشغول</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-load" name="volunteer_objections" value="الشغل كتير ومحدش بيساعدني">
+                                <label for="vol-obj-load">الشغل كتير ومحدش بيساعدني</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-unclear" name="volunteer_objections" value="مش عارف المفروض أعمل إيه بالظبط">
+                                <label for="vol-obj-unclear">مش عارف المفروض أعمل إيه بالظبط</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-appreciation" name="volunteer_objections" value="مفيش تقدير لمجهودي">
+                                <label for="vol-obj-appreciation">مفيش تقدير لمجهودي</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-continuous" name="volunteer_objections" value="الحملات كتير ومتلاحقة، مفيش بريك">
+                                <label for="vol-obj-continuous">الحملات كتير ومتلاحقة، مفيش بريك</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-role" name="volunteer_objections" value="مش حاسس إن ليا دور مهم">
+                                <label for="vol-obj-role">مش حاسس إن ليا دور مهم</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-management" name="volunteer_objections" value="الإدارة مش واضحة / التعليمات متضاربة">
+                                <label for="vol-obj-management">الإدارة مش واضحة / التعليمات متضاربة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="vol-obj-response" name="volunteer_objections" value="محدش بيرد عليا لما أسأل حاجة">
+                                <label for="vol-obj-response">محدش بيرد عليا لما أسأل حاجة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q16">❌ الرجاء اختيار 3 اعتراضات فقط</div>
+                    </div>
+
+                    <!-- Q17 -->
+                    <div class="question">
+                        <label class="question-label">
+                            17. إيه أكتر 3 اعتراضات بتسمعها من المتبرعين؟
+                            <div class="question-helper">(اختر 3 فقط)</div>
+                            <span class="question-required">*</span>
+                        </label>
+                        <div class="options">
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-price" name="donor_objections" value="الأسعار غالية / المبالغ كبيرة">
+                                <label for="don-obj-price">الأسعار غالية / المبالغ كبيرة</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-trust" name="donor_objections" value="مش واثق في المؤسسة / عايز أشوف شفافية">
+                                <label for="don-obj-trust">مش واثق في المؤسسة / عايز أشوف شفافية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-impact" name="donor_objections" value="عايز أشوف أثر تبرعي / مش عارف راح فين">
+                                <label for="don-obj-impact">عايز أشوف أثر تبرعي / مش عارف راح فين</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-donated" name="donor_objections" value="تبرعت السنة اللي فاتت / تبرعت كتير">
+                                <label for="don-obj-donated">تبرعت السنة اللي فاتت / تبرعت كتير</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-economy" name="donor_objections" value="الوضع الاقتصادي صعب / معنديش فلوس">
+                                <label for="don-obj-economy">الوضع الاقتصادي صعب / معنديش فلوس</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-item" name="donor_objections" value="مش مقتنع بالبند ده / عايز أتبرع في حاجة تانية">
+                                <label for="don-obj-item">مش مقتنع بالبند ده / عايز أتبرع في حاجة تانية</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-why" name="donor_objections" value="ليه صناع الحياة مش حملات تانية؟">
+                                <label for="don-obj-why">ليه صناع الحياة مش حملات تانية؟</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="don-obj-how" name="donor_objections" value="مبعرفش أتبرع إزاي / الطرق معقدة">
+                                <label for="don-obj-how">مبعرفش أتبرع إزاي / الطرق معقدة</label>
+                            </div>
+                        </div>
+                        <div class="error-message" id="error-q17">❌ الرجاء اختيار 3 اعتراضات فقط</div>
+                    </div>
+
+                    <!-- Q18 -->
+                    <div class="question">
+                        <label class="question-label">
+                            18. لما متطوع يقولك "أنا تعبت ومش قادر أكمل"، بترد عليه إزاي؟
+                            <div class="question-helper">(اكتب ردك الفعلي - اختياري)</div>
+                        </label>
+                        <textarea id="volunteer_response" name="volunteer_response" placeholder="اكتب ردك على المتطوع..." maxlength="300" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q18">0</span> / 300 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q19 -->
+                    <div class="question">
+                        <label class="question-label">
+                            19. لما متبرع يقولك "الأسعار غالية، مش هقدر"، بترد عليه إزاي؟
+                            <div class="question-helper">(اكتب ردك الفعلي - اختياري)</div>
+                        </label>
+                        <textarea id="donor_response" name="donor_response" placeholder="اكتب ردك على المتبرع..." maxlength="300" rows="3"></textarea>
+                        <div style="text-align: left; color: #999; font-size: 13px; margin-top: 5px;">
+                            <span id="char-count-q19">0</span> / 300 حرف
+                        </div>
+                    </div>
+
+                    <!-- رسالة الشكر النهائية -->
+                    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; border: 2px solid #8e44ad;">
+                        <h3 style="color: #8e44ad; font-size: 24px; margin-bottom: 15px;">🎉 شكراً لوقتك!</h3>
+                        <p style="font-size: 16px; color: #666; line-height: 1.8; margin-bottom: 10px;">
+                            إجاباتك هتساعدنا نصمم ورشة مفيدة فعلاً للشباب!
+                        </p>
+                        <p style="font-size: 18px; color: #8e44ad; font-weight: 700; margin-top: 15px;">
+                            الناس مش لوحدها.. الناس لبعضها 💙
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn btn-prev" id="prev-btn" style="display: none;">
+                        ← السابق
+                    </button>
+                    <button type="button" class="btn btn-next" id="next-btn">
+                        التالي →
+                    </button>
+                    <button type="submit" class="btn btn-submit" id="submit-btn" style="display: none;">
+                        ✅ إرسال الاستبيان
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري إرسال الاستبيان...</div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentSection = 1;
+        const totalSections = 4;
+        
+        // DOM Elements
+        const sections = document.querySelectorAll('.section');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const form = document.getElementById('survey-form');
+
+        // Character Counters for Textareas
+        const textareaCounters = [
+            { id: 'past_problem', countId: 'char-count-q12' },
+            { id: 'final_question', countId: 'char-count-q15' },
+            { id: 'volunteer_response', countId: 'char-count-q18' },
+            { id: 'donor_response', countId: 'char-count-q19' }
+        ];
+
+        textareaCounters.forEach(item => {
+            const textarea = document.getElementById(item.id);
+            const counter = document.getElementById(item.countId);
+            if (textarea && counter) {
+                textarea.addEventListener('input', function() {
+                    counter.textContent = this.value.length;
+                });
+            }
+        });
+
+        // Show/Hide "Other Role" text field
+        document.querySelectorAll('input[name="role"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const otherText = document.getElementById('role_other_text');
+                if (this.value === 'غير ذلك') {
+                    otherText.style.display = 'block';
+                } else {
+                    otherText.style.display = 'none';
+                }
+            });
+        });
+
+        // Show/Hide success example textarea
+        document.querySelectorAll('input[name="has_example"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const exampleText = document.getElementById('success_example');
+                if (this.value === 'نعم') {
+                    exampleText.style.display = 'block';
+                } else {
+                    exampleText.style.display = 'none';
+                }
+            });
+        });
+
+        // Update Progress Bar
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `القسم ${currentSection} من ${totalSections}`;
+        }
+
+        // Show Section
+        function showSection(sectionNum) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update buttons
+            if (sectionNum === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'flex';
+            }
+            
+            if (sectionNum === totalSections) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Validate Section
+        function validateSection(sectionNum) {
+            const section = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            if (!section) return true;
+            
+            const requiredInputs = section.querySelectorAll('input[required], textarea[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+            
+            // Hide all error messages first
+            section.querySelectorAll('.error-message').forEach(err => {
+                err.classList.remove('show');
+            });
+            
+            // Check each required field
+            requiredInputs.forEach(input => {
+                const fieldName = input.name;
+                
+                if (input.type === 'radio') {
+                    const radioGroup = section.querySelectorAll(`input[name="${fieldName}"]`);
+                    const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+                    
+                    if (!isChecked) {
+                        isValid = false;
+                        const question = input.closest('.question');
+                        if (question && !firstInvalidField) {
+                            const errorMsg = question.querySelector('.error-message');
+                            if (errorMsg) {
+                                errorMsg.classList.add('show');
+                                firstInvalidField = input;
+                            }
+                        }
+                    }
+                } else if (input.type === 'text') {
+                    if (input.required && !input.value.trim()) {
+                        isValid = false;
+                        const question = input.closest('.question');
+                        if (question && !firstInvalidField) {
+                            const errorMsg = question.querySelector('.error-message');
+                            if (errorMsg) {
+                                errorMsg.classList.add('show');
+                            }
+                            firstInvalidField = input;
+                        }
+                    }
+                }
+            });
+            
+            // Special validation for checkboxes with max selections
+            // Q11: Workshop needs (max 2)
+            if (sectionNum === 3) {
+                const workshopNeeds = section.querySelectorAll('input[name="workshop_needs"]:checked');
+                if (workshopNeeds.length !== 2) {
+                    isValid = false;
+                    const errorMsg = section.querySelector('#error-q11');
+                    if (errorMsg && !firstInvalidField) {
+                        errorMsg.classList.add('show');
+                        firstInvalidField = workshopNeeds[0] || section.querySelector('input[name="workshop_needs"]');
+                    }
+                }
+            }
+            
+            // Q16 & Q17: Objections (max 3 each)
+            if (sectionNum === 4) {
+                const volObjections = section.querySelectorAll('input[name="volunteer_objections"]:checked');
+                const donObjections = section.querySelectorAll('input[name="donor_objections"]:checked');
+                
+                if (volObjections.length !== 3) {
+                    isValid = false;
+                    const errorMsg = section.querySelector('#error-q16');
+                    if (errorMsg && !firstInvalidField) {
+                        errorMsg.classList.add('show');
+                        firstInvalidField = volObjections[0] || section.querySelector('input[name="volunteer_objections"]');
+                    }
+                }
+                
+                if (donObjections.length !== 3) {
+                    isValid = false;
+                    const errorMsg = section.querySelector('#error-q17');
+                    if (errorMsg && !firstInvalidField) {
+                        errorMsg.classList.add('show');
+                        firstInvalidField = donObjections[0] || section.querySelector('input[name="donor_objections"]');
+                    }
+                }
+            }
+            
+            // Scroll to first invalid field
+            if (!isValid && firstInvalidField) {
+                setTimeout(() => {
+                    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+            
+            return isValid;
+        }
+
+        // Navigation: Next Button
+        nextBtn.addEventListener('click', function() {
+            if (validateSection(currentSection)) {
+                currentSection++;
+                showSection(currentSection);
+            }
+        });
+
+        // Navigation: Previous Button
+        prevBtn.addEventListener('click', function() {
+            currentSection--;
+            showSection(currentSection);
+        });
+
+        // Collect Form Data
+        function collectFormData() {
+            const formData = {
+                timestamp: new Date().toISOString(),
+                
+                // Section 1
+                name: document.getElementById('name').value.trim(),
+                governorate: document.getElementById('governorate').value.trim(),
+                role: getRadioValue('role'),
+                role_other: document.getElementById('role_other_text').value.trim(),
+                
+                // Section 2
+                has_plan: getRadioValue('has_plan'),
+                target_divided: getRadioValue('target_divided'),
+                has_timeline: getRadioValue('has_timeline'),
+                board_setup: getRadioValue('board_setup'),
+                volunteers_count: getRadioValue('volunteers_count'),
+                readiness: getRadioValue('readiness'),
+                challenge_1: document.getElementById('challenge_1').value.trim(),
+                challenge_2: document.getElementById('challenge_2').value.trim(),
+                challenge_3: document.getElementById('challenge_3').value.trim(),
+                
+                // Section 3
+                workshop_needs: getCheckboxValues('workshop_needs'),
+                past_problem: document.getElementById('past_problem').value.trim(),
+                has_example: getRadioValue('has_example'),
+                success_example: document.getElementById('success_example').value.trim(),
+                needed_tools: document.getElementById('needed_tools').value.trim(),
+                final_question: document.getElementById('final_question').value.trim(),
+                
+                // Section 4
+                volunteer_objections: getCheckboxValues('volunteer_objections'),
+                donor_objections: getCheckboxValues('donor_objections'),
+                volunteer_response: document.getElementById('volunteer_response').value.trim(),
+                donor_response: document.getElementById('donor_response').value.trim()
+            };
+            
+            return formData;
+        }
+
+        function getRadioValue(name) {
+            const radio = document.querySelector(`input[name="${name}"]:checked`);
+            return radio ? radio.value : '';
+        }
+
+        function getCheckboxValues(name) {
+            const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // Form Submit
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Final validation
+            if (!validateSection(4)) {
+                return;
+            }
+            
+            // Show loading
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Collect data
+                const surveyData = collectFormData();
+                
+                // Save to Firestore
+                const docRef = await db.collection('ramadan-campaign-survey').add({
+                    ...surveyData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    analyzed: false
+                });
+                
+                console.log('Survey saved with ID:', docRef.id);
+                
+                // Redirect or show success
+                setTimeout(() => {
+                    alert('شكراً لك! تم إرسال الاستبيان بنجاح ✅');
+                    form.reset();
+                    currentSection = 1;
+                    showSection(1);
+                    loadingOverlay.classList.remove('show');
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error submitting survey:', error);
+                loadingOverlay.classList.remove('show');
+                alert('عذراً، حدث خطأ أثناء إرسال الاستبيان. الرجاء المحاولة مرة أخرى.');
+            }
+        });
+
+        // Initialize
+        showSection(1);
+        
+    </script>
+</body>
+</html>
