@@ -1058,53 +1058,141 @@
         
         // Display Responses
         function displayResponses() {
-            const container = document.getElementById('responses-container');
-            
-            if (allResponses.length === 0) {
-                container.innerHTML = '<p class="empty-state-text">لا توجد إجابات بعد</p>';
-                return;
-            }
-            
-            let html = '';
-            
-            allResponses.forEach((response, index) => {
-                html += `
-                    <div class="response-detail">
-                        <h4>المشارك #${index + 1}: ${response.name || 'غير محدد'}</h4>
-                        <p><strong>المحافظة:</strong> ${response.governorate || 'غير محدد'}</p>
-                        <p><strong>الدور:</strong> ${response.role || 'غير محدد'} ${response.role_other ? '(' + response.role_other + ')' : ''}</p>
-                        <p><strong>الجاهزية:</strong> ${response.readiness || 'غير محدد'} من 5</p>
-                        <p><strong>الخطة:</strong> ${response.has_plan || 'غير محدد'}</p>
-                        <p><strong>تقسيم المستهدفات:</strong> ${response.target_divided || 'غير محدد'}</p>
-                        <p><strong>Timeline:</strong> ${response.has_timeline || 'غير محدد'}</p>
-                        <p><strong>تسكين القادة:</strong> ${response.board_setup || 'غير محدد'}</p>
-                        <p><strong>عدد المتطوعين:</strong> ${response.volunteers_count || 'غير محدد'}</p>
-                        
-                        ${response.challenge_1 ? `<p><strong>التحدي الأول:</strong> ${response.challenge_1}</p>` : ''}
-                        ${response.challenge_2 ? `<p><strong>التحدي الثاني:</strong> ${response.challenge_2}</p>` : ''}
-                        ${response.challenge_3 ? `<p><strong>التحدي الثالث:</strong> ${response.challenge_3}</p>` : ''}
-                        
-                        ${response.workshop_needs && response.workshop_needs.length > 0 ? 
-                            `<p><strong>احتياجات الورشة:</strong> ${response.workshop_needs.join(', ')}</p>` : ''}
-                        
-                        ${response.past_problem ? `<p><strong>أكبر مشكلة سابقة:</strong> ${response.past_problem}</p>` : ''}
-                        
-                        ${response.volunteer_objections && response.volunteer_objections.length > 0 ? 
-                            `<p><strong>اعتراضات المتطوعين:</strong> ${response.volunteer_objections.join(', ')}</p>` : ''}
-                        
-                        ${response.donor_objections && response.donor_objections.length > 0 ? 
-                            `<p><strong>اعتراضات المتبرعين:</strong> ${response.donor_objections.join(', ')}</p>` : ''}
-                        
-                        ${response.volunteer_response ? `<p><strong>الرد على المتطوع:</strong> ${response.volunteer_response}</p>` : ''}
-                        ${response.donor_response ? `<p><strong>الرد على المتبرع:</strong> ${response.donor_response}</p>` : ''}
-                        
-                        <p class="timestamp">⏰ ${new Date(response.timestamp).toLocaleString('ar-EG')}</p>
+    const container = document.getElementById('responses-container');
+    
+    if (allResponses.length === 0) {
+        container.innerHTML = '<p class="empty-state-text">لا توجد إجابات بعد</p>';
+        return;
+    }
+    
+    let html = '';
+    
+    allResponses.forEach((response, index) => {
+        html += `
+            <div class="response-detail">
+                <h4>المشارك #${index + 1}: ${response.name || 'غير محدد'}</h4>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>📍 المحافظة</strong>
+                        <span>${response.governorate || 'غير محدد'}</span>
                     </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
+                    
+                    <div class="info-item">
+                        <strong>👔 الدور</strong>
+                        <span>${response.role || 'غير محدد'} ${response.role_other ? '(' + response.role_other + ')' : ''}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <strong>📊 الجاهزية</strong>
+                        <span>${response.readiness ? response.readiness + ' من 5' : 'غير محدد'} ${'⭐'.repeat(parseInt(response.readiness) || 0)}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <strong>📝 الخطة</strong>
+                        <span>${response.has_plan || 'غير محدد'}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <strong>🎯 تقسيم المستهدفات</strong>
+                        <span>${response.target_divided || 'غير محدد'}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <strong>📅 Timeline</strong>
+                        <span>${response.has_timeline || 'غير محدد'}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <strong>👥 تسكين القادة</strong>
+                        <span>${response.board_setup || 'غير محدد'}</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <strong>🙋 عدد المتطوعين</strong>
+                        <span>${response.volunteers_count || 'غير محدد'}</span>
+                    </div>
+                </div>
+                
+                ${(response.challenge_1 || response.challenge_2 || response.challenge_3) ? `
+                    <div class="challenges-section">
+                        <h5>أكبر التحديات</h5>
+                        ${response.challenge_1 ? `<p><strong>1.</strong> ${response.challenge_1}</p>` : ''}
+                        ${response.challenge_2 ? `<p><strong>2.</strong> ${response.challenge_2}</p>` : ''}
+                        ${response.challenge_3 ? `<p><strong>3.</strong> ${response.challenge_3}</p>` : ''}
+                    </div>
+                ` : ''}
+                
+                ${response.workshop_needs && response.workshop_needs.length > 0 ? `
+                    <div class="needs-section">
+                        <h5>احتياجات من الورشة</h5>
+                        <p>${response.workshop_needs.join(' • ')}</p>
+                    </div>
+                ` : ''}
+                
+                ${response.past_problem ? `
+                    <div class="needs-section">
+                        <h5>أكبر مشكلة سابقة</h5>
+                        <p>${response.past_problem}</p>
+                    </div>
+                ` : ''}
+                
+                ${response.success_example ? `
+                    <div class="needs-section" style="background: #d4edda; border-right-color: #28a745;">
+                        <h5 style="color: #155724;">✅ مثال ناجح</h5>
+                        <p style="color: #155724;">${response.success_example}</p>
+                    </div>
+                ` : ''}
+                
+                ${response.needed_tools ? `
+                    <div class="needs-section">
+                        <h5>أدوات ونماذج محتاجة</h5>
+                        <p>${response.needed_tools}</p>
+                    </div>
+                ` : ''}
+                
+                ${(response.volunteer_objections && response.volunteer_objections.length > 0) || 
+                  (response.donor_objections && response.donor_objections.length > 0) ? `
+                    <div class="objections-section">
+                        <h5>الاعتراضات</h5>
+                        ${response.volunteer_objections && response.volunteer_objections.length > 0 ? 
+                            `<p><strong>👥 من المتطوعين:</strong> ${response.volunteer_objections.join(' • ')}</p>` : ''}
+                        ${response.donor_objections && response.donor_objections.length > 0 ? 
+                            `<p><strong>💰 من المتبرعين:</strong> ${response.donor_objections.join(' • ')}</p>` : ''}
+                    </div>
+                ` : ''}
+                
+                ${response.volunteer_response || response.donor_response ? `
+                    <div class="objections-section" style="background: #d1ecf1; border-right-color: #17a2b8;">
+                        <h5 style="color: #0c5460;">💡 الردود على الاعتراضات</h5>
+                        ${response.volunteer_response ? 
+                            `<p style="color: #0c5460;"><strong>رد على متطوع تعبان:</strong><br>"${response.volunteer_response}"</p>` : ''}
+                        ${response.donor_response ? 
+                            `<p style="color: #0c5460;"><strong>رد على متبرع (الأسعار غالية):</strong><br>"${response.donor_response}"</p>` : ''}
+                    </div>
+                ` : ''}
+                
+                ${response.final_question ? `
+                    <div class="needs-section">
+                        <h5>رسالة/سؤال أخير</h5>
+                        <p>${response.final_question}</p>
+                    </div>
+                ` : ''}
+                
+                <div class="timestamp">تم الإرسال: ${new Date(response.timestamp).toLocaleString('ar-EG', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
         
         // Analyze Challenges
         function analyzeChallenges() {
