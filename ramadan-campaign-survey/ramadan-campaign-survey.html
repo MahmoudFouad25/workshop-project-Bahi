@@ -1462,12 +1462,9 @@
                 
                 // Redirect or show success
                 setTimeout(() => {
-                    alert('شكراً لك! تم إرسال الاستبيان بنجاح ✅');
-                    form.reset();
-                    currentSection = 1;
-                    showSection(1);
-                    loadingOverlay.classList.remove('show');
-                }, 1000);
+    // Redirect to thank you page
+    window.location.href = 'ramadan-campaign-thank-you.html';
+}, 1000);
                 
             } catch (error) {
                 console.error('Error submitting survey:', error);
