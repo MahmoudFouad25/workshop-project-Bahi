@@ -68,45 +68,56 @@
 
     // ===== KEYBOARD CONTROLS =====
     function handleKeyPress(e) {
-        if (isAnimating) return;
+    if (isAnimating) return;
 
-        switch(e.key) {
-            case 'ArrowRight':
-            case 'ArrowDown':
-            case 'PageDown':
-            case ' ': // Space
+    // Get current slide element
+    const currentSlideElement = slides[currentSlide - 1];
+    const isAtTop = currentSlideElement.scrollTop === 0;
+    const isAtBottom = currentSlideElement.scrollHeight - currentSlideElement.scrollTop === currentSlideElement.clientHeight;
+
+    switch(e.key) {
+        case 'ArrowRight':
+        case 'PageDown':
+            e.preventDefault();
+            nextSlide();
+            break;
+
+        case 'ArrowDown':
+            // Only navigate if at bottom of scroll
+            if (isAtBottom) {
                 e.preventDefault();
                 nextSlide();
-                break;
+            }
+            break;
 
-            case 'ArrowLeft':
-            case 'ArrowUp':
-            case 'PageUp':
+        case ' ': // Space
+            // Only navigate if at bottom of scroll
+            if (isAtBottom) {
+                e.preventDefault();
+                nextSlide();
+            } else {
+                // Scroll down
+                e.preventDefault();
+                currentSlideElement.scrollBy({
+                    top: currentSlideElement.clientHeight * 0.8,
+                    behavior: 'smooth'
+                });
+            }
+            break;
+
+        case 'ArrowLeft':
+        case 'PageUp':
+            e.preventDefault();
+            previousSlide();
+            break;
+
+        case 'ArrowUp':
+            // Only navigate if at top of scroll
+            if (isAtTop) {
                 e.preventDefault();
                 previousSlide();
-                break;
-
-            case 'Home':
-                e.preventDefault();
-                goToSlide(1);
-                break;
-
-            case 'End':
-                e.preventDefault();
-                goToSlide(totalSlides);
-                break;
-
-            case 'f':
-            case 'F':
-                e.preventDefault();
-                toggleFullscreen();
-                break;
-
-            case 'Escape':
-                if (document.fullscreenElement) {
-                    exitFullscreen();
-                }
-                break;
+            }
+            break;
         }
     }
 
@@ -138,6 +149,8 @@
 
         // Show new slide
         slides[currentSlide - 1].classList.add('active');
+        // Reset scroll position to top
+        slides[currentSlide - 1].scrollTop = 0;
 
         // Update UI
         updateUI();
