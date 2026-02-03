@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 استمارة فيدباك: تصميم استمارة المكاتب | صناع الحياة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 15px;
+        }
+        
+        .auto-save-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Progress */
+        .progress-container {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-right: 5px solid #667eea;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Questions */
+        .question {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .question-label {
+            display: block;
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .question-helper {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        /* Text Input */
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .char-counter {
+            text-align: left;
+            color: #999;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        /* Auto-save indicator */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 14px;
+            color: #666;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .auto-save-indicator.show {
+            display: flex;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .save-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #11998e;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        .save-icon.saved {
+            border: none;
+            animation: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .navigation {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .auto-save-indicator {
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 استمارة فيدباك: تصميم استمارة المكاتب</h1>
+            <p>مشروع رفع واقع مكاتب صناع الحياة في المحافظات</p>
+            <div class="meta">
+                <div>⏱️ الوقت المتوقع: 30-40 دقيقة</div>
+                <div class="auto-save-badge">💾 الإجابات تُحفظ تلقائياً - يمكنك العودة في أي وقت</div>
+            </div>
+        </div>
+        
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="progress-text">القسم 1 من 4</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <form id="feedback-form">
+                
+                <!-- القسم الأول: فهم سياق المكتب -->
+                <div class="section active" data-section="1">
+                    <div class="section-header">
+                        <div class="section-title">🏢 القسم الأول: فهم سياق المكتب</div>
+                        <div class="section-subtitle">4 أسئلة</div>
+                    </div>
+                    
+                    <!-- Q1 -->
+                    <div class="question">
+                        <label class="question-label">
+                            1. من وجهة نظرك، إيه الفرق الجوهري بين "الجمعية الشريكة" و"المكتب"؟
+                            <div class="question-helper">(اكتب 3-5 فروقات أساسية)</div>
+                        </label>
+                        <textarea id="q1_differences" name="q1_differences" placeholder="اكتب الفروقات الجوهرية..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q1">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="question">
+                        <label class="question-label">
+                            2. إيه الأدوار الأساسية للمكتب؟
+                            <div class="question-helper">(اكتب أهم 5 أدوار للمكتب في المحافظة)</div>
+                        </label>
+                        <textarea id="q2_roles" name="q2_roles" placeholder="1. ...\n2. ...\n3. ...\n4. ...\n5. ..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q2">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="question">
+                        <label class="question-label">
+                            3. إيه الهيكل التنظيمي المبدئي للمكتب؟
+                            <div class="question-helper">(مثلاً: منسق مكتب، مسؤول تمويل، مسؤول متطوعين، إلخ... رتبهم في شجرة تنظيمية بسيطة)</div>
+                        </label>
+                        <textarea id="q3_structure" name="q3_structure" placeholder="وصف الهيكل التنظيمي..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q3">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="question">
+                        <label class="question-label">
+                            4. إيه أكبر 3 تحديات بتواجه المكاتب حالياً؟
+                        </label>
+                        <textarea id="q4_challenges" name="q4_challenges" placeholder="1. ...\n2. ...\n3. ..." maxlength="600"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q4">0</span> / 600 حرف
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القسم الثاني: المحور الأول (النظام والبنية) -->
+                <div class="section" data-section="2">
+                    <div class="section-header">
+                        <div class="section-title">🏗️ القسم الثاني: المحور الأول - النظام والبنية المؤسسية</div>
+                        <div class="section-subtitle">4 أسئلة</div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. أ) الموضوعات المناسبة للمكتب (بدون تعديل أو بتعديل بسيط)
+                            <div class="question-helper">من الموضوعات الفرعية السبعة (الهيكل التنظيمي، اللوائح، اتخاذ القرارات، التوظيف، المحاسبة، الحوكمة، إدارة المخاطر)، إيه اللي مناسب للمكتب؟</div>
+                        </label>
+                        <textarea id="q5a_suitable" name="q5a_suitable" placeholder='مثال: "الهيكل التنظيمي - مناسب لكن محتاج تبسيط الأسئلة"' maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q5a">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. ب) الموضوعات غير المناسبة للمكتب (يُحذف أو يُستبدل)
+                            <div class="question-helper">إيه اللي مش منطقي للمكتب خالص؟ وليه؟</div>
+                        </label>
+                        <textarea id="q5b_unsuitable" name="q5b_unsuitable" placeholder='مثال: "الحوكمة وفصل السلطات - المكتب مش عنده مجلس إدارة مستقل، ده تابع للمؤسسة الأم"' maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q5b">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. ج) الموضوعات الناقصة (محتاج يُضاف)
+                            <div class="question-helper">إيه الموضوعات اللي مش موجودة في الاستمارة الحالية لكن مهمة للمكتب؟</div>
+                        </label>
+                        <textarea id="q5c_missing" name="q5c_missing" placeholder='مثال: "العلاقة بين المكتب والمؤسسة الأم - محتاج نفهم وضوح التبعية والصلاحيات"' maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q5c">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q8 -->
+                    <div class="question">
+                        <label class="question-label">
+                            5. د) أمثلة على أسئلة محتاجة تعديل جوهري
+                            <div class="question-helper">لو فيه أسئلة محددة شايفها محتاجة تتعدل، اذكرها هنا مع التعديل المقترح</div>
+                        </label>
+                        <textarea id="q5d_modifications" name="q5d_modifications" placeholder='مثال:\n- السؤال الأصلي: "هل يوجد مجلس إدارة فعّال؟"\n- السؤال المعدّل للمكتب: "هل يوجد لجنة استشارية محلية تدعم المكتب؟"' maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q5d">0</span> / 1000 حرف
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القسم الثالث: المحاور الثلاثة المتبقية -->
+                <div class="section" data-section="3">
+                    <div class="section-header">
+                        <div class="section-title">💪 القسم الثالث: المحاور الأخرى</div>
+                        <div class="section-subtitle">المحور الثاني (الروح والقيادة)، المحور الثالث (التقييم والأداء)، المحور الرابع (الموارد والاستدامة)</div>
+                    </div>
+
+                    <!-- المحور الثاني -->
+                    <div style="background: #fff9e6; padding: 20px; border-radius: 12px; margin-bottom: 30px; border-right: 4px solid #ffc107;">
+                        <h3 style="color: #856404; margin-bottom: 15px;">🎭 المحور الثاني: الروح والقيادة</h3>
+                        <p style="color: #856404; font-size: 14px;">(الثقافة المؤسسية، الولاء والانتماء، المعنويات، الاستقالات، التفويض، القيادة والرؤية)</p>
+                    </div>
+
+                    <!-- Q9 -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. أ) الموضوعات المناسبة للمكتب
+                        </label>
+                        <textarea id="q6a_suitable_leadership" name="q6a_suitable_leadership" placeholder="اكتب الموضوعات المناسبة من المحور الثاني..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q6a">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q10 -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. ب) الموضوعات غير المناسبة للمكتب
+                        </label>
+                        <textarea id="q6b_unsuitable_leadership" name="q6b_unsuitable_leadership" placeholder="اكتب الموضوعات غير المناسبة..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q6b">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q11 -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. ج) الموضوعات الناقصة
+                        </label>
+                        <textarea id="q6c_missing_leadership" name="q6c_missing_leadership" placeholder="اكتب الموضوعات الناقصة..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q6c">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q12 -->
+                    <div class="question">
+                        <label class="question-label">
+                            6. د) أمثلة على أسئلة محتاجة تعديل جوهري
+                        </label>
+                        <textarea id="q6d_modifications_leadership" name="q6d_modifications_leadership" placeholder="اكتب أمثلة على أسئلة محتاجة تعديل..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q6d">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- المحور الثالث -->
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; margin: 30px 0; border-right: 4px solid #4caf50;">
+                        <h3 style="color: #1b5e20; margin-bottom: 15px;">📊 المحور الثالث: التقييم والأداء والأثر</h3>
+                        <p style="color: #1b5e20; font-size: 14px;">(الفريق والتماسك، تقييم الأداء، التنفيذ والانضباط، الأهداف والتخطيط، النتائج والإنجازات، قياس الأثر)</p>
+                    </div>
+
+                    <!-- Q13 -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. أ) الموضوعات المناسبة للمكتب
+                        </label>
+                        <textarea id="q7a_suitable_performance" name="q7a_suitable_performance" placeholder="اكتب الموضوعات المناسبة من المحور الثالث..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q7a">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q14 -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. ب) الموضوعات غير المناسبة للمكتب
+                        </label>
+                        <textarea id="q7b_unsuitable_performance" name="q7b_unsuitable_performance" placeholder="اكتب الموضوعات غير المناسبة..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q7b">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q15 -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. ج) الموضوعات الناقصة
+                            <div class="question-helper">بشكل خاص: المكتب بيقيس أثره إزاي؟ إيه المؤشرات اللي تثبت نجاحه؟</div>
+                        </label>
+                        <textarea id="q7c_missing_performance" name="q7c_missing_performance" placeholder="اكتب الموضوعات الناقصة والمؤشرات المهمة..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q7c">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q16 -->
+                    <div class="question">
+                        <label class="question-label">
+                            7. د) أمثلة على أسئلة محتاجة تعديل جوهري
+                        </label>
+                        <textarea id="q7d_modifications_performance" name="q7d_modifications_performance" placeholder="اكتب أمثلة على أسئلة محتاجة تعديل..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q7d">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- المحور الرابع -->
+                    <div style="background: #e3f2fd; padding: 20px; border-radius: 12px; margin: 30px 0; border-right: 4px solid #2196f3;">
+                        <h3 style="color: #0d47a1; margin-bottom: 15px;">💰 المحور الرابع: الموارد والاستدامة</h3>
+                        <p style="color: #0d47a1; font-size: 14px;">(التمويل، التدريب والتطوير، التقنية والرقمنة، الشراكات، إدارة المعرفة، الإبداع والتطوير)</p>
+                    </div>
+
+                    <!-- Q17 -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. أ) الموضوعات المناسبة للمكتب
+                        </label>
+                        <textarea id="q8a_suitable_resources" name="q8a_suitable_resources" placeholder="اكتب الموضوعات المناسبة من المحور الرابع..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q8a">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q18 -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. ب) الموضوعات غير المناسبة للمكتب
+                        </label>
+                        <textarea id="q8b_unsuitable_resources" name="q8b_unsuitable_resources" placeholder="اكتب الموضوعات غير المناسبة..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q8b">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q19 -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. ج) الموضوعات الناقصة
+                            <div class="question-helper">بشكل خاص: إيه الموارد الحرجة اللي المكتب محتاجها علشان يستمر؟</div>
+                        </label>
+                        <textarea id="q8c_missing_resources" name="q8c_missing_resources" placeholder="اكتب الموضوعات الناقصة والموارد الحرجة..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q8c">0</span> / 1000 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q20 -->
+                    <div class="question">
+                        <label class="question-label">
+                            8. د) أمثلة على أسئلة محتاجة تعديل جوهري
+                        </label>
+                        <textarea id="q8d_modifications_resources" name="q8d_modifications_resources" placeholder="اكتب أمثلة على أسئلة محتاجة تعديل..." maxlength="1000"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q8d">0</span> / 1000 حرف
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القسم الرابع: الرؤية الشاملة -->
+                <div class="section" data-section="4">
+                    <div class="section-header">
+                        <div class="section-title">🎯 القسم الرابع: الرؤية الشاملة</div>
+                        <div class="section-subtitle">7 أسئلة نهائية</div>
+                    </div>
+
+                    <!-- Q21 -->
+                    <div class="question">
+                        <label class="question-label">
+                            9. لو تقدر تختار 3 موضوعات فرعية فقط (من كل المحاور الأربعة) تشخّص بيها واقع المكتب، هتختار إيه؟
+                            <div class="question-helper">يعني: إيه أهم 3 أبعاد لازم نركز عليها في استمارة المكاتب؟ وليه اخترت دول بالذات؟</div>
+                        </label>
+                        <textarea id="q9_top3_topics" name="q9_top3_topics" placeholder="1. ...\n2. ...\n3. ...\n\nليه اخترت دول: ..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q9">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q22 -->
+                    <div class="question">
+                        <label class="question-label">
+                            10. لو استمارة المكتب هتتكون من 50 سؤال بس (بدل 158)، إيه المحاور اللي تاخد النسب دي:
+                            <div class="question-helper">اكتب التوزيع المقترح وليه اخترت التوزيع ده</div>
+                        </label>
+                        <textarea id="q10_distribution" name="q10_distribution" placeholder="- المحور الأول (النظام والبنية): ___% من الأسئلة\n- المحور الثاني (الروح والقيادة): ___% من الأسئلة\n- المحور الثالث (التقييم والأداء): ___% من الأسئلة\n- المحور الرابع (الموارد والاستدامة): ___% من الأسئلة\n\nليه اخترت التوزيع ده: ..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q10">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q23 -->
+                    <div class="question">
+                        <label class="question-label">
+                            11. إيه الحاجة الوحيدة اللي لو فهمناها عن المكتب، هنعرف "المكتب ده قوي ولا ضعيف"؟
+                            <div class="question-helper">يعني: إيه المؤشر الأهم لصحة المكتب؟</div>
+                        </label>
+                        <textarea id="q11_key_indicator" name="q11_key_indicator" placeholder="اكتب المؤشر الأهم..." maxlength="500"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q11">0</span> / 500 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q24 -->
+                    <div class="question">
+                        <label class="question-label">
+                            12. لو تتخيل "المكتب المثالي"، إيه أهم 5 صفات فيه؟
+                        </label>
+                        <textarea id="q12_ideal_office" name="q12_ideal_office" placeholder="1. ...\n2. ...\n3. ...\n4. ...\n5. ..." maxlength="600"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q12">0</span> / 600 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q25 -->
+                    <div class="question">
+                        <label class="question-label">
+                            13. إيه اللي مش موجود خالص في الاستمارة الحالية ولازم يكون في استمارة المكتب؟
+                            <div class="question-helper">موضوعات كبيرة مفتقدة تماماً</div>
+                        </label>
+                        <textarea id="q13_completely_missing" name="q13_completely_missing" placeholder="اكتب الموضوعات المفتقدة..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q13">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q26 -->
+                    <div class="question">
+                        <label class="question-label">
+                            14. لو عندك أي ملاحظات عامة على الاستمارة الحالية (طريقة السؤال، اللغة، الترتيب، إلخ)، اكتبها هنا:
+                        </label>
+                        <textarea id="q14_general_notes" name="q14_general_notes" placeholder="اكتب ملاحظاتك العامة..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q14">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Q27 -->
+                    <div class="question">
+                        <label class="question-label">
+                            15. فيه حاجة عايز تضيفها مش موجودة في الاستمارة دي؟
+                        </label>
+                        <textarea id="q15_additional" name="q15_additional" placeholder="أي إضافات أخرى..." maxlength="800"></textarea>
+                        <div class="char-counter">
+                            <span id="char-count-q15">0</span> / 800 حرف
+                        </div>
+                    </div>
+
+                    <!-- Final Message -->
+                    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; border: 2px solid #667eea;">
+                        <h3 style="color: #667eea; font-size: 24px; margin-bottom: 15px;">🙏 شكراً لوقتك ومجهودك!</h3>
+                        <p style="font-size: 16px; color: #666; line-height: 1.8;">
+                            فيدباكك هيساعدنا نصمم استمارة فعّالة لرفع واقع المكاتب<br>
+                            وهنستخدم إجاباتك في تصميم الاستمارة النهائية
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn btn-prev" id="prev-btn" style="display: none;">
+                        ← السابق
+                    </button>
+                    <button type="button" class="btn btn-next" id="next-btn">
+                        التالي →
+                    </button>
+                    <button type="submit" class="btn btn-submit" id="submit-btn" style="display: none;">
+                        ✅ إرسال الاستمارة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Auto-save Indicator -->
+    <div class="auto-save-indicator" id="auto-save-indicator">
+        <div class="save-icon" id="save-icon"></div>
+        <span id="save-text">جاري الحفظ...</span>
+    </div>
+    
+    <!-- Loading -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري إرسال الاستمارة...</div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+
+    <!-- Main Script -->
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // State
+        let currentSection = 1;
+        const totalSections = 4;
+        let autoSaveTimeout;
+        const AUTO_SAVE_DELAY = 2000; // 2 seconds
+        
+        // DOM Elements
+        const sections = document.querySelectorAll('.section');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const form = document.getElementById('feedback-form');
+        const autoSaveIndicator = document.getElementById('auto-save-indicator');
+        const saveIcon = document.getElementById('save-icon');
+        const saveText = document.getElementById('save-text');
+
+        // All textarea IDs for character counters
+        const textareas = [
+            'q1_differences', 'q2_roles', 'q3_structure', 'q4_challenges',
+            'q5a_suitable', 'q5b_unsuitable', 'q5c_missing', 'q5d_modifications',
+            'q6a_suitable_leadership', 'q6b_unsuitable_leadership', 'q6c_missing_leadership', 'q6d_modifications_leadership',
+            'q7a_suitable_performance', 'q7b_unsuitable_performance', 'q7c_missing_performance', 'q7d_modifications_performance',
+            'q8a_suitable_resources', 'q8b_unsuitable_resources', 'q8c_missing_resources', 'q8d_modifications_resources',
+            'q9_top3_topics', 'q10_distribution', 'q11_key_indicator', 'q12_ideal_office',
+            'q13_completely_missing', 'q14_general_notes', 'q15_additional'
+        ];
+
+        // Setup character counters
+        textareas.forEach((id, index) => {
+            const textarea = document.getElementById(id);
+            const counter = document.getElementById(`char-count-${id.replace(/_/g, '-').replace(/q(\d+)/, 'q$1')}`);
+            
+            if (textarea && counter) {
+                textarea.addEventListener('input', function() {
+                    counter.textContent = this.value.length;
+                    triggerAutoSave();
+                });
+            }
+        });
+
+        // Load saved data on page load
+        window.addEventListener('load', function() {
+            loadSavedData();
+        });
+
+        // Auto-save function
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            
+            autoSaveTimeout = setTimeout(() => {
+                saveToLocalStorage();
+            }, AUTO_SAVE_DELAY);
+        }
+
+        // Save to localStorage
+        function saveToLocalStorage() {
+            showSaveIndicator('saving');
+            
+            const formData = collectFormData();
+            localStorage.setItem('offices_feedback_draft', JSON.stringify(formData));
+            localStorage.setItem('offices_feedback_last_save', new Date().toISOString());
+            
+            setTimeout(() => {
+                showSaveIndicator('saved');
+                setTimeout(() => {
+                    hideSaveIndicator();
+                }, 2000);
+            }, 500);
+        }
+
+        // Load from localStorage
+        function loadSavedData() {
+            const savedData = localStorage.getItem('offices_feedback_draft');
+            
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    // Populate all fields
+                    Object.keys(data).forEach(key => {
+                        const field = document.getElementById(key);
+                        if (field && data[key]) {
+                            field.value = data[key];
+                            
+                            // Update character counter
+                            const counterId = `char-count-${key.replace(/_/g, '-')}`;
+                            const counter = document.getElementById(counterId);
+                            if (counter) {
+                                counter.textContent = data[key].length;
+                            }
+                        }
+                    });
+                    
+                    console.log('Loaded saved data from localStorage');
+                } catch (error) {
+                    console.error('Error loading saved data:', error);
+                }
+            }
+        }
+
+        // Show save indicator
+        function showSaveIndicator(status) {
+            autoSaveIndicator.classList.add('show');
+            
+            if (status === 'saving') {
+                saveIcon.classList.remove('saved');
+                saveIcon.style.borderColor = '#667eea';
+                saveText.textContent = 'جاري الحفظ...';
+            } else if (status === 'saved') {
+                saveIcon.classList.add('saved');
+                saveIcon.innerHTML = '✓';
+                saveIcon.style.color = '#11998e';
+                saveText.textContent = 'تم الحفظ ✓';
+            }
+        }
+
+        // Hide save indicator
+        function hideSaveIndicator() {
+            autoSaveIndicator.classList.remove('show');
+            setTimeout(() => {
+                saveIcon.innerHTML = '';
+                saveIcon.classList.remove('saved');
+            }, 300);
+        }
+
+        // Update Progress
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            progressFill.style.width = progress + '%';
+            progressText.textContent = `القسم ${currentSection} من ${totalSections}`;
+        }
+
+        // Show Section
+        function showSection(sectionNum) {
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.querySelector(`.section[data-section="${sectionNum}"]`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Update buttons
+            if (sectionNum === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'flex';
+            }
+            
+            if (sectionNum === totalSections) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'flex';
+                submitBtn.style.display = 'none';
+            }
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Navigation
+        nextBtn.addEventListener('click', function() {
+            currentSection++;
+            showSection(currentSection);
+            saveToLocalStorage(); // Save when moving sections
+        });
+
+        prevBtn.addEventListener('click', function() {
+            currentSection--;
+            showSection(currentSection);
+        });
+
+        // Collect Form Data
+        function collectFormData() {
+            const formData = {};
+            
+            textareas.forEach(id => {
+                const field = document.getElementById(id);
+                if (field) {
+                    formData[id] = field.value.trim();
+                }
+            });
+            
+            return formData;
+        }
+
+        // Form Submit
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            loadingOverlay.classList.add('show');
+            
+            try {
+                // Collect data
+                const formData = collectFormData();
+                
+                // Save to Firestore
+                const docRef = await db.collection('offices-feedback-survey').add({
+                    ...formData,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    submittedAt: new Date().toISOString()
+                });
+                
+                console.log('Survey saved with ID:', docRef.id);
+                
+                // Clear localStorage
+                localStorage.removeItem('offices_feedback_draft');
+                localStorage.removeItem('offices_feedback_last_save');
+                
+                // Redirect to thank you page
+                setTimeout(() => {
+                    window.location.href = 'offices-feedback-thank-you.html';
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error submitting survey:', error);
+                loadingOverlay.classList.remove('show');
+                alert('عذراً، حدث خطأ أثناء إرسال الاستمارة. الرجاء المحاولة مرة أخرى.');
+            }
+        });
+
+        // Initialize
+        showSection(1);
+        
+    </script>
+</body>
+</html>
