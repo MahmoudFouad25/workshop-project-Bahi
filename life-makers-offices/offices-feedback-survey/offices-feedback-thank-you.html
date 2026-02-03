@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شكراً لك! 🎉 | استمارة فيدباك المكاتب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Animated Background */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .icon-float {
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.1;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .icon-float:nth-child(2) {
+            top: 15%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+        
+        .icon-float:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+        
+        /* Container */
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Success Icon */
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            animation: scaleIn 0.6s ease-out 0.3s both;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        /* Title */
+        h1 {
+            font-size: 36px;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Message */
+        .message {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-out 0.7s both;
+        }
+        
+        .message strong {
+            color: #667eea;
+        }
+        
+        /* Project Info */
+        .project-info {
+            background: linear-gradient(135deg, #f6f9fc 0%, #eef2f7 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            animation: fadeIn 0.8s ease-out 0.9s both;
+            border: 2px solid #667eea;
+        }
+        
+        .project-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .project-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        
+        .project-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            transition: transform 0.3s;
+        }
+        
+        .stat:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        /* Next Steps */
+        .next-steps {
+            background: #fff9e6;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-right: 5px solid #ffc107;
+            animation: fadeIn 0.8s ease-out 1.1s both;
+        }
+        
+        .next-steps h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .next-steps p {
+            color: #856404;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+            animation: fadeIn 0.8s ease-out 1.3s both;
+        }
+        
+        .footer p {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            margin: 0 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            box-shadow: 0 5px 15px rgba(56, 239, 125, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.4);
+        }
+        
+        /* Emoji Animation */
+        .emoji-animate {
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 25px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .message {
+                font-size: 16px;
+            }
+            
+            .project-title {
+                font-size: 22px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .project-stats {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .icon-float {
+                font-size: 60px;
+            }
+            
+            .btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="icon-float">🏢</div>
+        <div class="icon-float">📋</div>
+        <div class="icon-float">💡</div>
+        <!-- Stars will be generated by JavaScript -->
+    </div>
+    
+    <div class="container">
+        <!-- Success Icon -->
+        <div class="success-icon">
+            ✅
+        </div>
+        
+        <!-- Title -->
+        <h1>شكراً لمشاركتك! <span class="emoji-animate">🎉</span></h1>
+        
+        <!-- Message -->
+        <div class="message">
+            <p><strong>تم إرسال فيدباكك بنجاح!</strong></p>
+            <p>مساهمتك اليوم ستساعدنا في تصميم <strong>استمارة تشخيص فعّالة</strong> تخدم <strong>مكاتب صناع الحياة</strong> في كل المحافظات</p>
+            <p>معاً نرفع واقع المكاتب ونبني نظام مؤسسي قوي 💪</p>
+        </div>
+        
+        <!-- Project Info -->
+        <div class="project-info">
+            <div class="project-title">
+                <span>🏢</span>
+                <span>مشروع رفع واقع المكاتب</span>
+            </div>
+            
+            <div class="project-description">
+                هدفنا: بناء استمارة تشخيصية شاملة لقياس أداء مكاتب صناع الحياة وتحديد نقاط القوة والتطوير
+            </div>
+            
+            <div class="project-stats">
+                <div class="stat">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">تشخيص شامل<br>للواقع المؤسسي</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-label">خطط تطوير<br>مبنية على البيانات</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">🏗️</div>
+                    <div class="stat-label">بناء أنظمة<br>مؤسسية قوية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-icon">💪</div>
+                    <div class="stat-label">تمكين الفرق<br>في المحافظات</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Next Steps -->
+        <div class="next-steps">
+            <h3>📅 الخطوات القادمة</h3>
+            <p>
+                • سنقوم بتحليل كل الفيدباك المقدم<br>
+                • سنصمم الاستمارة النهائية بناءً على مساهماتكم<br>
+                • سيتم مشاركة النسخة النهائية مع الجميع قريباً
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>🌟 معاً نبني مؤسسات قوية ومستدامة 🌟</p>
+            <a href="offices-feedback-survey.html" class="btn">📝 عرض الاستمارة</a>
+            <a href="https://sanaelhayah.org" class="btn btn-secondary" target="_blank">🏠 العودة للموقع الرئيسي</a>
+        </div>
+    </div>
+    
+    <script>
+        // Generate random stars
+        function createStars() {
+            const container = document.querySelector('.background-animation');
+            const numberOfStars = 50;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                container.appendChild(star);
+            }
+        }
+        
+        // Run on page load
+        window.addEventListener('load', createStars);
+        
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#11998e', '#38ef7d', '#ffc107'];
+            const confettiCount = 60;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = Math.random();
+                confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                confetti.style.zIndex = '9999';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                
+                document.body.appendChild(confetti);
+                
+                // Animate confetti falling
+                const fallDuration = Math.random() * 3 + 2;
+                const drift = (Math.random() - 0.5) * 200; // Horizontal drift
+                
+                confetti.animate([
+                    { 
+                        transform: 'translateY(0) translateX(0) rotate(0deg)', 
+                        opacity: 1 
+                    },
+                    { 
+                        transform: `translateY(${window.innerHeight + 20}px) translateX(${drift}px) rotate(${Math.random() * 720}deg)`, 
+                        opacity: 0 
+                    }
+                ], {
+                    duration: fallDuration * 1000,
+                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                });
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, fallDuration * 1000);
+            }
+        }
+        
+        // Trigger confetti on page load
+        setTimeout(createConfetti, 500);
+        
+        // Optional: Add another confetti burst after 2 seconds
+        setTimeout(createConfetti, 2500);
+    </script>
+</body>
+</html>
