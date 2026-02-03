@@ -801,17 +801,35 @@ const firebaseConfig = {
 </script>
 
 
+    آآآه فهمتك دلوقتي!
+يعني استمارة واحدة مشتركة - أي حد يفتحها من أي جهاز يشوف نفس الإجابات ويقدر يكمل عليها!
+زي Google Docs بالظبط - استمارة تعاونية.
+
+الكود المعدّل (استمارة واحدة مشتركة):
+📄 offices-feedback-survey.html - النسخة الصحيحة
+غيّر جزء الـ JavaScript بالكود ده:
+html    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Config -->
+    <script src="../config.js"></script>
+
     <!-- Main Script -->
     <script>
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         
+        // FIXED DOCUMENT ID - الاستمارة الوحيدة المشتركة
+        const SHARED_DOC_ID = 'shared-feedback-form';
+        
         // State
         let currentSection = 1;
         const totalSections = 4;
         let autoSaveTimeout;
         const AUTO_SAVE_DELAY = 2000; // 2 seconds
+        let sharedDocRef = null;
         
         // DOM Elements
         const sections = document.querySelectorAll('.section');
@@ -838,7 +856,7 @@ const firebaseConfig = {
         ];
 
         // Setup character counters
-        textareas.forEach((id, index) => {
+        textareas.forEach((id) => {
             const textarea = document.getElementById(id);
             const counter = document.getElementById(`char-count-${id.replace(/_/g, '-').replace(/q(\d+)/, 'q$1')}`);
             
@@ -850,63 +868,136 @@ const firebaseConfig = {
             }
         });
 
-        // Load saved data on page load
-        window.addEventListener('load', function() {
-            loadSavedData();
+        // Initialize on page load
+        window.addEventListener('load', async function() {
+            await initializeSharedForm();
         });
+
+        // Initialize shared form
+        async function initializeSharedForm() {
+            // Set up Firestore reference to THE SINGLE shared document
+            sharedDocRef = db.collection('offices-feedback-shared').doc(SHARED_DOC_ID);
+            
+            // Load saved data from Firebase
+            await loadSharedDataFromFirebase();
+            
+            // Listen for real-time updates
+            setupRealtimeListener();
+        }
+
+        // Setup real-time listener for changes from other users
+        function setupRealtimeListener() {
+            sharedDocRef.onSnapshot((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    // Update fields that are different (avoid overwriting user's current typing)
+                    textareas.forEach(id => {
+                        const field = document.getElementById(id);
+                        if (field && data[id] !== undefined) {
+                            // Only update if field is not currently focused (user not typing)
+                            if (document.activeElement !== field) {
+                                if (field.value !== data[id]) {
+                                    field.value = data[id];
+                                    
+                                    // Update character counter
+                                    const counterId = `char-count-${id.replace(/_/g, '-')}`;
+                                    const counter = document.getElementById(counterId);
+                                    if (counter) {
+                                        counter.textContent = data[id].length;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }, (error) => {
+                console.error('Error in real-time listener:', error);
+            });
+        }
 
         // Auto-save function
         function triggerAutoSave() {
             clearTimeout(autoSaveTimeout);
             
             autoSaveTimeout = setTimeout(() => {
-                saveToLocalStorage();
+                saveToFirebase();
             }, AUTO_SAVE_DELAY);
         }
 
-        // Save to localStorage
-        function saveToLocalStorage() {
+        // Save to Firebase
+        async function saveToFirebase() {
+            if (!sharedDocRef) return;
+            
             showSaveIndicator('saving');
             
-            const formData = collectFormData();
-            localStorage.setItem('offices_feedback_draft', JSON.stringify(formData));
-            localStorage.setItem('offices_feedback_last_save', new Date().toISOString());
-            
-            setTimeout(() => {
-                showSaveIndicator('saved');
+            try {
+                const formData = collectFormData();
+                
+                await sharedDocRef.set({
+                    ...formData,
+                    lastSaved: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastSavedClient: new Date().toISOString(),
+                    isDraft: true
+                }, { merge: true });
+                
+                console.log('Auto-saved to Firebase (shared document)');
+                
+                setTimeout(() => {
+                    showSaveIndicator('saved');
+                    setTimeout(() => {
+                        hideSaveIndicator();
+                    }, 2000);
+                }, 500);
+                
+            } catch (error) {
+                console.error('Error auto-saving to Firebase:', error);
+                showSaveIndicator('error');
                 setTimeout(() => {
                     hideSaveIndicator();
-                }, 2000);
-            }, 500);
+                }, 3000);
+            }
         }
 
-        // Load from localStorage
-        function loadSavedData() {
-            const savedData = localStorage.getItem('offices_feedback_draft');
+        // Load from Firebase
+        async function loadSharedDataFromFirebase() {
+            if (!sharedDocRef) return;
             
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
+            try {
+                const doc = await sharedDocRef.get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    console.log('Loading shared data from Firebase...');
                     
                     // Populate all fields
-                    Object.keys(data).forEach(key => {
-                        const field = document.getElementById(key);
-                        if (field && data[key]) {
-                            field.value = data[key];
+                    textareas.forEach(id => {
+                        const field = document.getElementById(id);
+                        if (field && data[id]) {
+                            field.value = data[id];
                             
                             // Update character counter
-                            const counterId = `char-count-${key.replace(/_/g, '-')}`;
+                            const counterId = `char-count-${id.replace(/_/g, '-')}`;
                             const counter = document.getElementById(counterId);
                             if (counter) {
-                                counter.textContent = data[key].length;
+                                counter.textContent = data[id].length;
                             }
                         }
                     });
                     
-                    console.log('Loaded saved data from localStorage');
-                } catch (error) {
-                    console.error('Error loading saved data:', error);
+                    console.log('Shared data loaded successfully from Firebase');
+                    
+                    // Show notification
+                    showSaveIndicator('loaded');
+                    setTimeout(() => {
+                        hideSaveIndicator();
+                    }, 3000);
+                } else {
+                    console.log('No saved data found - starting fresh');
                 }
+            } catch (error) {
+                console.error('Error loading shared data:', error);
             }
         }
 
@@ -916,13 +1007,28 @@ const firebaseConfig = {
             
             if (status === 'saving') {
                 saveIcon.classList.remove('saved');
+                saveIcon.innerHTML = '';
                 saveIcon.style.borderColor = '#667eea';
+                saveIcon.style.color = '';
                 saveText.textContent = 'جاري الحفظ...';
             } else if (status === 'saved') {
                 saveIcon.classList.add('saved');
                 saveIcon.innerHTML = '✓';
                 saveIcon.style.color = '#11998e';
+                saveIcon.style.borderColor = '';
                 saveText.textContent = 'تم الحفظ ✓';
+            } else if (status === 'loaded') {
+                saveIcon.classList.add('saved');
+                saveIcon.innerHTML = '↻';
+                saveIcon.style.color = '#3498db';
+                saveIcon.style.borderColor = '';
+                saveText.textContent = 'تم تحميل البيانات المشتركة';
+            } else if (status === 'error') {
+                saveIcon.classList.add('saved');
+                saveIcon.innerHTML = '✗';
+                saveIcon.style.color = '#e74c3c';
+                saveIcon.style.borderColor = '';
+                saveText.textContent = 'خطأ في الحفظ - حاول تاني';
             }
         }
 
@@ -976,7 +1082,7 @@ const firebaseConfig = {
         nextBtn.addEventListener('click', function() {
             currentSection++;
             showSection(currentSection);
-            saveToLocalStorage(); // Save when moving sections
+            saveToFirebase(); // Save when moving sections
         });
 
         prevBtn.addEventListener('click', function() {
@@ -1002,6 +1108,11 @@ const firebaseConfig = {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Confirm submission
+            if (!confirm('هل أنت متأكد من إرسال الاستمارة النهائية؟\n(بعد الإرسال لن يمكن التعديل)')) {
+                return;
+            }
+            
             // Show loading
             loadingOverlay.classList.add('show');
             
@@ -1009,18 +1120,21 @@ const firebaseConfig = {
                 // Collect data
                 const formData = collectFormData();
                 
-                // Save to Firestore
-                const docRef = await db.collection('offices-feedback-survey').add({
+                // Save final submission
+                const docRef = await db.collection('offices-feedback-submissions').add({
                     ...formData,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     submittedAt: new Date().toISOString()
                 });
                 
-                console.log('Survey saved with ID:', docRef.id);
+                console.log('Survey submitted with ID:', docRef.id);
                 
-                // Clear localStorage
-                localStorage.removeItem('offices_feedback_draft');
-                localStorage.removeItem('offices_feedback_last_save');
+                // Mark shared draft as submitted
+                await sharedDocRef.update({
+                    submitted: true,
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    submissionId: docRef.id
+                });
                 
                 // Redirect to thank you page
                 setTimeout(() => {
