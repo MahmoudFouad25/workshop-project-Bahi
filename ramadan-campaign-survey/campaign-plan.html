@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 خطة الـ7 أيام الأولى | حملة "الناس لبعضها"</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 15px;
+        }
+        
+        .auto-save-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        /* Progress */
+        .progress-container {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        /* Content */
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .step {
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-right: 5px solid #667eea;
+        }
+        
+        .step-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .step-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 30px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .form-label .required {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+        
+        select, input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        select:focus, input[type="text"]:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Time Period */
+        .time-period {
+            margin-bottom: 35px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .time-period-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .field-group {
+            margin-bottom: 20px;
+        }
+        
+        .field-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .tip-icon {
+            cursor: help;
+            color: #667eea;
+            font-size: 18px;
+            position: relative;
+        }
+        
+        .tip-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 25px;
+            background: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            width: 280px;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: normal;
+        }
+        
+        .tip-icon:hover .tip-content {
+            display: block;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Validation Warning */
+        .validation-warning {
+            display: none;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .validation-warning.show {
+            display: block;
+            animation: shake 0.3s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .btn-next,
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-next:hover:not(:disabled),
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        
+        /* Auto-save indicator */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 14px;
+            color: #666;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .auto-save-indicator.show {
+            display: flex;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .save-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #11998e;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        .save-icon.saved {
+            border: none;
+            animation: none;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Loading */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .navigation {
+                flex-direction: column-reverse;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .auto-save-indicator {
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 10px;
+            }
+            
+            .tip-content {
+                width: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📅 خطة الـ7 أيام الأولى</h1>
+            <p>حملة "الناس لبعضها" - رمضان 1446هـ</p>
+            <div class="meta">
+                <div>⏱️ الوقت المتوقع: 20-30 دقيقة</div>
+                <div class="auto-save-badge">💾 الخطة تُحفظ تلقائياً - يمكنك العودة في أي وقت</div>
+            </div>
+        </div>
+        
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-text">
+                <span id="progress-text">الخطوة 1 من 8</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <form id="plan-form">
+                
+                <!-- Step 0: بيانات المحافظة -->
+                <div class="step active" data-step="0">
+                    <div class="step-header">
+                        <div class="step-title">🏢 بيانات المحافظة</div>
+                        <div class="step-subtitle">ابدأ بتحديد المحافظة والمسؤول</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>
+                            اختر المحافظة:
+                        </label>
+                        <select id="governorate" name="governorate" required>
+                            <option value="">-- اختر المحافظة --</option>
+                            <option value="الاسكندرية">الاسكندرية</option>
+                            <option value="اسيوط">اسيوط</option>
+                            <option value="البحيرة">البحيرة</option>
+                            <option value="الجيزة">الجيزة</option>
+                            <option value="السويس">السويس</option>
+                            <option value="الشرقية">الشرقية</option>
+                            <option value="الغربية">الغربية</option>
+                            <option value="الفيوم">الفيوم</option>
+                            <option value="المنوفية">المنوفية</option>
+                            <option value="المنيا">المنيا</option>
+                            <option value="بني سويف">بني سويف</option>
+                            <option value="دمياط">دمياط</option>
+                            <option value="سوهاج">سوهاج</option>
+                            <option value="بورسعيد">بورسعيد</option>
+                            <option value="الاسماعيلية">الاسماعيلية</option>
+                            <option value="الاقصر">الاقصر</option>
+                            <option value="القاهرة">القاهرة</option>
+                            <option value="القليوبية">القليوبية</option>
+                            <option value="الوادي الجديد">الوادي الجديد</option>
+                            <option value="البحر الاحمر">البحر الاحمر</option>
+                            <option value="الدقهلية">الدقهلية</option>
+                            <option value="شمال سيناء">شمال سيناء</option>
+                            <option value="قنا">قنا</option>
+                            <option value="كفر الشيخ">كفر الشيخ</option>
+                            <option value="مطروح">مطروح</option>
+                            <option value="اسوان">اسوان</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>
+                            اسم مسؤول الحملة:
+                        </label>
+                        <input type="text" id="responsible" name="responsible" placeholder="مثال: أحمد محمد" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            المستهدف الإجمالي للأسبوع الأول (بالجنيه):
+                        </label>
+                        <input type="text" id="target" name="target" placeholder="مثال: 500000">
+                    </div>
+                </div>
+
+                <!-- Day 1 -->
+                <div class="step" data-step="1">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم الأول</div>
+                        <div class="step-subtitle">حدد الأنشطة والمسؤوليات والنتائج المتوقعة</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">تاريخ اليوم الأول:</label>
+                        <input type="date" id="day1_date" name="day1_date">
+                    </div>
+                    
+                    <!-- Morning -->
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح (9 ص - 12 ظ)</div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">
+                                النشاط:
+                                <span class="tip-icon">💡
+                                    <div class="tip-content">اكتب نشاط محدد - مثال: "اجتماع البورد - مراجعة الخطة النهائية"</div>
+                                </span>
+                            </div>
+                            <textarea id="day1_morning_activity" name="day1_morning_activity" placeholder="مثال: اجتماع البورد - مراجعة الخطة النهائية"></textarea>
+                            <div class="validation-warning" id="warn-day1_morning_activity">⚠️ حاول تكون أكثر تحديداً - اذكر التفاصيل!</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">
+                                المسؤول:
+                                <span class="tip-icon">💡
+                                    <div class="tip-content">اكتب الأسماء - ممنوع "الفريق" أو "الجميع"</div>
+                                </span>
+                            </div>
+                            <textarea id="day1_morning_responsible" name="day1_morning_responsible" placeholder="مثال: مدير الحملة + قادة البنود الـ7"></textarea>
+                            <div class="validation-warning" id="warn-day1_morning_responsible">⚠️ حدد بالاسم - مش "الفريق"!</div>
+                        </div>
+                        
+                        <div class="field-group">
+                            <div class="field-label">
+                                النتيجة المتوقعة:
+                                <span class="tip-icon">💡
+                                    <div class="tip-content">اكتب رقم واضح - مثال: "10 كراتين confirmed"</div>
+                                </span>
+                            </div>
+                            <textarea id="day1_morning_output" name="day1_morning_output" placeholder="مثال: كل قائد بند يطلع بقائمة المسؤوليات"></textarea>
+                            <div class="validation-warning" id="warn-day1_morning_output">⚠️ حط رقم واضح - كام بالظبط؟</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Afternoon -->
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر (2 ظ - 5 م)</div>
+                        <div class="field-group">
+                            <div class="field-label">النشاط:</div>
+                            <textarea id="day1_afternoon_activity" name="day1_afternoon_activity" placeholder="مثال: إطلاق حملة الكراتين - الاتصال بأول 20 متبرع"></textarea>
+                            <div class="validation-warning" id="warn-day1_afternoon_activity">⚠️ حاول تكون أكثر تحديداً!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">المسؤول:</div>
+                            <textarea id="day1_afternoon_responsible" name="day1_afternoon_responsible" placeholder="مثال: فريق الكراتين (أحمد + مريم + محمد)"></textarea>
+                            <div class="validation-warning" id="warn-day1_afternoon_responsible">⚠️ حدد بالاسم!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">النتيجة المتوقعة:</div>
+                            <textarea id="day1_afternoon_output" name="day1_afternoon_output" placeholder="مثال: 10 كراتين confirmed على الأقل"></textarea>
+                            <div class="validation-warning" id="warn-day1_afternoon_output">⚠️ حط رقم واضح!</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Evening -->
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء (7 م - 10 م)</div>
+                        <div class="field-group">
+                            <div class="field-label">النشاط:</div>
+                            <textarea id="day1_evening_activity" name="day1_evening_activity" placeholder="مثال: Post الإنجازات + اجتماع الـ Checkpoint"></textarea>
+                            <div class="validation-warning" id="warn-day1_evening_activity">⚠️ حاول تكون أكثر تحديداً!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">المسؤول:</div>
+                            <textarea id="day1_evening_responsible" name="day1_evening_responsible" placeholder="مثال: قائد الميديا + مدير الحملة"></textarea>
+                            <div class="validation-warning" id="warn-day1_evening_responsible">⚠️ حدد بالاسم!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">النتيجة المتوقعة:</div>
+                            <textarea id="day1_evening_output" name="day1_evening_output" placeholder="مثال: Post واحد + تحديد خطة بكره"></textarea>
+                            <div class="validation-warning" id="warn-day1_evening_output">⚠️ حط رقم واضح!</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Checkpoint -->
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="time-period-header" style="color: #11998e;">✅ Checkpoint اليومي (9 مساءً)</div>
+                        <div class="field-group">
+                            <div class="field-label">السؤال: "حققنا إيه النهارده؟"</div>
+                            <textarea id="day1_checkpoint" name="day1_checkpoint" placeholder="اكتب ملخص الإنجازات..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 2 -->
+                <div class="step" data-step="2">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم الثاني</div>
+                        <div class="step-subtitle">حدد الأنشطة والمسؤوليات والنتائج المتوقعة</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">تاريخ اليوم الثاني:</label>
+                        <input type="date" id="day2_date" name="day2_date">
+                    </div>
+                    
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح (9 ص - 12 ظ)</div>
+                        <div class="field-group">
+                            <div class="field-label">النشاط:</div>
+                            <textarea id="day2_morning_activity" name="day2_morning_activity"></textarea>
+                            <div class="validation-warning" id="warn-day2_morning_activity">⚠️ حاول تكون أكثر تحديداً!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">المسؤول:</div>
+                            <textarea id="day2_morning_responsible" name="day2_morning_responsible"></textarea>
+                            <div class="validation-warning" id="warn-day2_morning_responsible">⚠️ حدد بالاسم!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">النتيجة المتوقعة:</div>
+                            <textarea id="day2_morning_output" name="day2_morning_output"></textarea>
+                            <div class="validation-warning" id="warn-day2_morning_output">⚠️ حط رقم واضح!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر (2 ظ - 5 م)</div>
+                        <div class="field-group">
+                            <div class="field-label">النشاط:</div>
+                            <textarea id="day2_afternoon_activity" name="day2_afternoon_activity"></textarea>
+                            <div class="validation-warning" id="warn-day2_afternoon_activity">⚠️ حاول تكون أكثر تحديداً!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">المسؤول:</div>
+                            <textarea id="day2_afternoon_responsible" name="day2_afternoon_responsible"></textarea>
+                            <div class="validation-warning" id="warn-day2_afternoon_responsible">⚠️ حدد بالاسم!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">النتيجة المتوقعة:</div>
+                            <textarea id="day2_afternoon_output" name="day2_afternoon_output"></textarea>
+                            <div class="validation-warning" id="warn-day2_afternoon_output">⚠️ حط رقم واضح!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء (7 م - 10 م)</div>
+                        <div class="field-group">
+                            <div class="field-label">النشاط:</div>
+                            <textarea id="day2_evening_activity" name="day2_evening_activity"></textarea>
+                            <div class="validation-warning" id="warn-day2_evening_activity">⚠️ حاول تكون أكثر تحديداً!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">المسؤول:</div>
+                            <textarea id="day2_evening_responsible" name="day2_evening_responsible"></textarea>
+                            <div class="validation-warning" id="warn-day2_evening_responsible">⚠️ حدد بالاسم!</div>
+                        </div>
+                        <div class="field-group">
+                            <div class="field-label">النتيجة المتوقعة:</div>
+                            <textarea id="day2_evening_output" name="day2_evening_output"></textarea>
+                            <div class="validation-warning" id="warn-day2_evening_output">⚠️ حط رقم واضح!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="time-period-header" style="color: #11998e;">✅ Checkpoint اليومي</div>
+                        <div class="field-group">
+                            <div class="field-label">حققنا إيه النهارده؟</div>
+                            <textarea id="day2_checkpoint" name="day2_checkpoint"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Day 3 -->
+                <div class="step" data-step="3">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم الثالث</div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" id="day3_date" name="day3_date">
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح</div>
+                        <div class="field-group"><textarea id="day3_morning_activity" name="day3_morning_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day3_morning_responsible" name="day3_morning_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day3_morning_output" name="day3_morning_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر</div>
+                        <div class="field-group"><textarea id="day3_afternoon_activity" name="day3_afternoon_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day3_afternoon_responsible" name="day3_afternoon_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day3_afternoon_output" name="day3_afternoon_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء</div>
+                        <div class="field-group"><textarea id="day3_evening_activity" name="day3_evening_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day3_evening_responsible" name="day3_evening_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day3_evening_output" name="day3_evening_output"></textarea></div>
+                    </div>
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="field-group"><textarea id="day3_checkpoint" name="day3_checkpoint"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Day 4 -->
+                <div class="step" data-step="4">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم الرابع</div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" id="day4_date" name="day4_date">
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح</div>
+                        <div class="field-group"><textarea id="day4_morning_activity" name="day4_morning_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day4_morning_responsible" name="day4_morning_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day4_morning_output" name="day4_morning_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر</div>
+                        <div class="field-group"><textarea id="day4_afternoon_activity" name="day4_afternoon_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day4_afternoon_responsible" name="day4_afternoon_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day4_afternoon_output" name="day4_afternoon_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء</div>
+                        <div class="field-group"><textarea id="day4_evening_activity" name="day4_evening_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day4_evening_responsible" name="day4_evening_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day4_evening_output" name="day4_evening_output"></textarea></div>
+                    </div>
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="field-group"><textarea id="day4_checkpoint" name="day4_checkpoint"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Day 5 -->
+                <div class="step" data-step="5">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم الخامس</div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" id="day5_date" name="day5_date">
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح</div>
+                        <div class="field-group"><textarea id="day5_morning_activity" name="day5_morning_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day5_morning_responsible" name="day5_morning_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day5_morning_output" name="day5_morning_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر</div>
+                        <div class="field-group"><textarea id="day5_afternoon_activity" name="day5_afternoon_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day5_afternoon_responsible" name="day5_afternoon_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day5_afternoon_output" name="day5_afternoon_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء</div>
+                        <div class="field-group"><textarea id="day5_evening_activity" name="day5_evening_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day5_evening_responsible" name="day5_evening_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day5_evening_output" name="day5_evening_output"></textarea></div>
+                    </div>
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="field-group"><textarea id="day5_checkpoint" name="day5_checkpoint"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Day 6 -->
+                <div class="step" data-step="6">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم السادس</div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" id="day6_date" name="day6_date">
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح</div>
+                        <div class="field-group"><textarea id="day6_morning_activity" name="day6_morning_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day6_morning_responsible" name="day6_morning_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day6_morning_output" name="day6_morning_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر</div>
+                        <div class="field-group"><textarea id="day6_afternoon_activity" name="day6_afternoon_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day6_afternoon_responsible" name="day6_afternoon_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day6_afternoon_output" name="day6_afternoon_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء</div>
+                        <div class="field-group"><textarea id="day6_evening_activity" name="day6_evening_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day6_evening_responsible" name="day6_evening_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day6_evening_output" name="day6_evening_output"></textarea></div>
+                    </div>
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="field-group"><textarea id="day6_checkpoint" name="day6_checkpoint"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Day 7 -->
+                <div class="step" data-step="7">
+                    <div class="step-header">
+                        <div class="step-title">📆 اليوم السابع</div>
+                    </div>
+                    <div class="form-group">
+                        <input type="date" id="day7_date" name="day7_date">
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">☀️ الصبح</div>
+                        <div class="field-group"><textarea id="day7_morning_activity" name="day7_morning_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day7_morning_responsible" name="day7_morning_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day7_morning_output" name="day7_morning_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌤️ بعد الظهر</div>
+                        <div class="field-group"><textarea id="day7_afternoon_activity" name="day7_afternoon_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day7_afternoon_responsible" name="day7_afternoon_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day7_afternoon_output" name="day7_afternoon_output"></textarea></div>
+                    </div>
+                    <div class="time-period">
+                        <div class="time-period-header">🌙 المساء</div>
+                        <div class="field-group"><textarea id="day7_evening_activity" name="day7_evening_activity"></textarea></div>
+                        <div class="field-group"><textarea id="day7_evening_responsible" name="day7_evening_responsible"></textarea></div>
+                        <div class="field-group"><textarea id="day7_evening_output" name="day7_evening_output"></textarea></div>
+                    </div>
+                    <div class="time-period" style="border-color: #11998e;">
+                        <div class="field-group"><textarea id="day7_checkpoint" name="day7_checkpoint"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation">
+                    <button type="button" class="btn btn-prev" id="prev-btn" style="display: none;">← السابق</button>
+                    <button type="button" class="btn btn-next" id="next-btn">التالي →</button>
+                    <button type="submit" class="btn btn-submit" id="submit-btn" style="display: none;">✅ حفظ الخطة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Auto-save Indicator -->
+    <div class="auto-save-indicator" id="auto-save-indicator">
+        <div class="save-icon" id="save-icon"></div>
+        <span id="save-text">جاري الحفظ...</span>
+    </div>
+    
+    <!-- Loading -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">جاري حفظ الخطة...</div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAwgsHYsgV6W4WAZCIsaOXSlvw3sNHQS-Q",
+  authDomain: "workshop-lifecycle-makers.firebaseapp.com",
+  projectId: "workshop-lifecycle-makers",
+  storageBucket: "workshop-lifecycle-makers.firebasestorage.app",
+  messagingSenderId: "989952488845",
+  appId: "1:989952488845:web:4e75745430c1e39e6ff9c4",
+  measurementId: "G-8JYKNDE51B"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// State
+let currentStep = 0;
+const totalSteps = 8;
+let autoSaveTimeout;
+const AUTO_SAVE_DELAY = 2000;
+let docRef = null;
+let governorateId = null;
+
+// DOM Elements
+const steps = document.querySelectorAll('.step');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const submitBtn = document.getElementById('submit-btn');
+const progressFill = document.getElementById('progress-fill');
+const progressText = document.getElementById('progress-text');
+const loadingOverlay = document.getElementById('loading-overlay');
+const form = document.getElementById('plan-form');
+const autoSaveIndicator = document.getElementById('auto-save-indicator');
+const saveIcon = document.getElementById('save-icon');
+const saveText = document.getElementById('save-text');
+const governorateSelect = document.getElementById('governorate');
+const responsibleInput = document.getElementById('responsible');
+
+// Initialize on page load
+window.addEventListener('load', async function() {
+    const savedGov = localStorage.getItem('selectedGovernorate');
+    if (savedGov) {
+        governorateSelect.value = savedGov;
+        await initializeForm();
+    }
+});
+
+// When governorate is selected
+governorateSelect.addEventListener('change', async function() {
+    if (this.value) {
+        localStorage.setItem('selectedGovernorate', this.value);
+        await initializeForm();
+    }
+});
+
+// Initialize form
+async function initializeForm() {
+    const gov = governorateSelect.value;
+    if (!gov) return;
+    
+    governorateId = gov.replace(/\s/g, '_').toLowerCase();
+    docRef = db.collection('campaign-plans').doc(governorateId);
+    
+    await loadDataFromFirebase();
+    setupRealtimeListener();
+    setupAutoSave();
+}
+
+// Real-time listener
+function setupRealtimeListener() {
+    if (!docRef) return;
+    
+    docRef.onSnapshot((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            updateFieldsFromData(data);
+        }
+    }, (error) => {
+        console.error('Error:', error);
+    });
+}
+
+// Load data
+async function loadDataFromFirebase() {
+    if (!docRef) return;
+    
+    try {
+        const doc = await docRef.get();
+        
+        if (doc.exists) {
+            const data = doc.data();
+            updateFieldsFromData(data);
+            
+            showSaveIndicator('loaded');
+            setTimeout(() => hideSaveIndicator(), 2000);
+        }
+    } catch (error) {
+        console.error('Error loading:', error);
+    }
+}
+
+// Update fields
+function updateFieldsFromData(data) {
+    Object.keys(data).forEach(key => {
+        const field = document.getElementById(key);
+        if (field && document.activeElement !== field) {
+            field.value = data[key] || '';
+        }
+    });
+}
+
+// Setup auto-save
+function setupAutoSave() {
+    const inputs = form.querySelectorAll('input, select, textarea');
+    
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            triggerAutoSave();
+            validateField(this);
+        });
+    });
+}
+
+// Validate field
+function validateField(field) {
+    const value = field.value.toLowerCase();
+    const fieldId = field.id;
+    const warnId = 'warn-' + fieldId;
+    const warnElement = document.getElementById(warnId);
+    
+    if (!warnElement) return;
+    
+    if (fieldId.includes('responsible')) {
+        if (value.includes('الفريق') || value.includes('الجميع') || value.includes('المتطوعين')) {
+            warnElement.classList.add('show');
+        } else {
+            warnElement.classList.remove('show');
+        }
+    }
+    
+    if (fieldId.includes('output')) {
+        if (value.includes('نجيب') || value.includes('نحاول') || (value.length > 10 && !(/\d/.test(value)))) {
+            warnElement.classList.add('show');
+        } else {
+            warnElement.classList.remove('show');
+        }
+    }
+}
+
+// Trigger auto-save
+function triggerAutoSave() {
+    clearTimeout(autoSaveTimeout);
+    autoSaveTimeout = setTimeout(() => {
+        saveToFirebase();
+    }, AUTO_SAVE_DELAY);
+}
+
+// Save to Firebase
+async function saveToFirebase() {
+    if (!docRef) return;
+    
+    showSaveIndicator('saving');
+    
+    try {
+        const formData = collectFormData();
+        
+        await docRef.set({
+            ...formData,
+            governorate: governorateSelect.value,
+            lastSaved: firebase.firestore.FieldValue.serverTimestamp(),
+            currentStep: currentStep,
+            completed: false
+        }, { merge: true });
+        
+        setTimeout(() => {
+            showSaveIndicator('saved');
+            setTimeout(() => hideSaveIndicator(), 2000);
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error saving:', error);
+        showSaveIndicator('error');
+        setTimeout(() => hideSaveIndicator(), 3000);
+    }
+}
+
+// Collect form data
+function collectFormData() {
+    const formData = {};
+    const inputs = form.querySelectorAll('input, select, textarea');
+    
+    inputs.forEach(input => {
+        if (input.id) {
+            formData[input.id] = input.value.trim();
+        }
+    });
+    
+    return formData;
+}
+
+// Save indicators
+function showSaveIndicator(status) {
+    autoSaveIndicator.classList.add('show');
+    
+    if (status === 'saving') {
+        saveIcon.classList.remove('saved');
+        saveIcon.innerHTML = '';
+        saveText.textContent = 'جاري الحفظ...';
+    } else if (status === 'saved') {
+        saveIcon.classList.add('saved');
+        saveIcon.innerHTML = '✓';
+        saveIcon.style.color = '#11998e';
+        saveText.textContent = 'تم الحفظ ✓';
+    } else if (status === 'loaded') {
+        saveIcon.classList.add('saved');
+        saveIcon.innerHTML = '↻';
+        saveIcon.style.color = '#3498db';
+        saveText.textContent = 'تم تحميل البيانات';
+    } else if (status === 'error') {
+        saveIcon.classList.add('saved');
+        saveIcon.innerHTML = '✗';
+        saveIcon.style.color = '#e74c3c';
+        saveText.textContent = 'خطأ في الحفظ';
+    }
+}
+
+function hideSaveIndicator() {
+    autoSaveIndicator.classList.remove('show');
+}
+
+// Update progress
+function updateProgress() {
+    const progress = ((currentStep + 1) / totalSteps) * 100;
+    progressFill.style.width = progress + '%';
+    progressText.textContent = `الخطوة ${currentStep + 1} من ${totalSteps}`;
+}
+
+// Show step
+function showStep(stepNum) {
+    steps.forEach(step => step.classList.remove('active'));
+    
+    const targetStep = document.querySelector(`.step[data-step="${stepNum}"]`);
+    if (targetStep) {
+        targetStep.classList.add('active');
+    }
+    
+    prevBtn.style.display = stepNum === 0 ? 'none' : 'flex';
+    
+    if (stepNum === totalSteps - 1) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'flex';
+    } else {
+        nextBtn.style.display = 'flex';
+        submitBtn.style.display = 'none';
+    }
+    
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Navigation
+nextBtn.addEventListener('click', function() {
+    if (currentStep === 0) {
+        if (!governorateSelect.value) {
+            alert('من فضلك اختر المحافظة');
+            return;
+        }
+        if (!responsibleInput.value) {
+            alert('من فضلك اكتب اسم مسؤول الحملة');
+            return;
+        }
+    }
+    
+    currentStep++;
+    showStep(currentStep);
+    saveToFirebase();
+});
+
+prevBtn.addEventListener('click', function() {
+    currentStep--;
+    showStep(currentStep);
+});
+
+// Form submit
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!confirm('هل أنت متأكد من حفظ الخطة النهائية؟')) {
+        return;
+    }
+    
+    loadingOverlay.classList.add('show');
+    
+    try {
+        const formData = collectFormData();
+        
+        await docRef.set({
+            ...formData,
+            governorate: governorateSelect.value,
+            completedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            completed: true
+        }, { merge: true });
+        
+        localStorage.removeItem('selectedGovernorate');
+        
+        setTimeout(() => {
+            alert('تم حفظ الخطة بنجاح! ✅');
+            location.reload();
+        }, 1000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        loadingOverlay.classList.remove('show');
+        alert('حدث خطأ. حاول مرة أخرى.');
+    }
+});
+
+// Initialize
+showStep(0);
+    </script>
+</body>
+</html>
