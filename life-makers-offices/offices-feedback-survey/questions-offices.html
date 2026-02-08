@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استمارة تشخيص المكاتب - نظام التشخيص المتقدم</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2d3748;
+        }
+
+        .top-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .session-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .session-id {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .participant-name {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .review-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .review-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .back-home {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-home:hover {
+            background: #cbd5e0;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .progress-stats {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .progress-bar-bg {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .axis-section-info {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-right: 4px solid #667eea;
+        }
+
+        .axis-name {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-name {
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .previous-answer-notice {
+            background: #e0f2fe;
+            border: 2px solid #0284c7;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #075985;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .question-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .question-text {
+            font-size: 22px;
+            color: #2d3748;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .choice-button {
+            display: block;
+            width: 100%;
+            padding: 18px 25px;
+            margin-bottom: 12px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: right;
+        }
+
+        .choice-button:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateX(-5px);
+        }
+
+        .choice-button.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-option:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .checkbox-option.selected {
+            background: #ede9fe;
+            border-color: #8b5cf6;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-left: 12px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .text-input, .textarea-input, .number-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            color: #2d3748;
+            transition: all 0.3s;
+        }
+
+        .text-input:focus, .textarea-input:focus, .number-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .textarea-input {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .scale-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .scale-button {
+            flex: 1;
+            padding: 15px 10px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .scale-button:hover {
+            background: #edf2f7;
+            transform: scale(1.05);
+        }
+
+        .scale-button.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .follow-up-card {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .follow-up-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .follow-up-text {
+            color: #78350f;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .real-example-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .real-example-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #92400e;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .real-example-text {
+            color: #78350f;
+            font-size: 15px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 16px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-prev {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-skip {
+            background: white;
+            color: #718096;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-skip:hover {
+            background: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        .completion-card {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .completion-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .completion-title {
+            font-size: 32px;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .completion-message {
+            font-size: 18px;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .completion-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f7fafc;
+            color: #4a5568;
+            border-radius: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+        }
+
+        .review-section {
+            margin-bottom: 30px;
+        }
+
+        .review-axis-title {
+            font-size: 20px;
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 10px;
+        }
+
+        .review-section-group {
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .review-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4a5568;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .review-question-item {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .review-question-item:hover {
+            background: #edf2f7;
+            transform: translateX(-5px);
+        }
+
+        .review-question-item.unanswered {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+        }
+
+        .review-q-number {
+            min-width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .review-question-item.unanswered .review-q-number {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .review-q-content {
+            flex: 1;
+        }
+
+        .review-q-text {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .review-answer {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .review-unanswered {
+            font-size: 14px;
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .confirm-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .confirm-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .confirm-title {
+            font-size: 24px;
+            color: #2d3748;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .confirm-message {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirm-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .confirm-btn-yes {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .confirm-btn-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .confirm-btn-no {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .confirm-btn-no:hover {
+            background: #edf2f7;
+        }
+
+        @media (max-width: 768px) {
+            .question-card {
+                padding: 30px 20px;
+            }
+            
+            .question-text {
+                font-size: 18px;
+            }
+
+            .scale-container {
+                flex-wrap: wrap;
+            }
+
+            .scale-button {
+                min-width: 60px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط المعلومات العلوي -->
+    <div class="top-bar">
+        <div class="session-info">
+            <div class="session-id" id="sessionId">...</div>
+            <div class="participant-name">
+                <span id="participantName">مشارك</span>
+            </div>
+        </div>
+        <div class="top-actions">
+            <button class="top-btn review-btn" onclick="openReviewModal()">
+                📋 عرض كل الإجابات
+            </button>
+            <a href="index.html" class="back-home">↩️ الصفحة الرئيسية</a>
+        </div>
+    </div>
+
+    <!-- شريط التقدم -->
+    <div class="progress-container">
+        <div class="progress-header">
+            <div class="progress-title">التقدم في تشخيص المكتب</div>
+            <div class="progress-stats">
+                <span id="progressText">0 من 50 سؤال</span>
+            </div>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="main-container">
+        <!-- بطاقة السؤال -->
+        <div class="question-card" id="questionCard">
+            <div class="question-number" id="questionNumber">1</div>
+            
+            <!-- معلومات المحور والقسم -->
+            <div class="axis-section-info">
+                <div class="axis-name" id="axisName">المحور الأول</div>
+                <div class="section-name">
+                    <span id="sectionIcon">🏢</span>
+                    <span id="sectionName">القسم</span>
+                </div>
+            </div>
+
+            <!-- إشعار الإجابة السابقة -->
+            <div id="previousAnswerNotice" class="previous-answer-notice hidden">
+                💡 أنت جاوبت على هذا السؤال من قبل - يمكنك تعديل الإجابة
+            </div>
+
+            <!-- نص السؤال -->
+            <div class="question-text" id="questionText">
+                جاري التحميل...
+            </div>
+
+            <!-- منطقة الإجابة -->
+            <div id="answerArea"></div>
+
+            <!-- بطاقة السؤال التكميلي الأول -->
+            <div id="followUpContainer" class="hidden"></div>
+
+            <!-- بطاقة السؤال التكميلي الثاني -->
+            <div id="followUp2Container" class="hidden"></div>
+
+            <!-- المثال الواقعي -->
+            <div id="realExampleBox" class="hidden"></div>
+
+            <!-- رسالة خطأ -->
+            <div id="errorMessage" class="hidden error-message"></div>
+
+            <!-- أزرار التحكم -->
+            <div class="action-buttons">
+                <button class="btn btn-prev" id="prevBtn" disabled>
+                    ⬅️ السابق
+                </button>
+                <button class="btn btn-skip" id="skipBtn">
+                    ⏭️ تخطي
+                </button>
+                <button class="btn btn-next" id="nextBtn">
+                    التالي ➡️
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📋 مراجعة جميع الإجابات</h2>
+                <button class="modal-close" onclick="closeReviewModal()">×</button>
+            </div>
+            <div id="reviewContent"></div>
+        </div>
+    </div>
+
+    <!-- شاشة التحميل -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div style="color: #2d3748; font-weight: 600; font-size: 18px;">
+                جاري حفظ الإجابات...
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" class="confirm-modal hidden">
+        <div class="confirm-box">
+            <div class="confirm-icon" id="confirmIcon">⚠️</div>
+            <div class="confirm-title" id="confirmTitle">تأكيد</div>
+            <div class="confirm-message" id="confirmMessage"></div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-btn-no" id="confirmNo">لا</button>
+                <button class="confirm-btn confirm-btn-yes" id="confirmYes">نعم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase و JavaScript -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { questionsData } from './questions-data-offices.js';
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZvB9jIzd5ponaiudD61PiL8tfajEHx2A",
+            authDomain: "life-makers-diagnostic.firebaseapp.com",
+            projectId: "life-makers-diagnostic",
+            storageBucket: "life-makers-diagnostic.firebasestorage.app",
+            messagingSenderId: "819336926740",
+            appId: "1:819336926740:web:d338b3299e6d18e3b67901",
+            measurementId: "G-4Z1FWWKG1C"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.serverTimestamp = serverTimestamp;
+
+        // State Management
+        let officeName = getOfficeName();
+        let sessionId = getOrCreateSessionId();
+        let participantName = getParticipantName();
+        let allAnswers = {};
+        let totalQuestionsCount = 0;
+        let answeredQuestionsCount = 0;
+        let allQuestionsList = [];
+        let currentAbsoluteIndex = 0;
+
+        // Initialize
+        if (officeName) {
+            document.getElementById('sessionId').textContent = officeName;
+            document.getElementById('participantName').textContent = participantName;
+
+            if (!window.location.search.includes('office=')) {
+                const newUrl = window.location.pathname + '?office=' + encodeURIComponent(officeName);
+                window.history.replaceState({}, '', newUrl);
+            }
+
+            buildQuestionsList();
+            resumeSession();
+        }
+
+        function getOfficeName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const officeFromUrl = urlParams.get('office');
+            
+            if (officeFromUrl) {
+                const name = decodeURIComponent(officeFromUrl);
+                localStorage.setItem('currentOffice', name);
+                return name;
+            }
+            
+            const officeFromStorage = localStorage.getItem('currentOffice');
+            if (officeFromStorage) {
+                return officeFromStorage;
+            }
+            
+            alert('⚠️ هذا الرابط غير صحيح. من فضلك استخدم الرابط المُرسل من الأدمن.');
+            window.location.href = 'index.html';
+            return null;
+        }
+
+        function getOrCreateSessionId() {
+            if (!officeName) return null;
+            return 'OFFICE-' + officeName.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_');
+        }
+
+        function getParticipantName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('name') || 'مشارك';
+        }
+
+        function buildQuestionsList() {
+            allQuestionsList = [];
+            let index = 0;
+            
+            questionsData.axes.forEach(axis => {
+                axis.sections.forEach(section => {
+                    section.questions.forEach(question => {
+                        allQuestionsList.push({
+                            index: index++,
+                            axisId: axis.id,
+                            axisName: axis.name,
+                            axisColor: axis.color,
+                            sectionId: section.id,
+                            sectionName: section.name,
+                            sectionIcon: section.icon,
+                            question: question
+                        });
+                    });
+                });
+            });
+            
+            totalQuestionsCount = allQuestionsList.length;
+            document.getElementById('progressText').textContent = `0 من ${totalQuestionsCount} سؤال`;
+        }
+
+        async function resumeSession() {
+            try {
+                const docRef = doc(db, 'responses-offices', officeName);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    allAnswers = data.answers || {};
+                    
+                    console.log('✅ تم تحميل الإجابات من Firebase');
+                    
+                    // حساب آخر سؤال
+                    let lastAnsweredIndex = -1;
+                    for (let i = 0; i < allQuestionsList.length; i++) {
+                        const q = allQuestionsList[i];
+                        if (allAnswers[q.axisId]?.[q.sectionId]?.[q.question.id]) {
+                            lastAnsweredIndex = i;
+                        }
+                    }
+                    
+                    currentAbsoluteIndex = lastAnsweredIndex + 1;
+                    if (currentAbsoluteIndex >= allQuestionsList.length) {
+                        currentAbsoluteIndex = allQuestionsList.length - 1;
+                    }
+                    
+                    loadQuestionByIndex(currentAbsoluteIndex);
+                    updateProgress();
+                } else {
+                    console.log('📝 جلسة جديدة');
+                    await initializeSession();
+                }
+            } catch (error) {
+                console.error('❌ خطأ في resumeSession:', error);
+                await initializeSession();
+            }
+        }
+
+        async function initializeSession() {
+            try {
+                const docId = officeName.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_');
+                const docRef = doc(db, 'responses-offices', docId);
+                
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    console.log('Session already exists for this office');
+                    loadQuestionByIndex(0);
+                    return;
+                }
+                
+                await setDoc(docRef, {
+                    officeName: officeName,
+                    sessionId: sessionId,
+                    participantName: participantName,
+                    answers: {},
+                    progress: {
+                        answered: 0,
+                        total: totalQuestionsCount,
+                        percentage: 0
+                    },
+                    isFinal: false,
+                    timestamp: serverTimestamp(),
+                    status: 'initialized'
+                });
+                
+                console.log('New session initialized with ID:', docId);
+                loadQuestionByIndex(0);
+            } catch (error) {
+                console.error('Error initializing session:', error);
+                loadQuestionByIndex(0);
+            }
+        }
+
+        function getAnswer(axisId, sectionId, questionId) {
+            if (allAnswers[axisId] && allAnswers[axisId][sectionId] && allAnswers[axisId][sectionId][questionId]) {
+                return allAnswers[axisId][sectionId][questionId].answer;
+            }
+            return null;
+        }
+
+        function loadQuestionByIndex(index) {
+            if (index < 0 || index >= allQuestionsList.length) {
+                showCompletion();
+                return;
+            }
+            
+            currentAbsoluteIndex = index;
+            const item = allQuestionsList[index];
+            
+            renderQuestion(item);
+            updateNavigationButtons();
+        }
+
+        function renderQuestion(item) {
+            const { question } = item;
+            
+            // Update UI
+            document.getElementById('questionNumber').textContent = currentAbsoluteIndex + 1;
+            document.getElementById('axisName').textContent = item.axisName;
+            document.getElementById('sectionIcon').textContent = item.sectionIcon;
+            document.getElementById('sectionName').textContent = item.sectionName;
+            document.getElementById('questionText').textContent = question.text;
+            
+            // Check if previously answered
+            const previousAnswer = getAnswer(item.axisId, item.sectionId, question.id);
+            const previousFollowUp = getAnswer(item.axisId, item.sectionId, question.id + '_followup');
+            const previousFollowUp2 = getAnswer(item.axisId, item.sectionId, question.id + '_followup2');
+            
+            if (previousAnswer) {
+                document.getElementById('previousAnswerNotice').classList.remove('hidden');
+            } else {
+                document.getElementById('previousAnswerNotice').classList.add('hidden');
+            }
+            
+            // Hide follow-ups initially
+            document.getElementById('followUpContainer').classList.add('hidden');
+            document.getElementById('followUpContainer').innerHTML = '';
+            document.getElementById('followUp2Container').classList.add('hidden');
+            document.getElementById('followUp2Container').innerHTML = '';
+            
+            // Render answer input
+            renderAnswerInput(question, item, previousAnswer, previousFollowUp, previousFollowUp2);
+            
+            // Show real example if exists
+            if (question.realExample) {
+                const exampleBox = document.getElementById('realExampleBox');
+                exampleBox.innerHTML = `
+                    <div class="real-example-header">
+                        💡 مثال واقعي:
+                    </div>
+                    <div class="real-example-text">
+                        ${question.realExample}
+                    </div>
+                `;
+                exampleBox.classList.remove('hidden');
+            } else {
+                document.getElementById('realExampleBox').classList.add('hidden');
+            }
+            
+            // Update progress
+            updateProgress();
+            
+            // Reset error
+            document.getElementById('errorMessage').classList.add('hidden');
+            
+            // Store original answers
+            window.originalAnswer = previousAnswer;
+            window.originalFollowUp = previousFollowUp;
+            window.originalFollowUp2 = previousFollowUp2;
+            window.hasChanged = false;
+        }
+
+        function renderAnswerInput(question, item, previousAnswer = null, previousFollowUp = null, previousFollowUp2 = null) {
+            const answerArea = document.getElementById('answerArea');
+            answerArea.innerHTML = '';
+
+            if (question.type === 'choice') {
+                question.options.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-button';
+                    btn.textContent = option;
+                    if (previousAnswer === option) {
+                        btn.classList.add('selected');
+                    }
+                    btn.onclick = () => selectChoice(btn, option, question, item);
+                    answerArea.appendChild(btn);
+                });
+            } else if (question.type === 'multiple') {
+                question.options.forEach(option => {
+                    const div = document.createElement('div');
+                    div.className = 'checkbox-option';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = option;
+                    checkbox.id = 'opt_' + Math.random().toString(36).substr(2, 9);
+                    
+                    if (previousAnswer && Array.isArray(previousAnswer) && previousAnswer.includes(option)) {
+                        checkbox.checked = true;
+                        div.classList.add('selected');
+                    }
+                    
+                    const label = document.createElement('label');
+                    label.className = 'checkbox-label';
+                    label.textContent = option;
+                    label.htmlFor = checkbox.id;
+                    
+                    checkbox.onchange = () => handleMultipleChoice(question, item);
+                    
+                    div.appendChild(label);
+                    div.appendChild(checkbox);
+                    div.onclick = (e) => {
+                        if (e.target !== checkbox) {
+                            checkbox.checked = !checkbox.checked;
+                            checkbox.dispatchEvent(new Event('change'));
+                        }
+                    };
+                    
+                    answerArea.appendChild(div);
+                });
+            } else if (question.type === 'scale') {
+                const container = document.createElement('div');
+                container.className = 'scale-container';
+                
+                const min = question.min || 1;
+                const max = question.max || 10;
+                
+                for (let i = min; i <= max; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'scale-button';
+                    btn.textContent = i;
+                    if (previousAnswer == i) {
+                        btn.classList.add('selected');
+                    }
+                    btn.onclick = () => selectScale(container, i, question, item, min);
+                    container.appendChild(btn);
+                }
+                
+                answerArea.appendChild(container);
+                
+                if (question.labels && question.labels.length > 0) {
+                    const labels = document.createElement('div');
+                    labels.className = 'scale-labels';
+                    question.labels.forEach(label => {
+                        const span = document.createElement('span');
+                        span.textContent = label;
+                        labels.appendChild(span);
+                    });
+                    answerArea.appendChild(labels);
+                }
+            } else if (question.type === 'text') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'text-input';
+                input.placeholder = question.placeholder || 'اكتب إجابتك هنا...';
+                if (previousAnswer) {
+                    input.value = previousAnswer;
+                }
+                input.oninput = () => checkTextInput(input, question, item);
+                answerArea.appendChild(input);
+            } else if (question.type === 'textarea') {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'textarea-input';
+                textarea.placeholder = question.placeholder || 'اكتب إجابتك بالتفصيل...';
+                if (previousAnswer) {
+                    textarea.value = previousAnswer;
+                }
+                textarea.oninput = () => checkTextInput(textarea, question, item);
+                answerArea.appendChild(textarea);
+            } else if (question.type === 'number') {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'number-input';
+                input.placeholder = question.placeholder || 'أدخل رقم...';
+                if (question.min !== undefined) input.min = question.min;
+                if (question.max !== undefined) input.max = question.max;
+                if (previousAnswer) {
+                    input.value = previousAnswer;
+                }
+                input.oninput = () => checkTextInput(input, question, item);
+                answerArea.appendChild(input);
+            }
+            
+            // Load follow-ups if previous answer exists
+            if (previousAnswer) {
+                checkFollowUp(question, previousAnswer, item, previousFollowUp, previousFollowUp2);
+            }
+        }
+
+        async function selectChoice(btn, choice, question, item) {
+            if (window.originalAnswer && window.originalAnswer !== choice) {
+                const confirmed = await showConfirm(
+                    '⚠️',
+                    'تغيير الإجابة',
+                    `هل تريد تغيير إجابتك من "${window.originalAnswer}" إلى "${choice}"؟`
+                );
+                if (!confirmed) {
+                    return;
+                }
+                window.hasChanged = true;
+            }
+            
+            document.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            storeAnswer(item, question.id, choice);
+            checkFollowUp(question, choice, item);
+        }
+
+        function handleMultipleChoice(question, item) {
+            const checkboxes = document.querySelectorAll('#answerArea input[type="checkbox"]');
+            const selected = [];
+            
+            checkboxes.forEach(cb => {
+                const parent = cb.parentElement;
+                if (cb.checked) {
+                    selected.push(cb.value);
+                    parent.classList.add('selected');
+                } else {
+                    parent.classList.remove('selected');
+                }
+            });
+            
+            if (selected.length > 0) {
+                storeAnswer(item, question.id, selected);
+                checkFollowUp(question, selected, item);
+            }
+        }
+
+        async function selectScale(container, value, question, item, min) {
+            if (window.originalAnswer && window.originalAnswer != value) {
+                const confirmed = await showConfirm(
+                    '⚠️',
+                    'تغيير الإجابة',
+                    `هل تريد تغيير إجابتك من "${window.originalAnswer}" إلى "${value}"؟`
+                );
+                if (!confirmed) {
+                    return;
+                }
+                window.hasChanged = true;
+            }
+            
+            container.querySelectorAll('.scale-button').forEach(b => b.classList.remove('selected'));
+            container.children[value - min].classList.add('selected');
+            storeAnswer(item, question.id, value);
+            checkFollowUp(question, value, item);
+        }
+
+        function checkTextInput(input, question, item) {
+            const value = input.value.trim();
+            if (value.length > 0) {
+                if (window.originalAnswer && window.originalAnswer !== value) {
+                    window.hasChanged = true;
+                }
+                storeAnswer(item, question.id, value);
+                checkFollowUp(question, value, item);
+            } else {
+                document.getElementById('followUpContainer').classList.add('hidden');
+                document.getElementById('followUp2Container').classList.add('hidden');
+            }
+        }
+
+        function storeAnswer(item, questionId, answer) {
+            if (!allAnswers[item.axisId]) allAnswers[item.axisId] = {};
+            if (!allAnswers[item.axisId][item.sectionId]) allAnswers[item.axisId][item.sectionId] = {};
+            allAnswers[item.axisId][item.sectionId][questionId] = {
+                answer: answer,
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        function checkFollowUp(question, answer, item, existingFollowUp = null, existingFollowUp2 = null) {
+            // Check first follow-up
+            if (question.followUp) {
+                const shouldShow = evaluateCondition(question.followUp.condition, answer);
+                
+                if (shouldShow) {
+                    showFollowUp(question.followUp.question, item, question.id, existingFollowUp);
+                    
+                    // Check second follow-up if exists
+                    if (question.followUp2 && existingFollowUp) {
+                        const shouldShow2 = evaluateCondition(question.followUp2.condition, existingFollowUp);
+                        if (shouldShow2) {
+                            showFollowUp2(question.followUp2.question, item, question.id, existingFollowUp2);
+                        } else {
+                            document.getElementById('followUp2Container').classList.add('hidden');
+                        }
+                    }
+                } else {
+                    document.getElementById('followUpContainer').classList.add('hidden');
+                    document.getElementById('followUp2Container').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('followUpContainer').classList.add('hidden');
+                document.getElementById('followUp2Container').classList.add('hidden');
+            }
+        }
+
+        function evaluateCondition(condition, answer) {
+            if (condition === 'true' || condition === true) {
+                return true;
+            }
+            
+            const answerStr = Array.isArray(answer) ? answer.join(' ') : String(answer);
+            
+            try {
+                // Handle includes
+                if (condition.includes('answer.includes(')) {
+                    const match = condition.match(/answer\.includes\(['"](.+?)['"]\)/);
+                    if (match) {
+                        return answerStr.includes(match[1]);
+                    }
+                }
+                
+                // Handle ===
+                if (condition.includes('answer ===')) {
+                    const match = condition.match(/answer === ['"](.+?)['"]/);
+                    if (match) {
+                        return answerStr === match[1];
+                    }
+                }
+                
+                // Handle !==
+                if (condition.includes('answer !==')) {
+                    const match = condition.match(/answer !== ['"](.+?)['"]/);
+                    if (match) {
+                        return answerStr !== match[1];
+                    }
+                }
+                
+                // Handle >= 
+                if (condition.includes('answer >=')) {
+                    const match = condition.match(/answer >= (\d+)/);
+                    if (match) {
+                        return Number(answer) >= Number(match[1]);
+                    }
+                }
+                
+                // Handle <=
+                if (condition.includes('answer <=')) {
+                    const match = condition.match(/answer <= (\d+)/);
+                    if (match) {
+                        return Number(answer) <= Number(match[1]);
+                    }
+                }
+                
+                return false;
+            } catch (e) {
+                console.error('Error evaluating condition:', e);
+                return false;
+            }
+        }
+
+        function showFollowUp(followUpQuestion, item, mainQuestionId, existingAnswer = null) {
+            const container = document.getElementById('followUpContainer');
+            const currentValue = existingAnswer || '';
+            
+            container.innerHTML = `
+                <div class="follow-up-label">
+                    <span>💭</span>
+                    <span>سؤال تكميلي</span>
+                </div>
+                <div class="follow-up-text">${followUpQuestion.text || followUpQuestion}</div>
+            `;
+            
+            // Render follow-up input based on type
+            if (typeof followUpQuestion === 'object' && followUpQuestion.type) {
+                if (followUpQuestion.type === 'choice') {
+                    followUpQuestion.options.forEach(option => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-button';
+                        btn.textContent = option;
+                        if (currentValue === option) {
+                            btn.classList.add('selected');
+                        }
+                        btn.onclick = () => {
+                            container.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            storeAnswer(item, mainQuestionId + '_followup', option);
+                            
+                            // Check for followUp2
+                            const mainQuestion = item.question;
+                            if (mainQuestion.followUp2) {
+                                const shouldShow2 = evaluateCondition(mainQuestion.followUp2.condition, option);
+                                if (shouldShow2) {
+                                    showFollowUp2(mainQuestion.followUp2.question, item, mainQuestionId);
+                                } else {
+                                    document.getElementById('followUp2Container').classList.add('hidden');
+                                }
+                            }
+                        };
+                        container.appendChild(btn);
+                    });
+                } else if (followUpQuestion.type === 'number') {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'number-input';
+                    input.placeholder = followUpQuestion.placeholder || 'أدخل رقم...';
+                    if (followUpQuestion.min !== undefined) input.min = followUpQuestion.min;
+                    if (followUpQuestion.max !== undefined) input.max = followUpQuestion.max;
+                    input.value = currentValue;
+                    input.oninput = (e) => {
+                        const newValue = e.target.value.trim();
+                        if (newValue.length > 0) {
+                            storeAnswer(item, mainQuestionId + '_followup', newValue);
+                        }
+                    };
+                    container.appendChild(input);
+                } else if (followUpQuestion.type === 'text') {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'text-input';
+                    input.placeholder = followUpQuestion.placeholder || 'اكتب إجابتك...';
+                    input.value = currentValue;
+                    input.oninput = (e) => {
+                        const newValue = e.target.value.trim();
+                        if (newValue.length > 0) {
+                            storeAnswer(item, mainQuestionId + '_followup', newValue);
+                        }
+                    };
+                    container.appendChild(input);
+                } else {
+                    const textarea = document.createElement('textarea');
+                    textarea.className = 'textarea-input';
+                    textarea.placeholder = followUpQuestion.placeholder || 'اكتب إجابتك...';
+                    textarea.value = currentValue;
+                    textarea.oninput = (e) => {
+                        const newValue = e.target.value.trim();
+                        if (newValue.length > 0) {
+                            storeAnswer(item, mainQuestionId + '_followup', newValue);
+                        }
+                    };
+                    container.appendChild(textarea);
+                }
+            } else {
+                // Simple text question
+                const textarea = document.createElement('textarea');
+                textarea.className = 'textarea-input';
+                textarea.placeholder = 'اكتب إجابتك...';
+                textarea.value = currentValue;
+                textarea.oninput = (e) => {
+                    const newValue = e.target.value.trim();
+                    if (newValue.length > 0) {
+                        storeAnswer(item, mainQuestionId + '_followup', newValue);
+                    }
+                };
+                container.appendChild(textarea);
+            }
+            
+            container.classList.remove('hidden');
+        }
+
+        function showFollowUp2(followUp2Question, item, mainQuestionId, existingAnswer = null) {
+            const container = document.getElementById('followUp2Container');
+            const currentValue = existingAnswer || '';
+            
+            container.innerHTML = `
+                <div class="follow-up-label">
+                    <span>💭💭</span>
+                    <span>سؤال تكميلي إضافي</span>
+                </div>
+                <div class="follow-up-text">${followUp2Question.text || followUp2Question}</div>
+            `;
+            
+            // Render follow-up2 input
+            if (typeof followUp2Question === 'object' && followUp2Question.type) {
+                if (followUp2Question.type === 'choice') {
+                    followUp2Question.options.forEach(option => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-button';
+                        btn.textContent = option;
+                        if (currentValue === option) {
+                            btn.classList.add('selected');
+                        }
+                        btn.onclick = () => {
+                            container.querySelectorAll('.choice-button').forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            storeAnswer(item, mainQuestionId + '_followup2', option);
+                        };
+                        container.appendChild(btn);
+                    });
+                } else if (followUp2Question.type === 'scale') {
+                    const scaleContainer = document.createElement('div');
+                    scaleContainer.className = 'scale-container';
+                    
+                    const min = followUp2Question.min || 1;
+                    const max = followUp2Question.max || 10;
+                    
+                    for (let i = min; i <= max; i++) {
+                        const btn = document.createElement('button');
+                        btn.className = 'scale-button';
+                        btn.textContent = i;
+                        if (currentValue == i) {
+                            btn.classList.add('selected');
+                        }
+                        btn.onclick = () => {
+                            scaleContainer.querySelectorAll('.scale-button').forEach(b => b.classList.remove('selected'));
+                            btn.classList.add('selected');
+                            storeAnswer(item, mainQuestionId + '_followup2', i);
+                        };
+                        scaleContainer.appendChild(btn);
+                    }
+                    container.appendChild(scaleContainer);
+                } else {
+                    const textarea = document.createElement('textarea');
+                    textarea.className = 'textarea-input';
+                    textarea.placeholder = followUp2Question.placeholder || 'اكتب إجابتك...';
+                    textarea.value = currentValue;
+                    textarea.oninput = (e) => {
+                        const newValue = e.target.value.trim();
+                        if (newValue.length > 0) {
+                            storeAnswer(item, mainQuestionId + '_followup2', newValue);
+                        }
+                    };
+                    container.appendChild(textarea);
+                }
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'textarea-input';
+                textarea.placeholder = 'اكتب إجابتك...';
+                textarea.value = currentValue;
+                textarea.oninput = (e) => {
+                    const newValue = e.target.value.trim();
+                    if (newValue.length > 0) {
+                        storeAnswer(item, mainQuestionId + '_followup2', newValue);
+                    }
+                };
+                container.appendChild(textarea);
+            }
+            
+            container.classList.remove('hidden');
+            container.style.marginTop = '15px';
+        }
+
+        function updateProgress() {
+            answeredQuestionsCount = 0;
+            allQuestionsList.forEach(item => {
+                const answer = getAnswer(item.axisId, item.sectionId, item.question.id);
+                if (answer) {
+                    answeredQuestionsCount++;
+                }
+            });
+            
+            const percentage = (answeredQuestionsCount / totalQuestionsCount) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = 
+                `${answeredQuestionsCount} من ${totalQuestionsCount} سؤال`;
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentAbsoluteIndex === 0;
+            
+            if (currentAbsoluteIndex === allQuestionsList.length - 1) {
+                nextBtn.innerHTML = 'إنهاء 🎉';
+            } else {
+                nextBtn.innerHTML = 'التالي ➡️';
+            }
+        }
+
+        function showConfirm(icon, title, message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                document.getElementById('confirmIcon').textContent = icon;
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                
+                modal.classList.remove('hidden');
+                
+                document.getElementById('confirmYes').onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(true);
+                };
+                
+                document.getElementById('confirmNo').onclick = () => {
+                    modal.classList.add('hidden');
+                    resolve(false);
+                };
+            });
+        }
+
+        // Navigation handlers
+        document.getElementById('prevBtn').onclick = async () => {
+            if (window.hasChanged && window.originalAnswer) {
+                const confirmed = await showConfirm(
+                    '⚠️',
+                    'تعديلات غير محفوظة',
+                    'لديك تعديلات غير محفوظة. هل تريد المتابعة بدون حفظ؟'
+                );
+                if (!confirmed) {
+                    return;
+                }
+            }
+            
+            window.hasChanged = false;
+            window.originalAnswer = null;
+            window.originalFollowUp = null;
+            window.originalFollowUp2 = null;
+            
+            loadQuestionByIndex(currentAbsoluteIndex - 1);
+        };
+
+        document.getElementById('nextBtn').onclick = async () => {
+            if (window.hasChanged && window.originalAnswer) {
+                const confirmed = await showConfirm(
+                    '✅',
+                    'حفظ التعديلات',
+                    'هل تريد حفظ التعديلات والانتقال للسؤال التالي؟'
+                );
+                if (!confirmed) {
+                    return;
+                }
+            }
+            
+            await saveToFirebase(false);
+            
+            window.hasChanged = false;
+            window.originalAnswer = null;
+            window.originalFollowUp = null;
+            window.originalFollowUp2 = null;
+            
+            if (currentAbsoluteIndex >= allQuestionsList.length - 1) {
+                showCompletion();
+            } else {
+                loadQuestionByIndex(currentAbsoluteIndex + 1);
+            }
+        };
+
+        document.getElementById('skipBtn').onclick = () => {
+            if (currentAbsoluteIndex >= allQuestionsList.length - 1) {
+                showCompletion();
+            } else {
+                loadQuestionByIndex(currentAbsoluteIndex + 1);
+            }
+        };
+
+        async function saveToFirebase(isFinal = false) {
+            try {
+                console.log('💾 حفظ البيانات...');
+                
+                // حساب عدد الإجابات
+                answeredQuestionsCount = 0;
+                Object.values(allAnswers).forEach(axis => {
+                    Object.values(axis).forEach(section => {
+                        answeredQuestionsCount += Object.keys(section).length;
+                    });
+                });
+
+                const percentage = Math.round((answeredQuestionsCount / totalQuestionsCount) * 100);
+
+                const dataToSave = {
+                    officeName: officeName,
+                    sessionId: sessionId,
+                    participantName: participantName,
+                    answers: allAnswers,
+                    progress: {
+                        answered: answeredQuestionsCount,
+                        total: totalQuestionsCount,
+                        percentage: percentage
+                    },
+                    isFinal: isFinal,
+                    lastUpdated: serverTimestamp()
+                };
+
+                const docRef = doc(db, 'responses-offices', officeName);
+                await setDoc(docRef, dataToSave, { merge: true });
+                
+                console.log('✅ تم الحفظ بنجاح');
+                console.log('   الإجابات المحفوظة:', answeredQuestionsCount);
+                
+            } catch (error) {
+                console.error('❌ خطأ في الحفظ:', error);
+            }
+        }
+
+        async function showCompletion() {
+            const skippedQuestions = [];
+            allQuestionsList.forEach(item => {
+                const answer = getAnswer(item.axisId, item.sectionId, item.question.id);
+                if (!answer) {
+                    skippedQuestions.push(item);
+                }
+            });
+            
+            const card = document.getElementById('questionCard');
+            
+            if (skippedQuestions.length > 0) {
+                let skippedHTML = '<ul class="skipped-list" style="list-style: none; padding: 0;">';
+                skippedQuestions.forEach(item => {
+                    skippedHTML += `
+                        <li class="skipped-item" onclick="goToQuestion(${item.index})" style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s;">
+                            ${item.sectionIcon} ${item.question.text.substring(0, 60)}...
+                        </li>
+                    `;
+                });
+                skippedHTML += '</ul>';
+                
+                card.innerHTML = `
+                    <div class="completion-card">
+                        <div class="completion-icon">⚠️</div>
+                        <h1 class="completion-title">انتبه! هناك أسئلة متخطاة</h1>
+                        <p class="completion-message">
+                            لديك ${skippedQuestions.length} سؤال لم يتم الإجابة عليه.<br>
+                            هل تريد إكمالها أم إنهاء التشخيص؟
+                        </p>
+                        
+                        <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 15px; padding: 25px; margin: 30px 0; text-align: right;">
+                            <div style="font-size: 20px; color: #92400e; font-weight: 700; margin-bottom: 15px;">📝 الأسئلة المتخطاة (اضغط للإجابة):</div>
+                            ${skippedHTML}
+                        </div>
+                        
+                        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                            <button class="btn btn-next" onclick="finishAnyway()">
+                                إنهاء على أي حال 🎉
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                await saveToFirebase(true);
+                
+                card.innerHTML = `
+                    <div class="completion-card">
+                        <div class="completion-icon">🎉</div>
+                        <h1 class="completion-title">تم إكمال تشخيص المكتب بنجاح!</h1>
+                        <p class="completion-message">
+                            شكراً لمشاركتك القيّمة. تم حفظ جميع إجاباتك بنجاح.<br>
+                            سيتم تحليل البيانات وإعداد التقرير التشخيصي قريباً.
+                        </p>
+                        <div class="completion-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">${answeredQuestionsCount}</div>
+                                <div class="stat-label">سؤال تم الإجابة عليه</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">5</div>
+                                <div class="stat-label">محاور مكتملة</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 40px;">
+                            <a href="index.html" class="btn btn-next">
+                                العودة للصفحة الرئيسية
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        window.goToQuestion = function(index) {
+            loadQuestionByIndex(index);
+        };
+
+        window.finishAnyway = async function() {
+            await saveToFirebase(true);
+            
+            const card = document.getElementById('questionCard');
+            card.innerHTML = `
+                <div class="completion-card">
+                    <div class="completion-icon">🎉</div>
+                    <h1 class="completion-title">تم حفظ التشخيص!</h1>
+                    <p class="completion-message">
+                        تم حفظ إجاباتك بنجاح. يمكنك العودة لاحقاً لإكمال الأسئلة المتخطاة.
+                    </p>
+                    <div class="completion-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">${answeredQuestionsCount}</div>
+                            <div class="stat-label">سؤال تم الإجابة عليه</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 40px;">
+                        <a href="index.html" class="btn btn-next">
+                            العودة للصفحة الرئيسية
+                        </a>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.openReviewModal = function() {
+            const modal = document.getElementById('reviewModal');
+            const content = document.getElementById('reviewContent');
+            
+            let html = '';
+            let questionNumber = 0;
+            
+            questionsData.axes.forEach(axis => {
+                html += `<div class="review-section">`;
+                html += `<div class="review-axis-title">${axis.name}</div>`;
+                
+                axis.sections.forEach(section => {
+                    html += `<div class="review-section-group">`;
+                    html += `<div class="review-section-title">${section.icon} ${section.name}</div>`;
+                    
+                    section.questions.forEach(question => {
+                        questionNumber++;
+                        const answer = getAnswer(axis.id, section.id, question.id);
+                        const followUpAnswer = getAnswer(axis.id, section.id, question.id + '_followup');
+                        const followUp2Answer = getAnswer(axis.id, section.id, question.id + '_followup2');
+                        
+                        const questionItem = allQuestionsList.find(item => 
+                            item.axisId === axis.id && 
+                            item.sectionId === section.id && 
+                            item.question.id === question.id
+                        );
+                        
+                        const className = answer ? 'review-question-item' : 'review-question-item unanswered';
+                        
+                        let answerDisplay = '';
+                        if (answer) {
+                            const displayAnswer = Array.isArray(answer) ? answer.join(', ') : answer;
+                            answerDisplay = `<div class="review-answer">✅ ${displayAnswer}</div>`;
+                            
+                            if (followUpAnswer) {
+                                answerDisplay += `<div style="margin-top: 10px; padding: 10px; background: #fffbeb; border: 1px solid #fbbf24; border-radius: 8px;">`;
+                                answerDisplay += `<span style="display: block; font-size: 12px; color: #92400e; font-weight: 600; margin-bottom: 5px;">💭 السؤال التكميلي:</span>`;
+                                answerDisplay += `<span style="font-size: 14px; color: #78350f; font-weight: 500;">${followUpAnswer}</span>`;
+                                answerDisplay += `</div>`;
+                            }
+                            
+                            if (followUp2Answer) {
+                                answerDisplay += `<div style="margin-top: 10px; padding: 10px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px;">`;
+                                answerDisplay += `<span style="display: block; font-size: 12px; color: #92400e; font-weight: 600; margin-bottom: 5px;">💭💭 السؤال التكميلي الإضافي:</span>`;
+                                answerDisplay += `<span style="font-size: 14px; color: #78350f; font-weight: 500;">${followUp2Answer}</span>`;
+                                answerDisplay += `</div>`;
+                            }
+                        } else {
+                            answerDisplay = `<div class="review-unanswered">⚠️ لم يتم الإجابة</div>`;
+                        }
+                        
+                        html += `
+                            <div class="${className}" onclick="goToQuestionAndClose(${questionItem.index})">
+                                <div class="review-q-number">${questionNumber}</div>
+                                <div class="review-q-content">
+                                    <div class="review-q-text">${question.text}</div>
+                                    ${answerDisplay}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `</div>`;
+                });
+                
+                html += `</div>`;
+            });
+            
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+        };
+
+        window.goToQuestionAndClose = function(index) {
+            document.getElementById('reviewModal').classList.add('hidden');
+            loadQuestionByIndex(index);
+        };
+
+        window.closeReviewModal = function() {
+            document.getElementById('reviewModal').classList.add('hidden');
+        };
+    </script>
+
+</body>
+</html>
