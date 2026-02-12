@@ -11,6 +11,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         :root {
             --primary-blue: #3b82f6;
             --primary-blue-dark: #2563eb;
@@ -29,7 +33,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--secondary-bg);
             color: var(--text-primary);
-            overflow: hidden;
             position: relative;
         }
 
@@ -73,25 +76,47 @@
             position: relative;
             z-index: 10;
             width: 100vw;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             padding: 2rem;
+            padding-top: 6rem;
+            padding-bottom: 8rem;
         }
 
         .slide {
             display: none;
             width: 100%;
             max-width: 1400px;
-            height: 100%;
+            max-height: calc(100vh - 14rem);
+            overflow-y: auto;
+            overflow-x: hidden;
             animation: fadeIn 0.8s ease-out;
+            padding-right: 1rem;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            border-radius: 10px;
+            border: 2px solid rgba(30, 41, 59, 0.5);
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--primary-blue-dark) 0%, #059669 100%);
         }
 
         .slide.active {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: block;
         }
 
         @keyframes fadeIn {
@@ -424,22 +449,6 @@
             border-radius: 20px;
             padding: 2rem;
             margin: 2rem 0;
-            max-height: 75vh;
-            overflow-y: auto;
-        }
-
-        .activity-sheet::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        .activity-sheet::-webkit-scrollbar-track {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 10px;
-        }
-
-        .activity-sheet::-webkit-scrollbar-thumb {
-            background: var(--primary-blue);
-            border-radius: 10px;
         }
 
         .activity-title {
@@ -588,12 +597,56 @@
             .section-title { font-size: 2.5rem; }
             .text-content { font-size: 1.8rem; }
         }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-indicator.show {
+            opacity: 1;
+        }
+
+        .scroll-indicator-content {
+            background: rgba(59, 130, 246, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        .scroll-arrow {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
     </style>
 </head>
 <body>
     <div class="cosmic-bg"></div>
     <div class="stars" id="stars"></div>
     <div class="slide-counter" id="slideCounter">1 / 15</div>
+    <div class="scroll-indicator" id="scrollIndicator">
+        <div class="scroll-indicator-content">
+            <span class="scroll-arrow">💡</span>
+            <span>عيش وملح</span>
+        </div>
+    </div>
 
     <div class="container">
         <!-- Slide 1: Power Title & Definition -->
@@ -2390,16 +2443,32 @@
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
+        const scrollIndicator = document.getElementById('scrollIndicator');
 
         function updateSlideCounter() {
             document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function checkScrollIndicator() {
+            const activeSlide = slides[currentSlide];
+            const hasScroll = activeSlide.scrollHeight > activeSlide.clientHeight;
+            const isAtBottom = activeSlide.scrollHeight - activeSlide.scrollTop <= activeSlide.clientHeight + 50;
+            
+            if (hasScroll && !isAtBottom) {
+                scrollIndicator.classList.add('show');
+            } else {
+                scrollIndicator.classList.remove('show');
+            }
         }
 
         function showSlide(n) {
             slides[currentSlide].classList.remove('active');
             currentSlide = (n + totalSlides) % totalSlides;
             slides[currentSlide].classList.add('active');
+            // Reset scroll to top when changing slides
+            slides[currentSlide].scrollTop = 0;
             updateSlideCounter();
+            checkScrollIndicator();
         }
 
         function nextSlide() {
@@ -2410,13 +2479,38 @@
             showSlide(currentSlide - 1);
         }
 
+        // Monitor scroll within active slide
+        document.addEventListener('scroll', (e) => {
+            if (e.target.classList && e.target.classList.contains('slide')) {
+                checkScrollIndicator();
+            }
+        }, true);
+
+        // Check on slide scroll
+        slides.forEach(slide => {
+            slide.addEventListener('scroll', checkScrollIndicator);
+        });
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+            // Only navigate between slides if not actively scrolling within a slide
+            const activeSlide = slides[currentSlide];
+            const isAtTop = activeSlide.scrollTop === 0;
+            const isAtBottom = activeSlide.scrollHeight - activeSlide.scrollTop <= activeSlide.clientHeight + 10;
+            
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowDown' && isAtBottom) {
+                nextSlide();
+            } else if (e.key === 'ArrowUp' && isAtTop) {
+                prevSlide();
+            }
         });
 
         updateSlideCounter();
+        checkScrollIndicator();
     </script>
 </body>
 </html>
