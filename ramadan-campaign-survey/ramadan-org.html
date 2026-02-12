@@ -3188,27 +3188,7 @@
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
         }
 
-        // Mouse wheel navigation (optional - can be disabled if you prefer scroll only)
-        let wheelTimeout;
-        document.addEventListener('wheel', (e) => {
-            // Only trigger slide change if not currently scrolling within a slide
-            const activeSlide = document.querySelector('.slide.active');
-            if (!activeSlide) return;
 
-            const isAtTop = activeSlide.scrollTop === 0;
-            const isAtBottom = activeSlide.scrollTop + activeSlide.clientHeight >= activeSlide.scrollHeight - 1;
-
-            clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => {
-                if (e.deltaY > 0 && isAtBottom && currentSlide < totalSlides) {
-                    // Scrolling down at bottom - go to next slide
-                    changeSlide(1);
-                } else if (e.deltaY < 0 && isAtTop && currentSlide > 1) {
-                    // Scrolling up at top - go to previous slide
-                    changeSlide(-1);
-                }
-            }, 150);
-        });
 
         // Initial button state
         updateButtons();
