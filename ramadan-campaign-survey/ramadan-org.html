@@ -1,0 +1,3256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورشة ملف الجمعيات القاعدية - عيش وملح | صناع الحياة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* الألوان الرئيسية */
+            --primary-blue: #3b82f6;
+            --primary-blue-dark: #2563eb;
+            --success-green: #10b981;
+            --golden: #fbbf24;
+            --golden-dark: #f59e0b;
+            
+            /* الخلفيات */
+            --primary-bg: #1a2332;
+            --secondary-bg: #0f172a;
+            --card-bg: #1e293b;
+            
+            /* التوهجات */
+            --glow-blue: 0 0 30px rgba(59, 130, 246, 0.4);
+            --glow-green: 0 0 30px rgba(16, 185, 129, 0.4);
+            --glow-gold: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--secondary-bg);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* الخلفية الكونية */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at center, rgba(251, 191, 36, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Slides Container */
+        .slides-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Individual Slide - مع إمكانية التمرير */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+            overflow-y: auto; /* هنا الحل - كل slide فيها scroll مستقل */
+            overflow-x: hidden;
+            padding: 60px 80px 100px 80px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Slide Content - القابل للتمرير */
+        .slide-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--glow-blue);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: #94a3b8;
+            font-size: 18px;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .current-slide {
+            color: var(--golden);
+            font-size: 24px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: rgba(30, 41, 59, 0.5);
+            z-index: 100;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Typography */
+        .slide-title {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+            line-height: 1.2;
+        }
+
+        .slide-subtitle {
+            font-size: 42px;
+            color: var(--golden);
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+        }
+
+        .section-title {
+            font-size: 56px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 50px 0 30px 0;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary-blue);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            right: 0;
+            width: 200px;
+            height: 3px;
+            background: var(--success-green);
+        }
+
+        .subsection-title {
+            font-size: 44px;
+            font-weight: 700;
+            color: var(--success-green);
+            margin: 40px 0 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .subsection-title::before {
+            content: '◆';
+            color: var(--golden);
+            font-size: 32px;
+        }
+
+        /* Text Styles */
+        .text-large {
+            font-size: 36px;
+            line-height: 1.8;
+            color: #e2e8f0;
+            margin: 25px 0;
+        }
+
+        .text-medium {
+            font-size: 32px;
+            line-height: 1.7;
+            color: #cbd5e1;
+            margin: 20px 0;
+        }
+
+        .text-highlight {
+            color: var(--golden);
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .text-emphasis {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .text-warning {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        /* Lists */
+        .custom-list {
+            list-style: none;
+            padding: 0;
+            margin: 30px 0;
+        }
+
+        .custom-list li {
+            font-size: 34px;
+            line-height: 1.8;
+            color: #e2e8f0;
+            margin: 20px 0;
+            padding-right: 50px;
+            position: relative;
+        }
+
+        .custom-list li::before {
+            content: '●';
+            position: absolute;
+            right: 0;
+            color: var(--primary-blue);
+            font-size: 28px;
+        }
+
+        .custom-list.green li::before {
+            color: var(--success-green);
+        }
+
+        .custom-list.golden li::before {
+            color: var(--golden);
+        }
+
+        /* Cards & Boxes */
+        .info-card {
+            background: linear-gradient(135deg, 
+                rgba(30, 41, 59, 0.7) 0%, 
+                rgba(30, 41, 59, 0.5) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            border-color: var(--primary-blue);
+            box-shadow: var(--glow-blue);
+            transform: translateY(-5px);
+        }
+
+        .scenario-box {
+            background: rgba(15, 23, 42, 0.8);
+            border-right: 5px solid var(--primary-blue);
+            padding: 35px;
+            margin: 30px 0;
+            border-radius: 15px;
+        }
+
+        .scenario-box.bad {
+            border-right-color: #ef4444;
+        }
+
+        .scenario-box.good {
+            border-right-color: var(--success-green);
+        }
+
+        .dialogue {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px 35px;
+            margin: 20px 0;
+            border-radius: 12px;
+            font-size: 32px;
+            line-height: 1.7;
+            border-right: 3px solid var(--golden);
+        }
+
+        .dialogue strong {
+            color: var(--golden);
+            font-weight: 700;
+        }
+
+        /* Quote Box */
+        .quote-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 2px solid var(--golden);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+            font-size: 40px;
+            font-weight: 700;
+            color: #FFF3CD;
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.2);
+        }
+
+        /* Divider */
+        .divider {
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--primary-blue) 20%, 
+                var(--success-green) 50%, 
+                var(--golden) 80%, 
+                transparent 100%);
+            margin: 50px 0;
+            border-radius: 10px;
+        }
+
+        /* Key Points Grid */
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .key-point {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 35px;
+            border-radius: 15px;
+            border-right: 4px solid var(--primary-blue);
+            transition: all 0.3s ease;
+        }
+
+        .key-point:hover {
+            background: rgba(30, 41, 59, 0.9);
+            transform: translateX(-10px);
+            box-shadow: var(--glow-blue);
+        }
+
+        .key-point h3 {
+            font-size: 38px;
+            color: var(--golden);
+            margin-bottom: 20px;
+        }
+
+        .key-point p {
+            font-size: 30px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .comparison-col {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .comparison-col.bad {
+            border-top: 5px solid #ef4444;
+        }
+
+        .comparison-col.good {
+            border-top: 5px solid var(--success-green);
+        }
+
+        .comparison-col.balanced {
+            border-top: 5px solid var(--golden);
+        }
+
+        .comparison-col h3 {
+            font-size: 42px;
+            margin-bottom: 25px;
+        }
+
+        .comparison-col.bad h3 {
+            color: #ef4444;
+        }
+
+        .comparison-col.good h3 {
+            color: var(--success-green);
+        }
+
+        .comparison-col.balanced h3 {
+            color: var(--golden);
+        }
+
+        .comparison-col p {
+            font-size: 30px;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+            z-index: 50;
+        }
+
+        .scroll-indicator:hover {
+            opacity: 1;
+        }
+
+        .scroll-indicator span {
+            color: #94a3b8;
+            font-size: 16px;
+            writing-mode: vertical-rl;
+        }
+
+        .scroll-indicator::after {
+            content: '↓';
+            color: var(--primary-blue);
+            font-size: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .slide {
+                padding: 50px 60px 100px 60px;
+            }
+            .slide-title { font-size: 60px; }
+            .slide-subtitle { font-size: 36px; }
+            .section-title { font-size: 48px; }
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 40px 40px 100px 40px;
+            }
+            .slide-title { font-size: 48px; }
+            .slide-subtitle { font-size: 30px; }
+            .section-title { font-size: 40px; }
+            .text-large { font-size: 28px; }
+            .text-medium { font-size: 24px; }
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav-controls, .progress-bar, .scroll-indicator {
+                display: none;
+            }
+            .slide {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg"></div>
+    
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <span>تمرير</span>
+    </div>
+
+    <!-- Slides Container -->
+    <div class="slides-container" id="slidesContainer">
+<!-- Slide 1: الافتتاح والتهيئة -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-content">
+                <div class="slide-title">ورشة ملف الجمعيات القاعدية</div>
+                <div class="slide-subtitle">حملة "عيش وملح" - صناع الحياة</div>
+                
+                <div class="divider"></div>
+
+                <div class="info-card">
+                    <div class="subsection-title">المدة الإجمالية</div>
+                    <p class="text-large">150 دقيقة (2.5 ساعة)</p>
+                </div>
+
+                <div class="section-title">سؤال الافتتاح</div>
+                
+                <div class="quote-box">
+                    لو روحت لجمعية قاعدية دلوقتي وقلت لمدير الجمعية:<br>
+                    "عندنا مبادرة اسمها عيش وملح، ممكن تساعدونا؟"<br><br>
+                    <span class="text-highlight">تفتكروا هيرد إيه؟</span>
+                </div>
+
+                <div class="text-large" style="margin-top: 50px;">
+                    <span class="text-emphasis">الإجابة المتوقعة:</span> في ناس قالت "ممكن يرحب"، وناس قالت "ممكن يرفض"
+                </div>
+
+                <div class="info-card" style="margin-top: 40px;">
+                    <div class="subsection-title">السؤال الحقيقي</div>
+                    <p class="text-large">
+                        <span class="text-highlight">ليه واحد يرحب وواحد يرفض</span> — رغم إن الفكرة واحدة؟
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-warning">الإجابة:</span> مش الفكرة — <span class="text-highlight">الطريقة</span>
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    النهاردة هنتعلم <span class="text-highlight">3 قوى</span><br>
+                    لو استخدمتها صح، الجمعيات هتفتحلك بابها<br>
+                    ولو استخدمتها غلط — هتقفله في وشك
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: الإطار العام - القوى الثلاث -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-title">الإطار العام للورشة</div>
+                <div class="slide-subtitle">3 قوى أساسية للتعامل مع الجمعيات القاعدية</div>
+
+                <div class="divider"></div>
+
+                <div class="key-points">
+                    <div class="key-point">
+                        <h3>🔍 القوة الأولى</h3>
+                        <p><span class="text-highlight">قوة التشخيص</span></p>
+                        <p style="margin-top: 15px;">تعرف نوع الجمعية قبل ما تعرض عليها</p>
+                    </div>
+
+                    <div class="key-point">
+                        <h3>🤝 القوة الثانية</h3>
+                        <p><span class="text-highlight">إطار المكسب المشترك</span></p>
+                        <p style="margin-top: 15px;">تعرض الفكرة كـ فرصة — مش طلب</p>
+                    </div>
+
+                    <div class="key-point">
+                        <h3>🏛️ القوة الثالثة</h3>
+                        <p><span class="text-highlight">بناء الثقة المؤسسية</span></p>
+                        <p style="margin-top: 15px;">تتعامل بشكل مؤسسي — مع لمسة إنسانية</p>
+                    </div>
+                </div>
+
+                <div class="section-title">منهجية كل قوة</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>أقل من اللازم</p>
+                        <p style="margin-top: 20px; color: #ef4444;">النتيجة: بتخسر فرص</p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>⚖️ التوازن</h3>
+                        <p>الاستخدام الصحيح</p>
+                        <p style="margin-top: 20px; color: var(--success-green);">النتيجة: بتكسب شركاء</p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p>أكثر من اللازم</p>
+                        <p style="margin-top: 20px; color: #ef4444;">النتيجة: بتزعّل الناس</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    هنشوف كل قوة في 3 مستويات:<br>
+                    التفريط - التوازن - الإفراط<br><br>
+                    <span class="text-highlight">يلا نبدأ بالقوة الأولى</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: القوة الأولى - التعريف -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-title">القوة الأولى</div>
+                <div class="slide-subtitle">🔍 قوة التشخيص</div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    تعرف نوع الجمعية قبل ما تعرض عليها
+                </div>
+
+                <div class="section-title">مثال توضيحي</div>
+
+                <div class="info-card">
+                    <div class="subsection-title">تخيل معايا — في جمعيتين:</div>
+                    
+                    <ul class="custom-list green">
+                        <li><span class="text-highlight">الجمعية الأولى:</span> عندها مطبخ، بتطبخ وجبات كل يوم، عندها 10 طباخين</li>
+                        <li><span class="text-highlight">الجمعية الثانية:</span> مافيش مطبخ، بس عندها 500 متبرع بيتبرعوا مالياً كل شهر</li>
+                    </ul>
+                </div>
+
+                <div class="scenario-box bad">
+                    <p class="text-large">
+                        <span class="text-warning">❌ الخطأ:</span><br><br>
+                        لو رحت للجمعية الأولى وقلت: <span class="text-highlight">"عايزينكم توزعوا أطباق على متبرعينكم"</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-emphasis">ليه غلطان؟</span> لأن هي عندها مطبخ — مش محتاجة متبرعين يطبخوا
+                    </p>
+                </div>
+
+                <div class="scenario-box bad">
+                    <p class="text-large">
+                        <span class="text-warning">❌ الخطأ:</span><br><br>
+                        ولو رحت للجمعية الثانية وقلت: <span class="text-highlight">"عايزين تطبخوا وجبات"</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-emphasis">ليه غلطان؟</span> لأن مافيش مطبخ
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ القاعدة الذهبية</div>
+                    <p class="text-large">
+                        <span class="text-highlight">التشخيص = تعرف نوع الجمعية الأول — بعدين تعرض</span>
+                    </p>
+                </div>
+
+                <div class="quote-box">
+                    يلا نشوف أمثلة عملية على التفريط والتوازن والإفراط
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: القوة الأولى - سيناريو التفريط -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-title">القوة الأولى: التشخيص</div>
+                <div class="slide-subtitle">❌ السيناريو الأول: التفريط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: دخول بدون تشخيص</div>
+                    <p class="text-large">لما تدخل من غير ما تشخّص — نفس العرض لكل جمعية</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">محمد مسؤول جمعيات راح لجمعية "النور" في قرية صغيرة</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">الحوار الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>محمد:</strong> السلام عليكم. أنا محمد من صناع الحياة. عندنا مبادرة اسمها عيش وملح — محتاجين مساعدتكم.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> مساعدة في إيه؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>محمد:</strong> عايزين الجمعية توفرلنا أطباق، وإنتو تطبخوا وجبات فيها وتوزعوها على الأسر المحتاجة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> إحنا مش عندنا مطبخ.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>محمد:</strong> طيب، ممكن تعملوا ترتيبات؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> إحنا جمعية صغيرة — مش قادرين.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>محمد:</strong> طيب، شكراً. <span style="color: #94a3b8;">(راح)</span>
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>محمد كلم مسؤوله:</strong> "الجمعية دي مش مهتمة."
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل المشكلة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>المشكلة الأولى</h3>
+                        <p>ماسألش إذا كان عندهم مطبخ قبل العرض</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>المشكلة الثانية</h3>
+                        <p>عرض الفكرة من غير ما يفهم وضعهم</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>المشكلة الثالثة</h3>
+                        <p>افترض إن كل الجمعيات عندها مطابخ</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">النتيجة:</span><br>
+                    الجمعية حست إنه مايعرفش عنهم حاجة — فرفضت<br><br>
+                    <span class="text-highlight">التفريط = نفس العرض لكل جمعية = رفض</span>
+                </div>
+            </div>
+        </div>
+<!-- Slide 5: القوة الأولى - السيناريو البديل (التوازن) -->
+        <div class="slide" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-title">القوة الأولى: التشخيص</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: اسأل — افهم — بعدين اعرض</div>
+                    <p class="text-large">كان ممكن محمد يعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">الحوار الصحيح:</div>
+                    
+                    <div class="dialogue">
+                        <strong>محمد:</strong> السلام عليكم. أنا محمد من صناع الحياة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> أهلاً.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>محمد:</strong> حضرتك، الجمعية دي بتقدم إيه من خدمات؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> إحنا بنقدم مساعدات مالية، تجهيز عرائس، كفالة أيتام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>محمد (لاحظ إنه ماقالش "مطبخ"):</strong> تمام. حضرتك عندكم مطبخ؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> لا، مش عندنا.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>محمد:</strong> ممتاز — ده بالظبط اللي كنت عايز أعرفه. عندنا مبادرة اسمها عيش وملح — مناسبة ليكم لأنها مابتحتاجش مطبخ. ممكن أشرحلك؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> اتفضل.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>محمد:</strong> إحنا نوفرلكم أطباق، حضرتك توزعوها على المتبرعين، يملوها بوجبات، ويرجعوها ليكم. وحضرتك توزعوها على الأسر.<br><br>
+                        يعني الجمعية — من غير ما يكون عندها مطبخ — بقت بتقدم وجبات ساخنة.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>المدير:</strong> فكرة حلوة — يلا نبدأ.
+                    </div>
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>دخل بنفس العرض على كل جمعية</p>
+                        <p style="margin-top: 20px;">ماسألش — مافهمش — عرض مباشرة</p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>سأل الأول، شخّص، بعدين عرض</p>
+                        <p style="margin-top: 20px;">فهم الوضع — قدم الحل المناسب</p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>📊 النتيجة</h3>
+                        <p>الجمعية وافقت</p>
+                        <p style="margin-top: 20px;">لأنها حست إن العرض مناسب ليها</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    اسأل → افهم → بعدين اعرض<br><br>
+                    التشخيص الصح = تعرف مين قدامك قبل ما تعرض
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: القوة الأولى - سيناريو الإفراط -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-title">القوة الأولى: التشخيص</div>
+                <div class="slide-subtitle">⚠️ السيناريو الثاني: الإفراط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: المبالغة في التشخيص</div>
+                    <p class="text-large">لما تسأل أكتر من اللازم — تحقيق مش تشخيص</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">سارة مسؤولة جمعيات راحت لجمعية "الرحمة"</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">الحوار الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>سارة:</strong> السلام عليكم. أنا سارة من صناع الحياة. حابة أعرف — الجمعية دي فاتحة من إمتى؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> من 10 سنين.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>سارة:</strong> وبتخدموا كام أسرة؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> حوالي 200 أسرة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>سارة:</strong> وحضرتك عندكم مطبخ؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> لا.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> طيب، ليه ماعملتوش مطبخ؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> لأن التكلفة عالية.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> وحضرتك بتجمعوا تبرعات منين؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> من أهل الخير.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> وكام متبرع عندكم؟
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>المديرة (بدأت تضيق):</strong> معلش، إنتِ جاية ليه بالظبط؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>سارة:</strong> أنا بس عايزة أفهم وضعكم عشان أشوف الفكرة تناسبكم ولا لأ.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.2);">
+                        <strong>المديرة:</strong> طيب، قولي الفكرة على طول — ولو ناسبت هقولك.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> معلش، أنا عندي اجتماع. ممكن تسيبي رقمك وأكلمك.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong>(سارة سابت رقمها — المديرة ماكلمتش)</strong>
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل المشكلة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>أسئلة كثيرة جداً</h3>
+                        <p>سألت 6-7 أسئلة قبل ما تعرض الفكرة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>إحساس بالتحقيق</h3>
+                        <p>المديرة حست إنها في تحقيق — مش عرض شراكة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>فقدان الصبر</h3>
+                        <p>الطرف التاني زهق وطلب الفكرة مباشرة</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">النتيجة:</span><br>
+                    سارة سألت أكتر من اللازم<br>
+                    المديرة حست إنها في تحقيق — فرفضت<br><br>
+                    <span class="text-highlight">الإفراط = أسئلة كتير = شك وزهق</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: القوة الأولى - السيناريو البديل للإفراط -->
+        <div class="slide" data-slide="7">
+            <div class="slide-content">
+                <div class="slide-title">القوة الأولى: التشخيص</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: اسأل اللي يخدم الموضوع — مش كل حاجة</div>
+                    <p class="text-large">كان ممكن سارة تعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">الحوار الصحيح:</div>
+                    
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>سارة:</strong> حضرتك، الجمعية دي بتقدم إيه؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> مساعدات مالية، تجهيز عرائس، كفالة أيتام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>سارة:</strong> تمام. عندكم مطبخ؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> لا.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>سارة:</strong> ممتاز — ده اللي كنت محتاجة أعرفه. عندنا فكرة ممكن تكون فرصة ليكم. ممكن أشرحها؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> اتفضلي.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>[شرحت — وافقت]</strong>
+                    </div>
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p>سألت 6-7 أسئلة</p>
+                        <p style="margin-top: 15px; font-size: 28px;">
+                            • من إمتى فاتحة؟<br>
+                            • كام أسرة؟<br>
+                            • ليه مافيش مطبخ؟<br>
+                            • بتجمعوا تبرعات منين؟<br>
+                            • كام متبرع؟
+                        </p>
+                        <p style="margin-top: 20px; color: #ef4444;">= إحساس بالتحقيق</p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>سألت سؤالين فقط</p>
+                        <p style="margin-top: 15px; font-size: 28px;">
+                            • بتقدموا إيه؟<br>
+                            • عندكم مطبخ؟
+                        </p>
+                        <p style="margin-top: 20px; color: var(--success-green);">= كفاية للتشخيص</p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>🎯 النتيجة</h3>
+                        <p>المديرة ارتاحت</p>
+                        <p style="margin-top: 20px;">حست إن سارة محترمة ومحترفة</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">وافقت على الشراكة</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    اسأل اللي يخدم الموضوع — مش كل حاجة<br><br>
+                    سؤال أو اتنين كفاية — مش 10 أسئلة
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: القوة الأولى - النشاط التفاعلي والاستنتاج -->
+        <div class="slide" data-slide="8">
+            <div class="slide-content">
+                <div class="slide-title">القوة الأولى: التشخيص</div>
+                <div class="slide-subtitle">🎯 النشاط التفاعلي والخلاصة</div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">النشاط التفاعلي: لعب الأدوار</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);">
+                    <div class="subsection-title">التقسيم</div>
+                    <ul class="custom-list golden">
+                        <li>هقسمكم لأزواج — كل اثنين مع بعض</li>
+                        <li>واحد يكون مسؤول جمعيات</li>
+                        <li>والتاني يكون مدير جمعية</li>
+                    </ul>
+                </div>
+
+                <div class="info-card" style="border-color: var(--golden);">
+                    <div class="subsection-title" style="color: var(--golden);">السيناريو</div>
+                    <p class="text-large">
+                        المسؤول هيدخل على الجمعية ويشخصها<br>
+                        يسأل الأسئلة الصح عشان يعرف نوعها
+                    </p>
+                    <p class="text-large" style="margin-top: 25px;">
+                        <span class="text-highlight">المدة: 5 دقائق للتدريب</span>
+                    </p>
+                </div>
+
+                <div class="info-card" style="border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">العرض أمام الجميع</div>
+                    <ul class="custom-list green">
+                        <li>زوج واحد يعرض التمثيل قدام الكل (3 دقائق)</li>
+                        <li>الباقي يعطوا فيدباك: إيه اللي عُمل صح؟ وإيه اللي ممكن كان أحسن؟</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">📋 خلاصة قوة التشخيص</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>نفس العرض لكل جمعية</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            ماسألش → مافهمش → عرض مباشرة
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            النتيجة: رفض
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>سؤال → فهم → عرض مناسب</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            سؤال أو اتنين → تشخيص دقيق → عرض مخصص
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            النتيجة: قبول
+                        </p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p>أسئلة كتير = تحقيق</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            6-7 أسئلة → إحساس بالضغط → الطرف التاني يزهق
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            النتيجة: رفض
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    <span class="text-highlight">افتكر دايماً:</span><br><br>
+                    الجمعيات مش كلها واحدة<br>
+                    في جمعية عندها مطبخ، وفي جمعية عندها متبرعين<br><br>
+                    لو عرضت نفس الفكرة على الاتنين — واحد هيرفض<br><br>
+                    <span style="color: var(--golden); font-size: 44px;">
+                        التشخيص الصح = تعرف مين قدامك — قبل ما تعرض
+                    </span>
+                </div>
+
+                <div class="info-card" style="margin-top: 50px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%); border-color: var(--success-green);">
+                    <p class="text-large" style="text-align: center; font-size: 40px;">
+                        <span class="text-highlight">يلا ننتقل للقوة الثانية</span> 🎯
+                    </p>
+                </div>
+            </div>
+        </div>
+<!-- Slide 9: القوة الثانية - التعريف -->
+        <div class="slide" data-slide="9">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية</div>
+                <div class="slide-subtitle">🤝 قوة إطار المكسب المشترك</div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    تعرض الفكرة كـ فرصة — مش طلب
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ طلب</h3>
+                        <p style="font-size: 32px;">
+                            "محتاجين مساعدتكم"
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444;">
+                            = الجمعية تحس بعبء
+                        </p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>✅ مكسب مشترك</h3>
+                        <p style="font-size: 32px;">
+                            "عندنا فرصة تزيد تأثيركم"
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green);">
+                            = الجمعية تحس إنها هتستفيد
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>🎯 النتيجة</h3>
+                        <p style="font-size: 32px;">
+                            الطريقة بتفرق
+                        </p>
+                        <p style="margin-top: 25px; color: var(--golden);">
+                            = شراكة حقيقية
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">تخيل معايا</div>
+
+                <div class="scenario-box bad">
+                    <p class="text-large">
+                        <span class="text-warning">الموقف الأول:</span><br><br>
+                        لو واحد جالك وقال: <span class="text-highlight">"ممكن تساعدني في مشروع؟"</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-emphasis">هتحس إيه؟</span> → عبء، التزام، مطلوب مني حاجة
+                    </p>
+                </div>
+
+                <div class="scenario-box good">
+                    <p class="text-large">
+                        <span class="text-emphasis">الموقف الثاني:</span><br><br>
+                        لو جالك وقال: <span class="text-highlight">"عندي فكرة هتفيدك — عايز أشاركها معاك"</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-emphasis">هتحس إيه؟</span> → اهتمام، فضول، في حاجة ليا
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ القاعدة الذهبية</div>
+                    <p class="text-large">
+                        الطريقة اللي بتعرض بيها الفكرة <span class="text-highlight">بتفرق</span>
+                    </p>
+                    <ul class="custom-list green" style="margin-top: 30px;">
+                        <li>لو عرضتها كـ طلب — الجمعية هتحس بعبء</li>
+                        <li>لو عرضتها كـ فرصة — الجمعية هتحس إنها هتستفيد</li>
+                    </ul>
+                </div>
+
+                <div class="quote-box">
+                    يلا نشوف أمثلة عملية على التفريط والتوازن والإفراط
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: القوة الثانية - سيناريو التفريط -->
+        <div class="slide" data-slide="10">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">❌ السيناريو الأول: التفريط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: العرض كطلب</div>
+                    <p class="text-large">لما تعرض الفكرة كأنك محتاج مساعدة — مش كفرصة</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">أحمد راح لجمعية "الخير" — جمعية قديمة، عندها متبرعين كتير</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">الحوار الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>أحمد:</strong> السلام عليكم. أنا أحمد من صناع الحياة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> وعليكم السلام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>أحمد:</strong> عندنا مبادرة اسمها عيش وملح — <span class="text-warning">محتاجين مساعدتكم</span>.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> مساعدة في إيه؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>أحمد:</strong> عايزين الجمعية توزع أطباق على المتبرعين، المتبرعين يملوها، وتوزعوها على الأسر.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> يعني <span class="text-warning">إحنا هنشتغل</span> في الموضوع ده؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>أحمد:</strong> أيوه — بس شغل بسيط.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>المدير:</strong> طيب، إحنا <span class="text-warning">مشغولين</span> — عندنا شغل كتير.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>أحمد:</strong> طيب، شكراً.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>أحمد كلم مسؤوله:</strong> "الجمعية مش قادرة."
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل الكلمات الخاطئة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>❌ "محتاجين مساعدتكم"</h3>
+                        <p>= إحنا عندنا نقص — وإنتو هتساعدونا</p>
+                        <p style="margin-top: 15px; color: #ef4444;">الجمعية تحس: عبء</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>❌ "إحنا هنشتغل"</h3>
+                        <p>= الموضوع شغل وتعب</p>
+                        <p style="margin-top: 15px; color: #ef4444;">الجمعية تحس: مجهود زيادة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>❌ "مشغولين"</h3>
+                        <p>= الرفض المباشر بسبب العبء المتوقع</p>
+                        <p style="margin-top: 15px; color: #ef4444;">النتيجة: رفض</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">المشكلة:</span><br>
+                    أحمد عرض الفكرة كـ <span class="text-highlight">طلب مساعدة</span><br><br>
+                    كل الكلام خلى المدير يحس إن الموضوع عبء عليه<br><br>
+                    <span class="text-warning">التفريط = طلب مساعدة = عبء = رفض</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: القوة الثانية - السيناريو البديل (التوازن) -->
+        <div class="slide" data-slide="11">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: اعرض المكسب — مش الطلب</div>
+                    <p class="text-large">كان ممكن أحمد يعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">الحوار الصحيح:</div>
+                    
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>أحمد:</strong> عندنا مبادرة اسمها عيش وملح — <span class="text-highlight">ممكن تكون فرصة ليكم</span>.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> فرصة إزاي؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>أحمد:</strong> حضرتك، الجمعية دي عندها متبرعين كتير — صح؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> أيوه.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>أحمد:</strong> طيب، المتبرعين دول بيتبرعوا بإيه؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> فلوس — أو مواد عينية.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>أحمد:</strong> تمام. الفكرة: إحنا نوفرلكم أطباق، حضرتك توزعوها على المتبرعين دول، يملوها بوجبات، ويرجعوها ليكم. وحضرتك توزعوها على الأسر.<br><br>
+                        <span class="text-highlight">يعني إيه؟</span> يعني الجمعية — من غير ما يكون عندها مطبخ — بقت بتقدم وجبات ساخنة. <span class="text-emphasis">ده بند جديد بيضاف لأعمالكم — بيزوّد تأثيركم</span>.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.15);">
+                        <strong>المدير (اهتم):</strong> فكرة حلوة فعلاً. وإحنا مطلوب مننا إيه بالظبط؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>أحمد:</strong> التوزيع والاستلام بس — إحنا بنوفر الأطباق.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>المدير:</strong> تمام — يلا نبدأ.
+                    </div>
+                </div>
+
+                <div class="section-title">الكلمات والعبارات الصحيحة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>✅ "فرصة ليكم"</h3>
+                        <p>= في حاجة هتستفيدوا منها</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">الجمعية تحس: اهتمام</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>✅ "بند جديد لأعمالكم"</h3>
+                        <p>= زيادة في الخدمات — مش عبء</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">الجمعية تحس: قيمة مضافة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>✅ "بيزوّد تأثيركم"</h3>
+                        <p>= الجمعية هتبقى أقوى</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">النتيجة: قبول</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>"محتاجين مساعدتكم"</p>
+                        <p style="margin-top: 20px; color: #ef4444;">= عبء</p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>"فرصة تزيد تأثيركم"</p>
+                        <p style="margin-top: 20px; color: var(--success-green);">= مكسب</p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>🤝 النتيجة</h3>
+                        <p>شراكة</p>
+                        <p style="margin-top: 20px; color: var(--golden);">كل طرف يستفيد</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    اعرض المكسب — مش الطلب<br><br>
+                    "فرصة ليكم" أفضل من "محتاجين مساعدتكم"
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: القوة الثانية - سيناريو الإفراط -->
+        <div class="slide" data-slide="12">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">⚠️ السيناريو الثاني: الإفراط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: المبالغة في المكاسب</div>
+                    <p class="text-large">لما تبالغ في الوعود — وعود أكبر من الواقع</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">سارة راحت لجمعية "النهضة" — جمعية صغيرة</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">الحوار الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>سارة:</strong> السلام عليكم. أنا سارة من صناع الحياة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> وعليكم السلام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> عندنا فكرة <span class="text-warning">هتغيّر شغلكم تماماً!</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> إزاي؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>سارة:</strong> الفكرة: إحنا هنوفرلكم أطباق، وإنتو توزعوها على متبرعينكم.<br><br>
+                        <span class="text-warning">وإيه الفايدة؟</span><br>
+                        ١. الجمعية هتبقى بتقدم وجبات يومية — <span class="text-warning">كل يوم!</span><br>
+                        ٢. <span class="text-warning">هنعملكم تغطية إعلامية كبيرة</span> — هتظهروا في كل مكان!<br>
+                        ٣. <span class="text-warning">المتبرعين هيزيدوا</span> — لأن الجمعية هتبقى مشهورة!<br>
+                        ٤. <span class="text-warning">هنعملكم شراكات مع مؤسسات كبيرة!</span><br>
+                        ٥. <span class="text-warning">الجمعية هتبقى الأكبر في المنطقة!</span>
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>المديرة (بدأت تشك):</strong> كل ده؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> أيوه — وأكتر كمان!
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.2);">
+                        <strong>المديرة:</strong> طيب، <span class="text-warning">إيه اللي مخفي؟</span> في حاجة إنتو مش قايلينها.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>سارة:</strong> لا، مافيش حاجة مخفية!
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>المديرة:</strong> طيب، خليني أفكر. هكلمك.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong>(ماكلمتش)</strong>
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل المشكلة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>5 وعود كبيرة</h3>
+                        <p>وجبات يومية + تغطية إعلامية + زيادة متبرعين + شراكات + الأكبر في المنطقة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>أكبر من الواقع</h3>
+                        <p>الوعود مش واقعية — "هتبقى الأكبر" مبالغة واضحة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>الشك والريبة</h3>
+                        <p>المديرة حست إن فيه حاجة مخفية — الموضوع "حلو أوي"</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">المشكلة:</span><br>
+                    سارة بالغت في المكاسب — قالت حاجات أكبر من الواقع<br><br>
+                    النتيجة: المديرة حست إن فيه حاجة مخفية — فرفضت<br><br>
+                    <span class="text-warning">الإفراط = مبالغة في الوعود = شك = رفض</span>
+                </div>
+            </div>
+        </div>
+<!-- Slide 9: القوة الثانية - التعريف -->
+        <div class="slide" data-slide="9">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية</div>
+                <div class="slide-subtitle">🤝 قوة إطار المكسب المشترك</div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    تعرض الفكرة كـ فرصة — مش طلب
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ طلب</h3>
+                        <p style="font-size: 32px;">
+                            "محتاجين مساعدتكم"
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444;">
+                            = الجمعية تحس بعبء
+                        </p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>✅ مكسب مشترك</h3>
+                        <p style="font-size: 32px;">
+                            "عندنا فرصة تزيد تأثيركم"
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green);">
+                            = الجمعية تحس إنها هتستفيد
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>🎯 النتيجة</h3>
+                        <p style="font-size: 32px;">
+                            الطريقة بتفرق
+                        </p>
+                        <p style="margin-top: 25px; color: var(--golden);">
+                            = شراكة حقيقية
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">تخيل معايا</div>
+
+                <div class="scenario-box bad">
+                    <p class="text-large">
+                        <span class="text-warning">الموقف الأول:</span><br><br>
+                        لو واحد جالك وقال: <span class="text-highlight">"ممكن تساعدني في مشروع؟"</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-emphasis">هتحس إيه؟</span> → عبء، التزام، مطلوب مني حاجة
+                    </p>
+                </div>
+
+                <div class="scenario-box good">
+                    <p class="text-large">
+                        <span class="text-emphasis">الموقف الثاني:</span><br><br>
+                        لو جالك وقال: <span class="text-highlight">"عندي فكرة هتفيدك — عايز أشاركها معاك"</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 30px;">
+                        <span class="text-emphasis">هتحس إيه؟</span> → اهتمام، فضول، في حاجة ليا
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ القاعدة الذهبية</div>
+                    <p class="text-large">
+                        الطريقة اللي بتعرض بيها الفكرة <span class="text-highlight">بتفرق</span>
+                    </p>
+                    <ul class="custom-list green" style="margin-top: 30px;">
+                        <li>لو عرضتها كـ طلب — الجمعية هتحس بعبء</li>
+                        <li>لو عرضتها كـ فرصة — الجمعية هتحس إنها هتستفيد</li>
+                    </ul>
+                </div>
+
+                <div class="quote-box">
+                    يلا نشوف أمثلة عملية على التفريط والتوازن والإفراط
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: القوة الثانية - سيناريو التفريط -->
+        <div class="slide" data-slide="10">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">❌ السيناريو الأول: التفريط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: العرض كطلب</div>
+                    <p class="text-large">لما تعرض الفكرة كأنك محتاج مساعدة — مش كفرصة</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">أحمد راح لجمعية "الخير" — جمعية قديمة، عندها متبرعين كتير</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">الحوار الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>أحمد:</strong> السلام عليكم. أنا أحمد من صناع الحياة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> وعليكم السلام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>أحمد:</strong> عندنا مبادرة اسمها عيش وملح — <span class="text-warning">محتاجين مساعدتكم</span>.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> مساعدة في إيه؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>أحمد:</strong> عايزين الجمعية توزع أطباق على المتبرعين، المتبرعين يملوها، وتوزعوها على الأسر.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> يعني <span class="text-warning">إحنا هنشتغل</span> في الموضوع ده؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>أحمد:</strong> أيوه — بس شغل بسيط.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>المدير:</strong> طيب، إحنا <span class="text-warning">مشغولين</span> — عندنا شغل كتير.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>أحمد:</strong> طيب، شكراً.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>أحمد كلم مسؤوله:</strong> "الجمعية مش قادرة."
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل الكلمات الخاطئة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>❌ "محتاجين مساعدتكم"</h3>
+                        <p>= إحنا عندنا نقص — وإنتو هتساعدونا</p>
+                        <p style="margin-top: 15px; color: #ef4444;">الجمعية تحس: عبء</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>❌ "إحنا هنشتغل"</h3>
+                        <p>= الموضوع شغل وتعب</p>
+                        <p style="margin-top: 15px; color: #ef4444;">الجمعية تحس: مجهود زيادة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>❌ "مشغولين"</h3>
+                        <p>= الرفض المباشر بسبب العبء المتوقع</p>
+                        <p style="margin-top: 15px; color: #ef4444;">النتيجة: رفض</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">المشكلة:</span><br>
+                    أحمد عرض الفكرة كـ <span class="text-highlight">طلب مساعدة</span><br><br>
+                    كل الكلام خلى المدير يحس إن الموضوع عبء عليه<br><br>
+                    <span class="text-warning">التفريط = طلب مساعدة = عبء = رفض</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: القوة الثانية - السيناريو البديل (التوازن) -->
+        <div class="slide" data-slide="11">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: اعرض المكسب — مش الطلب</div>
+                    <p class="text-large">كان ممكن أحمد يعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">الحوار الصحيح:</div>
+                    
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>أحمد:</strong> عندنا مبادرة اسمها عيش وملح — <span class="text-highlight">ممكن تكون فرصة ليكم</span>.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> فرصة إزاي؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>أحمد:</strong> حضرتك، الجمعية دي عندها متبرعين كتير — صح؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> أيوه.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>أحمد:</strong> طيب، المتبرعين دول بيتبرعوا بإيه؟
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المدير:</strong> فلوس — أو مواد عينية.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>أحمد:</strong> تمام. الفكرة: إحنا نوفرلكم أطباق، حضرتك توزعوها على المتبرعين دول، يملوها بوجبات، ويرجعوها ليكم. وحضرتك توزعوها على الأسر.<br><br>
+                        <span class="text-highlight">يعني إيه؟</span> يعني الجمعية — من غير ما يكون عندها مطبخ — بقت بتقدم وجبات ساخنة. <span class="text-emphasis">ده بند جديد بيضاف لأعمالكم — بيزوّد تأثيركم</span>.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.15);">
+                        <strong>المدير (اهتم):</strong> فكرة حلوة فعلاً. وإحنا مطلوب مننا إيه بالظبط؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>أحمد:</strong> التوزيع والاستلام بس — إحنا بنوفر الأطباق.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>المدير:</strong> تمام — يلا نبدأ.
+                    </div>
+                </div>
+
+                <div class="section-title">الكلمات والعبارات الصحيحة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>✅ "فرصة ليكم"</h3>
+                        <p>= في حاجة هتستفيدوا منها</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">الجمعية تحس: اهتمام</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>✅ "بند جديد لأعمالكم"</h3>
+                        <p>= زيادة في الخدمات — مش عبء</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">الجمعية تحس: قيمة مضافة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>✅ "بيزوّد تأثيركم"</h3>
+                        <p>= الجمعية هتبقى أقوى</p>
+                        <p style="margin-top: 15px; color: var(--success-green);">النتيجة: قبول</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>"محتاجين مساعدتكم"</p>
+                        <p style="margin-top: 20px; color: #ef4444;">= عبء</p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>"فرصة تزيد تأثيركم"</p>
+                        <p style="margin-top: 20px; color: var(--success-green);">= مكسب</p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>🤝 النتيجة</h3>
+                        <p>شراكة</p>
+                        <p style="margin-top: 20px; color: var(--golden);">كل طرف يستفيد</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    اعرض المكسب — مش الطلب<br><br>
+                    "فرصة ليكم" أفضل من "محتاجين مساعدتكم"
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: القوة الثانية - سيناريو الإفراط -->
+        <div class="slide" data-slide="12">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">⚠️ السيناريو الثاني: الإفراط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: المبالغة في المكاسب</div>
+                    <p class="text-large">لما تبالغ في الوعود — وعود أكبر من الواقع</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">سارة راحت لجمعية "النهضة" — جمعية صغيرة</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">الحوار الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>سارة:</strong> السلام عليكم. أنا سارة من صناع الحياة.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> وعليكم السلام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> عندنا فكرة <span class="text-warning">هتغيّر شغلكم تماماً!</span>
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>المديرة:</strong> إزاي؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>سارة:</strong> الفكرة: إحنا هنوفرلكم أطباق، وإنتو توزعوها على متبرعينكم.<br><br>
+                        <span class="text-warning">وإيه الفايدة؟</span><br>
+                        ١. الجمعية هتبقى بتقدم وجبات يومية — <span class="text-warning">كل يوم!</span><br>
+                        ٢. <span class="text-warning">هنعملكم تغطية إعلامية كبيرة</span> — هتظهروا في كل مكان!<br>
+                        ٣. <span class="text-warning">المتبرعين هيزيدوا</span> — لأن الجمعية هتبقى مشهورة!<br>
+                        ٤. <span class="text-warning">هنعملكم شراكات مع مؤسسات كبيرة!</span><br>
+                        ٥. <span class="text-warning">الجمعية هتبقى الأكبر في المنطقة!</span>
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>المديرة (بدأت تشك):</strong> كل ده؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> أيوه — وأكتر كمان!
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.2);">
+                        <strong>المديرة:</strong> طيب، <span class="text-warning">إيه اللي مخفي؟</span> في حاجة إنتو مش قايلينها.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>سارة:</strong> لا، مافيش حاجة مخفية!
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>المديرة:</strong> طيب، خليني أفكر. هكلمك.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong>(ماكلمتش)</strong>
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل المشكلة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>5 وعود كبيرة</h3>
+                        <p>وجبات يومية + تغطية إعلامية + زيادة متبرعين + شراكات + الأكبر في المنطقة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>أكبر من الواقع</h3>
+                        <p>الوعود مش واقعية — "هتبقى الأكبر" مبالغة واضحة</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>الشك والريبة</h3>
+                        <p>المديرة حست إن فيه حاجة مخفية — الموضوع "حلو أوي"</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">المشكلة:</span><br>
+                    سارة بالغت في المكاسب — قالت حاجات أكبر من الواقع<br><br>
+                    النتيجة: المديرة حست إن فيه حاجة مخفية — فرفضت<br><br>
+                    <span class="text-warning">الإفراط = مبالغة في الوعود = شك = رفض</span>
+                </div>
+            </div>
+        </div>
+<!-- Slide 13: القوة الثانية - السيناريو البديل للإفراط -->
+        <div class="slide" data-slide="13">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: اوعد بس اللي تقدر تنفذه</div>
+                    <p class="text-large">كان ممكن سارة تعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">الحوار الصحيح:</div>
+                    
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>سارة:</strong> الفكرة: إحنا نوفرلكم أطباق، وإنتو توزعوها على متبرعينكم، يملوها، وتوزعوها على الأسر.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>سارة:</strong> <span class="text-highlight">الفايدة:</span> الجمعية — من غير مطبخ — بقت بتقدم وجبات. ده بند جديد بيضاف لأعمالكم.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>سارة:</strong> وممكن كمان — لو التنفيذ نجح — نعمل تغطية إعلامية بسيطة. <span class="text-emphasis">بس مش وعد — ده احتمال.</span>
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>المديرة:</strong> تمام — الكلام واقعي. يلا نبدأ.
+                    </div>
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p style="font-size: 28px; line-height: 1.6;">
+                            • وجبات يومية<br>
+                            • تغطية إعلامية كبيرة<br>
+                            • زيادة المتبرعين<br>
+                            • شراكات كبيرة<br>
+                            • الأكبر في المنطقة
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            = مبالغة = شك
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p style="font-size: 28px; line-height: 1.6;">
+                            • بند جديد لأعمالكم<br>
+                            • وجبات من غير مطبخ<br>
+                            • احتمال تغطية بسيطة
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            = واقعية = ثقة
+                        </p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>🎯 الدرس</h3>
+                        <p style="font-size: 28px;">
+                            الصدق أقوى من المبالغة
+                        </p>
+                        <p style="margin-top: 25px; color: var(--golden);">
+                            الجمعية تثق في الكلام الواقعي
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ الفارق الحاسم</div>
+                    <ul class="custom-list green">
+                        <li><span class="text-highlight">الإفراط:</span> وعدت بـ 5 حاجات كبيرة — كلها مبالغ فيها</li>
+                        <li><span class="text-highlight">التوازن:</span> وعدت بحاجة واحدة واقعية — وحاجة تانية "احتمال"</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    اوعد بس اللي تقدر تنفذه — مش اللي تتمناه<br><br>
+                    <span style="font-size: 36px;">
+                        "الوعد الواحد الصادق أقوى من 10 وعود مبالغ فيها"
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: القوة الثانية - النشاط التفاعلي والخلاصة -->
+        <div class="slide" data-slide="14">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثانية: المكسب المشترك</div>
+                <div class="slide-subtitle">🎯 النشاط التفاعلي والخلاصة</div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">النشاط التفاعلي: لعب الأدوار</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);">
+                    <div class="subsection-title">السيناريو</div>
+                    <p class="text-large">
+                        واحد مسؤول جمعيات — هيعرض الفكرة على مدير جمعية
+                    </p>
+                    <p class="text-large" style="margin-top: 25px;">
+                        <span class="text-highlight">المطلوب:</span> اعرض الفكرة كـ فرصة — مش طلب. وماتبالغش.
+                    </p>
+                    <p class="text-large" style="margin-top: 25px;">
+                        <span class="text-emphasis">المدة: 5 دقائق للتدريب</span>
+                    </p>
+                </div>
+
+                <div class="info-card" style="border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">العرض والفيدباك</div>
+                    <ul class="custom-list green">
+                        <li>زوج واحد يعرض التمثيل قدام الكل (3 دقائق)</li>
+                        <li>الباقي يعطوا فيدباك: إيه اللي عجبكم في الطريقة دي؟</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">📋 خلاصة إطار المكسب المشترك</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>"محتاجين مساعدتكم"</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            طلب = عبء
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            النتيجة: رفض
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>"فرصة تزيد تأثيركم"</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            شراكة = مكسب
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            النتيجة: قبول
+                        </p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p>مبالغة في المكاسب</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            وعود غير واقعية
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            النتيجة: شك ورفض
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">⚠️ نقطة مهمة جداً: الخنوع</div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">❌ لا تدخل كأنك أقل منهم</div>
+                    <p class="text-large">
+                        لما تدخل على جمعية — <span class="text-warning">ماتدخلش كأنك أقل منهم</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 25px;">
+                        إحنا في صناع الحياة <span class="text-highlight">مؤسسة كبيرة — عندنا قوة</span>
+                    </p>
+                </div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ لكن — مش معناها تكبّر</div>
+                    <p class="text-large">
+                        معناها <span class="text-highlight">تحترم نفسك والطرف التاني</span>
+                    </p>
+                </div>
+
+                <div class="comparison-table" style="margin-top: 40px;">
+                    <div class="comparison-col bad">
+                        <h3>❌ خنوع</h3>
+                        <p style="font-size: 32px;">
+                            "ممكن تساعدونا؟"
+                        </p>
+                        <p style="margin-top: 20px; color: #ef4444;">
+                            إحنا محتاجين
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ شراكة</h3>
+                        <p style="font-size: 32px;">
+                            "عندنا فكرة — نقدر نتعاون فيها مع بعض"
+                        </p>
+                        <p style="margin-top: 20px; color: var(--success-green);">
+                            ندّ للندّ
+                        </p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>❌ كِبر</h3>
+                        <p style="font-size: 32px;">
+                            "إحنا هنساعدكم"
+                        </p>
+                        <p style="margin-top: 20px; color: #ef4444;">
+                            إحنا أحسن
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    <span class="text-highlight">الطريقة الصح:</span><br><br>
+                    مش "ممكن تساعدونا؟" (خنوع)<br>
+                    مش "إحنا هنساعدكم" (كبر)<br><br>
+                    لكن: <span style="color: var(--golden); font-size: 44px;">"عندنا فكرة — نقدر نتعاون فيها مع بعض"</span><br><br>
+                    (شراكة)
+                </div>
+
+                <div class="info-card" style="margin-top: 50px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%); border-color: var(--success-green);">
+                    <p class="text-large" style="text-align: center; font-size: 40px;">
+                        <span class="text-highlight">يلا ننتقل للقوة الثالثة</span> 🏛️
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: القوة الثالثة - التعريف -->
+        <div class="slide" data-slide="15">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثالثة</div>
+                <div class="slide-subtitle">🏛️ قوة بناء الثقة المؤسسية</div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    تتعامل بشكل مؤسسي — مع لمسة إنسانية
+                </div>
+
+                <div class="section-title">الجمعيات مؤسسات — مش أفراد</div>
+
+                <div class="info-card">
+                    <div class="subsection-title">يعني إيه؟</div>
+                    <ul class="custom-list golden">
+                        <li>عندها <span class="text-highlight">أوراق</span></li>
+                        <li>عندها <span class="text-highlight">مواعيد</span></li>
+                        <li>عندها <span class="text-highlight">إجراءات</span></li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ زي صاحبك</h3>
+                        <p>تليفون على طول</p>
+                        <p>مافيش أوراق</p>
+                        <p>مافيش نظام</p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            = فقدان الثقة
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ مؤسسي + إنساني</h3>
+                        <p>أوراق ومواعيد</p>
+                        <p>احترام وتقدير</p>
+                        <p>نظام ومرونة</p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            = بناء الثقة
+                        </p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>⚠️ جفاف كامل</h3>
+                        <p>أوراق بس</p>
+                        <p>مافيش علاقة إنسانية</p>
+                        <p>بيروقراطية</p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            = فقدان الثقة
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 191, 36, 0.1) 100%); border-color: var(--golden);">
+                    <div class="subsection-title" style="color: var(--golden);">⚖️ التوازن المطلوب</div>
+                    <div class="key-points" style="margin-top: 30px;">
+                        <div class="key-point" style="border-right-color: var(--primary-blue);">
+                            <h3>المؤسسية</h3>
+                            <p>أوراق - مواعيد - تقارير</p>
+                        </div>
+                        <div class="key-point" style="border-right-color: var(--success-green);">
+                            <h3>الإنسانية</h3>
+                            <p>احترام - مرونة - تفهم</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="scenario-box good">
+                    <p class="text-large">
+                        <span class="text-highlight">مثال بسيط:</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 20px;">
+                        لو مدير الجمعية اتأخر في تسليم الكشوفات
+                    </p>
+                    <ul class="custom-list" style="margin-top: 25px;">
+                        <li><span class="text-warning">❌ زي صاحبك:</span> "مافيش مشكلة، ياخد وقته" → مافيش نظام</li>
+                        <li><span class="text-warning">❌ جفاف:</span> "الموعد فات — لازم تلتزم" → مافيش مرونة</li>
+                        <li><span class="text-emphasis">✅ التوازن:</span> "أستاذ حسام، الموعد كان إمبارح. في مشكلة؟ عايز مساعدة؟" → نظام + إنسانية</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    التوازن: <span class="text-highlight">مؤسسي + إنساني</span><br><br>
+                    يلا نشوف أمثلة عملية
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: القوة الثالثة - سيناريو التفريط -->
+        <div class="slide" data-slide="16">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثالثة: الثقة المؤسسية</div>
+                <div class="slide-subtitle">❌ السيناريو الأول: التفريط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: التعامل زي صاحبك</div>
+                    <p class="text-large">لما تتعامل بدون نظام — كل حاجة موبايل ومافيش أوراق</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">أحمد بدأ يشتغل مع جمعية "النور"</p>
+                <p class="text-large" style="margin-top: 20px;">
+                    <span class="text-emphasis">الاتفاق:</span> الجمعية هتوزع 50 طبق كل أسبوع — كل يوم أحد
+                </p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">التعامل الخاطئ:</div>
+                    
+                    <div class="dialogue">
+                        <strong>الأسبوع الأول:</strong> أحمد كلم مدير الجمعية على الموبايل: "يا أستاذ حسام، الأطباق جاهزة — ممكن تستلمها؟"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> تمام، هبعت حد.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>الأسبوع الثاني:</strong> أحمد كلم حسام: "يا أستاذ حسام، الأطباق جاهزة."
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> طيب.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>الأسبوع الثالث:</strong> أحمد كلم حسام: "يا أستاذ، الأطباق جاهزة — بس <span class="text-warning">مش عارف هنوزع كام</span> — ممكن تبعتلي كشف بالأسر؟"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> أنا مشغول — هبعتهولك بكره.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>الأسبوع الرابع:</strong> أحمد: "يا أستاذ، <span class="text-warning">الكشف مش جاني</span> — وكمان محتاج تأكيد على عدد الأطباق."
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>حسام (بضيق):</strong> يا أحمد، أنا عندي شغل كتير — <span class="text-warning">مش هقدر أفضل أرد عليك كل شوية</span>.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>أحمد:</strong> بس أنا محتاج أتابع.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>حسام:</strong> خليني أكلمك بعدين.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.2);">
+                        <strong>بعد أسبوعين:</strong> حسام <span class="text-warning">وقف التعاون</span>.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>أحمد كلم مسؤوله:</strong> "الجمعية مش ملتزمة."
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل المشكلة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>كل حاجة موبايل</h3>
+                        <p>مافيش أوراق — مافيش اتفاقية مكتوبة — كل حاجة "كلام"</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>مافيش نظام</h3>
+                        <p>كل مرة بيطلب حاجة مختلفة — مرة أطباق، مرة كشف، مرة تأكيد</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>مافيش احترام للوقت</h3>
+                        <p>بيكلم في أي وقت — مافيش مواعيد محددة</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">النتيجة:</span><br>
+                    حسام حس إن الموضوع مش منظم — فوقف<br><br>
+                    <span class="text-warning">التفريط = تعامل زي صاحبك = فوضى = فقدان الثقة</span>
+                </div>
+            </div>
+        </div>
+
+<!-- Slide 17: القوة الثالثة - السيناريو البديل (التوازن) -->
+        <div class="slide" data-slide="17">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثالثة: الثقة المؤسسية</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: نظام مكتوب + احترام الوقت</div>
+                    <p class="text-large">كان ممكن أحمد يعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">التعامل الصحيح:</div>
+                    
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>قبل ما يبدأ:</strong> أحمد عمل اجتماع مع حسام — وقعوا <span class="text-highlight">اتفاقية بسيطة</span> (ورقة واحدة) فيها:<br><br>
+                        • عدد الأطباق: 50 كل أسبوع<br>
+                        • موعد الاستلام: كل يوم أحد الساعة 10 صباحاً<br>
+                        • الكشوفات: تُسلم يوم السبت<br>
+                        • التوثيق: صور كل أسبوع
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>الأسبوع الأول:</strong> أحمد كلم حسام يوم السبت: "أستاذ حسام، الأطباق هتكون جاهزة بكره الساعة 10 — <span class="text-emphasis">زي ما اتفقنا</span>. الكشف جاهز؟"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> أيوه، هبعته دلوقتي.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>الأسبوع الثاني:</strong> أحمد بعت رسالة واتساب (مش اتصال): "أستاذ حسام، تذكير: الأطباق بكره الساعة 10. شكراً."
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> تمام، شكراً.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>كل شهر:</strong> أحمد بيبعت <span class="text-highlight">تقرير بسيط</span> (ورقة واحدة) بعدد الأطباق اللي اتوزعت + صور.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>النتيجة:</strong> حسام حس إن التعامل منظم ومحترم — <span class="text-emphasis">استمر التعاون 6 شهور</span>.
+                    </div>
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p style="font-size: 28px; line-height: 1.6;">
+                            • كل حاجة موبايل<br>
+                            • مافيش أوراق<br>
+                            • مافيش مواعيد<br>
+                            • كل مرة طلب مختلف
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            = فوضى
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p style="font-size: 28px; line-height: 1.6;">
+                            • اتفاقية مكتوبة<br>
+                            • مواعيد محددة<br>
+                            • تقارير دورية<br>
+                            • احترام الوقت
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            = نظام
+                        </p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>🎯 النتيجة</h3>
+                        <p style="font-size: 28px;">
+                            الجمعية تحس:<br>
+                            • احترام<br>
+                            • تنظيم<br>
+                            • مصداقية
+                        </p>
+                        <p style="margin-top: 25px; color: var(--golden); font-weight: 700;">
+                            = ثقة واستمرارية
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ العناصر الأساسية للنظام</div>
+                    <ul class="custom-list green">
+                        <li><span class="text-highlight">اتفاقية:</span> مش كلام فاضي — ورقة مكتوبة</li>
+                        <li><span class="text-highlight">مواعيد محددة:</span> مش "هكلمك" — موعد واضح</li>
+                        <li><span class="text-highlight">تقارير:</span> مش "نشوف" — توثيق دوري</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    اتعامل بشكل مؤسسي — الجمعية هتحترمك<br><br>
+                    <span style="font-size: 36px;">
+                        "النظام يبني الثقة — والثقة تبني الاستمرارية"
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: القوة الثالثة - سيناريو الإفراط -->
+        <div class="slide" data-slide="18">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثالثة: الثقة المؤسسية</div>
+                <div class="slide-subtitle">⚠️ السيناريو الثاني: الإفراط</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444;">
+                    <div class="subsection-title" style="color: #ef4444;">المشكلة: المبالغة في الإجراءات</div>
+                    <p class="text-large">لما تتمسك بالإجراءات بشكل متشدد — بيروقراطية زيادة</p>
+                </div>
+
+                <div class="section-title">الموقف</div>
+                <p class="text-large">سارة بدأت تشتغل مع جمعية "الرحمة" — جمعية صغيرة في قرية</p>
+
+                <div class="scenario-box bad">
+                    <div class="subsection-title" style="color: #ef4444;">التعامل الخاطئ:</div>
+                    
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>اليوم الأول:</strong> سارة راحت للجمعية — معاها <span class="text-warning">10 ورقات</span>: "أستاذ حسام، دي الأوراق المطلوبة:<br><br>
+                        1. صورة السجل التجاري<br>
+                        2. صورة بطاقات مجلس الإدارة<br>
+                        3. كشف بالمتبرعين<br>
+                        4. كشف بالأسر<br>
+                        5. تقرير شهري<br>
+                        6. توثيق يومي<br>
+                        7. ..."
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.15);">
+                        <strong>حسام (اتلخبط):</strong> كل ده؟
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> أيوه — ده النظام.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> طيب، هجهزهم.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>الأسبوع الأول:</strong> سارة كلمت حسام: "أستاذ حسام، الورق جاهز؟"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> لسه بجهز.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>سارة:</strong> طيب، <span class="text-warning">لازم يكون جاهز بكره — عشان النظام</span>.
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> هحاول.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>الأسبوع الثاني:</strong> سارة: "الورق جاهز؟"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> جهزت جزء.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.15);">
+                        <strong>سارة:</strong> <span class="text-warning">لازم يكون كامل — مش هقدر أكمل من غيره</span>.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.2);">
+                        <strong>حسام (بدأ يتضايق):</strong> يا سارة، إحنا جمعية صغيرة — مش شركة.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444;">
+                        <strong>سارة:</strong> بس ده النظام.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                        <strong>الأسبوع الثالث:</strong> حسام كلم سارة: "معلش يا سارة — إحنا <span class="text-warning">مش قادرين نكمل</span>. الموضوع معقد أوي."
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>سارة:</strong> بس إحنا اتفقنا!
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(239, 68, 68, 0.2);">
+                        <strong>حسام:</strong> معلش — مش قادرين.
+                    </div>
+                </div>
+
+                <div class="section-title">تحليل المشكلة</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>إجراءات كتير جداً</h3>
+                        <p>10 أوراق مطلوبة — معظمها مش ضروري للبداية</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>تشدد وعدم مرونة</h3>
+                        <p>"لازم" — "مش هقدر أكمل" — مافيش مساحة للتفاوض</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: #ef4444;">
+                        <h3>عدم مراعاة الحجم</h3>
+                        <p>جمعية صغيرة في قرية — مش شركة كبيرة</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: #ef4444;">
+                    <span class="text-warning">المشكلة:</span><br>
+                    سارة تمسكت بالإجراءات لدرجة إن الجمعية حست إن الموضوع معقد<br><br>
+                    مافيش مرونة — كل حاجة "لازم"<br><br>
+                    <span class="text-warning">الإفراط = إجراءات كتير + جفاف = تعقيد ورفض</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: القوة الثالثة - السيناريو البديل للإفراط -->
+        <div class="slide" data-slide="19">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثالثة: الثقة المؤسسية</div>
+                <div class="slide-subtitle">✅ السيناريو البديل: التوازن</div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">الحل: نظام بسيط + مرونة إنسانية</div>
+                    <p class="text-large">كان ممكن سارة تعمل إيه؟</p>
+                </div>
+
+                <div class="scenario-box good">
+                    <div class="subsection-title" style="color: var(--success-green);">التعامل الصحيح:</div>
+                    
+                    <div class="dialogue" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <strong>اليوم الأول:</strong> سارة: "أستاذ حسام، المطلوب <span class="text-highlight">بسيط</span>:<br><br>
+                        1. صورة السجل (مرة واحدة بس)<br>
+                        2. كشف بالأسر (كل شهر)<br>
+                        3. صور التوزيع (كل أسبوع)<br><br>
+                        ده كل حاجة. <span class="text-emphasis">ومافيش استعجال — على راحتك.</span>"
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.15);">
+                        <strong>حسام (ارتاح):</strong> ده بسيط — هجهزهم.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>الأسبوع الأول:</strong> سارة: "أستاذ حسام، <span class="text-emphasis">لو الورق جاهز — ابعته. ولو لسه — مافيش مشكلة.</span>"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام (حس بالمرونة):</strong> هبعته بكره.
+                    </div>
+
+                    <div class="dialogue" style="border-right-color: var(--success-green);">
+                        <strong>الأسبوع الثاني:</strong> سارة: "شكراً على الورق — ممتاز. المرة الجاية، <span class="text-emphasis">لو ممكن الصور تكون أوضح شوية؟</span>"
+                    </div>
+
+                    <div class="dialogue">
+                        <strong>حسام:</strong> تمام — هراعي.
+                    </div>
+
+                    <div class="dialogue" style="background: rgba(16, 185, 129, 0.2);">
+                        <strong>النتيجة:</strong> حسام حس إن سارة منظمة لكن مرنة — <span class="text-emphasis">استمر التعاون</span>.
+                    </div>
+                </div>
+
+                <div class="section-title">الفرق الجوهري</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p style="font-size: 28px; line-height: 1.6;">
+                            • 10 أوراق<br>
+                            • كل حاجة "لازم"<br>
+                            • مافيش مرونة<br>
+                            • "مش هقدر أكمل"
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            = تعقيد
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p style="font-size: 28px; line-height: 1.6;">
+                            • 3 أوراق بسيطة<br>
+                            • "على راحتك"<br>
+                            • مرونة إنسانية<br>
+                            • "لو ممكن"
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            = بساطة
+                        </p>
+                    </div>
+
+                    <div class="comparison-col good">
+                        <h3>🎯 النتيجة</h3>
+                        <p style="font-size: 28px;">
+                            حسام حس:<br>
+                            • التنظيم<br>
+                            • المرونة<br>
+                            • الاحترام
+                        </p>
+                        <p style="margin-top: 25px; color: var(--golden); font-weight: 700;">
+                            = استمرارية
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <div class="subsection-title" style="color: var(--success-green);">✓ عناصر التوازن</div>
+                    <ul class="custom-list green">
+                        <li><span class="text-highlight">طلبات بسيطة:</span> مش معقدة — فقط الضروري</li>
+                        <li><span class="text-highlight">مرونة:</span> مش تشدد — "على راحتك" / "لو ممكن"</li>
+                        <li><span class="text-highlight">احترام:</span> مش ضغط — تقدير للظروف</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="border-color: var(--success-green);">
+                    <span class="text-highlight">القاعدة الذهبية:</span><br><br>
+                    نظام بسيط + مرونة إنسانية = ثقة<br><br>
+                    <span style="font-size: 36px;">
+                        "الجمعية تحتاج نظام — لكن مش بيروقراطية"
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: القوة الثالثة - النشاط والخلاصة -->
+        <div class="slide" data-slide="20">
+            <div class="slide-content">
+                <div class="slide-title">القوة الثالثة: الثقة المؤسسية</div>
+                <div class="slide-subtitle">🎯 النشاط التفاعلي والخلاصة</div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">النشاط التفاعلي: حالة عملية</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);">
+                    <div class="subsection-title">الحالة</div>
+                    <p class="text-large">
+                        إنت مسؤول جمعيات. بدأت تشتغل مع جمعية "النور" — جمعية قديمة، مديرها رجل كبير في السن.
+                    </p>
+                    <p class="text-large" style="margin-top: 25px;">
+                        <span class="text-warning">المشكلة:</span> في الأسبوع الأول — مدير الجمعية <span class="text-highlight">ماسلمش الكشوفات في الميعاد</span>.
+                    </p>
+                </div>
+
+                <div class="info-card" style="border-color: var(--golden);">
+                    <div class="subsection-title" style="color: var(--golden);">السؤال</div>
+                    <p class="text-large">
+                        <span class="text-highlight">إيه اللي هتعمله؟</span>
+                    </p>
+                    <p class="text-large" style="margin-top: 20px;">
+                        هقسمكم لـ 3 مجموعات. كل مجموعة تفكر — إزاي تتصرف بتوازن (مش تفريط ولا إفراط).
+                    </p>
+                    <p class="text-large" style="margin-top: 20px;">
+                        <span class="text-emphasis">المدة: 5 دقائق</span>
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">التصرفات المتوقعة</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ إفراط</h3>
+                        <p>"لازم تسلم النهاردة — ده كان الاتفاق"</p>
+                        <p style="margin-top: 20px; color: #ef4444;">= ضغط وجفاف</p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ توازن</h3>
+                        <p>"أستاذ حسام، الموعد كان إمبارح. في مشكلة؟ عايز مساعدة؟"</p>
+                        <p style="margin-top: 20px; color: var(--success-green);">= نظام + إنسانية</p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>❌ تفريط</h3>
+                        <p>"مافيش مشكلة، ياخد وقته"</p>
+                        <p style="margin-top: 20px; color: #ef4444;">= مافيش نظام</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">📋 خلاصة بناء الثقة المؤسسية</div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ التفريط</h3>
+                        <p>تليفونات + مافيش نظام</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            كل حاجة موبايل — مافيش أوراق — مافيش مواعيد
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            النتيجة: فوضى
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ التوازن</h3>
+                        <p>أوراق + مواعيد + مرونة</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            نظام واضح — احترام — تفهم الظروف
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green); font-weight: 700;">
+                            النتيجة: ثقة
+                        </p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>⚠️ الإفراط</h3>
+                        <p>إجراءات كتير + جفاف</p>
+                        <p style="margin-top: 20px; font-size: 28px;">
+                            10 أوراق — كل حاجة "لازم" — مافيش مرونة
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444; font-weight: 700;">
+                            النتيجة: تعقيد
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 191, 36, 0.1) 100%); border-color: var(--golden);">
+                    <div class="subsection-title" style="color: var(--golden);">الخلاصة النهائية</div>
+                    <p class="text-large">
+                        الجمعيات مؤسسات — محتاجة:
+                    </p>
+                    <ul class="custom-list golden" style="margin-top: 25px;">
+                        <li><span class="text-highlight">أوراق:</span> مش كلام فاضي</li>
+                        <li><span class="text-highlight">مواعيد:</span> مش "هكلمك"</li>
+                        <li><span class="text-highlight">احترام:</span> مش ضغط</li>
+                    </ul>
+                    <p class="text-large" style="margin-top: 35px;">
+                        <span class="text-emphasis">لكن — مع لمسة إنسانية:</span>
+                    </p>
+                    <ul class="custom-list green" style="margin-top: 25px;">
+                        <li>لو حد اتأخر — افهم السبب</li>
+                        <li>لو حد غلط — صححه بلطف</li>
+                        <li>لو حد محتاج مساعدة — ساعده</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    <span class="text-highlight">الثقة بتتبنى لما الطرف التاني يحس إنك:</span><br><br>
+                    <span style="font-size: 44px; color: var(--golden);">
+                        منظم لكن إنساني
+                    </span>
+                </div>
+            </div>
+        </div>
+<!-- Slide 21: الختام - مراجعة القوى الثلاث -->
+        <div class="slide" data-slide="21">
+            <div class="slide-content">
+                <div class="slide-title">الختام والربط</div>
+                <div class="slide-subtitle">📋 مراجعة القوى الثلاث</div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    يلا نراجع القوى الثلاثة اللي اتعلمناها
+                </div>
+
+                <div class="section-title">القوة الأولى: التشخيص 🔍</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%); border-color: var(--primary-blue);">
+                    <ul class="custom-list" style="list-style-position: inside;">
+                        <li style="font-size: 36px;"><span class="text-highlight">اسأل — افهم — بعدين اعرض</span></li>
+                        <li style="font-size: 36px; margin-top: 20px;">ماتدخلش بنفس العرض على كل جمعية</li>
+                        <li style="font-size: 36px; margin-top: 20px;">اسأل سؤال أو اتنين — مش 10 أسئلة</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">القوة الثانية: إطار المكسب المشترك 🤝</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%); border-color: var(--success-green);">
+                    <ul class="custom-list green" style="list-style-position: inside;">
+                        <li style="font-size: 36px;"><span class="text-highlight">اعرض كفرصة — مش طلب</span></li>
+                        <li style="font-size: 36px; margin-top: 20px;">ماتبالغش — قول الواقع</li>
+                        <li style="font-size: 36px; margin-top: 20px;">شراكة ندّ للندّ — مش خنوع ولا كبر</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">القوة الثالثة: بناء الثقة المؤسسية 🏛️</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 191, 36, 0.1) 100%); border-color: var(--golden);">
+                    <ul class="custom-list golden" style="list-style-position: inside;">
+                        <li style="font-size: 36px;"><span class="text-highlight">أوراق + مواعيد + مرونة</span></li>
+                        <li style="font-size: 36px; margin-top: 20px;">منظم — لكن إنساني</li>
+                        <li style="font-size: 36px; margin-top: 20px;">نظام بسيط — مش بيروقراطية</li>
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.15) 50%, rgba(251, 191, 36, 0.15) 100%);">
+                    <span class="text-highlight">دول الـ 3 قوى</span><br><br>
+                    لو استخدمتهم صح — الجمعيات هتفتحلك بابها<br>
+                    ولو استخدمتهم غلط — هتقفله في وشك
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: التطبيق العملي -->
+        <div class="slide" data-slide="22">
+            <div class="slide-content">
+                <div class="slide-title">التطبيق العملي</div>
+                <div class="slide-subtitle">✍️ خطتك الشخصية</div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">النشاط الختامي</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);">
+                    <div class="subsection-title">المطلوب منك الآن</div>
+                    <p class="text-large">
+                        كل واحد فيكم هيكتب على ستيكي نوت:
+                    </p>
+                </div>
+
+                <div class="key-points" style="margin-top: 50px;">
+                    <div class="key-point" style="border-right-color: var(--primary-blue);">
+                        <h3>1️⃣ اسم الجمعية</h3>
+                        <p>إيه أول جمعية هروحلها؟</p>
+                        <p style="margin-top: 15px; color: #94a3b8;">(أو نوعها — لو مش عارف الاسم)</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--success-green);">
+                        <h3>2️⃣ أول سؤال</h3>
+                        <p>إيه أول سؤال هتسأله؟</p>
+                        <p style="margin-top: 15px; color: #94a3b8;">(التشخيص)</p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--golden);">
+                        <h3>3️⃣ طريقة العرض</h3>
+                        <p>إزاي هتعرض الفكرة؟</p>
+                        <p style="margin-top: 15px; color: #94a3b8;">(المكسب المشترك)</p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-card" style="border-color: var(--golden);">
+                    <p class="text-large" style="text-align: center;">
+                        <span class="text-highlight">المدة: 4 دقائق للكتابة</span>
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">المشاركة</div>
+
+                <div class="info-card" style="background: rgba(16, 185, 129, 0.1); border-color: var(--success-green);">
+                    <p class="text-large">
+                        بعد الكتابة — مين عايز يشارك اللي كتبه؟
+                    </p>
+                    <p class="text-large" style="margin-top: 25px;">
+                        <span class="text-emphasis">(2-3 أشخاص — كل واحد يقول بسرعة)</span>
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="quote-box">
+                    <span class="text-highlight">لاحظتوا إن كل واحد بدأ يفكر بشكل عملي — مش نظري؟</span><br><br>
+                    ده اللي محتاجينه<br>
+                    مش بس نتعلم — <span style="color: var(--golden); font-size: 44px;">نطبّق</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23: الختام النهائي -->
+        <div class="slide" data-slide="23">
+            <div class="slide-content">
+                <div class="slide-title">الختام</div>
+                <div class="slide-subtitle">🌟 رسالة أخيرة</div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">نقطة مهمة جداً</div>
+
+                <div class="info-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 50%, rgba(251, 191, 36, 0.2) 100%); border: 3px solid var(--golden);">
+                    <p class="text-large" style="text-align: center; line-height: 2;">
+                        الجمعيات <span class="text-highlight">مش عدو</span> — ولا حد أقل مننا<br><br>
+                        الجمعيات <span class="text-emphasis">شركاء</span> — عندهم قوة، وعندنا قوة<br><br>
+                        لما نتعاون — <span style="color: var(--golden);">القوة بتتضاعف</span>
+                    </p>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="comparison-table">
+                    <div class="comparison-col bad">
+                        <h3>❌ خانع</h3>
+                        <p style="font-size: 32px;">
+                            لو دخلت وإنت خانع
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444;">
+                            هيحسوا بيك
+                        </p>
+                    </div>
+
+                    <div class="comparison-col balanced">
+                        <h3>✅ محترم</h3>
+                        <p style="font-size: 32px;">
+                            لو دخلت محترم نفسك والطرف التاني
+                        </p>
+                        <p style="margin-top: 25px; color: var(--success-green);">
+                            هيرحبوا بيك
+                        </p>
+                    </div>
+
+                    <div class="comparison-col bad">
+                        <h3>❌ متكبر</h3>
+                        <p style="font-size: 32px;">
+                            لو دخلت متكبر
+                        </p>
+                        <p style="margin-top: 25px; color: #ef4444;">
+                            هيرفضوك
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section-title">افتكر دايماً</div>
+
+                <div class="key-points">
+                    <div class="key-point" style="border-right-color: var(--primary-blue); background: rgba(59, 130, 246, 0.1);">
+                        <h3>🔍</h3>
+                        <p style="font-size: 32px; margin-top: 15px;">
+                            شخّص قبل ما تعرض
+                        </p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--success-green); background: rgba(16, 185, 129, 0.1);">
+                        <h3>🤝</h3>
+                        <p style="font-size: 32px; margin-top: 15px;">
+                            اعرض المكسب — مش الطلب
+                        </p>
+                    </div>
+
+                    <div class="key-point" style="border-right-color: var(--golden); background: rgba(251, 191, 36, 0.1);">
+                        <h3>🏛️</h3>
+                        <p style="font-size: 32px; margin-top: 15px;">
+                            ابني الثقة — بنظام ومرونة
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider" style="margin-top: 60px; margin-bottom: 60px;"></div>
+
+                <div class="quote-box" style="padding: 60px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 50%, rgba(251, 191, 36, 0.2) 100%); border: 4px solid var(--golden); box-shadow: 0 0 60px rgba(251, 191, 36, 0.3);">
+                    <p style="font-size: 52px; font-weight: 900; line-height: 1.5; margin-bottom: 40px;">
+                        ربنا يوفقكم
+                    </p>
+                    <p style="font-size: 44px; color: var(--golden);">
+                        شكراً ليكم ❤️
+                    </p>
+                    <div class="divider" style="margin: 40px auto; width: 60%;"></div>
+                    <p style="font-size: 36px; color: #94a3b8; margin-top: 30px;">
+                        حملة عيش وملح<br>
+                        صناع الحياة - مصر
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">◄</button>
+        <div class="slide-counter">
+            <span class="current-slide" id="currentSlide">1</span> / <span id="totalSlides">23</span>
+        </div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">►</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        
+        // Initialize
+        document.getElementById('totalSlides').textContent = totalSlides;
+        updateSlides();
+        updateProgress();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                changeSlide(e.key === 'ArrowRight' ? 1 : -1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(1);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalSlides);
+            }
+        });
+
+        // Swipe support for touch devices
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                changeSlide(1); // Swipe left - next slide
+            }
+            if (touchEndX > touchStartX + 50) {
+                changeSlide(-1); // Swipe right - previous slide
+            }
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 1 && newSlide <= totalSlides) {
+                goToSlide(newSlide);
+            }
+        }
+
+        function goToSlide(slideNumber) {
+            currentSlide = slideNumber;
+            updateSlides();
+            updateProgress();
+            updateButtons();
+            
+            // Scroll to top of the new slide
+            const activeSlide = document.querySelector('.slide.active');
+            if (activeSlide) {
+                activeSlide.scrollTop = 0;
+            }
+        }
+
+        function updateSlides() {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index + 1 < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+            document.getElementById('currentSlide').textContent = currentSlide;
+        }
+
+        function updateProgress() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        // Mouse wheel navigation (optional - can be disabled if you prefer scroll only)
+        let wheelTimeout;
+        document.addEventListener('wheel', (e) => {
+            // Only trigger slide change if not currently scrolling within a slide
+            const activeSlide = document.querySelector('.slide.active');
+            if (!activeSlide) return;
+
+            const isAtTop = activeSlide.scrollTop === 0;
+            const isAtBottom = activeSlide.scrollTop + activeSlide.clientHeight >= activeSlide.scrollHeight - 1;
+
+            clearTimeout(wheelTimeout);
+            wheelTimeout = setTimeout(() => {
+                if (e.deltaY > 0 && isAtBottom && currentSlide < totalSlides) {
+                    // Scrolling down at bottom - go to next slide
+                    changeSlide(1);
+                } else if (e.deltaY < 0 && isAtTop && currentSlide > 1) {
+                    // Scrolling up at top - go to previous slide
+                    changeSlide(-1);
+                }
+            }, 150);
+        });
+
+        // Initial button state
+        updateButtons();
+
+        // Auto-hide scroll indicator when scrolling
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        if (scrollIndicator) {
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.addEventListener('scroll', () => {
+                    if (slide.scrollTop > 50) {
+                        scrollIndicator.style.opacity = '0.2';
+                    } else {
+                        scrollIndicator.style.opacity = '0.5';
+                    }
+                });
+            });
+        }
+
+        // Click on slide number to show slide selector (bonus feature)
+        document.querySelector('.slide-counter').addEventListener('click', () => {
+            const slideNum = prompt(`اذهب إلى الشريحة (1-${totalSlides}):`, currentSlide);
+            if (slideNum) {
+                const num = parseInt(slideNum);
+                if (num >= 1 && num <= totalSlides) {
+                    goToSlide(num);
+                }
+            }
+        });
+
+        // Prevent default scroll behavior on arrow keys
+        window.addEventListener('keydown', (e) => {
+            if(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Add fade-in animation on load
+        window.addEventListener('load', () => {
+            document.querySelector('.slide.active').style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
