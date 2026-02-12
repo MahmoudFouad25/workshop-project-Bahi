@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القوة الثالثة: قوة القراءة الصحيحة للموقف</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-blue-dark: #2563eb;
+            --success-green: #10b981;
+            --golden: #fbbf24;
+            --golden-dark: #f59e0b;
+            --primary-bg: #1a2332;
+            --secondary-bg: #0f172a;
+            --card-bg: #1e293b;
+            --glow-blue: 0 0 30px rgba(59, 130, 246, 0.4);
+            --glow-green: 0 0 30px rgba(16, 185, 129, 0.4);
+            --glow-gold: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                        radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                        radial-gradient(ellipse at center, rgba(251, 191, 36, 0.05) 0%, transparent 60%),
+                        var(--secondary-bg);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #ffffff;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.5rem;
+            z-index: 1000;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            border: none;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-blue);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            color: var(--golden);
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+        }
+
+        /* Title Slide */
+        .title-slide {
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 60px rgba(59, 130, 246, 0.3);
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 2.8rem;
+            color: #94a3b8;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .subtitle strong {
+            color: var(--golden);
+            font-weight: 700;
+        }
+
+        /* Content Slides */
+        .content-slide {
+            max-width: 1600px;
+            width: 100%;
+        }
+
+        .slide-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--golden);
+            margin-bottom: 3rem;
+            text-align: center;
+            text-shadow: var(--glow-gold);
+        }
+
+        .content-box {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 30px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .content-text {
+            font-size: 2rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .content-text strong {
+            color: var(--golden);
+            font-weight: 700;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-right: 5px solid var(--success-green);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 15px;
+        }
+
+        /* Scenario Slides */
+        .scenario-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .scenario-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-subtitle {
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dialogue-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .dialogue-line {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            border-right: 4px solid var(--primary-blue);
+            animation: slideInRight 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .dialogue-line:nth-child(1) { animation-delay: 0.1s; }
+        .dialogue-line:nth-child(2) { animation-delay: 0.2s; }
+        .dialogue-line:nth-child(3) { animation-delay: 0.3s; }
+        .dialogue-line:nth-child(4) { animation-delay: 0.4s; }
+        .dialogue-line:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .speaker {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--golden);
+            margin-bottom: 0.5rem;
+        }
+
+        .speech {
+            font-size: 1.8rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .time-stamp {
+            background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%);
+            color: var(--secondary-bg);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Result Box */
+        .result-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border: 2px solid var(--golden);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--golden);
+            margin-bottom: 1.5rem;
+        }
+
+        .result-text {
+            font-size: 2rem;
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+
+        /* Comparison Table */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .comparison-column {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .comparison-column.negative {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .comparison-column.positive {
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .comparison-header {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .comparison-header.negative {
+            color: #ef4444;
+        }
+
+        .comparison-header.positive {
+            color: var(--success-green);
+        }
+
+        .comparison-item {
+            font-size: 1.8rem;
+            line-height: 1.7;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-item:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-arrow {
+            font-size: 4rem;
+            color: var(--golden);
+            text-align: center;
+        }
+
+        /* Analysis Section */
+        .analysis-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 2px solid var(--success-green);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+        }
+
+        .analysis-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--success-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .analysis-list {
+            list-style: none;
+        }
+
+        .analysis-list li {
+            font-size: 1.8rem;
+            color: #e2e8f0;
+            line-height: 1.8;
+            padding: 1rem 0;
+            padding-right: 2rem;
+            position: relative;
+        }
+
+        .analysis-list li:before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            color: var(--success-green);
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        /* Icon Styles */
+        .icon-large {
+            font-size: 6rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .icon-warning {
+            color: #ef4444;
+        }
+
+        .icon-success {
+            color: var(--success-green);
+        }
+
+        .icon-balance {
+            color: var(--golden);
+        }
+
+        /* Summary Section */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--glow-blue);
+        }
+
+        .summary-card.warning {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .summary-card.success {
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .summary-card-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card-text {
+            font-size: 1.6rem;
+            line-height: 1.7;
+            color: #94a3b8;
+        }
+
+        /* Activity Slide */
+        .activity-container {
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .activity-instructions {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .activity-instructions-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .activity-instructions-text {
+            font-size: 1.8rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .scenario-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .scenario-number {
+            background: var(--golden);
+            color: var(--secondary-bg);
+            font-size: 1.6rem;
+            font-weight: 800;
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-content {
+            font-size: 1.5rem;
+            color: #e2e8f0;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .option-box {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid var(--primary-blue);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-box:hover {
+            background: rgba(59, 130, 246, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+            }
+            50% {
+                transform: translateY(-200px) translateX(-50px);
+            }
+            75% {
+                transform: translateY(-100px) translateX(50px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-title { font-size: 4rem; }
+            .subtitle { font-size: 2rem; }
+            .slide-title { font-size: 2.5rem; }
+            .content-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<!-- Particles Background -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; top: 80%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; top: 40%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 40%; top: 60%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 50%; top: 30%; animation-delay: 8s;"></div>
+        <div class="particle" style="left: 60%; top: 70%; animation-delay: 10s;"></div>
+        <div class="particle" style="left: 70%; top: 50%; animation-delay: 12s;"></div>
+        <div class="particle" style="left: 80%; top: 20%; animation-delay: 14s;"></div>
+        <div class="particle" style="left: 90%; top: 80%; animation-delay: 16s;"></div>
+    </div>
+
+    <div class="presentation-container">
+
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide" data-slide="1">
+            <div class="icon-large">💡</div>
+            <h1 class="main-title">قوة القراءة الصحيحة للموقف</h1>
+            <p class="subtitle">
+                إنك تعرف <strong>امتى تتكلم</strong> وامتى تصمت —<br>
+                امتى تضغط وامتى تتراجع —<br>
+                امتى الحماس مطلوب وامتى بيضر
+            </p>
+        </div>
+
+        <!-- Slide 2: قصة الثلاث متطوعين -->
+        <div class="slide content-slide" data-slide="2">
+            <h2 class="slide-title">📖 قصة الثلاث متطوعين</h2>
+            <div class="content-box">
+                <p class="content-text">
+                    تخيل معايا — في <strong>3 متطوعين</strong> عايزين يجمعوا وجبات:
+                </p>
+                
+                <div class="highlight-box">
+                    <p class="content-text">
+                        <strong>الأول</strong> بيدخل على جاره الساعة 2 الظهر — الجار راجع من الشغل لسه، وجهه متعب، عنده ضيوف جايين.
+                    </p>
+                    <p class="content-text">
+                        المتطوع: <em>"يا عم حسن، عندنا مبادرة — ممكن تساعدنا بوجبة؟"</em><br>
+                        الجار: <em>"معلش، دلوقتي مش وقته."</em><br>
+                        المتطوع راح.
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="content-text">
+                        <strong>التاني</strong> بيدخل على نفس الجار الساعة 6 المغرب — الجار قاعد بيشرب الشاي بعد ما الضيوف راحوا، هادي ومرتاح.
+                    </p>
+                    <p class="content-text">
+                        المتطوع: <em>"السلام عليكم يا عم حسن — إزيك؟"</em><br>
+                        الجار: <em>"أهلاً يا ابني — اتفضل."</em><br>
+                        النتيجة: <strong style="color: var(--success-green);">الجار سمع ووافق</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: تكملة القصة -->
+        <div class="slide content-slide" data-slide="3">
+            <h2 class="slide-title">📖 المتطوع الثالث</h2>
+            <div class="content-box">
+                <div class="highlight-box">
+                    <p class="content-text">
+                        <strong>التالت</strong> بيدخل على جاره والجار قاعد بيراجع فواتير ووجهه مقبوض — واضح إن عنده ضغط مادي.
+                    </p>
+                    <p class="content-text">
+                        المتطوع بحماس: <em>"يا عم حسن، المبادرة دي هتساعد ناس كتير أوي! ممكن تشارك؟"</em><br>
+                        الجار: <em>"ماشي، بس مش دلوقتي."</em><br>
+                        المتطوع: <em>"بس يا عم حسن، الموضوع مهم!"</em><br>
+                        الجار بضيق: <em>"قلتلك مش دلوقتي!"</em>
+                    </p>
+                </div>
+
+                <div class="result-box">
+                    <p class="result-title">⁉️ مين منهم قرأ الموقف صح؟</p>
+                    <p class="result-text">الإجابة: <strong>التاني</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: التحليل -->
+        <div class="slide content-slide" data-slide="4">
+            <h2 class="slide-title">🔍 التحليل</h2>
+            <div class="content-box">
+                <div class="analysis-section">
+                    <h3 class="analysis-title">ليه التاني كان صح؟</h3>
+                    <ul class="analysis-list">
+                        <li><strong>الأول:</strong> دخل في توقيت غلط — الجار متعب وعنده ضيوف</li>
+                        <li><strong>التالت:</strong> ماقراش إن الجار عنده ضغط مادي — وضغط عليه</li>
+                        <li><strong>التاني:</strong> قرأ الموقف — شاف إن الجار هادي ومرتاح — دخل بهدوء</li>
+                    </ul>
+                </div>
+
+                <div class="result-box">
+                    <p class="result-title">💡 ده اللي اسمه قوة القراءة الصحيحة للموقف</p>
+                    <p class="result-text">
+                        مش بس "تفهم" الموقف — ده <strong>تقراه زي ما تقرا كتاب</strong>، وتتصرف بناءً على اللي قريته
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: السيناريو الأول - العنوان -->
+        <div class="slide content-slide" data-slide="5">
+            <div class="scenario-header">
+                <div class="icon-large icon-warning">⚠️</div>
+                <h2 class="scenario-title">السيناريو الأول: التفريط</h2>
+                <p class="scenario-subtitle">المتطوع الأعمى</p>
+            </div>
+            <div class="content-box">
+                <p class="content-text" style="text-align: center; font-size: 2.5rem;">
+                    <strong>أحمد</strong> متطوع في عيش وملح<br>
+                    عنده مستهدف <strong style="color: var(--golden);">10 وجبات</strong> في الأسبوع<br>
+                    قرر يبدأ من جيرانه
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 6: المحاولة الأولى -->
+        <div class="slide content-slide" data-slide="6">
+            <h2 class="slide-title">المحاولة الأولى</h2>
+            <div class="content-box">
+                <div class="time-stamp">⏰ يوم السبت — الساعة 9 صباحاً</div>
+                
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"صباح الخير يا حاجة!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد (بتجري ورا ابنها — صوتها عالي):</div>
+                        <div class="speech">"صباح النور!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"يا حاجة، أنا من صناع الحياة — عندنا مبادرة عيش وملح — ممكن تساعدينا بوجبة؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد (بتمسك ابنها وبتحاول تلبسه):</div>
+                        <div class="speech">"إيه؟ آسفة مش سامعة كويس!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد (يرفع صوته):</div>
+                        <div class="speech">"مبادرة عيش وملح — ممكن تعملي وجبة؟"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: نهاية المحاولة الأولى -->
+        <div class="slide content-slide" data-slide="7">
+            <h2 class="slide-title">المحاولة الأولى - النهاية</h2>
+            <div class="content-box">
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد (الابن بيصرخ — هي بتحاول تهديه):</div>
+                        <div class="speech">"معلش يا أحمد — دلوقتي مشغولة جداً!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"طيب، بس ممكن بس دقيقة أشرحلك الفكرة؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد (بضيق واضح):</div>
+                        <div class="speech">"قلتلك مشغولة! اتصل بعدين!"</div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <p class="result-title">❌ النتيجة</p>
+                    <p class="result-text">سكّرت الباب</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: المحاولة الثانية -->
+        <div class="slide content-slide" data-slide="8">
+            <h2 class="slide-title">المحاولة الثانية</h2>
+            <div class="content-box">
+                <div class="time-stamp">⏰ بعد ساعتين — الساعة 11 صباحاً</div>
+                
+                <p class="content-text" style="text-align: center; margin-bottom: 2rem;">
+                    أحمد كلم أم سعيد على التليفون
+                </p>
+
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"السلام عليكم يا حاجة — أنا أحمد."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد:</div>
+                        <div class="speech">"وعليكم السلام."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"حابب أشرحلك المبادرة اللي كلمتك عليها الصبح."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد (بتغسل المواعين — صوت المية واضح):</div>
+                        <div class="speech">"آه — اتفضل."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">النتيجة:</div>
+                        <div class="speech" style="color: #ef4444;">"مش عارفة — اتصل بعدين."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: المحاولة الثالثة -->
+        <div class="slide content-slide" data-slide="9">
+            <h2 class="slide-title">المحاولة الثالثة</h2>
+            <div class="content-box">
+                <div class="time-stamp">⏰ يوم الأحد — الساعة 8 صباحاً</div>
+                
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد كلم أم سعيد تاني:</div>
+                        <div class="speech"></div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أم سعيد (بتطبخ الفطار — صوت البوتاجاز في الخلفية):</div>
+                        <div class="speech">"معلش يا أحمد — أنا فعلاً مش قادرة. ممكن تسأل حد تاني؟"</div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <p class="result-title">❌ النتيجة النهائية</p>
+                    <p class="result-text">
+                        أحمد جرّب <strong>3 مرات</strong> — لكن كل مرة كان التوقيت غلط<br><br>
+                        أم سعيد مش رافضة الفكرة — بس أحمد <strong>ماقراش الموقف في أي مرة</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: التحليل التفاعلي -->
+        <div class="slide content-slide" data-slide="10">
+            <h2 class="slide-title">🔍 التحليل التفاعلي</h2>
+            <div class="content-box">
+                <div class="analysis-section">
+                    <h3 class="analysis-title">أحمد جرّب 3 مرات — في أي مرة قرأ الموقف صح؟</h3>
+                    <p class="content-text" style="text-align: center; font-size: 3rem; color: #ef4444; font-weight: 800;">
+                        ❌ ولا مرة!
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="content-text"><strong>المرة الأولى (9 صباحاً):</strong></p>
+                    <p class="content-text">• أم سعيد بتجري ورا ابنها — واضح إنها في حالة فوضى</p>
+                    <p class="content-text">• الابن بيصرخ — مافيش تركيز</p>
+                    <p class="content-text">• أحمد دخل مباشرة — من غير ما يشوف الحالة</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="content-text"><strong>المرة الثانية (11 صباحاً):</strong></p>
+                    <p class="content-text">• أم سعيد بتغسل المواعين — صوت المية واضح</p>
+                    <p class="content-text">• مشغولة بالشغل البيتي</p>
+                    <p class="content-text">• أحمد اتصل وقت الشغل — مش وقت حوار طويل</p>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="content-text"><strong>المرة الثالتة (8 صباحاً الأحد):</strong></p>
+                    <p class="content-text">• أم سعيد بتطبخ الفطار — صوت البوتاجاز واضح</p>
+                    <p class="content-text">• أسوأ وقت — الناس بتكون تحت ضغط</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: الخلاصة من التفريط -->
+        <div class="slide content-slide" data-slide="11">
+            <h2 class="slide-title">💡 الخلاصة</h2>
+            <div class="content-box">
+                <div class="result-box">
+                    <p class="result-title">⚠️ التفريط في القراءة</p>
+                    <p class="result-text" style="font-size: 2.5rem;">
+                        أحمد مصر يكلّم أم سعيد<br>
+                        لكن <strong>مابيقراش الموقف</strong><br><br>
+                        كل مرة بيختار <strong style="color: #ef4444;">أسوأ توقيت</strong>
+                    </p>
+                </div>
+
+                <p class="content-text" style="text-align: center; margin-top: 3rem; font-size: 2.8rem;">
+                    ده <strong style="color: #ef4444;">التفريط في القراءة</strong> — <br>
+                    مش قراءة خالص
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 12: إعادة الموقف - بتوازن -->
+        <div class="slide content-slide" data-slide="12">
+            <div class="scenario-header" style="background: linear-gradient(135deg, var(--success-green) 0%, var(--primary-blue) 100%);">
+                <div class="icon-large icon-success">✅</div>
+                <h2 class="scenario-title">إعادة الموقف — لو كان فيه توازن</h2>
+            </div>
+        </div>
+
+        <!-- Slide 13: التوازن - المحاولة الأولى -->
+        <div class="slide content-slide" data-slide="13">
+            <h2 class="slide-title">✅ نفس الموقف — بتوازن</h2>
+            <div class="content-box">
+                <div class="time-stamp" style="background: linear-gradient(135deg, var(--success-green) 0%, var(--primary-blue) 100%);">⏰ يوم السبت — الساعة 9 صباحاً</div>
+                
+                <div class="dialogue-container">
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد طرق الباب:</div>
+                        <div class="speech"></div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أم سعيد (بتجري ورا ابنها — صوتها عالي):</div>
+                        <div class="speech">"صباح النور!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد (شاف الموقف — ابتسم):</div>
+                        <div class="speech">"صباح الخير يا حاجة! شكلك مشغولة — معلش أنا هرجعلك وقت تاني."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أم سعيد (ارتاحت):</div>
+                        <div class="speech">"ربنا يخليك يا أحمد — فعلاً دلوقتي الدنيا واقفة على دماغي!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"مافيش مشكلة خالص. ممكن أتصل بيكي بعد المغرب؟"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Slide 14: التوازن - بعد المغرب -->
+        <div class="slide content-slide" data-slide="14">
+            <h2 class="slide-title">✅ بعد المغرب — الوقت المناسب</h2>
+            <div class="content-box">
+                <div class="time-stamp" style="background: linear-gradient(135deg, var(--success-green) 0%, var(--primary-blue) 100%);">⏰ بعد المغرب — الساعة 7 مساءً</div>
+                
+                <div class="dialogue-container">
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد اتصل:</div>
+                        <div class="speech">"السلام عليكم يا حاجة — أحمد."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أم سعيد (هادية — الأطفال نايمين):</div>
+                        <div class="speech">"وعليكم السلام يا أحمد."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"إزيك؟ اليوم هدى؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أم سعيد:</div>
+                        <div class="speech">"الحمد لله — الدنيا اتظبطت شوية."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"ما شاء الله. يا حاجة، أنا كنت عايز أحكيلك عن مبادرة حلوة — بس لو الوقت مناسب."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: النتيجة الإيجابية -->
+        <div class="slide content-slide" data-slide="15">
+            <h2 class="slide-title">✅ النتيجة</h2>
+            <div class="content-box">
+                <div class="dialogue-container">
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أم سعيد:</div>
+                        <div class="speech">"اتفضل."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"المبادرة اسمها 'عيش وملح' — الفكرة إننا بنوزع وجبات على أسر محتاجة. لو حضرتك تقدري تعملي وجبة مرة في الأسبوع — أنا هعدي آخدها وأوزعها. مافيش ضغط — على راحتك."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">أم سعيد:</div>
+                        <div class="speech">"فكرة جميلة. أنا ممكن أعمل وجبة كل يوم أربعاء."</div>
+                    </div>
+                </div>
+
+                <div class="result-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%); border-color: var(--success-green);">
+                    <p class="result-title" style="color: var(--success-green);">✅ النتيجة النهائية</p>
+                    <p class="result-text">
+                        <strong>أم سعيد وافقت!</strong><br><br>
+                        لأن أحمد قرأ الموقف في كل مرة
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: المقارنة -->
+        <div class="slide content-slide" data-slide="16">
+            <h2 class="slide-title">⚖️ المقارنة</h2>
+            <div class="comparison-container">
+                <div class="comparison-column negative">
+                    <h3 class="comparison-header negative">⚠️ التفريط</h3>
+                    <div class="comparison-item">جرّب 3 مرات — كلها توقيت غلط</div>
+                    <div class="comparison-item">دخل على الموضوع مباشرة</div>
+                    <div class="comparison-item">أم سعيد رفضت</div>
+                </div>
+
+                <div class="comparison-arrow">
+                    ←
+                </div>
+
+                <div class="comparison-column positive">
+                    <h3 class="comparison-header positive">✅ التوازن</h3>
+                    <div class="comparison-item">انتظر الوقت المناسب</div>
+                    <div class="comparison-item">سأل: "الوقت مناسب؟"</div>
+                    <div class="comparison-item">أم سعيد وافقت</div>
+                </div>
+            </div>
+
+            <div class="result-box" style="margin-top: 3rem;">
+                <p class="result-text">
+                    <strong>الفرق واضح:</strong><br>
+                    في التفريط — ماقراش الموقف<br>
+                    في التوازن — قرأ الموقف كل مرة
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 17: السيناريو الثاني - العنوان -->
+        <div class="slide content-slide" data-slide="17">
+            <div class="scenario-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <div class="icon-large" style="color: white;">⚠️</div>
+                <h2 class="scenario-title">السيناريو الثاني: الإفراط</h2>
+                <p class="scenario-subtitle">المحلل النفسي</p>
+            </div>
+            <div class="content-box">
+                <p class="content-text" style="text-align: center; font-size: 2.5rem;">
+                    <strong>سارة</strong> مسؤولة شراكات<br>
+                    زارت مطعم <strong style="color: var(--golden);">"أكل البيت"</strong><br>
+                    مطعم صغير في حي شعبي
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 18: الإفراط - البداية -->
+        <div class="slide content-slide" data-slide="18">
+            <h2 class="slide-title">دخول سارة للمطعم</h2>
+            <div class="content-box">
+                <div class="time-stamp">⏰ الساعة 11 الصبح</div>
+                
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة دخلت المطعم:</div>
+                        <div class="speech">"صباح الخير!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم سمير (صاحب المطعم — قاعد بيشرب الشاي):</div>
+                        <div class="speech">"صباح النور، اتفضلي."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة (بصّت حواليها — شافت صورة لعم سمير وهو صغير):</div>
+                        <div class="speech">"ما شاء الله — المطعم ده قديم؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم سمير:</div>
+                        <div class="speech">"أيوه — من 20 سنة."</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="background: rgba(239, 68, 68, 0.1); border-right-color: #ef4444;">
+                    <p class="content-text">⚠️ سارة بدأت تدخل في التفاصيل...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: الإفراط - الأسئلة الكثيرة -->
+        <div class="slide content-slide" data-slide="19">
+            <h2 class="slide-title">الأسئلة الكثيرة</h2>
+            <div class="content-box">
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"يعني حضرتك فاتحه وإنت صغير؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"ده مين في الصورة؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم سمير:</div>
+                        <div class="speech">"ده والدي — رحمة الله عليه."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"يعني المطعم ده كان بتاعه الأول؟ وحضرتك ورثته منه؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"طيب، وليه سميته 'أكل البيت'؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"يعني حضرتك متأثر بأمك في الطبخ؟"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: الإفراط - النتيجة -->
+        <div class="slide content-slide" data-slide="20">
+            <h2 class="slide-title">النتيجة السلبية</h2>
+            <div class="content-box">
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">عم سمير (وقف — إيده على خصره):</div>
+                        <div class="speech">"معلش، إنتِ جاية ليه بالظبط؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"أنا من مؤسسة صناع الحياة — عندنا مبادرة..."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم سمير:</div>
+                        <div class="speech">"طيب، كان ممكن تقولي من الأول! أنا مالي وأنا أحكيلك تاريخ المطعم!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم سمير:</div>
+                        <div class="speech">"معلش، أنا مش مهتم."</div>
+                    </div>
+                </div>
+
+                <div class="result-box" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                    <p class="result-title" style="color: #ef4444;">❌ النتيجة</p>
+                    <p class="result-text">
+                        سارة خسرت فرصة التعاون<br>
+                        لأنها <strong>بالغت في القراءة</strong><br><br>
+                        عم سمير حس إنها بتحقق معاه — مش جاية تعرض فكرة
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: تحليل الإفراط -->
+        <div class="slide content-slide" data-slide="21">
+            <h2 class="slide-title">🔍 إيه المشكلة؟</h2>
+            <div class="content-box">
+                <div class="analysis-section" style="border-color: #ef4444;">
+                    <h3 class="analysis-title" style="color: #ef4444;">التحليل</h3>
+                    <ul class="analysis-list">
+                        <li>سألت <strong>7 أسئلة</strong> عن تاريخ المطعم</li>
+                        <li>دخلت في <strong>تفاصيل مالهاش لازمة</strong></li>
+                        <li>عم سمير حس إنها <strong>فضولية</strong></li>
+                    </ul>
+                </div>
+
+                <div class="result-box">
+                    <p class="result-title">⚠️ الإفراط في القراءة</p>
+                    <p class="result-text">
+                        لما تحلّل <strong>كل حاجة صغيرة</strong><br>
+                        وتدخل في تفاصيل الطرف التاني <strong>مش مستعد يشاركها</strong><br><br>
+                        النتيجة: الطرف التاني بيحس بـ<strong style="color: #ef4444;">الغزو</strong> — مش بالاهتمام
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: إعادة الموقف - الإفراط بتوازن -->
+        <div class="slide content-slide" data-slide="22">
+            <h2 class="slide-title">✅ نفس الموقف — بتوازن</h2>
+            <div class="content-box">
+                <div class="dialogue-container">
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">سارة دخلت:</div>
+                        <div class="speech">"صباح الخير!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">عم سمير:</div>
+                        <div class="speech">"صباح النور."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">سارة (بصّت حواليها — شافت الصورة — ابتسمت بس ماسألتش):</div>
+                        <div class="speech">"المطعم جميل — وريحة الأكل تحفة!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">عم سمير (ابتسم):</div>
+                        <div class="speech">"الله يبارك فيكي."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"أنا سارة من مؤسسة صناع الحياة. جاية أحكيلك عن مبادرة ممكن تكون مفيدة ليك."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">عم سمير:</div>
+                        <div class="speech">"اتفضلي."</div>
+                    </div>
+                </div>
+
+                <div class="result-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%); border-color: var(--success-green);">
+                    <p class="result-title" style="color: var(--success-green);">✅ النتيجة</p>
+                    <p class="result-text">
+                        عم سمير سمع الفكرة — لأن سارة <strong>ماتدخلتش في تفاصيل حياته</strong><br>
+                        قرأت بس اللي يخص الموضوع — مش كل حاجة
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23: مقارنة الإفراط -->
+        <div class="slide content-slide" data-slide="23">
+            <h2 class="slide-title">⚖️ المقارنة</h2>
+            <div class="comparison-container">
+                <div class="comparison-column negative">
+                    <h3 class="comparison-header negative">⚠️ الإفراط</h3>
+                    <div class="comparison-item">سألت 7 أسئلة عن تاريخ المطعم</div>
+                    <div class="comparison-item">عم سمير حس بالغزو</div>
+                    <div class="comparison-item">رفض حتى يسمع الفكرة</div>
+                </div>
+
+                <div class="comparison-arrow">
+                    ←
+                </div>
+
+                <div class="comparison-column positive">
+                    <h3 class="comparison-header positive">✅ التوازن</h3>
+                    <div class="comparison-item">مدحت المطعم بجملة واحدة</div>
+                    <div class="comparison-item">عم سمير حس بالاحترام</div>
+                    <div class="comparison-item">سمع الفكرة ووافق يفكر</div>
+                </div>
+            </div>
+
+            <div class="result-box" style="margin-top: 3rem;">
+                <p class="result-text">
+                    <strong>القراءة الصحيحة =</strong><br>
+                    تقرأ اللي يخدم الموضوع — مش كل حاجة
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 24: السيناريو الثالث - العنوان -->
+        <div class="slide content-slide" data-slide="24">
+            <div class="scenario-header" style="background: linear-gradient(135deg, var(--success-green) 0%, var(--primary-blue) 100%);">
+                <div class="icon-large" style="color: white;">✅</div>
+                <h2 class="scenario-title">السيناريو الثالث: التوازن</h2>
+                <p class="scenario-subtitle">القراءة الذكية</p>
+            </div>
+            <div class="content-box">
+                <p class="content-text" style="text-align: center; font-size: 2.5rem;">
+                    مثال كامل على <strong style="color: var(--success-green);">التوازن</strong><br>
+                    من البداية للنهاية
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 25: التوازن - البداية -->
+        <div class="slide content-slide" data-slide="25">
+            <h2 class="slide-title">✅ محمد والجمعية</h2>
+            <div class="content-box">
+                <p class="content-text" style="text-align: center;">
+                    <strong>محمد</strong> مسؤول جمعيات<br>
+                    زار جمعية <strong style="color: var(--golden);">"النور"</strong> في قرية صغيرة
+                </p>
+
+                <div class="dialogue-container" style="margin-top: 2rem;">
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">محمد (وقف على الباب — انتظر لحد ما حسام رفع راسه):</div>
+                        <div class="speech">"السلام عليكم."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">حسام (رفع راسه):</div>
+                        <div class="speech">"وعليكم السلام، اتفضل."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">محمد (دخل — بص حواليه — شاف أوراق كتير — شاف إن حسام مش مبتسم):</div>
+                        <div class="speech">"أنا محمد من صناع الحياة. لو الوقت مناسب — حابب أحكيلك عن فكرة ممكن تكون مفيدة."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 26: التوازن - القراءة الذكية -->
+        <div class="slide content-slide" data-slide="26">
+            <h2 class="slide-title">✅ القراءة الذكية</h2>
+            <div class="content-box">
+                <div class="dialogue-container">
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">حسام (بص على الساعة — تنهد):</div>
+                        <div class="speech">"الحقيقة أنا مشغول شوية — بس اتفضل، قولي بسرعة."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">محمد (قرأ الإشارة — عرف إن حسام تحت ضغط — قرر يختصر):</div>
+                        <div class="speech">"الفكرة باختصار: عندنا مبادرة اسمها 'عيش وملح' — بنوفرلكم أطباق، وإنتو توزعوها على المتبرعين، يرجعوها مليانة، وتوزعوها على الأسر. يعني بند جديد — من غير عبء مطبخ."</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">حسام (اهتم):</div>
+                        <div class="speech">"حلو. بس أنا عايز أفهم — إحنا مطلوب مننا إيه بالظبط؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line" style="border-right-color: var(--success-green);">
+                        <div class="speaker">محمد:</div>
+                        <div class="speech">"بس التوزيع والاستلام — إحنا بنوفر الأطباق."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Slide 33: ملخص الأمثلة -->
+        <div class="slide content-slide" data-slide="33">
+            <h2 class="slide-title">📊 الملخص</h2>
+            <div class="summary-grid">
+                <div class="summary-card warning">
+                    <div class="summary-card-icon">⚠️</div>
+                    <h3 class="summary-card-title" style="color: #ef4444;">التفريط</h3>
+                    <p class="summary-card-text">
+                        مابتقراش — بتدخل بنفس الطريقة في كل موقف
+                    </p>
+                </div>
+
+                <div class="summary-card warning">
+                    <div class="summary-card-icon">⚠️</div>
+                    <h3 class="summary-card-title" style="color: #ef4444;">الإفراط</h3>
+                    <p class="summary-card-text">
+                        بتحلل كل حاجة — حتى اللي مالوش لازمة
+                    </p>
+                </div>
+
+                <div class="summary-card success">
+                    <div class="summary-card-icon">✅</div>
+                    <h3 class="summary-card-title" style="color: var(--success-green);">التوازن</h3>
+                    <p class="summary-card-text">
+                        بتقرأ الإشارات البسيطة — وبتتصرف بناءً عليها
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 34: النشاط التفاعلي - العنوان -->
+        <div class="slide content-slide" data-slide="34">
+            <div class="scenario-header" style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%);">
+                <div class="icon-large" style="color: var(--secondary-bg);">✍️</div>
+                <h2 class="scenario-title" style="color: var(--secondary-bg);">النشاط التفاعلي</h2>
+                <p class="scenario-subtitle" style="color: var(--secondary-bg);">اقرأ الموقف — قوة القراءة الصحيحة للموقف</p>
+            </div>
+        </div>
+
+        <!-- Slide 35: تعليمات النشاط -->
+        <div class="slide content-slide" data-slide="35">
+            <div class="activity-container">
+                <div class="activity-instructions">
+                    <h2 class="activity-instructions-title">📋 التعليمات</h2>
+                    <p class="activity-instructions-text">
+                        معاكم 4 مواقف. لكل موقف:<br>
+                        <strong>1.</strong> اقراه بتركيز<br>
+                        <strong>2.</strong> حدد: تفريط / توازن / إفراط<br>
+                        <strong>3.</strong> اكتب ليه<br>
+                        <strong>4.</strong> لو مش توازن — اكتب كان ممكن يتعدل إزاي<br><br>
+                        <strong>عندكم 7 دقايق — ابدأوا!</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 36: الموقف الأول -->
+        <div class="slide content-slide" data-slide="36">
+            <h2 class="slide-title">الموقف (1): المتطوع والجار الغضبان</h2>
+            <div class="content-box">
+                <div class="scenario-number">الموقف الأول</div>
+                <p class="scenario-content">
+                    أحمد متطوع. راح لجاره (عم حسن) — لقاه واقف قدام البيت — وجهه مقبوض ومتضايق.
+                </p>
+
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"صباح الخير يا عم حسن!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم حسن (بصوت جاف):</div>
+                        <div class="speech">"صباح النور."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد (بحماس):</div>
+                        <div class="speech">"يا عم حسن، عندنا مبادرة اسمها عيش وملح — المبادرة دي حاجة حلوة أوي! بنوزع وجبات على أسر محتاجة. ممكن حضرتك تساعدنا؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم حسن:</div>
+                        <div class="speech">"معلش، مش قادر دلوقتي."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">أحمد:</div>
+                        <div class="speech">"بس يا عم حسن، الموضوع بسيط!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم حسن (بضيق واضح):</div>
+                        <div class="speech">"قلتلك مش قادر!"</div>
+                    </div>
+                </div>
+
+                <div class="options-container">
+                    <div class="option-box">تفريط</div>
+                    <div class="option-box">توازن</div>
+                    <div class="option-box">إفراط</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 37: الموقف الثاني -->
+        <div class="slide content-slide" data-slide="37">
+            <h2 class="slide-title">الموقف (2): مسؤول الشراكات والمطعم المزدحم</h2>
+            <div class="content-box">
+                <div class="scenario-number">الموقف الثاني</div>
+                <p class="scenario-content">
+                    سارة مسؤولة شراكات. دخلت مطعم الساعة 2 الظهر — المطعم مزدحم جداً — صاحب المطعم بيجري بين الطاولات.
+                </p>
+
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"صباح الخير!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">صاحب المطعم (بيجري):</div>
+                        <div class="speech">"صباح النور — اتفضلي."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"أنا من صناع الحياة — عندنا مبادرة..."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">صاحب المطعم:</div>
+                        <div class="speech">"معلش، دلوقتي مشغول — ممكن ترجعي بعدين؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">سارة:</div>
+                        <div class="speech">"بس الموضوع مهم — ممكن بس 5 دقايق؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">صاحب المطعم (بضيق):</div>
+                        <div class="speech">"قلتلك مشغول!"</div>
+                    </div>
+                </div>
+
+                <div class="options-container">
+                    <div class="option-box">تفريط</div>
+                    <div class="option-box">توازن</div>
+                    <div class="option-box">إفراط</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 38: الموقف الثالث -->
+        <div class="slide content-slide" data-slide="38">
+            <h2 class="slide-title">الموقف (3): مسؤول الجمعيات والمدير المتردد</h2>
+            <div class="content-box">
+                <div class="scenario-number">الموقف الثالث</div>
+                <p class="scenario-content">
+                    محمد زار جمعية. مدير الجمعية استقبله — لكن كان متردد ومابيبتسمش.
+                </p>
+
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">محمد:</div>
+                        <div class="speech">"السلام عليكم."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">المدير:</div>
+                        <div class="speech">"وعليكم السلام."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">محمد:</div>
+                        <div class="speech">"أنا محمد من صناع الحياة."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">محمد (لاحظ التردد):</div>
+                        <div class="speech">"لو حضرتك مش مرتاح للحوار دلوقتي — ممكن أرجعلك وقت تاني."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">المدير (ارتاح):</div>
+                        <div class="speech">"لا لا — اتفضل. أنا بس كنت مشغول بموضوع تاني. قولي."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">محمد:</div>
+                        <div class="speech">"عندنا مبادرة — ممكن أحكيلك؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">المدير:</div>
+                        <div class="speech">"اتفضل."</div>
+                    </div>
+                </div>
+
+                <div class="options-container">
+                    <div class="option-box">تفريط</div>
+                    <div class="option-box">توازن</div>
+                    <div class="option-box">إفراط</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 39: الموقف الرابع -->
+        <div class="slide content-slide" data-slide="39">
+            <h2 class="slide-title">الموقف (4): المتطوع والمتبرع الصامت</h2>
+            <div class="content-box">
+                <div class="scenario-number">الموقف الرابع</div>
+                <p class="scenario-content">
+                    كريم متطوع. راح لعم ماجد (جاره) — لقاه قاعد قدام البيت — صامت ومابيتكلمش.
+                </p>
+
+                <div class="dialogue-container">
+                    <div class="dialogue-line">
+                        <div class="speaker">كريم:</div>
+                        <div class="speech">"السلام عليكم يا عم ماجد!"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم ماجد:</div>
+                        <div class="speech">"وعليكم السلام."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">كريم:</div>
+                        <div class="speech">"حضرتك كويس؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم ماجد:</div>
+                        <div class="speech">"الحمد لله."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">كريم:</div>
+                        <div class="speech">"شكلك مش في مزاج كلام — حصل حاجة؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم ماجد:</div>
+                        <div class="speech">"لا، عادي."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">كريم:</div>
+                        <div class="speech">"طيب، ليه ساكت كده؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم ماجد:</div>
+                        <div class="speech">"أنا عادي — بس مش حابب أتكلم كتير."</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">كريم:</div>
+                        <div class="speech">"ماشي، بس أنا حاسس إن فيه حاجة — ممكن تقولي؟"</div>
+                    </div>
+                    
+                    <div class="dialogue-line">
+                        <div class="speaker">عم ماجد (بضيق):</div>
+                        <div class="speech">"قلتلك عادي!"</div>
+                    </div>
+                </div>
+
+                <div class="options-container">
+                    <div class="option-box">تفريط</div>
+                    <div class="option-box">توازن</div>
+                    <div class="option-box">إفراط</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 40: الإجابات - الموقف الأول -->
+        <div class="slide content-slide" data-slide="40">
+            <h2 class="slide-title">✅ الإجابة: الموقف الأول</h2>
+            <div class="content-box">
+                <div class="result-box" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                    <p class="result-title" style="color: #ef4444;">⚠️ التصنيف: تفريط</p>
+                </div>
+
+                <div class="analysis-section">
+                    <h3 class="analysis-title">التحليل:</h3>
+                    <ul class="analysis-list">
+                        <li>أحمد <strong>شاف</strong> إن عم حسن وجهه مقبوض — لكن <strong>ماقراش</strong> الإشارة</li>
+                        <li>عم حسن رد <strong>بصوت جاف</strong> — إشارة واضحة إنه مش في مزاج كلام</li>
+                        <li>أحمد دخل بـ<strong>حماس</strong> — رغم إن الموقف مش مناسب</li>
+                        <li>لما عم حسن قال "مش قادر" — أحمد <strong>ضغط</strong></li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box" style="background: rgba(16, 185, 129, 0.1); border-right-color: var(--success-green);">
+                    <p class="content-text"><strong>كان ممكن يتصلح إزاي؟</strong></p>
+                    <p class="content-text">
+                        أحمد يلاحظ الصوت الجاف — يسأل: "حضرتك كويس؟" — يقول: "واضح إن دلوقتي مش الوقت المناسب. ممكن أكلمك بكره؟"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 41: الإجابات - الموقف الثاني -->
+        <div class="slide content-slide" data-slide="41">
+            <h2 class="slide-title">✅ الإجابة: الموقف الثاني</h2>
+            <div class="content-box">
+                <div class="result-box" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                    <p class="result-title" style="color: #ef4444;">⚠️ التصنيف: تفريط</p>
+                </div>
+
+                <div class="analysis-section">
+                    <h3 class="analysis-title">التحليل:</h3>
+                    <ul class="analysis-list">
+                        <li>سارة دخلت الساعة <strong>2 الظهر</strong> — وقت ذروة لأي مطعم</li>
+                        <li>المطعم كان <strong>مزدحم جداً</strong> — صاحب المطعم بيجري</li>
+                        <li>صاحب المطعم قال بوضوح: "مشغول — ارجعي بعدين"</li>
+                        <li>سارة <strong>ضغطت</strong> — "بس الموضوع مهم!"</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box" style="background: rgba(16, 185, 129, 0.1); border-right-color: var(--success-green);">
+                    <p class="content-text"><strong>كان ممكن يتصلح إزاي؟</strong></p>
+                    <p class="content-text">
+                        سارة تدخل — تشوف الزحمة — تقول من غير ما تتكلم: "معلش، شكلكم مشغولين — أنا هرجع وقت تاني." — ترجع بعد المغرب والمطعم هادي.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 42: الإجابات - الموقف الثالث -->
+        <div class="slide content-slide" data-slide="42">
+            <h2 class="slide-title">✅ الإجابة: الموقف الثالث</h2>
+            <div class="content-box">
+                <div class="result-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%); border-color: var(--success-green);">
+                    <p class="result-title" style="color: var(--success-green);">✅ التصنيف: توازن</p>
+                </div>
+
+                <div class="analysis-section">
+                    <h3 class="analysis-title">ليه ده توازن؟</h3>
+                    <ul class="analysis-list">
+                        <li>محمد <strong>لاحظ</strong> إن المدير متردد — مابيبتسمش</li>
+                        <li><strong>ماتجاهلش</strong> الإشارة — قراها</li>
+                        <li><strong>سأل:</strong> "لو مش مرتاح — ممكن أرجع؟" — احترام</li>
+                        <li>المدير <strong>ارتاح</strong> — لأن محمد مافرضش نفسه</li>
+                        <li>لما المدير قال "اتفضل" — محمد دخل في الموضوع</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box" style="background: rgba(16, 185, 129, 0.1); border-right-color: var(--success-green);">
+                    <p class="content-text"><strong>الدرس:</strong></p>
+                    <p class="content-text">
+                        التوازن = تقرأ الإشارة — وتتصرف بناءً عليها — من غير ضغط. لو الشخص متردد — اديله مساحة.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 43: الإجابات - الموقف الرابع -->
+        <div class="slide content-slide" data-slide="43">
+            <h2 class="slide-title">✅ الإجابة: الموقف الرابع</h2>
+            <div class="content-box">
+                <div class="result-box" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                    <p class="result-title" style="color: #ef4444;">⚠️ التصنيف: إفراط</p>
+                    <p class="result-text" style="font-size: 1.6rem; margin-top: 1rem;">⚠️ موقف خادع — لأن كريم كان بيحاول يساعد</p>
+                </div>
+
+                <div class="analysis-section" style="border-color: #ef4444;">
+                    <h3 class="analysis-title" style="color: #ef4444;">التحليل:</h3>
+                    <ul class="analysis-list">
+                        <li>عم ماجد <strong>صامت</strong> — طبيعي — مش كل الناس بتتكلم كتير</li>
+                        <li>كريم <strong>افترض</strong> إن الصمت = مشكلة</li>
+                        <li>سأل: "حصل حاجة؟" — سؤال فيه افتراض</li>
+                        <li>عم ماجد قال: "عادي" — يعني مافيش مشكلة</li>
+                        <li>كريم <strong>مااقتنعش</strong> — كمّل يسأل</li>
+                        <li>عم ماجد <strong>زعل</strong> — لأن كريم مش مصدقه</li>
+                    </ul>
+                </div>
+
+                <div class="highlight-box" style="background: rgba(16, 185, 129, 0.1); border-right-color: var(--success-green);">
+                    <p class="content-text"><strong>كان ممكن يتصلح إزاي؟</strong></p>
+                    <p class="content-text">
+                        كريم يقبل الإشارة — ماضغطش — يقول: "يا عم ماجد، أنا كان عندي موضوع بسيط — لو الوقت مناسب." — يدخل في الموضوع.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 44: الاستنتاج والربط -->
+        <div class="slide content-slide" data-slide="44">
+            <h2 class="slide-title">💡 قوة القراءة الصحيحة للموقف — الخلاصة</h2>
+            <div class="summary-grid">
+                <div class="summary-card warning">
+                    <div class="summary-card-icon">⚠️</div>
+                    <h3 class="summary-card-title" style="color: #ef4444;">التفريط</h3>
+                    <p class="summary-card-text">
+                        بتشوف الإشارات — لكن <strong>بتتجاهلها</strong> — وبتدخل بنفس الطريقة في كل موقف
+                    </p>
+                    <p class="summary-card-text" style="margin-top: 1rem; color: #ef4444;">
+                        النتيجة: بتخسر فرص — لأنك مابتقراش الوقت المناسب
+                    </p>
+                </div>
+
+                <div class="summary-card success">
+                    <div class="summary-card-icon">✅</div>
+                    <h3 class="summary-card-title" style="color: var(--success-green);">التوازن</h3>
+                    <p class="summary-card-text">
+                        بتقرأ الإشارات البسيطة (تعب، انشغال، تردد) — وبتتصرف بناءً عليها — <strong>من غير تحليل زيادة</strong>
+                    </p>
+                    <p class="summary-card-text" style="margin-top: 1rem; color: var(--success-green);">
+                        النتيجة: الناس بتحس إنك بتحترمهم — والأبواب بتفتح
+                    </p>
+                </div>
+
+                <div class="summary-card warning">
+                    <div class="summary-card-icon">⚠️</div>
+                    <h3 class="summary-card-title" style="color: #ef4444;">الإفراط</h3>
+                    <p class="summary-card-text">
+                        بتحلل <strong>كل حاجة صغيرة</strong> — حتى الحاجات الطبيعية — وبتدخل في تفاصيل مالهاش لازمة
+                    </p>
+                    <p class="summary-card-text" style="margin-top: 1rem; color: #ef4444;">
+                        النتيجة: الناس بتحس بـ<strong>الغزو</strong> أو الضغط
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 45: الخاتمة -->
+        <div class="slide content-slide" data-slide="45">
+            <h2 class="slide-title">🎯 الرسالة النهائية</h2>
+            <div class="content-box">
+                <div class="content-text" style="text-align: center; font-size: 2.5rem; line-height: 2;">
+                    في حملة <strong style="color: var(--golden);">عيش وملح</strong> —<br>
+                    القراءة الصحيحة هي اللي بتفرق بين متطوع ناجح ومتطوع مش ناجح
+                </div>
+
+                <div class="highlight-box" style="margin-top: 3rem;">
+                    <p class="content-text">
+                        <strong>المتطوع الناجح</strong> مش اللي بيتكلم كتير<br>
+                        ده اللي بيعرف <strong style="color: var(--golden);">امتى يتكلم وامتى يصمت</strong>
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="content-text">
+                        <strong>المتطوع الناجح</strong> مش اللي بيضغط<br>
+                        ده اللي بيعرف <strong style="color: var(--golden);">امتى يضغط وامتى يتراجع</strong>
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="content-text">
+                        <strong>المتطوع الناجح</strong> مش اللي عنده حماس دايماً<br>
+                        ده اللي بيعرف <strong style="color: var(--golden);">امتى الحماس مطلوب وامتى بيضر</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 46: الختام -->
+        <div class="slide title-slide" data-slide="46">
+            <div class="icon-large" style="color: var(--golden);">🎯</div>
+            <h1 class="main-title" style="font-size: 4rem;">دي قوة القراءة الصحيحة للموقف</h1>
+            <div class="content-box" style="max-width: 1400px; margin-top: 3rem;">
+                <p class="subtitle" style="font-size: 2.5rem;">
+                    <strong style="color: var(--primary-blue);">الفهم قبل الكلام</strong> بيخليك تعرف مين قدامك<br><br>
+                    <strong style="color: var(--success-green);">الوعد والوفاء</strong> بيخلي الناس تثق فيك<br><br>
+                    لكن <strong style="color: var(--golden);">القراءة الصحيحة</strong> — دي اللي بتخليك<br>
+                    تعرف <strong>امتى</strong> وإزاي تتصرف
+                </p>
+            </div>
+            <p class="subtitle" style="font-size: 3rem; margin-top: 4rem; color: var(--golden);">
+                يلا نطبق الثلاثة مع بعض 💪
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">→ السابق</button>
+        <span class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">46</span>
+        </span>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">التالي ←</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            
+            if (n > totalSlides) {
+                currentSlide = totalSlides;
+            }
+            if (n < 1) {
+                currentSlide = 1;
+            }
+            
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index + 1 < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+                if (currentSlide < totalSlides) {
+                    changeSlide(1);
+                }
+            } else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+                if (currentSlide > 1) {
+                    changeSlide(-1);
+                }
+            } else if (event.key === 'Home') {
+                currentSlide = 1;
+                showSlide(currentSlide);
+            } else if (event.key === 'End') {
+                currentSlide = totalSlides;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Touch/Swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                // Swipe left (next slide in RTL)
+                if (currentSlide > 1) {
+                    changeSlide(-1);
+                }
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swipe right (previous slide in RTL)
+                if (currentSlide < totalSlides) {
+                    changeSlide(1);
+                }
+            }
+        }
+
+        // Initialize
+        showSlide(currentSlide);
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
