@@ -1,0 +1,2385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القواعد الذهبية للاتزان - عيش وملح</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-blue-dark: #2563eb;
+            --success-green: #10b981;
+            --golden: #fbbf24;
+            --golden-dark: #f59e0b;
+            --primary-bg: #1a2332;
+            --secondary-bg: #0f172a;
+            --card-bg: #1e293b;
+            --glow-blue: 0 0 30px rgba(59, 130, 246, 0.4);
+            --glow-green: 0 0 30px rgba(16, 185, 129, 0.4);
+            --glow-gold: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--secondary-bg);
+            color: #ffffff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at center, rgba(251, 191, 36, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .presentation-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .slides-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 4rem 6rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+            border-radius: 10px;
+            box-shadow: var(--glow-blue);
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--golden), var(--golden-dark));
+            box-shadow: var(--glow-gold);
+        }
+
+        /* عنوان الشريحة الرئيسي */
+        .slide-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.4)); }
+            50% { filter: drop-shadow(0 0 40px rgba(16, 185, 129, 0.6)); }
+        }
+
+        /* عنوان القاعدة */
+        .rule-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin: 3rem 0 2rem 0;
+            color: var(--golden);
+            text-shadow: var(--glow-gold);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .rule-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--golden), var(--golden-dark));
+            border-radius: 50%;
+            font-size: 2.5rem;
+            font-weight: 900;
+            box-shadow: var(--glow-gold);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: var(--glow-gold); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(251, 191, 36, 0.8); }
+        }
+
+        /* بطاقات المحتوى */
+        .content-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 25px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            box-shadow: var(--glow-blue), 0 12px 48px rgba(0, 0, 0, 0.4);
+        }
+
+        /* العنوان داخل البطاقة */
+        .card-header {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* النص داخل البطاقة */
+        .card-text {
+            font-size: 2rem;
+            line-height: 2.2;
+            color: #e2e8f0;
+            margin: 1.5rem 0;
+        }
+
+        .card-text strong {
+            color: var(--golden);
+            font-weight: 700;
+        }
+
+        /* القوائم */
+        .rule-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .rule-list li {
+            font-size: 2.2rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+            padding-right: 3rem;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .rule-list li::before {
+            content: '◆';
+            position: absolute;
+            right: 0;
+            color: var(--success-green);
+            font-size: 1.5rem;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; color: var(--success-green); }
+            50% { opacity: 0.6; color: var(--primary-blue); }
+        }
+
+        /* الأمثلة */
+        .example-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-right: 5px solid var(--success-green);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1);
+        }
+
+        .example-title {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--success-green);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .example-text {
+            font-size: 2rem;
+            line-height: 1.9;
+            color: #94a3b8;
+        }
+
+        /* التطبيق */
+        .application-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+            border: 2px dashed var(--golden);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .application-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--golden);
+            margin-bottom: 1.5rem;
+            text-shadow: var(--glow-gold);
+        }
+
+        /* علامات الصح والخطأ */
+        .correct {
+            color: var(--success-green);
+            font-weight: 700;
+        }
+
+        .wrong {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        /* الانتقالات */
+        .transition-section {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            border-radius: 30px;
+            padding: 3rem;
+            margin: 3rem 0;
+            text-align: center;
+            box-shadow: var(--glow-blue);
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .transition-text {
+            font-size: 2.5rem;
+            line-height: 1.8;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* التمرين */
+        .exercise-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border: 3px solid #ef4444;
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+        }
+
+        .exercise-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ef4444;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* أزرار التنقل */
+        .navigation {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2rem;
+            z-index: 1000;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 1.5rem 3rem;
+            border-radius: 50px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+            border: none;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(135deg, var(--golden), var(--golden-dark));
+            box-shadow: var(--glow-gold);
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* عداد الشرائح */
+        .slide-counter {
+            background: rgba(30, 41, 59, 0.9);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--golden);
+            backdrop-filter: blur(20px);
+        }
+
+        /* الخاتمة النهائية */
+        .final-conclusion {
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--card-bg) 100%);
+            border: 3px solid var(--golden);
+            border-radius: 30px;
+            padding: 4rem;
+            margin: 4rem 0;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(251, 191, 36, 0.4);
+        }
+
+        .final-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--golden);
+            margin-bottom: 2rem;
+            text-shadow: var(--glow-gold);
+        }
+
+        .final-text {
+            font-size: 2.3rem;
+            line-height: 2;
+            color: #e2e8f0;
+        }
+
+        /* الطبقات */
+        .layers-display {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .layer {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-right: 5px solid var(--primary-blue);
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            font-size: 2.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .layer:hover {
+            transform: translateX(-10px);
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .layer-name {
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-left: 1rem;
+        }
+
+        .layer-question {
+            color: #cbd5e1;
+        }
+
+        /* الثلاثية الذهبية */
+        .golden-triple {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .triple-item {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 191, 36, 0.05) 100%);
+            border: 2px solid var(--golden);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .triple-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: var(--glow-gold);
+        }
+
+        .triple-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--golden);
+            margin-bottom: 1rem;
+        }
+
+        .triple-label {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--golden);
+            margin-bottom: 1rem;
+        }
+
+        .triple-text {
+            font-size: 2rem;
+            color: #94a3b8;
+        }
+
+        /* النطاق والطاقة */
+        .energy-display {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 3rem 0;
+        }
+
+        .energy-box {
+            text-align: center;
+        }
+
+        .energy-value {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .energy-label {
+            font-size: 2.2rem;
+            color: #94a3b8;
+        }
+
+        .arrow-between {
+            font-size: 4rem;
+            color: var(--golden);
+        }
+
+        /* الإشارات الخمس */
+        .signals-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .signal-item {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 2px solid var(--primary-blue);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .signal-item:hover {
+            transform: scale(1.05);
+            border-color: var(--success-green);
+            box-shadow: var(--glow-green);
+        }
+
+        .signal-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .signal-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--success-green);
+        }
+
+        /* التوقيت الاستراتيجي */
+        .timing-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .timing-level {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-right: 6px solid var(--success-green);
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .timing-level:nth-child(2) {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-right-color: var(--primary-blue);
+        }
+
+        .timing-level:nth-child(3) {
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.3) 0%, rgba(251, 191, 36, 0.05) 100%);
+            border-right-color: var(--golden);
+        }
+
+        .timing-level:nth-child(4) {
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.3) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-right-color: #ef4444;
+        }
+
+        .timing-level:hover {
+            transform: translateX(-15px);
+        }
+
+        .timing-level-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--success-green);
+            min-width: 100px;
+        }
+
+        .timing-level:nth-child(2) .timing-level-number {
+            color: var(--primary-blue);
+        }
+
+        .timing-level:nth-child(3) .timing-level-number {
+            color: var(--golden);
+        }
+
+        .timing-level:nth-child(4) .timing-level-number {
+            color: #ef4444;
+        }
+
+        .timing-level-text {
+            font-size: 2rem;
+            color: #e2e8f0;
+        }
+
+        /* الخطط */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .plan-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 2px solid var(--primary-blue);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .plan-card:nth-child(2) {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-color: #ef4444;
+        }
+
+        .plan-card:nth-child(3) {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-color: var(--success-green);
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .plan-letter {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .plan-card:nth-child(2) .plan-letter {
+            color: #ef4444;
+        }
+
+        .plan-card:nth-child(3) .plan-letter {
+            color: var(--success-green);
+        }
+
+        .plan-name {
+            font-size: 2.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-text {
+            font-size: 1.9rem;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+
+        /* الإشارات الحمراء */
+        .red-signals {
+            display: flex;
+            justify-content: space-around;
+            margin: 3rem 0;
+        }
+
+        .red-signal {
+            text-align: center;
+            flex: 1;
+        }
+
+        .red-signal-icon {
+            font-size: 5rem;
+            color: #ef4444;
+            margin-bottom: 1.5rem;
+            animation: warning 1.5s ease-in-out infinite;
+        }
+
+        @keyframes warning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .red-signal-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .red-signal-action {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fca5a5;
+        }
+
+        /* الخلاصة */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+            border: 3px solid var(--primary-blue);
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 3rem 0;
+        }
+
+        .summary-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .summary-list li {
+            font-size: 2.3rem;
+            line-height: 2;
+            margin: 1.5rem 0;
+            padding-right: 3rem;
+            position: relative;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .summary-list li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--success-green);
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        /* تأثير الدخول */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide > * {
+            animation: slideIn 0.6s ease-out forwards;
+        }
+
+        .slide > *:nth-child(1) { animation-delay: 0.1s; }
+        .slide > *:nth-child(2) { animation-delay: 0.2s; }
+        .slide > *:nth-child(3) { animation-delay: 0.3s; }
+        .slide > *:nth-child(4) { animation-delay: 0.4s; }
+        .slide > *:nth-child(5) { animation-delay: 0.5s; }
+        .slide > *:nth-child(6) { animation-delay: 0.6s; }
+
+        /* استجابة للشاشات الصغيرة */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: 3rem 4rem;
+            }
+            .slide-title {
+                font-size: 3.5rem;
+            }
+            .rule-title {
+                font-size: 2.8rem;
+            }
+            .card-text {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg"></div>
+    
+    <div class="presentation-container">
+        <div class="slides-wrapper" id="slidesWrapper">
+            
+            <!-- الشريحة 1: خاتمة القوة الأولى - مقدمة -->
+            <div class="slide">
+                <h1 class="slide-title">⚖️ القواعد الذهبية للاتزان ⚖️</h1>
+                
+                <div class="transition-section">
+                    <p class="transition-text">
+                        <strong>دلوقتي شفنا أمثلة كتير — تفريط وإفراط وتوازن.</strong><br>
+                        بس السؤال: <strong>إزاي تضمن إنك دايماً في التوازن؟</strong><br>
+                        إزاي تعرف إنك بتفهم صح — لا أقل ولا أكثر؟
+                    </p>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <span>في 5 قواعد ذهبية</span>
+                    </div>
+                    <p class="card-text">
+                        <strong>لو طبقتهم، مش هتحتاج تفكر في كل موقف من الأول.</strong><br>
+                        هتبقى عندك <span style="color: var(--golden); font-size: 2.3rem;">نظام — زي البوصلة —</span> يوجهك تلقائياً.
+                    </p>
+                </div>
+
+                <div class="final-conclusion">
+                    <h2 class="final-title">🧭 خاتمة القوة الأولى</h2>
+                    <p class="final-text">
+                        قوة <strong style="color: var(--primary-blue);">الفهم قبل الكلام</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- الشريحة 2: القاعدة الأولى - الطبقات الثلاث -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">1</span>
+                    <span>قاعدة الطبقات الثلاث للفهم</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">📊</span>
+                        <span>الطبقات الثلاث</span>
+                    </div>
+                    
+                    <div class="layers-display">
+                        <div class="layer">
+                            <span class="layer-name">الطبقة السطحية:</span>
+                            <span class="layer-question">ما الذي يقوله؟</span>
+                        </div>
+                        <div class="layer">
+                            <span class="layer-name">الطبقة المتوسطة:</span>
+                            <span class="layer-question">ما الذي يعنيه؟</span>
+                        </div>
+                        <div class="layer">
+                            <span class="layer-name">الطبقة العميقة:</span>
+                            <span class="layer-question">ما الذي يحتاجه؟</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong>معظم الناس بتسمع الطبقة السطحية بس —</strong> الكلام اللي الشخص بيقوله.<br>
+                        لكن <span style="color: var(--golden);">الفهم الحقيقي محتاج 3 طبقات</span>
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال حي</div>
+                    <p class="example-text">
+                        متطوع راح لجاره. الجار قال: <strong>'أنا مش قادر دلوقتي.'</strong>
+                    </p>
+                    <ul class="rule-list" style="margin-top: 1.5rem;">
+                        <li><strong>الطبقة السطحية:</strong> الجار رفض</li>
+                        <li><strong>الطبقة المتوسطة:</strong> ليه رفض؟ (مشغول / مش عنده فلوس / مش فاهم الفكرة)</li>
+                        <li><strong>الطبقة العميقة:</strong> إيه اللي لو حصل هيخليه يوافق؟ (وقت تاني / شرح أوضح / طمأنينة)</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        لو المتطوع وقف عند الطبقة السطحية — هيقول: <span class="wrong">❌ 'الجار ده رفض.'</span><br>
+                        لو نزل للطبقة العميقة — هيقول: <span class="correct">✅ 'الجار محتاج توقيت أفضل'</span> — ويرجعله.
+                    </p>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        لما تسمع أي إجابة — اسأل نفسك الثلاث أسئلة:
+                    </p>
+                    <ul class="rule-list">
+                        <li>إيه اللي قاله؟</li>
+                        <li>إيه اللي يعنيه؟</li>
+                        <li>إيه اللي محتاجه؟</li>
+                    </ul>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        ده هيخليك <strong style="color: var(--success-green);">تفهم أعمق — مش بس تسمع</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- الشريحة 3: القاعدة الثانية - السؤال الذكي -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">2</span>
+                    <span>قاعدة السؤال الواحد الذكي</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <span>المعادلة الذهبية</span>
+                    </div>
+                    <div style="text-align: center; font-size: 2.5rem; font-weight: 700; color: var(--golden); margin: 2rem 0; line-height: 2;">
+                        أقل عدد من الأسئلة<br>
+                        +<br>
+                        أعلى قيمة معلوماتية<br>
+                        =<br>
+                        <span style="font-size: 3rem; color: var(--success-green);">سؤال ذكي</span>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong>في فرق بين 10 أسئلة ضعيفة وسؤال واحد قوي.</strong>
+                    </p>
+                    <ul class="rule-list">
+                        <li><strong>الأسئلة الضعيفة:</strong> بتجمع معلومات كتير — لكن مش بالضرورة اللي تحتاجها</li>
+                        <li><strong>السؤال الذكي:</strong> سؤال واحد يفتحلك كل اللي محتاج تعرفه</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال: مسؤول شراكات عايز يعرف لو المطعم مناسب للتعاون</div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700;">
+                            ❌ الطريقة الضعيفة:
+                        </p>
+                        <ul class="rule-list">
+                            <li>'المطعم بتاعكم بيقدم كام وجبة في اليوم؟'</li>
+                            <li>'وعندكم كام عامل؟'</li>
+                            <li>'وبتشتغلوا كام ساعة؟'</li>
+                            <li>'وأسعاركم إيه؟'</li>
+                        </ul>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            [10 أسئلة — صاحب المطعم تعب]
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700;">
+                            ✅ السؤال الذكي:
+                        </p>
+                        <p class="example-text" style="font-size: 2.2rem; margin-top: 1rem;">
+                            <strong>'حضرتك — لو عايز تساعد أسر محتاجة من خلال المطعم — إيه اللي يناسبكم؟<br>
+                            يعني تفضلوا تتبرعوا بوجبات جاهزة، ولا مواد خام، ولا حاجة تانية؟'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            [سؤال واحد — يفتح حوار كامل — وصاحب المطعم هو اللي بيتكلم]
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">✨</span>
+                        <span>ليه السؤال ده ذكي؟</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li>بيسأل عن <strong style="color: var(--golden);">تفضيلاتهم</strong> — مش عن تفاصيل</li>
+                        <li>بيخلي صاحب المطعم <strong style="color: var(--golden);">يفكر ويقترح</strong></li>
+                        <li>بيوفر معلومات <strong style="color: var(--golden);">أكتر من 10 أسئلة تقليدية</strong></li>
+                    </ul>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        قبل ما تسأل — فكر:
+                    </p>
+                    <ul class="rule-list">
+                        <li>إيه <strong>المعلومة الأساسية</strong> اللي محتاجها؟</li>
+                        <li>إيه <strong>السؤال الواحد</strong> اللي يجيبهالي؟</li>
+                    </ul>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        ده هيخليك <strong style="color: var(--success-green);">تسأل أقل — لكن أذكى</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- الشريحة 4: القاعدة الثالثة - الافتراضات الصفرية -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">3</span>
+                    <span>قاعدة الافتراضات الصفرية</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">⚠️</span>
+                        <span>القاعدة الذهبية</span>
+                    </div>
+                    <div style="text-align: center; font-size: 3rem; font-weight: 800; margin: 3rem 0;">
+                        <div style="color: #ef4444; margin-bottom: 2rem;">
+                            كل افتراض = خطر محتمل
+                        </div>
+                        <div style="color: var(--golden);">
+                            لا تفترض شيئاً — اسأل
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">أخطر حاجة في الفهم: الافتراضات</strong>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        <strong>افتراض =</strong> إنك تتخيل إنك عارف — من غير ما تسأل
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 أمثلة من الحملة</div>
+                    <ul class="rule-list">
+                        <li>متطوع افترض إن الجار <span class="wrong">'بخيل'</span> — لأنه رفض<br>
+                            <strong style="color: var(--golden);">الحقيقة:</strong> كان مريض</li>
+                        
+                        <li style="margin-top: 2rem;">مسؤول شراكات افترض إن المطعم <span class="wrong">'غني'</span> — لأن شكله حلو<br>
+                            <strong style="color: var(--golden);">الحقيقة:</strong> بيخسر</li>
+                        
+                        <li style="margin-top: 2rem;">مسؤول جمعيات افترض إن الجمعية <span class="wrong">'عندها مطبخ'</span> — لأن اسمها 'جمعية خيرية'<br>
+                            <strong style="color: var(--golden);">الحقيقة:</strong> مافيش مطبخ</li>
+                    </ul>
+                </div>
+
+                <div class="content-card" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%); border-color: #ef4444;">
+                    <div style="text-align: center;">
+                        <p class="card-text" style="font-size: 2.8rem; font-weight: 800; color: #ef4444; margin-bottom: 2rem;">
+                            ⛔ القاعدة ⛔
+                        </p>
+                        <p class="card-text" style="font-size: 2.5rem;">
+                            لا تفترض — اسأل
+                        </p>
+                        <p class="card-text" style="margin-top: 1.5rem;">
+                            حتى لو الموقف واضح — <strong style="color: var(--golden);">تأكد</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        كل ما تلاقي نفسك بتقول:
+                    </p>
+                    <div style="display: flex; gap: 2rem; margin: 2rem 0; justify-content: center;">
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 2rem 3rem; border-radius: 15px; font-size: 2.3rem; font-weight: 700; color: #fca5a5;">
+                            'أكيد ده...'
+                        </div>
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 2rem 3rem; border-radius: 15px; font-size: 2.3rem; font-weight: 700; color: #fca5a5;">
+                            'واضح إن...'
+                        </div>
+                    </div>
+                    <div style="text-align: center; font-size: 3rem; font-weight: 800; color: var(--golden); margin: 2rem 0;">
+                        ⬇️ توقف — واسأل ⬇️
+                    </div>
+                    <p class="card-text" style="margin-top: 2rem; text-align: center;">
+                        ده هيخليك <strong style="color: var(--success-green);">دقيق — مش مجرد سريع</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- الشريحة 5: القاعدة الرابعة - التوقيت قبل المحتوى -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">4</span>
+                    <span>قاعدة التوقيت قبل المحتوى</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">⏰</span>
+                        <span>المعادلة الذهبية</span>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.15); padding: 3rem; border-radius: 20px; margin: 2rem 0;">
+                        <p style="font-size: 2.5rem; font-weight: 700; text-align: center; line-height: 2; color: #fca5a5;">
+                            أفضل عرض في <strong style="color: #ef4444; font-size: 2.8rem;">توقيت غلط</strong> = فشل
+                        </p>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.15); padding: 3rem; border-radius: 20px; margin: 2rem 0;">
+                        <p style="font-size: 2.5rem; font-weight: 700; text-align: center; line-height: 2; color: #6ee7b7;">
+                            عرض متوسط في <strong style="color: var(--success-green); font-size: 2.8rem;">توقيت صح</strong> = نجاح
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong>في حاجة كتير مننا بنتجاهلها: التوقيت</strong>
+                    </p>
+                    <p class="card-text" style="margin-top: 1.5rem;">
+                        بنركز على <span style="color: var(--primary-blue);">إيه اللي هنقوله</span> — لكن بننسى <span style="color: var(--golden);">امتى نقوله</span>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem; font-size: 2.5rem; color: var(--golden); font-weight: 700;">
+                        الحقيقة: التوقيت أهم من المحتوى
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال: نفس المتطوع — نفس الجار — نفس الكلام — توقيت مختلف</div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700; font-size: 2.3rem;">
+                            ❌ التوقيت الغلط
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            <strong>الساعة 8 صباحاً</strong> — الجار مستعجل على الشغل
+                        </p>
+                        <p class="example-text" style="color: #ef4444; font-weight: 700; margin-top: 1rem;">
+                            النتيجة: رفض
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700; font-size: 2.3rem;">
+                            ✅ التوقيت الصح
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            <strong>الساعة 7 مساءً</strong> — الجار مرتاح وقاعد يشرب الشاي
+                        </p>
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700; margin-top: 1rem;">
+                            النتيجة: وافق
+                        </p>
+                    </div>
+
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 2.8rem; font-weight: 800; color: var(--golden);">
+                            نفس الكلام. توقيت مختلف. نتيجة معكوسة.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        قبل ما تبدأ أي حوار — اسأل نفسك:
+                    </p>
+                    <ul class="rule-list">
+                        <li><strong>هل الشخص متاح ذهنياً؟</strong> (مش مشغول / مش متعب)</li>
+                        <li><strong>هل الشخص متاح عاطفياً؟</strong> (مش متضايق / مش قلقان)</li>
+                        <li><strong>هل الظروف مناسبة؟</strong> (مافيش ضغط / مافيش ضوضاء)</li>
+                    </ul>
+                    <div style="background: rgba(239, 68, 68, 0.2); padding: 2rem; border-radius: 15px; margin: 3rem 0; text-align: center;">
+                        <p class="card-text" style="font-size: 2.3rem; font-weight: 700; color: #fca5a5;">
+                            لو الإجابة <strong>لأ</strong> على أي سؤال — <span style="color: #ef4444; font-size: 2.5rem;">أجّل الحوار</span>
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: #1a2332;">
+                            قاعدة ذهبية:<br>
+                            أحسن حوار متأخر أفضل من أسوأ حوار في وقته
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 6: القاعدة الخامسة - الصمت الذكي -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">5</span>
+                    <span>قاعدة الصمت الذكي</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🤐</span>
+                        <span>قوة الصمت</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                        <div style="background: rgba(59, 130, 246, 0.15); padding: 2.5rem; border-radius: 15px; text-align: center;">
+                            <p style="font-size: 2.3rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem;">
+                                الصمت بعد السؤال
+                            </p>
+                            <p style="font-size: 2rem; color: #94a3b8;">
+                                = مساحة للإجابة
+                            </p>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.15); padding: 2.5rem; border-radius: 15px; text-align: center;">
+                            <p style="font-size: 2.3rem; font-weight: 700; color: var(--success-green); margin-bottom: 1rem;">
+                                الصمت في الرفض
+                            </p>
+                            <p style="font-size: 2rem; color: #94a3b8;">
+                                = احترام للقرار
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">آخر قاعدة — وأقوى قاعدة: الصمت</strong>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        معظم الناس بتخاف من الصمت. لما تسأل سؤال والشخص يسكت — تحس إنك لازم تملا الفراغ.<br>
+                        <span style="color: #ef4444; font-size: 2.3rem; font-weight: 700;">لكن ده غلط</span>
+                    </p>
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 3.5rem; font-weight: 900; color: var(--golden); text-shadow: var(--glow-gold);">
+                            الصمت = قوة
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">1️⃣</span>
+                        <span>الصمت بعد السؤال</span>
+                    </div>
+                    <p class="card-text">
+                        لما تسأل سؤال — <strong style="color: var(--golden);">اسكت</strong>. سيب الشخص يفكر. ماتقطعهوش.<br>
+                        الصمت بيدي للشخص مساحة يجاوب براحته.
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال</div>
+                    <p class="example-text" style="font-size: 2.2rem;">
+                        <strong style="color: var(--primary-blue);">'يا عم حسن — حضرتك تقدر تساعدنا بوجبة؟'</strong>
+                    </p>
+                    <div style="background: rgba(16, 185, 129, 0.2); padding: 2rem; border-radius: 10px; margin: 2rem 0; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: var(--success-green);">
+                            [اصمت. 3 ثواني.]
+                        </p>
+                    </div>
+                    <p class="example-text">
+                        عم حسن: [بيفكر] <strong style="color: var(--golden);">'طيب — ممكن وجبة كل أسبوع.'</strong>
+                    </p>
+                    <div style="background: rgba(239, 68, 68, 0.15); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 3rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700;">
+                            ❌ لو المتطوع ماسكتش
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            لو قال: <strong>'يعني وجبة بسيطة — مش صعبة — أي حاجة — ...'</strong><br>
+                            عم حسن كان هيحس بضغط — وممكن يرفض
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">2️⃣</span>
+                        <span>الصمت في الرفض</span>
+                    </div>
+                    <p class="card-text">
+                        لما الشخص يقول <strong style="color: #ef4444;">'لأ'</strong> — اصمت ثانية واحدة.<br>
+                        ماترُدش فوراً بـ<span class="wrong">'ليه؟'</span> أو <span class="wrong">'بس!'</span>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        الصمت بيقول: <strong style="color: var(--golden);">'أنا سامعك — وأنا محترم قرارك'</strong>
+                    </p>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق: اتعلم تصمت</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                        <div style="background: rgba(59, 130, 246, 0.2); padding: 2.5rem; border-radius: 15px; text-align: center;">
+                            <p style="font-size: 2.5rem; font-weight: 800; color: var(--primary-blue);">
+                                بعد كل سؤال
+                            </p>
+                            <p style="font-size: 3rem; font-weight: 900; color: var(--golden); margin-top: 1rem;">
+                                3 ثواني صمت
+                            </p>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.2); padding: 2.5rem; border-radius: 15px; text-align: center;">
+                            <p style="font-size: 2.5rem; font-weight: 800; color: var(--success-green);">
+                                بعد كل رفض
+                            </p>
+                            <p style="font-size: 3rem; font-weight: 900; color: var(--golden); margin-top: 1rem;">
+                                ثانية واحدة صمت
+                            </p>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 2.8rem; font-weight: 800; color: var(--golden);">
+                            الصمت مش ضعف. الصمت قوة.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 7: التمرين التطبيقي السريع -->
+            <div class="slide">
+                <div class="exercise-box">
+                    <div class="exercise-title">⚡ تمرين سريع: طبّق القواعد</div>
+                    
+                    <div class="content-card">
+                        <div class="card-header">
+                            <span class="card-icon">🎯</span>
+                            <span>الموقف</span>
+                        </div>
+                        <p class="card-text" style="font-size: 2.5rem; line-height: 2;">
+                            أنت متطوع. عايز تكلم جارك — <strong style="color: var(--golden);">عم محمود</strong> — عن المبادرة.<br>
+                            بس عم محمود شخصيته صعبة — <strong style="color: #ef4444;">بيرفض كتير</strong> — وبيتكلم بجفاف.
+                        </p>
+                    </div>
+
+                    <div class="content-card" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(251, 191, 36, 0.1) 100%); border-color: var(--golden);">
+                        <div class="card-header">
+                            <span class="card-icon">💭</span>
+                            <span>فكر...</span>
+                        </div>
+                        <ul class="rule-list">
+                            <li style="font-size: 2.3rem;"><strong style="color: var(--golden);">1️⃣</strong> إيه السؤال الذكي اللي ممكن يفتح الباب؟</li>
+                            <li style="font-size: 2.3rem;"><strong style="color: var(--golden);">2️⃣</strong> إيه التوقيت المناسب لو عندك اختيار؟</li>
+                            <li style="font-size: 2.3rem;"><strong style="color: var(--golden);">3️⃣</strong> إيه اللي مش لازم تفترضه عن عم محمود؟</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(239, 68, 68, 0.2); border: 3px dashed #ef4444; border-radius: 20px; padding: 4rem; margin: 3rem 0; text-align: center;">
+                        <p style="font-size: 4rem; font-weight: 900; color: #ef4444; margin-bottom: 2rem;">
+                            [صمت 30 ثانية]
+                        </p>
+                        <p style="font-size: 2.5rem; color: #fca5a5;">
+                            مين عايز يشارك؟
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 8: خاتمة القوة الأولى -->
+            <div class="slide">
+                <div class="final-conclusion">
+                    <h2 class="final-title">✨ الخاتمة النهائية ✨</h2>
+                    <p class="final-text" style="margin: 2rem 0;">
+                        دي كانت القواعد الخمسة الذهبية<br>
+                        لـ<strong style="color: var(--primary-blue); font-size: 2.8rem;">قوة الفهم قبل الكلام</strong>
+                    </p>
+                </div>
+
+                <div class="summary-box">
+                    <div style="text-align: center; margin-bottom: 3rem;">
+                        <p style="font-size: 3rem; font-weight: 800; color: var(--golden);">
+                            لخّصهم في كلمة واحدة:
+                        </p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%); padding: 4rem; border-radius: 25px; text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 3.5rem; font-weight: 900; color: #ffffff; line-height: 2;">
+                            الفهم = تسمع أعمق<br>
+                            تسأل أذكى<br>
+                            تصمت أطول
+                        </p>
+                    </div>
+                </div>
+
+                <div class="transition-section" style="margin-top: 4rem;">
+                    <p class="transition-text" style="font-size: 3rem; font-weight: 800;">
+                        دلوقتي — يلا ننتقل للقوة التانية 🚀
+                    </p>
+                </div>
+            </div>
+
+            <!-- ====== القوة الثانية: الوعد والوفاء ====== -->
+
+            <!-- الشريحة 9: مقدمة القوة الثانية -->
+            <div class="slide">
+                <h1 class="slide-title">🤝 القواعد الذهبية للاتزان 🤝</h1>
+                
+                <div class="final-conclusion">
+                    <h2 class="final-title">💎 القوة الثانية</h2>
+                    <p class="final-text">
+                        قوة <strong style="color: var(--golden);">الوعد والوفاء</strong>
+                    </p>
+                </div>
+
+                <div class="transition-section">
+                    <p class="transition-text">
+                        <strong>شفنا إزاي الوعد ممكن يبني ثقة — أو يهدمها.</strong><br>
+                        دلوقتي السؤال: <strong>إزاي تضمن إن وعودك دايماً واضحة ومُنفَّذة؟</strong>
+                    </p>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <span>في 5 قواعد ذهبية</span>
+                    </div>
+                    <p class="card-text" style="font-size: 2.5rem;">
+                        <strong>لو طبّقتهم، كل وعد بتقوله هيتحول لـ</strong><br>
+                        <span style="color: var(--golden); font-size: 3rem;">جسر ثقة</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- الشريحة 10: القاعدة الأولى - الثلاثية الذهبية -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">1</span>
+                    <span>قاعدة الثلاثية الذهبية</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <span>كل وعد لازم يحتوي على</span>
+                    </div>
+                    
+                    <div class="golden-triple">
+                        <div class="triple-item">
+                            <div class="triple-number">1️⃣</div>
+                            <div class="triple-label">ماذا</div>
+                            <div class="triple-text">(What)</div>
+                        </div>
+                        <div class="triple-item">
+                            <div class="triple-number">2️⃣</div>
+                            <div class="triple-label">متى</div>
+                            <div class="triple-text">(When)</div>
+                        </div>
+                        <div class="triple-item">
+                            <div class="triple-number">3️⃣</div>
+                            <div class="triple-label">كيف</div>
+                            <div class="triple-text">(How)</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 3rem; font-weight: 800; color: #ef4444;">
+                            الوعد الناقص = وعد ميت
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">أول قاعدة — وأهم قاعدة:</strong><br>
+                        كل وعد لازم يكون مُحدد بالثلاثية
+                    </p>
+                    <ul class="rule-list">
+                        <li><strong style="color: var(--golden);">ماذا:</strong> إيه بالظبط اللي هتعمله؟</li>
+                        <li><strong style="color: var(--golden);">متى:</strong> في أي وقت / يوم / ساعة؟</li>
+                        <li><strong style="color: var(--golden);">كيف:</strong> بأي طريقة / بأي شكل؟</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 أمثلة</div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700; font-size: 2.3rem;">
+                            ❌ وعد ناقص:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem; font-size: 2.2rem;">
+                            'هبعتلك الأطباق.'
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            (ماذا؟ <span class="correct">✅</span> | متى؟ <span class="wrong">❌</span> | كيف؟ <span class="wrong">❌</span>)
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700; font-size: 2.3rem;">
+                            ✅ وعد كامل:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem; font-size: 2.2rem;">
+                            'هبعتلك <strong style="color: var(--golden);">50 طبق</strong> — يوم <strong style="color: var(--golden);">الأحد الساعة 10 صباحاً</strong> — عن طريق <strong style="color: var(--golden);">المتطوع أحمد</strong>'
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            (ماذا؟ <span class="correct">✅</span> | متى؟ <span class="correct">✅</span> | كيف؟ <span class="correct">✅</span>)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        قبل ما توعد بأي حاجة — اسأل نفسك:
+                    </p>
+                    <ul class="rule-list">
+                        <li><strong>ماذا بالظبط؟</strong></li>
+                        <li><strong>متى بالظبط؟</strong></li>
+                        <li><strong>كيف بالظبط؟</strong></li>
+                    </ul>
+                    <div style="background: rgba(239, 68, 68, 0.2); padding: 2rem; border-radius: 15px; margin: 2rem 0; text-align: center;">
+                        <p class="card-text" style="font-size: 2.3rem; font-weight: 700; color: #fca5a5;">
+                            لو مافيش إجابة واضحة على أي سؤال —<br>
+                            <span style="color: #ef4444; font-size: 2.5rem;">ماتوعدش. أو كمّل الوعد الأول</span>
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: #1a2332;">
+                            قاعدة:<br>
+                            الوعد الواضح بيحمي الطرفين — إنت وَ اللي قدامك
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 11: القاعدة الثانية - النطاق والطاقة -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">2</span>
+                    <span>قاعدة النطاق والطاقة</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">⚡</span>
+                        <span>المعادلة الذهبية</span>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 2.8rem; font-weight: 800; color: var(--primary-blue); margin-bottom: 2rem;">
+                            نطاق الوعد = 70% من طاقتك الفعلية
+                        </p>
+                        <p style="font-size: 2.5rem; color: var(--golden);">
+                            احتفظ بـ 30% للطوارئ
+                        </p>
+                    </div>
+
+                    <div class="energy-display">
+                        <div class="energy-box">
+                            <div class="energy-value" style="color: var(--success-green);">وعد بـ 7</div>
+                            <div class="arrow-between">→</div>
+                            <div class="energy-value" style="color: var(--golden);">نفّذ 10</div>
+                            <div class="energy-label" style="color: var(--success-green); font-size: 2.5rem; font-weight: 700;">✅</div>
+                        </div>
+                    </div>
+
+                    <div class="energy-display" style="margin-top: 2rem;">
+                        <div class="energy-box">
+                            <div class="energy-value" style="color: #ef4444;">وعد بـ 10</div>
+                            <div class="arrow-between" style="color: #ef4444;">→</div>
+                            <div class="energy-value" style="color: #ef4444;">نفّذ 7</div>
+                            <div class="energy-label" style="color: #ef4444; font-size: 2.5rem; font-weight: 700;">❌</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">تاني قاعدة — قاعدة الأمان:</strong><br>
+                        لا توعد بكل طاقتك. وعد بـ<span style="color: var(--golden); font-size: 2.3rem;">70% فقط</span>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        <strong>ليه؟</strong> لأن الحياة مالهاش ضمان. في حاجات بتحصل — طوارئ، تأخيرات، ظروف.
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال: متطوع عنده 10 متبرعين جاهزين</div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700; font-size: 2.3rem;">
+                            ❌ الغلط:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            يروح يقول للمنسق: <strong>'أنا هجيب 10 وجبات الأسبوع ده'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem; color: #fca5a5;">
+                            <strong>ليه غلط؟</strong> لو متبرع واحد اعتذر — هيبقى 9 وجبات — يعني كسر الوعد
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700; font-size: 2.3rem;">
+                            ✅ الصح:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            يقول: <strong>'أنا هجيب 7 وجبات — أكيد'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem; color: #6ee7b7;">
+                            <strong>ليه صح؟</strong><br>
+                            • لو كل المتبرعين نفّذوا — هيبقى عنده 10 وجبات — يعني زود 3 عن الوعد ✅<br>
+                            • لو 3 اعتذروا — هيبقى عنده 7 وجبات — يعني نفّذ الوعد بالظبط ✅
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        قبل ما توعد — احسب:
+                    </p>
+                    <ul class="rule-list">
+                        <li><strong>طاقتي الفعلية إيه؟</strong> (مثلاً: 10)</li>
+                        <li><strong>أوعد بـ 70% منها</strong> (يعني: 7)</li>
+                    </ul>
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center; margin-top: 3rem;">
+                        <p style="font-size: 2.8rem; font-weight: 800; color: #1a2332; line-height: 2;">
+                            قاعدة ذهبية:<br>
+                            وعد بأقل — نفّذ بأكثر<br>
+                            الناس بتحب المفاجآت الإيجابية — مش خيبات الأمل
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 12: القاعدة الثالثة - التوثيق الفوري -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">3</span>
+                    <span>قاعدة التوثيق الفوري</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">📝</span>
+                        <span>القاعدة الذهبية</span>
+                    </div>
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 3rem; font-weight: 800; color: var(--golden); line-height: 2;">
+                            كل وعد = توثيق كتابي <strong style="color: #ef4444;">فوراً</strong>
+                        </p>
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 2rem; border-radius: 15px; margin-top: 2rem;">
+                            <p style="font-size: 2.5rem; font-weight: 700; color: #fca5a5;">
+                                الذاكرة خائنة — الورق أمين
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">تالت قاعدة — بسيطة لكن قاتلة:</strong><br>
+                        كل وعد لازم يتكتب فوراً
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        <strong>ليه؟</strong> لأن الذاكرة بتكذب.<br>
+                        إنت بتفتكر إنك قلت حاجة — الطرف التاني بيفتكر حاجة تانية
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال: سوء الفهم بسبب عدم التوثيق</div>
+                    <p class="example-text">
+                        مسؤول شراكات وعد صاحب مطعم: <strong>'هبعتلك 30 طبق الأسبوع الجاي'</strong>
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                        <div style="background: rgba(239, 68, 68, 0.15); padding: 2rem; border-radius: 15px;">
+                            <p style="font-size: 2rem; font-weight: 700; color: #fca5a5; margin-bottom: 1rem;">
+                                صاحب المطعم فهم:
+                            </p>
+                            <p style="font-size: 2rem; color: #cbd5e1;">
+                                '30 طبق <strong>كل أسبوع</strong>'
+                            </p>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.15); padding: 2rem; border-radius: 15px;">
+                            <p style="font-size: 2rem; font-weight: 700; color: #93c5fd; margin-bottom: 1rem;">
+                                المسؤول كان يقصد:
+                            </p>
+                            <p style="font-size: 2rem; color: #cbd5e1;">
+                                '30 طبق <strong>مرة واحدة</strong> — مش كل أسبوع'
+                            </p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.2); padding: 2rem; border-radius: 15px; margin-top: 2rem;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700;">
+                            النتيجة بعد أسبوعين:
+                        </p>
+                        <p class="example-text">
+                            صاحب المطعم: <strong>'فين الأطباق؟'</strong><br>
+                            المسؤول: <strong>'أنا قلت مرة واحدة!'</strong><br>
+                            صاحب المطعم: <strong>'لأ — إنت قلت كل أسبوع!'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1.5rem; color: #ef4444; font-weight: 700;">
+                            المشكلة: مافيش توثيق. كل واحد بيفتكر حاجة.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق: فوراً بعد أي وعد — اكتبه</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                        <div style="background: rgba(59, 130, 246, 0.15); padding: 2rem; border-radius: 15px;">
+                            <p style="font-size: 2.2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem;">
+                                📱 على الموبايل
+                            </p>
+                            <p style="font-size: 2rem; color: #94a3b8;">
+                                رسالة واتساب / ملاحظة
+                            </p>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.15); padding: 2rem; border-radius: 15px;">
+                            <p style="font-size: 2.2rem; font-weight: 700; color: var(--success-green); margin-bottom: 1rem;">
+                                📄 على ورقة
+                            </p>
+                            <p style="font-size: 2rem; color: #94a3b8;">
+                                في دفتر صغير
+                            </p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(251, 191, 36, 0.15); border: 2px solid var(--golden); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+                        <p style="font-size: 2.2rem; font-weight: 700; color: var(--golden); margin-bottom: 1.5rem;">
+                            الصيغة:
+                        </p>
+                        <p style="font-size: 2rem; color: #e2e8f0; line-height: 1.9;">
+                            'تمام يا <strong>[الاسم]</strong> — متفقين إن أنا هـ<strong>[الوعد]</strong> يوم <strong>[التاريخ]</strong> الساعة <strong>[الوقت]</strong>. لو في أي تغيير — هبلغك فوراً.'
+                        </p>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.15); border: 2px solid var(--success-green); padding: 2.5rem; border-radius: 15px;">
+                        <p style="font-size: 2.2rem; font-weight: 700; color: var(--success-green); margin-bottom: 1.5rem;">
+                            ✅ مثال رسالة:
+                        </p>
+                        <p style="font-size: 2rem; color: #e2e8f0; line-height: 1.9;">
+                            'تمام يا أستاذ سمير — متفقين إن أنا هبعتلك 30 طبق يوم الأحد 15 يناير الساعة 10 صباحاً عن طريق المتطوع أحمد. لو في أي تغيير — هبلغك قبلها بيوم.'
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center; margin-top: 3rem;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: #1a2332;">
+                            قاعدة:<br>
+                            الوعد المكتوب = وعد محمي
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 13: القاعدة الرابعة - التواصل الاستباقي -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">4</span>
+                    <span>قاعدة التواصل الاستباقي</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">📞</span>
+                        <span>القاعدة الذهبية</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 2.5rem; border-radius: 15px; text-align: center;">
+                            <p style="font-size: 2.3rem; font-weight: 700; color: #fca5a5; line-height: 2;">
+                                لو هتتأخر →<br>
+                                اتصل <strong style="color: #ef4444; font-size: 2.5rem;">قبل</strong> الموعد
+                            </p>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.2); padding: 2.5rem; border-radius: 15px; text-align: center;">
+                            <p style="font-size: 2.3rem; font-weight: 700; color: #93c5fd; line-height: 2;">
+                                لو مش هتقدر →<br>
+                                قول <strong style="color: var(--primary-blue); font-size: 2.5rem;">من بدري</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <p style="font-size: 3rem; font-weight: 800; color: #ef4444;">
+                            الصمت يقتل الثقة
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">رابع قاعدة — وأصعب قاعدة على معظم الناس:</strong>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        <strong style="color: var(--golden);">التواصل الاستباقي</strong> = إنك تبلّغ <span style="color: #ef4444; font-size: 2.3rem;">قبل ما المشكلة تحصل</span>
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 سيناريو كامل</div>
+                    <p class="example-text">
+                        متطوع وعد متبرع: <strong>'هعدي عليك الساعة 3 آخد الطبق'</strong><br>
+                        الساعة 2:45 — المتطوع اكتشف إنه مش هيلحق (سبب أي كان)
+                    </p>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700; font-size: 2.3rem;">
+                            ❌ الغلط:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            يسكت — يتأخر — يوصل الساعة 3:30 — يقول: <strong>'آسف — اتأخرت'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem; color: #fca5a5;">
+                            <strong>ليه غلط؟</strong><br>
+                            المتبرع — من الساعة 3 للساعة 3:30 — كان مستني. ربما أجّل حاجة. ربما الأكل بدأ يبرد. لما المتطوع يوصل متأخر — المتبرع بيزعل.
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700; font-size: 2.3rem;">
+                            ✅ الصح:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            الساعة 2:45 — المتطوع يتصل <strong>فوراً</strong>:<br>
+                            <strong>'يا عم ماجد — معلش، أنا عندي ظرف طارئ — مش هلحق الساعة 3. ممكن أعدي الساعة 4؟'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            المتبرع: <strong>'ماشي — مافيش مشكلة'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem; color: #6ee7b7;">
+                            <strong>ليه صح؟</strong><br>
+                            المتبرع عرف من بدري. مااستناش لوحده. ممكن عمل حاجة تانية في الساعة اللي فاضلة.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center; margin: 3rem 0;">
+                    <p style="font-size: 2.8rem; font-weight: 800; color: #1a2332; line-height: 2;">
+                        القاعدة الذهبية:<br>
+                        الاعتذار المبكر أفضل ألف مرة من الاعتذار المتأخر
+                    </p>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق: لو حصل أي طارئ</div>
+                    <ul class="rule-list">
+                        <li><strong style="color: var(--golden);">1️⃣</strong> اتصل فوراً — قبل الموعد — حتى لو بدقائق</li>
+                        <li><strong style="color: var(--golden);">2️⃣</strong> اعتذر واضح: 'معلش — حصل ظرف طارئ'</li>
+                        <li><strong style="color: var(--golden);">3️⃣</strong> اقترح بديل: 'ممكن أعدي [وقت بديل]؟'</li>
+                    </ul>
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 2.8rem; font-weight: 800; color: #ef4444;">
+                            الصمت = موت الثقة
+                        </p>
+                        <p style="font-size: 2.8rem; font-weight: 800; color: var(--success-green); margin-top: 1rem;">
+                            التواصل = إنقاذ العلاقة
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 14: القاعدة الخامسة - البديل الجاهز -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">5</span>
+                    <span>قاعدة البديل الجاهز</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🔄</span>
+                        <span>القاعدة الذهبية</span>
+                    </div>
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 3rem; font-weight: 800; color: var(--golden); line-height: 2;">
+                            لكل وعد → خطة بديلة
+                        </p>
+                        <p style="font-size: 2.5rem; color: #94a3b8; margin-top: 2rem;">
+                            "ماذا لو" ليست كارثة — هي <strong style="color: var(--primary-blue);">سيناريو محسوب</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">آخر قاعدة — قاعدة الاحترافية:</strong><br>
+                        لكل وعد لازم يكون عندك بديل
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        <strong>ليه؟</strong> لأن الوعد مش دايماً بيتنفذ — مهما كنت منظم
+                    </p>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">⚠️</span>
+                        <span>في حاجات خارج سيطرتك</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li>المتبرع يمرض 🤒</li>
+                        <li>المطعم يقفل فجأة 🚪</li>
+                        <li>الطريق يتقفل 🚧</li>
+                        <li>الموبايل يقع 📱</li>
+                    </ul>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 3rem 0;">
+                    <div style="background: rgba(239, 68, 68, 0.15); padding: 2.5rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 700; color: #fca5a5; margin-bottom: 1.5rem;">
+                            ❌ من غير بديل
+                        </p>
+                        <p style="font-size: 2rem; color: #cbd5e1;">
+                            أول ما مشكلة تحصل<br>— بتنهار
+                        </p>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.15); padding: 2.5rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 700; color: var(--success-green); margin-bottom: 1.5rem;">
+                            ✅ مع بديل
+                        </p>
+                        <p style="font-size: 2rem; color: #cbd5e1;">
+                            المشكلة بتحصل<br>— بتتعامل معاها
+                        </p>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال: متطوع عنده 5 متبرعين كل يوم أربعاء</div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700; font-size: 2.3rem;">
+                            ❌ من غير بديل:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            متبرع واحد اعتذر فجأة<br>
+                            المتطوع: <strong>'طيب — هنقص وجبة'</strong>
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700; font-size: 2.3rem;">
+                            ✅ مع بديل:
+                        </p>
+                        <p class="example-text" style="margin-top: 1rem;">
+                            المتطوع — من الأسبوع الأول — عمل <strong style="color: var(--golden);">قائمة احتياط فيها 3 متبرعين إضافيين</strong><br><br>
+                            متبرع اعتذر — المتطوع يتصل فوراً بالاحتياط الأول:<br>
+                            <strong>'يا أستاذ خالد — ممكن النهاردة تساعدنا بوجبة؟'</strong><br>
+                            خالد: <strong>'ماشي — جاهز'</strong>
+                        </p>
+                        <p class="example-text" style="margin-top: 1.5rem; color: var(--success-green); font-weight: 700;">
+                            النتيجة: الوعد اتنفذ — رغم الطارئ ✅
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق: لكل وعد — حضّر</div>
+                    <ul class="rule-list">
+                        <li><strong style="color: var(--golden);">البديل الأول:</strong> لو المصدر الأساسي فشل — مين البديل؟</li>
+                        <li><strong style="color: var(--golden);">البديل الثاني:</strong> لو البديل الأول فشل — مين البديل التاني؟</li>
+                    </ul>
+                    
+                    <div style="background: rgba(59, 130, 246, 0.15); border: 2px solid var(--primary-blue); padding: 2.5rem; border-radius: 15px; margin: 3rem 0;">
+                        <p style="font-size: 2.2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1.5rem;">
+                            📋 أمثلة:
+                        </p>
+                        <ul class="rule-list">
+                            <li><strong>متطوع:</strong> 3 متبرعين أساسيين + 2 احتياط</li>
+                            <li><strong>مسؤول شراكات:</strong> مطعم أساسي + مطعم بديل</li>
+                            <li><strong>مسؤول جمعيات:</strong> جمعية أساسية + 2 جمعيات احتياط</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: #1a2332; line-height: 2;">
+                            القاعدة الذهبية:<br>
+                            الاحترافي مش اللي مابيواجهش مشاكل —<br>
+                            ده اللي عنده حل جاهز لما المشكلة تحصل
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 15: خاتمة القوة الثانية -->
+            <div class="slide">
+                <div class="final-conclusion">
+                    <h2 class="final-title">✨ الخاتمة النهائية ✨</h2>
+                    <p class="final-text" style="margin: 2rem 0;">
+                        دي كانت القواعد الخمسة الذهبية<br>
+                        لـ<strong style="color: var(--golden); font-size: 2.8rem;">قوة الوعد والوفاء</strong>
+                    </p>
+                </div>
+
+                <div class="summary-box">
+                    <div style="text-align: center; margin-bottom: 3rem;">
+                        <p style="font-size: 3rem; font-weight: 800; color: var(--golden);">
+                            لخّصهم:
+                        </p>
+                    </div>
+                    
+                    <div class="summary-list">
+                        <li><strong style="color: var(--golden);">1️⃣ الثلاثية:</strong> ماذا + متى + كيف</li>
+                        <li><strong style="color: var(--golden);">2️⃣ 70%:</strong> وعد بأقل — نفّذ بأكتر</li>
+                        <li><strong style="color: var(--golden);">3️⃣ التوثيق:</strong> اكتب فوراً</li>
+                        <li><strong style="color: var(--golden);">4️⃣ التواصل:</strong> اتصل قبل الموعد</li>
+                        <li><strong style="color: var(--golden);">5️⃣ البديل:</strong> خطة B جاهزة</li>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin: 4rem 0;">
+                    <div style="background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 3rem; font-weight: 900; color: #ffffff; margin-bottom: 1rem;">
+                            كل وعد تنفذه
+                        </p>
+                        <p style="font-size: 2.5rem; color: #ffffff;">
+                            = جسر 🌉
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 3rem; font-weight: 900; color: #ffffff; margin-bottom: 1rem;">
+                            كل وعد تكسره
+                        </p>
+                        <p style="font-size: 2.5rem; color: #ffffff;">
+                            = هدم 💥
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%); padding: 4rem; border-radius: 25px; text-align: center;">
+                    <p style="font-size: 3rem; font-weight: 900; color: #ffffff; line-height: 2;">
+                        اختار ببساطة:<br>
+                        بنّاي ولا هدّام؟
+                    </p>
+                </div>
+
+                <div class="transition-section" style="margin-top: 4rem;">
+                    <p class="transition-text" style="font-size: 3rem; font-weight: 800;">
+                        يلا ننتقل للقوة التالتة 🚀
+                    </p>
+                </div>
+            </div>
+
+            <!-- ====== القوة الثالثة: القراءة الصحيحة للموقف ====== -->
+
+            <!-- الشريحة 16: مقدمة القوة الثالثة -->
+            <div class="slide">
+                <h1 class="slide-title">🔍 القواعد الذهبية للاتزان 🔍</h1>
+                
+                <div class="final-conclusion">
+                    <h2 class="final-title">🎯 القوة الثالثة</h2>
+                    <p class="final-text">
+                        قوة <strong style="color: var(--success-green);">القراءة الصحيحة للموقف</strong>
+                    </p>
+                </div>
+
+                <div class="transition-section">
+                    <p class="transition-text">
+                        <strong>شفنا إزاي قراءة الموقف بتفرق بين النجاح والفشل.</strong><br>
+                        دلوقتي السؤال: <strong>إزاي تقرأ أي موقف — في أي وقت — بدقة؟</strong>
+                    </p>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🎯</span>
+                        <span>في 5 قواعد ذهبية</span>
+                    </div>
+                    <p class="card-text" style="font-size: 2.5rem;">
+                        <strong>لو طبّقتهم، هتبقى تقرأ المواقف</strong><br>
+                        <span style="color: var(--golden); font-size: 3rem;">زي ما تقرا كتاب مفتوح</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- الشريحة 17: القاعدة الأولى - القراءة المزدوجة -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">1</span>
+                    <span>قاعدة القراءة المزدوجة</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">👤</span>
+                        <span>المعادلة الذهبية</span>
+                    </div>
+                    <div style="text-align: center; font-size: 3rem; font-weight: 800; margin: 3rem 0; line-height: 2.5;">
+                        <div style="background: rgba(59, 130, 246, 0.2); padding: 2rem; border-radius: 15px; margin-bottom: 1rem;">
+                            <span style="color: var(--primary-blue);">👤 اقرأ الشخص</span><br>
+                            <span style="font-size: 2rem; color: #94a3b8;">(حالته النفسية والعاطفية)</span>
+                        </div>
+                        <div style="font-size: 4rem; color: var(--golden); margin: 1rem 0;">+</div>
+                        <div style="background: rgba(16, 185, 129, 0.2); padding: 2rem; border-radius: 15px; margin-top: 1rem;">
+                            <span style="color: var(--success-green);">🌍 اقرأ الموقف</span><br>
+                            <span style="font-size: 2rem; color: #94a3b8;">(الظروف والتوقيت)</span>
+                        </div>
+                        <div style="font-size: 4rem; color: var(--golden); margin: 2rem 0;">=</div>
+                        <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 2rem; border-radius: 15px;">
+                            <span style="color: #1a2332; font-size: 3.5rem;">النجاح</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">أول قاعدة — القراءة المزدوجة:</strong><br>
+                        لازم تقرأ حاجتين في نفس الوقت: <strong style="color: var(--golden);">الشخص + الموقف</strong>
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        معظم الناس بتركز على واحدة بس — وده بيخلي القراءة ناقصة
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 3rem 0;">
+                    <div class="content-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);">
+                        <div class="card-header">
+                            <span class="card-icon">👤</span>
+                            <span>قراءة الشخص</span>
+                        </div>
+                        <ul class="rule-list">
+                            <li><strong>حالته النفسية:</strong> مبسوط؟ متضايق؟ قلقان؟</li>
+                            <li><strong>حالته العاطفية:</strong> منفتح؟ دفاعي؟ حذر؟</li>
+                        </ul>
+                    </div>
+                    <div class="content-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);">
+                        <div class="card-header">
+                            <span class="card-icon">🌍</span>
+                            <span>قراءة الموقف</span>
+                        </div>
+                        <ul class="rule-list">
+                            <li><strong>التوقيت:</strong> بدري؟ متأخر؟ وقت ذروة؟</li>
+                            <li><strong>الظروف:</strong> هادي؟ مزدحم؟ فيه ضغط؟</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <div class="example-title">💡 مثال: متطوع راح لجاره الساعة 3 العصر</div>
+                    <p class="example-text" style="margin-bottom: 2rem;">
+                        الجار مبتسم ومرتاح — لكن عنده ضيوف
+                    </p>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700;">
+                            ❌ لو قرأ الشخص بس:
+                        </p>
+                        <p class="example-text">
+                            'الجار مبتسم — يبقى الوقت مناسب!' (دخل — الجار اضطر يقاطع الضيوف — زعل بعدين)
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(239, 68, 68, 0.1); border-right: 4px solid #ef4444; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: #fca5a5; font-weight: 700;">
+                            ❌ لو قرأ الموقف بس:
+                        </p>
+                        <p class="example-text">
+                            'فيه ضيوف — يبقى مش مناسب' (راح — لكن الجار كان ممكن يديله دقيقة لو سأله)
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(16, 185, 129, 0.1); border-right: 4px solid var(--success-green); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+                        <p class="example-text" style="color: var(--success-green); font-weight: 700;">
+                            ✅ لو قرأ الاثنين:
+                        </p>
+                        <p class="example-text">
+                            'الجار مبتسم (إيجابي) — لكن عنده ضيوف (سلبي)'<br><br>
+                            <strong>القرار:</strong> 'أسلّم وأقول: لو الوقت يناسب بعدين — ممكن أتصل؟'<br>
+                            الجار: 'اتصل بعد ساعة — هكون فاضي' ✅
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق</div>
+                    <p class="card-text">
+                        قبل ما تبدأ أي حوار — اسأل نفسك:
+                    </p>
+                    <ul class="rule-list">
+                        <li><strong style="color: var(--primary-blue);">1️⃣ الشخص:</strong> حالته إيه نفسياً؟ (تعبان / مرتاح / متوتر)</li>
+                        <li><strong style="color: var(--success-green);">2️⃣ الموقف:</strong> الظروف إيه حوليه؟ (هادي / مزدحم / وقت ضيق)</li>
+                    </ul>
+                    <div style="background: rgba(251, 191, 36, 0.15); border: 2px dashed var(--golden); padding: 2.5rem; border-radius: 15px; margin: 3rem 0;">
+                        <p style="font-size: 2.2rem; color: #e2e8f0; line-height: 2;">
+                            <span class="correct">✅</span> لو الاتنين إيجابيين → <strong style="color: var(--success-green);">ادخل</strong><br>
+                            <span style="color: var(--golden);">⚠️</span> لو واحد سلبي → <strong style="color: var(--golden);">استأذن أو أجّل</strong><br>
+                            <span class="wrong">❌</span> لو الاتنين سلبيين → <strong style="color: #ef4444);">أجّل فوراً</strong>
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: #1a2332;">
+                            القاعدة:<br>
+                            الشخص + الموقف = القرار الصح
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الشريحة 18: القاعدة الثانية - الإشارات الخمس -->
+            <div class="slide">
+                <div class="rule-title">
+                    <span class="rule-number">2</span>
+                    <span>قاعدة الإشارات الخمس</span>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">🔍</span>
+                        <span>الإشارات الخمس</span>
+                    </div>
+                    
+                    <div class="signals-grid">
+                        <div class="signal-item">
+                            <div class="signal-number">1️⃣</div>
+                            <div class="signal-name">نبرة الصوت</div>
+                        </div>
+                        <div class="signal-item">
+                            <div class="signal-number">2️⃣</div>
+                            <div class="signal-name">لغة الجسد</div>
+                        </div>
+                        <div class="signal-item">
+                            <div class="signal-number">3️⃣</div>
+                            <div class="signal-name">سرعة الكلام</div>
+                        </div>
+                        <div class="signal-item">
+                            <div class="signal-number">4️⃣</div>
+                            <div class="signal-name">اختيار الكلمات</div>
+                        </div>
+                        <div class="signal-item">
+                            <div class="signal-number">5️⃣</div>
+                            <div class="signal-name">الصمت بين الجمل</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin: 3rem 0;">
+                        <p style="font-size: 2.8rem; font-weight: 800; color: var(--golden);">
+                            الشخص بيتكلم بـ <strong style="font-size: 3.2rem;">5 لغات</strong> — مش لغة واحدة
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <p class="card-text">
+                        <strong style="font-size: 2.5rem;">تاني قاعدة — الإشارات الخمس:</strong><br>
+                        الشخص مابيتكلمش بس بالكلام — ده بيتكلم بـ5 لغات
+                    </p>
+                    <p class="card-text" style="margin-top: 2rem;">
+                        ولو عرفت تقراهم — <strong style="color: var(--golden);">هتفهم أكتر من اللي بيقوله</strong>
+                    </p>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">1️⃣</span>
+                        <span>الإشارة الأولى: نبرة الصوت</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><strong>نبرة عالية / سريعة:</strong> متحمس أو متوتر</li>
+                        <li><strong>نبرة منخفضة / بطيئة:</strong> هادي أو متعب</li>
+                        <li><strong>نبرة جافة / رتيبة:</strong> مش مهتم أو زعلان</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 2rem;">
+                        <p class="example-text">
+                            <strong>مثال:</strong> جار يقول: 'تمام — اتفضل' <span style="color: #94a3b8;">(بنبرة جافة)</span><br>
+                            <strong style="color: #ef4444;">المعنى الحقيقي:</strong> 'مش مهتم — بس مابيعرفش يرفض'
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">2️⃣</span>
+                        <span>الإشارة الثانية: لغة الجسد</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><strong>إيديه مفتوحة:</strong> منفتح ومرحب</li>
+                        <li><strong>إيديه مقفولة (على صدره):</strong> دفاعي أو غير مرتاح</li>
+                        <li><strong>عينيه بتتحرك بعيد:</strong> مش مركز أو عايز ينهي الحوار</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 2rem;">
+                        <p class="example-text">
+                            <strong>مثال:</strong> متبرع يقول: 'فكرة حلوة!' — لكن إيديه مقفولة على صدره<br>
+                            <strong style="color: #ef4444;">المعنى الحقيقي:</strong> 'الفكرة حلوة — بس أنا مش مقتنع 100%'
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">3️⃣</span>
+                        <span>الإشارة الثالثة: سرعة الكلام</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><strong>بيتكلم بسرعة:</strong> متحمس أو مستعجل</li>
+                        <li><strong>بيتكلم ببطء:</strong> بيفكر أو متردد</li>
+                        <li><strong>بيتوقف كتير:</strong> مش متأكد</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 2rem;">
+                        <p class="example-text">
+                            <strong>مثال:</strong> مدير جمعية يقول: 'ممكن... نفكر... في الموضوع' <span style="color: #94a3b8;">(بيتوقف بين كل كلمة)</span><br>
+                            <strong style="color: #ef4444;">المعنى الحقيقي:</strong> 'أنا متردد — مش واثق'
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">4️⃣</span>
+                        <span>الإشارة الرابعة: اختيار الكلمات</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><strong>كلمات إيجابية:</strong> 'ممتاز'، 'أكيد'، 'حاضر' → متحمس</li>
+                        <li><strong>كلمات محايدة:</strong> 'ماشي'، 'طيب'، 'نشوف' → متردد</li>
+                        <li><strong>كلمات سلبية:</strong> 'صعب'، 'مش عارف'، 'ممكن' → رافض بطريقة مهذبة</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 2rem;">
+                        <p class="example-text">
+                            <strong>مثال:</strong> صاحب مطعم يقول: 'الفكرة كويسة — بس صعبة شوية'<br>
+                            <strong style="color: #ef4444;">الكلمة المهمة:</strong> 'صعبة' — يعني رفض مهذب
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <span class="card-icon">5️⃣</span>
+                        <span>الإشارة الخامسة: الصمت بين الجمل</span>
+                    </div>
+                    <ul class="rule-list">
+                        <li><strong>صمت قصير (1-2 ثانية):</strong> بيفكر</li>
+                        <li><strong>صمت طويل (3+ ثواني):</strong> متردد أو مش عارف يقول 'لأ'</li>
+                        <li><strong>مافيش صمت (بيتكلم فوراً):</strong> واثق من رأيه</li>
+                    </ul>
+                    <div class="example-box" style="margin-top: 2rem;">
+                        <p class="example-text">
+                            <strong>مثال:</strong> متبرع: 'ممكن... [صمت 5 ثواني] ...أفكر؟'<br>
+                            <strong style="color: #ef4444;">المعنى الحقيقي:</strong> 'أنا مش عايز — بس مابيعرفش أقول لأ'
+                        </p>
+                    </div>
+                </div>
+
+                <div class="application-box">
+                    <div class="application-title">🎯 التطبيق: في أي حوار — راقب</div>
+                    <div class="summary-list">
+                        <li><strong style="color: var(--golden);">1️⃣ النبرة:</strong> جافة ولا دافية؟</li>
+                        <li><strong style="color: var(--golden);">2️⃣ الجسد:</strong> مفتوح ولا مقفول؟</li>
+                        <li><strong style="color: var(--golden);">3️⃣ السرعة:</strong> سريع ولا بطيء؟</li>
+                        <li><strong style="color: var(--golden);">4️⃣ الكلمات:</strong> إيجابية ولا سلبية؟</li>
+                        <li><strong style="color: var(--golden);">5️⃣ الصمت:</strong> طويل ولا قصير؟</li>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.2); padding: 2.5rem; border-radius: 15px; margin: 3rem 0; text-align: center;">
+                        <p style="font-size: 2.3rem; font-weight: 700; color: #fca5a5;">
+                            لو <strong>3 إشارات أو أكتر سلبية</strong> →<br>
+                            <span style="color: #ef4444; font-size: 2.5rem;">الشخص مش جاهز — أجّل</span>
+                        </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%); padding: 3rem; border-radius: 20px; text-align: center;">
+                        <p style="font-size: 2.5rem; font-weight: 800; color: #1a2332;">
+                            القاعدة:<br>
+                            الكلمات بتكذب — الإشارات بتقول الحقيقة
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- سأكمل في الرد التالي مع باقي القواعد للقوة الثالثة -->
+
+        </div>
+    </div>
+
+    <!-- أزرار التنقل -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousSlide()">→</button>
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
+        </div>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">←</button>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slidesWrapper = document.getElementById('slidesWrapper');
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function updateSlide() {
+            slidesWrapper.style.transform = `translateX(${currentSlideIndex * 100}%)`;
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+            
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides - 1;
+            
+            // Reset scroll position for new slide
+            slides[currentSlideIndex].scrollTop = 0;
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                nextSlide();
+            } else if (e.key === 'ArrowRight') {
+                previousSlide();
+            }
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                previousSlide();
+            }
+        }
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+</html>
