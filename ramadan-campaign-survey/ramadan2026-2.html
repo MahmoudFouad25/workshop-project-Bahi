@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القوة الثانية: قوة الوعد والوفاء | عيش وملح</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-blue-dark: #2563eb;
+            --success-green: #10b981;
+            --golden: #fbbf24;
+            --golden-dark: #f59e0b;
+            --primary-bg: #1a2332;
+            --secondary-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-accent: #FFF3CD;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at center, rgba(251, 191, 36, 0.05) 0%, transparent 60%),
+                var(--secondary-bg);
+            z-index: 0;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1400px;
+            height: 100%;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px 30px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px 25px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        /* Power Title Banner */
+        .power-banner {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+            border-radius: 30px;
+            border: 2px solid rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 50px rgba(59, 130, 246, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .power-number {
+            font-size: 5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--golden) 0%, var(--golden-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .power-title {
+            font-size: 4.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+
+        .power-quote {
+            font-size: 2.5rem;
+            line-height: 1.6;
+            color: var(--text-accent);
+            font-style: italic;
+            padding: 2rem;
+            background: rgba(251, 191, 36, 0.1);
+            border-radius: 20px;
+            border-right: 5px solid var(--golden);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(30, 41, 59, 0.5) 100%);
+            border: 1px solid #334155;
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--golden);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-icon {
+            font-size: 3.5rem;
+        }
+
+        .text-content {
+            font-size: 2rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .text-content strong {
+            color: var(--golden);
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+            border-right: 5px solid var(--primary-blue);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        /* Scenario Cards */
+        .scenario-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .scenario-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .scenario-subtitle {
+            font-size: 2.2rem;
+            color: var(--text-accent);
+        }
+
+        .dialogue-box {
+            background: rgba(30, 41, 59, 0.6);
+            border-right: 4px solid var(--success-green);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+        }
+
+        .speaker-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--golden);
+            margin-bottom: 0.5rem;
+        }
+
+        .dialogue-text {
+            font-size: 2rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .time-indicator {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            border: 2px solid var(--golden);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--golden);
+        }
+
+        /* Comparison Tables */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin: 3rem 0;
+        }
+
+        .comparison-side {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .comparison-side.positive {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .comparison-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: #ef4444;
+        }
+
+        .comparison-side.positive .comparison-title {
+            color: var(--success-green);
+        }
+
+        .comparison-arrow {
+            font-size: 4rem;
+            color: var(--golden);
+        }
+
+        .comparison-item {
+            font-size: 2rem;
+            line-height: 1.8;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+        }
+
+        /* List Styles */
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .bullet-list li {
+            font-size: 2rem;
+            line-height: 1.8;
+            margin: 1.5rem 0;
+            padding-right: 3rem;
+            position: relative;
+        }
+
+        .bullet-list li:before {
+            content: "●";
+            color: var(--golden);
+            font-size: 2.5rem;
+            position: absolute;
+            right: 0;
+            top: -5px;
+        }
+
+        /* Result Box */
+        .result-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+            border: 3px solid var(--success-green);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .result-box.negative {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+            border-color: #ef4444;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .result-title {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: var(--success-green);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .result-box.negative .result-title {
+            color: #ef4444;
+        }
+
+        .result-text {
+            font-size: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Golden Rule Box */
+        .golden-rule {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            border: 3px solid var(--golden);
+            padding: 3rem;
+            border-radius: 25px;
+            text-align: center;
+            margin: 3rem 0;
+            box-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
+        }
+
+        .golden-rule-title {
+            font-size: 3rem;
+            color: var(--golden);
+            margin-bottom: 2rem;
+            font-weight: bold;
+        }
+
+        .golden-rule-text {
+            font-size: 2.8rem;
+            line-height: 1.6;
+            font-weight: bold;
+            color: var(--text-accent);
+        }
+
+        /* Activity Sheet Styles */
+        .activity-sheet {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+            border: 2px solid var(--primary-blue);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .activity-sheet::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .activity-sheet::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 10px;
+        }
+
+        .activity-sheet::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+
+        .activity-title {
+            font-size: 3rem;
+            color: var(--golden);
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--golden);
+        }
+
+        .situation-block {
+            background: rgba(30, 41, 59, 0.7);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .situation-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+        }
+
+        .situation-title {
+            font-size: 2.5rem;
+            color: var(--golden);
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .situation-dialogue {
+            font-size: 1.8rem;
+            line-height: 1.8;
+            margin: 1rem 0;
+            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+        }
+
+        .answer-section {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed var(--primary-blue);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .answer-label {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .answer-options {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .answer-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2rem;
+        }
+
+        .answer-line {
+            width: 100%;
+            height: 3px;
+            background: rgba(59, 130, 246, 0.3);
+            margin: 1rem 0;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+            border: 3px solid var(--primary-blue);
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 2rem 0;
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .summary-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--success-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .summary-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .summary-card-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-card-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--golden);
+        }
+
+        .summary-card-text {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .summary-card-result {
+            font-size: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(59, 130, 246, 0.3);
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .summary-card.negative .summary-card-result {
+            color: #ef4444;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .power-title { font-size: 3.5rem; }
+            .power-quote { font-size: 2rem; }
+            .section-title { font-size: 2.5rem; }
+            .text-content { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg"></div>
+    <div class="stars" id="stars"></div>
+    <div class="slide-counter" id="slideCounter">1 / 15</div>
+
+    <div class="container">
+        <!-- Slide 1: Power Title & Definition -->
+        <div class="slide active">
+            <div class="power-banner">
+                <div class="power-number">💡 القوة 2</div>
+                <div class="power-title">قوة الوعد والوفاء</div>
+                <div class="power-quote">
+                    "إنك تقول اللي تقدر تعمله فعلاً — وتعمله في الوقت اللي قلته —<br>
+                    بالشكل اللي وعدت بيه"
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="text-content">
+                    <strong>في حملة عيش وملح — كلنا بنوعد.</strong>
+                </div>
+                <div class="text-content">
+                    المتطوع بيوعد المتبرع: <span style="color: var(--text-accent);">'أنا هاجي آخد الطبق الساعة 3.'</span><br>
+                    مسؤول الشركات بيوعد صاحب المطعم: <span style="color: var(--text-accent);">'هنسوّق ليك على صفحتنا.'</span><br>
+                    مسؤول الجمعيات بيوعد مدير الجمعية: <span style="color: var(--text-accent);">'هنوفرلكم الأطباق الأسبوع الجاي.'</span>
+                </div>
+                
+                <div class="highlight-box">
+                    <div class="text-content">
+                        <strong>الوعد هو العملة اللي بتشتغلوا بيها.</strong><br>
+                        لو العملة دي حقيقية — الناس هتثق فيكم.<br>
+                        لو مغشوشة — الناس هتبعد عنكم.
+                    </div>
+                </div>
+
+                <div class="text-content">
+                    بس المشكلة مش دايماً في إنك <strong>'كداب'</strong> أو <strong>'أمين.'</strong> المشكلة أعمق من كده.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Types of Promises -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">⚖️</span>
+                    ثلاثة أنواع من الوعود
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">التفريط</div>
+                        <div class="summary-card-text">
+                            ناس بتوعد <strong>أقل من اللازم</strong><br>
+                            يعني مش بتدي أي توقعات
+                        </div>
+                        <div class="summary-card-result">
+                            ❌ النتيجة:<br>
+                            الطرف التاني مش عارف يعتمد عليها
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-icon">✅</div>
+                        <div class="summary-card-title">التوازن</div>
+                        <div class="summary-card-text">
+                            ناس بتوعد <strong>بالظبط</strong> اللي تقدر تنفذه<br>
+                            وبتنفذه
+                        </div>
+                        <div class="summary-card-result" style="color: var(--success-green);">
+                            ✓ النتيجة:<br>
+                            ثقة بتتبنى مع كل وعد
+                        </div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">الإفراط</div>
+                        <div class="summary-card-text">
+                            ناس بتوعد <strong>أكتر من اللازم</strong><br>
+                            بنية طيبة! لكن أكبر من طاقتها
+                        </div>
+                        <div class="summary-card-result">
+                            ❌ النتيجة:<br>
+                            خيبة أمل
+                        </div>
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="margin-top: 4rem;">
+                    <div class="golden-rule-text">
+                        يلا نشوف أمثلة حقيقية
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Scenario 1 - Introduction -->
+        <div class="slide">
+            <div class="scenario-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <div class="scenario-title">السيناريو الأول</div>
+                <div class="scenario-subtitle">⚠️ التفريط في الوعد</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">😕</span>
+                    الموقف: "المتطوع الغامض"
+                </div>
+
+                <div class="text-content" style="text-align: center; font-size: 2.3rem; background: rgba(239, 68, 68, 0.1); padding: 2rem; border-radius: 15px;">
+                    كريم متطوع في عيش وملح. متحمس جداً للحملة.<br>
+                    قرر يبدأ بالعيلة والأصدقاء.
+                </div>
+
+                <div class="time-indicator">
+                    📅 يوم الثلاثاء — الساعة 10 صباحاً
+                </div>
+
+                <div class="text-content" style="font-size: 2.2rem;">
+                    كريم كلم خاله عم ماجد على التليفون...
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Scenario 1 - Initial Call -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">📞</span>
+                    المكالمة الأولى
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">"السلام عليكم يا خالي!"</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">عم ماجد:</div>
+                    <div class="dialogue-text">"وعليكم السلام يا كريم — عامل إيه؟"</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">
+                        "الحمد لله. يا خالي أنا بشتغل في مبادرة اسمها 'عيش وملح' — بنوزع وجبات على أسر محتاجة. حابب حضرتك تشارك معانا."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">عم ماجد (مهتم):</div>
+                    <div class="dialogue-text">
+                        "فكرة حلوة يا كريم. أنا ممكن أساعد. بس محتاج أعرف — عايزني أعمل إيه بالظبط؟"
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #fbbf24;">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">
+                        "يعني حضرتك تعمل وجبة — وأنا آجي آخدها."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Scenario 1 - Uncle's Questions -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">❓</span>
+                    الأسئلة المحرجة
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">عم ماجد:</div>
+                    <div class="dialogue-text">
+                        "تمام. بس امتى بالظبط؟ وكام وجبة؟ وأنا أجهزها إزاي؟"
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #fbbf24; background: rgba(239, 68, 68, 0.1);">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">
+                        "إن شاء الله هنتواصل يا خالي. أنا هبقى أكلمك."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">عم ماجد:</div>
+                    <div class="dialogue-text">"طيب، مستنيك."</div>
+                </div>
+
+                <div class="result-box negative" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>⚠️</span>
+                        المشكلة بدأت تظهر
+                    </div>
+                    <div class="result-text">
+                        عم ماجد عنده كل الاستعداد للمساعدة... لكن <strong>مافيش تفاصيل!</strong><br><br>
+                        ❌ مافيش ميعاد محدد<br>
+                        ❌ مافيش عدد معين<br>
+                        ❌ مافيش مواصفات للوجبة<br>
+                        ❌ مافيش خطة للتواصل
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Scenario 1 - Days Pass -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">⏳</span>
+                    الأيام تمر... والصمت
+                </div>
+
+                <div class="time-indicator" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444;">
+                    📅 مرّ يومين... تلاتة... أربعة.
+                </div>
+
+                <div class="text-content" style="text-align: center; font-size: 2.5rem; margin: 3rem 0;">
+                    <strong style="color: #ef4444;">عم ماجد مسمعش حاجة من كريم.</strong>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444;">
+                    <div class="speaker-name">عم ماجد (لمراته):</div>
+                    <div class="dialogue-text">
+                        "كريم كلمني عن مبادرة حلوة — بس مارجعش. مش عارف لسه عايزني ولا لأ."
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="background: rgba(239, 68, 68, 0.15); border-right-color: #ef4444;">
+                    <div class="text-content">
+                        عم ماجد في حالة <strong>تعليق</strong>...<br>
+                        مستعد يساعد، لكن <strong>مش عارف يخطط</strong><br>
+                        مافيش معلومات، مافيش توقعات، مافيش ثقة بتتبنى
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Scenario 1 - Sudden Call -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">📞</span>
+                    المكالمة المفاجئة
+                </div>
+
+                <div class="time-indicator" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444;">
+                    📅 يوم السبت — فجأة
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">
+                        "السلام عليكم يا خالي! عايزين وجبتين بكره — ينفع؟"
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <div class="speaker-name">عم ماجد (متفاجئ):</div>
+                    <div class="dialogue-text">
+                        "بكره؟! يا كريم أنا مارحتش السوق أصلاً — ماكنتش عارف إنك محتاج حاجة!"
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">"معلش يا خالي — لو تقدر."</div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444;">
+                    <div class="speaker-name">عم ماجد (بضيق مكتوم):</div>
+                    <div class="dialogue-text">
+                        "طيب هحاول... بس المرة الجاية ياريت تقولي بدري."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Scenario 1 - Result -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">💔</span>
+                    النتيجة النهائية
+                </div>
+
+                <div class="result-box negative">
+                    <div class="result-title">
+                        <span>❌</span>
+                        ماذا حدث؟
+                    </div>
+                    <div class="result-text">
+                        عم ماجد جهز وجبتين <strong>بالعافية</strong><br><br>
+                        لكن حس إن الموضوع <strong>عشوائي ومافيش نظام</strong>
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444; margin-top: 2rem;">
+                    <div class="speaker-name">عم ماجد (لمراته):</div>
+                    <div class="dialogue-text">
+                        "لو كريم رجع كلمني تاني من غير ميعاد واضح — مش هقدر أساعد."
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                    <div class="golden-rule-title" style="color: #ef4444;">⚠️ الدرس</div>
+                    <div class="golden-rule-text" style="color: #fff;">
+                        التفريط في الوعد = غموض<br>
+                        والغموض يقتل الثقة
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Scenario 1 - Analysis -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">🔍</span>
+                    تحليل الموقف
+                </div>
+
+                <div class="text-content" style="font-size: 2.5rem; text-align: center; margin-bottom: 3rem;">
+                    <strong style="color: var(--golden);">السؤال: كريم نيته كانت كويسة ولا وحشة؟</strong>
+                </div>
+
+                <div class="result-box" style="text-align: center;">
+                    <div class="result-text" style="font-size: 2.5rem;">
+                        <strong>الإجابة: كويسة! ✓</strong>
+                    </div>
+                </div>
+
+                <div class="text-content" style="font-size: 2.5rem; text-align: center; margin: 3rem 0;">
+                    <strong style="color: var(--golden);">طيب إيه اللي حصل غلط؟</strong>
+                </div>
+
+                <div class="summary-grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">ماحددش ميعاد</div>
+                        <div class="summary-card-text">"هبقى أكلمك" مش ميعاد</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">ماقالش كام وجبة</div>
+                        <div class="summary-card-text">عم ماجد مش عارف يخطط</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">سابه معلق 4 أيام</div>
+                        <div class="summary-card-text">الصمت = عدم احترام</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">طلب فجأة</div>
+                        <div class="summary-card-text">من غير تجهيز مسبق</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Scenario 1 - The Balanced Alternative -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">✅</span>
+                    لو كان فيه توازن...
+                </div>
+
+                <div class="scenario-header" style="background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%);">
+                    <div class="scenario-subtitle">نفس الموقف — بتوازن</div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">
+                        "يا خالي أنا بشتغل في مبادرة اسمها 'عيش وملح' — بنوزع وجبات ساخنة على أسر محتاجة. الموضوع بسيط: أنا هوفرلك طبق — حضرتك تملاه بوجبة (أي أكل بيتي عادي — أرز ولحمة، كشري، مكرونة — أي حاجة) — وأنا هاجي آخده وأوزعه."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">عم ماجد:</div>
+                    <div class="dialogue-text">"فكرة حلوة. بس أنا محتاج أعرف التفاصيل."</div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green); background: rgba(16, 185, 129, 0.1);">
+                    <div class="speaker-name">كريم:</div>
+                    <div class="dialogue-text">
+                        "أكيد. الموضوع كالتالي:<br><br>
+                        <strong>●</strong> أنا هجيلك كل يوم أربعاء الساعة 3 العصر.<br>
+                        <strong>●</strong> محتاج وجبتين — كل وجبة تكفي شخص واحد.<br>
+                        <strong>●</strong> لو أي أسبوع مش هينفع معاك — قولي قبلها بيوم عشان أرتب البديل.<br>
+                        <strong>●</strong> وأنا هبعتلك تذكير على الواتساب يوم الثلاثاء بليل."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">عم ماجد (ارتاح):</div>
+                    <div class="dialogue-text">
+                        "تمام يا كريم — كده واضح. يوم الأربعاء الساعة 3 — أنا جاهز."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Scenario 1 - Comparison & Results -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">⚖️</span>
+                    المقارنة
+                </div>
+
+                <div class="comparison-container">
+                    <div class="comparison-side">
+                        <div class="comparison-title">⚠️ التفريط</div>
+                        <div class="comparison-item">"هبقى أكلمك"</div>
+                        <div class="comparison-item">مافيش عدد محدد</div>
+                        <div class="comparison-item">مافيش خطة لو مانفعش</div>
+                        <div class="comparison-item" style="color: #ef4444; font-weight: bold;">المتبرع ضايع</div>
+                    </div>
+
+                    <div class="comparison-arrow">→</div>
+
+                    <div class="comparison-side positive">
+                        <div class="comparison-title">✅ التوازن</div>
+                        <div class="comparison-item">"الأربعاء الساعة 3"</div>
+                        <div class="comparison-item">"وجبتين كل أسبوع"</div>
+                        <div class="comparison-item">"قولي قبلها بيوم"</div>
+                        <div class="comparison-item" style="color: var(--success-green); font-weight: bold;">المتبرع مطمن ومنتظم</div>
+                    </div>
+                </div>
+
+                <div class="result-box" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>🎉</span>
+                        النتيجة بعد 3 أسابيع
+                    </div>
+                    <div class="result-text">
+                        عم ماجد عرف بالظبط المطلوب منه. كل أسبوع كريم بييجي في ميعاده، وعم ماجد جاهز.<br><br>
+                        <strong style="color: var(--golden);">المفاجأة:</strong><br>
+                        عم ماجد بنفسه قال: "يا كريم — مراتي حابة تعمل 3 وجبات بدل 2 — ينفع؟"
+                    </div>
+                </div>
+
+                <div class="golden-rule">
+                    <div class="golden-rule-text">
+                        التفريط = غموض يقتل الثقة<br>
+                        التوازن = وضوح يبني الثقة
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Scenario 2 - Introduction -->
+        <div class="slide">
+            <div class="scenario-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <div class="scenario-title">السيناريو الثاني</div>
+                <div class="scenario-subtitle">⚠️ الإفراط في الوعد</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title" style="color: #f59e0b;">
+                    <span class="section-icon">🎯</span>
+                    الموقف: "الوعد الكبير"
+                </div>
+
+                <div class="text-content" style="text-align: center; font-size: 2.3rem; background: rgba(245, 158, 11, 0.1); padding: 2rem; border-radius: 15px;">
+                    نورهان مسؤولة شراكات في عيش وملح.<br>
+                    شاطرة جداً في الكلام وبتحمّس الناس.<br><br>
+                    راحت تزور مطعم <strong>"بيت الست"</strong><br>
+                    مطعم أكل بيتي في منطقة شعبية.
+                </div>
+
+                <div class="time-indicator">
+                    📅 الساعة 11 الصبح
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Scenario 2 - The Big Promises -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #f59e0b;">
+                    <span class="section-icon">🗣️</span>
+                    الوعود الكبيرة
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">"صباح الخير!"</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">أم عزيزة (صاحبة المطعم):</div>
+                    <div class="dialogue-text">"صباح النور يا حبيبتي."</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">
+                        "أنا نورهان من مؤسسة صناع الحياة. المطعم ده من أحلى المطاعم في المنطقة — ريحة الأكل من الشارع!"
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">أم عزيزة (ابتسمت):</div>
+                    <div class="dialogue-text">"الله يبارك فيكي."</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">
+                        "عندنا مبادرة اسمها 'عيش وملح' — بنشتغل مع المطاعم عشان نوفر وجبات للمحتاجين. والمطعم اللي بيشارك معانا بنعمله حاجات كتير."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text">"زي إيه؟"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Scenario 2 - The 5 Promises -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="dialogue-box" style="border-right-color: #f59e0b; background: rgba(245, 158, 11, 0.15);">
+                    <div class="speaker-name">نورهان (بحماس شديد):</div>
+                    <div class="dialogue-text" style="font-size: 1.9rem; line-height: 2;">
+                        <strong style="color: var(--golden);">أولاً —</strong> هنعملك بوست على صفحة صناع الحياة (عندنا أكتر من 100 ألف متابع).<br><br>
+                        
+                        <strong style="color: var(--golden);">ثانياً —</strong> هنبعتلك فريق تصوير احترافي يصوّر المطعم والأكل.<br><br>
+                        
+                        <strong style="color: var(--golden);">ثالثاً —</strong> هنحطلك رول أب كبير عند باب المطعم عليه شعار المبادرة وشعار المطعم.<br><br>
+                        
+                        <strong style="color: var(--golden);">رابعاً —</strong> هنعمل فيديو قصير عنك وعن قصتك ونشره على السوشيال ميديا.<br><br>
+                        
+                        <strong style="color: var(--golden);">خامساً —</strong> ممكن نرتبلك مقابلة في إذاعة محلية تتكلمي فيها عن المطعم والمبادرة!
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">أم عزيزة (عينيها لمعت):</div>
+                    <div class="dialogue-text" style="font-size: 2.5rem;">
+                        <strong>"كل ده؟! يا سلام!"</strong>
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">
+                        "أيوه! كل ده مقابل إنك تقدمي 5 وجبات كل يوم."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text" style="font-size: 2.5rem;">
+                        <strong>"تمام يا حبيبتي — أنا معاكم!"</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Scenario 2 - Two Weeks Later -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #f59e0b;">
+                    <span class="section-icon">⏰</span>
+                    بعد أسبوعين...
+                </div>
+
+                <div class="text-content" style="font-size: 2.3rem; margin: 2rem 0;">
+                    أم عزيزة <strong style="color: var(--success-green);">ملتزمة</strong> — كل يوم 5 وجبات.
+                </div>
+
+                <div class="text-content" style="font-size: 2.5rem; margin: 3rem 0;">
+                    <strong style="color: #ef4444;">بس...</strong>
+                </div>
+
+                <div class="summary-grid" style="grid-template-columns: 1fr;">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">الوعد الأول</div>
+                        <div class="summary-card-text">
+                            البوست على الصفحة — اتنشر بوست بسيط من غير صور احترافية
+                        </div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">الوعد الثاني</div>
+                        <div class="summary-card-text">فريق التصوير — ماجاش</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">الوعد الثالث</div>
+                        <div class="summary-card-text">الرول أب — مافيش</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">الوعد الرابع</div>
+                        <div class="summary-card-text">الفيديو — مافيش</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">❌</div>
+                        <div class="summary-card-title">الوعد الخامس</div>
+                        <div class="summary-card-text">المقابلة الإذاعية — مافيش</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Scenario 2 - The Call -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #f59e0b;">
+                    <span class="section-icon">📞</span>
+                    المكالمة المحبطة
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444;">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text">
+                        "يا نورهان — فين اللي وعدتيني بيه؟"
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">
+                        "معلش يا أم عزيزة — إحنا مشغولين بالحملة. هنعمل كل حاجة إن شاء الله."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text">
+                        "يا حبيبتي، أنا كل يوم بطبخ 5 وجبات زيادة — ده بيكلفني فلوس ووقت. أنا عملت ده عشان إنتِ قلتيلي هتعملوا حاجات."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">
+                        "فعلاً هنعمل — بس محتاجين وقت."
+                    </div>
+                </div>
+
+                <div class="time-indicator" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444; margin-top: 3rem;">
+                    ⏰ بعد أسبوع كمان...
+                </div>
+
+                <div class="result-box negative">
+                    <div class="result-title">
+                        <span>💔</span>
+                        النتيجة
+                    </div>
+                    <div class="result-text">
+                        أم عزيزة قللت الوجبات لـ <strong>2 بدل 5</strong><br><br>
+                        بعد أسبوعين — <strong>وقفت خالص</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Scenario 2 - The Damage -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">⚠️</span>
+                    الضرر الأكبر
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444; font-size: 2rem;">
+                    <div class="speaker-name">أم عزيزة (لجارتها):</div>
+                    <div class="dialogue-text" style="font-size: 2.3rem;">
+                        "صناع الحياة دول كلام وبس. وعدوني بحاجات كتير وما عملوش حاجة. ماحدش يكلمني عنهم تاني."
+                    </div>
+                </div>
+
+                <div class="result-box negative" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>💔</span>
+                        والأسوأ...
+                    </div>
+                    <div class="result-text">
+                        جارة أم عزيزة — عندها مطعم تاني — كانت مهتمة تشارك في المبادرة.<br><br>
+                        <strong style="color: #ef4444; font-size: 2.5rem;">بعد ما سمعت كلام أم عزيزة — قررت ماتشاركش.</strong>
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                    <div class="golden-rule-title" style="color: #ef4444;">⚠️ الدرس الخطير</div>
+                    <div class="golden-rule-text" style="color: #fff;">
+                        الإفراط في الوعد مش بيخسرك شخص واحد<br>
+                        بيخسرك ناس مشفتهمش أصلاً
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Scenario 2 - Analysis -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">🔍</span>
+                    تحليل الموقف
+                </div>
+
+                <div class="text-content" style="font-size: 2.5rem; text-align: center; margin-bottom: 3rem;">
+                    <strong style="color: var(--golden);">السؤال: نورهان كانت نيتها إيه؟</strong>
+                </div>
+
+                <div class="result-box" style="text-align: center;">
+                    <div class="result-text" style="font-size: 2.5rem;">
+                        <strong>كويسة / عايزة تقنعها ✓</strong>
+                    </div>
+                </div>
+
+                <div class="text-content" style="font-size: 2.5rem; text-align: center; margin: 3rem 0;">
+                    <strong style="color: var(--golden);">طيب إيه اللي حصل غلط؟</strong>
+                </div>
+
+                <div class="summary-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">وعدت بـ 5 حاجات</div>
+                        <div class="summary-card-text">أكتر من طاقتها</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">توقعات عالية</div>
+                        <div class="summary-card-text">أم عزيزة متوقعة حاجات كبيرة</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">خيبة أمل</div>
+                        <div class="summary-card-text">لما الوعود ماتحققتش</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">خسارة مضاعفة</div>
+                        <div class="summary-card-text">خسرت أم عزيزة + المطعم التاني</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="text-content">
+                        <strong>نورهان كانت بتحاول تقنع</strong> — فقالت كل حاجة ممكن تحصل.<br>
+                        لكن مش كل حاجة كانت في إيدها.<br><br>
+                        فريق التصوير <strong style="color: #ef4444;">مش بتاعها</strong>. الرول أب <strong style="color: #ef4444;">محتاج ميزانية</strong>. المقابلة الإذاعية <strong style="color: #ef4444;">محتاجة تنسيق</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19: Scenario 2 - The Balanced Alternative -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">✅</span>
+                    لو كان فيه توازن...
+                </div>
+
+                <div class="scenario-header" style="background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%);">
+                    <div class="scenario-subtitle">نفس الموقف — بتوازن</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text">"زي إيه؟"</div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green); background: rgba(16, 185, 129, 0.1);">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text" style="font-size: 1.9rem; line-height: 2;">
+                        "أنا هقولك <strong style="color: var(--golden);">اللي أقدر أضمنه ليكي:</strong><br><br>
+                        
+                        ✓ هنعمل بوست على صفحة صناع الحياة فيه اسم المطعم وصورة — ده <strong style="color: var(--success-green);">مضمون</strong>.<br><br>
+                        
+                        ✓ وهنحط ستيكر على باب المطعم إن المطعم شريك في المبادرة — ده كمان <strong style="color: var(--success-green);">مضمون</strong>.<br><br>
+                        
+                        في حاجات تانية هحاول أوفرها بس <strong style="color: #f59e0b;">مش أقدر أضمنها دلوقتي</strong> — زي فريق تصوير محترف أو رول أب.<br><br>
+                        
+                        لو قدرنا نعملها — هتكون إضافة حلوة. لو ماقدرناش — على الأقل حضرتك <strong>عارفة من البداية</strong>."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text">
+                        "تمام يا حبيبتي — أنا مش محتاجة كل ده. أنا حابة أساعد والبوست ده كفاية."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">نورهان:</div>
+                    <div class="dialogue-text">
+                        "شكراً يا أم عزيزة. وكل ما نقدر نعمل حاجة زيادة — هنعملها. بس أنا مش حابة أوعدك بحاجة وما أعملهاش."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--golden);">
+                    <div class="speaker-name">أم عزيزة:</div>
+                    <div class="dialogue-text" style="font-size: 2.5rem;">
+                        <strong>"ربنا يباركلك — ده كلام ناس محترمة."</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: Scenario 2 - Results & Comparison -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="result-box">
+                    <div class="result-title">
+                        <span>🎉</span>
+                        النتيجة
+                    </div>
+                    <div class="result-text">
+                        أم عزيزة التزمت بـ 5 وجبات يومياً.<br><br>
+                        بعد أسبوعين — نورهان فعلاً قدرت توفر فريق تصوير في زيارة.<br><br>
+                        <strong style="color: var(--golden); font-size: 2.5rem;">أم عزيزة اتفاجئت</strong> — لأنها ماكانتش متوقعة.<br><br>
+                        حست إن اللي بتتعامل معاهم <strong style="color: var(--success-green);">بيدوا أكتر مما وعدوا</strong>.
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green); margin-top: 2rem;">
+                    <div class="speaker-name">أم عزيزة (لجارتها):</div>
+                    <div class="dialogue-text" style="font-size: 2.3rem;">
+                        "صناع الحياة دول ناس محترمة — اللي بيقولوه بيعملوه. وبيفاجئوك بحاجات زيادة."
+                    </div>
+                </div>
+
+                <div class="result-box" style="margin-top: 2rem;">
+                    <div class="result-title">
+                        <span>✨</span>
+                        المفاجأة
+                    </div>
+                    <div class="result-text" style="font-size: 2.5rem;">
+                        الجارة — اتصلت بنورهان وطلبت تشارك!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: Comparison Table -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">⚖️</span>
+                    المقارنة
+                </div>
+
+                <div class="comparison-container">
+                    <div class="comparison-side">
+                        <div class="comparison-title">⚠️ الإفراط</div>
+                        <div class="comparison-item">وعدت بـ 5 حاجات</div>
+                        <div class="comparison-item">توقعات عالية</div>
+                        <div class="comparison-item">خيبة أمل لما ماحصلش</div>
+                        <div class="comparison-item" style="color: #ef4444; font-weight: bold;">خسرت أم عزيزة + جارتها</div>
+                    </div>
+
+                    <div class="comparison-arrow">→</div>
+
+                    <div class="comparison-side positive">
+                        <div class="comparison-title">✅ التوازن</div>
+                        <div class="comparison-item">ضمنت 2 وذكرت الباقي كاحتمال</div>
+                        <div class="comparison-item">توقعات واقعية</div>
+                        <div class="comparison-item">فرحة لما حاجة زيادة حصلت</div>
+                        <div class="comparison-item" style="color: var(--success-green); font-weight: bold;">كسبت أم عزيزة + جارتها</div>
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="margin-top: 3rem;">
+                    <div class="golden-rule-title">✨ القاعدة الذهبية</div>
+                    <div class="golden-rule-text">
+                        وعد أقل — نفّذ أكتر<br><br>
+                        الناس بتحب اللي بيفاجئها بالزيادة<br>
+                        مش اللي بيخيب ظنها بالنقص
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: Scenario 3 - Introduction -->
+        <div class="slide">
+            <div class="scenario-header" style="background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%);">
+                <div class="scenario-title">السيناريو الثالث</div>
+                <div class="scenario-subtitle">✅ التوازن الكامل</div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">⭐</span>
+                    الموقف: "الوعد الصغير الكبير"
+                </div>
+
+                <div class="text-content" style="text-align: center; font-size: 2.3rem; background: rgba(16, 185, 129, 0.1); padding: 2rem; border-radius: 15px;">
+                    ياسر مسؤول جمعيات في عيش وملح.<br><br>
+                    زار جمعية <strong>"الرحمة"</strong><br>
+                    جمعية قاعدية في قرية صغيرة<br>
+                    عندها مطبخ وبتقدم خدمات متنوعة.
+                </div>
+
+                <div class="text-content" style="margin-top: 3rem; font-size: 2.2rem;">
+                    ياسر دخل مقر الجمعية — قابل الأستاذة <strong style="color: var(--golden);">سهام</strong> (مديرة الجمعية).
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23: Scenario 3 - The Honest Approach -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">🤝</span>
+                    المقدمة الصادقة
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text">
+                        "السلام عليكم."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">سهام:</div>
+                    <div class="dialogue-text">"وعليكم السلام، اتفضل."</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text">
+                        "أنا ياسر من مؤسسة صناع الحياة. جمعيتكم عندها سمعة كويسة في المنطقة — وجاي أعرض فكرة ممكن تناسبكم."
+                    </div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text">
+                        "المبادرة اسمها 'عيش وملح' — باختصار: بنتعاون مع جمعيات عندها مطابخ عشان نوفر وجبات ساخنة للأسر المحتاجة. الجمعية بتطبخ — وإحنا بنغطي جزء من الأسر المستفيدة من صناع الحياة في المنطقة."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                    <div class="speaker-name">سهام (مهتمة):</div>
+                    <div class="dialogue-text">
+                        "حلو. بس أنا عايزة أفهم — إيه اللي هتعملوه بالظبط؟ لأن ناس كتير جم قبل كده وعدوا بحاجات وماحصلش حاجة."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">ياسر (ابتسم):</div>
+                    <div class="dialogue-text" style="font-size: 2.3rem;">
+                        <strong>"حق حضرتك تسألي — وأنا هقولك بالظبط اللي أقدر أعمله واللي ماقدرش أعمله."</strong>
+                    </div>
+                </div>
+
+                <div class="result-box" style="margin-top: 2rem;">
+                    <div class="result-title">
+                        <span>✨</span>
+                        لحظة مهمة
+                    </div>
+                    <div class="result-text">
+                        سهام <strong style="color: var(--golden);">فوجئت</strong> — مش متعودة على الصراحة دي
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 24: Scenario 3 - The Clear Promise -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">📝</span>
+                    الوعد الواضح
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green); background: rgba(16, 185, 129, 0.1);">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text" style="font-size: 1.9rem; line-height: 2.2;">
+                        <strong style="color: var(--success-green); font-size: 2.2rem;">اللي أقدر أضمنه:</strong><br><br>
+                        
+                        <span style="color: var(--golden);">●</span> هنوفرلكم الأطباق — ده <strong style="color: var(--success-green);">مضمون</strong>.<br><br>
+                        
+                        <span style="color: var(--golden);">●</span> هنديكم قائمة بالأسر المستفيدة من صناع الحياة في منطقتكم — ده <strong style="color: var(--success-green);">مضمون</strong>.<br><br>
+                        
+                        <span style="color: var(--golden);">●</span> هنبعتلكم متطوعين يساعدوا في التعبئة والتوزيع — ده <strong style="color: var(--success-green);">مضمون</strong>.<br><br>
+                        
+                        <span style="color: var(--golden);">●</span> هنتواصل مع حضرتك كل أسبوع نتابع ونحل أي مشكلة — ده <strong style="color: var(--success-green);">مضمون</strong>.
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #f59e0b; background: rgba(245, 158, 11, 0.1);">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text" style="font-size: 1.9rem; line-height: 2.2;">
+                        <strong style="color: #f59e0b; font-size: 2.2rem;">اللي مش أقدر أضمنه دلوقتي:</strong><br><br>
+                        
+                        <span style="color: #ef4444;">●</span> دعم مالي مباشر للمطبخ — ده محتاج موافقات وممكن ياخد وقت.<br><br>
+                        
+                        <span style="color: #ef4444;">●</span> تغطية إعلامية كبيرة — لو قدرنا نعملها هيكون حلو، بس مش هوعد بيها.
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text" style="font-size: 2.2rem;">
+                        "لو حضرتك شايفة إن اللي أقدر أضمنه ده كافي — نبدأ.<br>
+                        لو مش كافي — <strong style="color: var(--golden);">مافيش مشكلة ومفيش زعل</strong>."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25: Scenario 3 - The Response -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">💚</span>
+                    الرد الإيجابي
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green); background: rgba(16, 185, 129, 0.15);">
+                    <div class="speaker-name">سهام (ابتسمت):</div>
+                    <div class="dialogue-text" style="font-size: 2.5rem;">
+                        <strong>"يا ياسر — ده أحسن كلام سمعته من أي حد جه هنا.</strong><br><br>
+                        اللي بتقوله كفاية وزيادة. امتى نبدأ؟"
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">ياسر:</div>
+                    <div class="dialogue-text">
+                        "الأسبوع الجاي — هبعتلك القائمة والأطباق يوم الأحد. وهكلمك يوم السبت أتأكد إن كل حاجة جاهزة."
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">سهام:</div>
+                    <div class="dialogue-text">"تمام."</div>
+                </div>
+
+                <div class="result-box" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>✅</span>
+                        لماذا نجح ياسر؟
+                    </div>
+                    <div class="result-text">
+                        <strong style="color: var(--golden);">1. الصراحة:</strong> قال اللي يقدر عليه واللي مايقدرش عليه<br><br>
+                        <strong style="color: var(--golden);">2. الوضوح:</strong> حدد بالظبط إيه المضمون وإيه لأ<br><br>
+                        <strong style="color: var(--golden);">3. الاحترام:</strong> خلى القرار ليها من غير ضغط<br><br>
+                        <strong style="color: var(--golden);">4. الالتزام:</strong> وعد بميعاد محدد للبداية
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 26: Scenario 3 - Three Weeks Later -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">⏰</span>
+                    بعد 3 أسابيع
+                </div>
+
+                <div class="text-content" style="font-size: 2.3rem; margin: 2rem 0;">
+                    <strong style="color: var(--success-green);">ياسر — كل أسبوع في ميعاده.</strong>
+                </div>
+
+                <div class="bullet-list">
+                    <li style="color: var(--success-green);">الأطباق بتوصل ✓</li>
+                    <li style="color: var(--success-green);">القائمة بتتحدث ✓</li>
+                    <li style="color: var(--success-green);">المتطوعين بييجوا ✓</li>
+                    <li style="color: var(--success-green);">التواصل الأسبوعي مستمر ✓</li>
+                </div>
+
+                <div class="result-box" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>💚</span>
+                        النتيجة
+                    </div>
+                    <div class="result-text">
+                        سهام حست بثقة كبيرة في ياسر وصناع الحياة
+                    </div>
+                </div>
+
+                <div class="time-indicator" style="margin-top: 3rem;">
+                    🎁 بعد شهر — المفاجأة!
+                </div>
+
+                <div class="result-box">
+                    <div class="result-title">
+                        <span>✨</span>
+                        المفاجأة السعيدة
+                    </div>
+                    <div class="result-text">
+                        ياسر قدر يوفر تغطية إعلامية بسيطة للجمعية (بوست على صفحة صناع الحياة).<br><br>
+                        <strong style="color: var(--golden); font-size: 2.5rem;">سهام اتفاجئت</strong> — لأنها ماكانتش متوقعة!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 27: Scenario 3 - The Ripple Effect -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">🌊</span>
+                    الأثر المتضاعف
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: var(--success-green);">
+                    <div class="speaker-name">سهام (لمديرة جمعية تانية):</div>
+                    <div class="dialogue-text" style="font-size: 2.5rem;">
+                        <strong>"اتصلي بياسر من صناع الحياة — دول ناس كلامهم زي الدهب."</strong>
+                    </div>
+                </div>
+
+                <div class="result-box" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>🎉</span>
+                        النتيجة النهائية
+                    </div>
+                    <div class="result-text" style="font-size: 2.3rem;">
+                        مديرة الجمعية التانية اتصلت بياسر — وطلبت تنضم للمبادرة!
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="margin-top: 3rem;">
+                    <div class="golden-rule-title">⭐ قوة التوازن</div>
+                    <div class="golden-rule-text">
+                        وعد واقعي + تنفيذ ملتزم + مفاجأة بالزيادة<br>
+                        = ثقة × ثقة × ثقة
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 28: Scenario 3 - Analysis -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">🔍</span>
+                    ماذا فعل ياسر؟
+                </div>
+
+                <div class="summary-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="summary-card">
+                        <div class="summary-card-icon">1️⃣</div>
+                        <div class="summary-card-title">فصل الوعود</div>
+                        <div class="summary-card-text">
+                            <strong style="color: var(--success-green);">مضمون</strong> / <strong style="color: #f59e0b;">مش مضمون</strong><br>
+                            كده الطرف التاني عارف يتوقع إيه
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-icon">2️⃣</div>
+                        <div class="summary-card-title">نفّذ في الميعاد</div>
+                        <div class="summary-card-text">
+                            مش بس وعد — <strong style="color: var(--success-green);">عمل</strong><br>
+                            كل أسبوع في ميعاده
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-icon">3️⃣</div>
+                        <div class="summary-card-title">تواصل منتظم</div>
+                        <div class="summary-card-text">
+                            كل أسبوع — مش غاب وظهر فجأة<br>
+                            الاستمرارية = ثقة
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-icon">4️⃣</div>
+                        <div class="summary-card-title">فاجأ بالزيادة</div>
+                        <div class="summary-card-text">
+                            لما قدر يوفر حاجة زيادة — عملها<br>
+                            ده خلى الثقة <strong style="color: var(--golden);">تتضاعف</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 3rem;">
+                    <div class="text-content" style="text-align: center; font-size: 2.5rem;">
+                        <strong style="color: var(--golden);">ده التوازن:</strong><br>
+                        وعد واقعي + تنفيذ ملتزم + مفاجأة بالزيادة
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 29: Additional Quick Examples - Introduction -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">⚡</span>
+                    أمثلة إضافية سريعة
+                </div>
+
+                <div class="text-content" style="text-align: center; font-size: 2.5rem; margin: 3rem 0;">
+                    يلا نشوف أمثلة أخرى سريعة — من مواقف مختلفة
+                </div>
+
+                <div class="summary-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">مثال 1</div>
+                        <div class="summary-card-text">التفريط</div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">مثال 2</div>
+                        <div class="summary-card-text">الإفراط</div>
+                    </div>
+
+                    <div class="summary-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%); border-color: var(--success-green);">
+                        <div class="summary-card-icon">✅</div>
+                        <div class="summary-card-title">مثال 3</div>
+                        <div class="summary-card-text">التوازن</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 30: Quick Example 1 - التفريط -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #ef4444;">
+                    <span class="section-icon">⚠️</span>
+                    مثال 1: التفريط
+                </div>
+
+                <div class="scenario-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                    <div class="scenario-subtitle">مسؤول جمعيات مع مدير جمعية</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">مسؤول الجمعيات:</div>
+                    <div class="dialogue-text">"هنبعتلكم الأطباق."</div>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker-name">المدير:</div>
+                    <div class="dialogue-text">"امتى؟"</div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <div class="speaker-name">المسؤول:</div>
+                    <div class="dialogue-text">"قريب إن شاء الله."</div>
+                </div>
+
+                <div class="time-indicator" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444;">
+                    ⏰ مرّ أسبوع. أسبوعين.
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #f59e0b;">
+                    <div class="speaker-name">المدير (بعت رسالة):</div>
+                    <div class="dialogue-text">"فين الأطباق؟"</div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444;">
+                    <div class="speaker-name">المسؤول:</div>
+                    <div class="dialogue-text">"لسه بنجهز — هنتواصل معاك."</div>
+                </div>
+
+                <div class="result-box negative">
+                    <div class="result-title">
+                        <span>❌</span>
+                        النتيجة
+                    </div>
+                    <div class="result-text">
+                        المدير شال الموضوع من دماغه.<br>
+                        لما المسؤول رجع بعد شهر — المدير قال: "معلش، إحنا اتفقنا مع جهة تانية."<br><br>
+                        <strong style="color: #ef4444;">المشكلة:</strong> الوعد كان غامض — "قريب" و"هنتواصل" مش وعود. الفرصة ضاعت.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 31: Quick Example 2 - الإفراط -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: #f59e0b;">
+                    <span class="section-icon">⚠️</span>
+                    مثال 2: الإفراط
+                </div>
+
+                <div class="scenario-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <div class="scenario-subtitle">متطوع مع 8 متبرعين</div>
+                </div>
+
+                <div class="text-content" style="font-size: 2.2rem;">
+                    متطوع وعد <strong style="color: #f59e0b;">8 متبرعين</strong> إنه هيعدي عليهم كلهم يوم الخميس من الساعة 3 للساعة 5.
+                </div>
+
+                <div class="time-indicator" style="background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; color: #f59e0b;">
+                    ⏰ الساعة 3 — راح للأول<br>
+                    الساعة 3:30 — راح للتاني<br>
+                    الساعة 4 — لسه عند التالت<br>
+                    الساعة 5 — وصل للخامس بس
+                </div>
+
+                <div class="result-box negative">
+                    <div class="result-title">
+                        <span>❌</span>
+                        المشكلة
+                    </div>
+                    <div class="result-text">
+                        <strong style="color: #ef4444;">التلاتة الباقيين</strong> — اتصلوا عليه وماردش
+                    </div>
+                </div>
+
+                <div class="dialogue-box" style="border-right-color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+                    <div class="speaker-name">المتبرع السابع (بعت رسالة):</div>
+                    <div class="dialogue-text" style="font-size: 2.3rem;">
+                        <strong>"أنا جهزت الوجبة ومحدش جه — الأكل هيبوظ!"</strong>
+                    </div>
+                </div>
+
+                <div class="result-box negative" style="margin-top: 2rem;">
+                    <div class="result-title">
+                        <span>💔</span>
+                        النتيجة
+                    </div>
+                    <div class="result-text">
+                        <strong style="color: #ef4444;">المشكلة:</strong> وعد بجدول أكبر من طاقته.<br><br>
+                        الأكل اتأخر، المتبرعين زعلوا، وبعضهم ماشاركش تاني.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 32: Quick Example 3 - التوازن -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title" style="color: var(--success-green);">
+                    <span class="section-icon">✅</span>
+                    مثال 3: التوازن
+                </div>
+
+                <div class="scenario-header" style="background: linear-gradient(135deg, var(--success-green) 0%, #059669 100%);">
+                    <div class="scenario-subtitle">متطوعة هدى مع 6 متبرعين</div>
+                </div>
+
+                <div class="text-content" style="font-size: 2.2rem;">
+                    هدى عندها <strong style="color: var(--golden);">6 متبرعين</strong>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-title">
+                        <span>📋</span>
+                        الخطة الذكية
+                    </div>
+                    <div class="result-text">
+                        <strong style="color: var(--golden);">●</strong> قسّمتهم على يومين: 3 يوم الثلاثاء و 3 يوم الخميس<br><br>
+                        <strong style="color: var(--golden);">●</strong> كل يوم — ساعة ونص بس<br><br>
+                        <strong style="color: var(--golden);">●</strong> كل متبرع عنده ميعاد محدد: "هعدي عليكي الساعة 3:15"<br><br>
+                        <strong style="color: var(--golden);">●</strong> لو متبرع اعتذر — هدى عندها متبرع بديل متفق معاه من البداية
+                    </div>
+                </div>
+
+                <div class="result-box" style="margin-top: 2rem;">
+                    <div class="result-title">
+                        <span>🎉</span>
+                        النتيجة
+                    </div>
+                    <div class="result-text">
+                        كل أسبوع — <strong style="color: var(--success-green);">كل الوجبات بتوصل في وقتها</strong>.<br><br>
+                        المتبرعين مبسوطين لأنهم <strong style="color: var(--golden);">عارفين ميعادهم</strong>.
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="margin-top: 2rem;">
+                    <div class="golden-rule-text">
+                        التوازن = وعد واقعي + تنظيم + خطة بديلة
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 33: Activity Introduction -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">📝</span>
+                    النشاط التفاعلي
+                </div>
+
+                <div class="power-banner" style="margin-bottom: 3rem;">
+                    <div class="power-quote" style="font-size: 2.5rem;">
+                        حلل الموقف — قوة الوعد والوفاء
+                    </div>
+                </div>
+
+                <div class="text-content" style="font-size: 2.3rem; text-align: center;">
+                    معاكم 4 مواقف حقيقية<br><br>
+                    لكل موقف:
+                </div>
+
+                <div class="bullet-list" style="margin-top: 2rem;">
+                    <li>حدد: <strong style="color: #ef4444;">تفريط</strong> / <strong style="color: var(--success-green);">توازن</strong> / <strong style="color: #f59e0b;">إفراط</strong></li>
+                    <li>اشرح: <strong style="color: var(--golden);">ليه اخترت ده؟</strong></li>
+                    <li>اقترح: <strong style="color: var(--primary-blue);">كان ممكن يتصلح إزاي؟</strong></li>
+                </div>
+
+                <div class="golden-rule" style="margin-top: 3rem;">
+                    <div class="golden-rule-title">⏱️ الوقت</div>
+                    <div class="golden-rule-text">7 دقائق</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 34: Activity - Situation 1 -->
+        <div class="slide">
+            <div class="activity-sheet">
+                <div class="activity-title">📋 الموقف الأول</div>
+                
+                <div class="situation-block">
+                    <div class="situation-title">المتطوع والجار الطيب</div>
+                    
+                    <div class="situation-dialogue">
+                        <strong style="color: var(--golden);">مريم</strong> متطوعة. جارتها <strong style="color: var(--golden);">أم محمد</strong> ست طيبة ومحبة للخير.
+                    </div>
+
+                    <div class="situation-dialogue">
+                        <strong>مريم:</strong> "السلام عليكم يا أم محمد!"<br>
+                        <strong>أم محمد:</strong> "وعليكم السلام يا مريم!"<br>
+                        <strong>مريم:</strong> "يا أم محمد، إحنا في مبادرة بنوزع وجبات على ناس محتاجة. ممكن تساعدينا بوجبة؟"<br>
+                        <strong>أم محمد:</strong> "طبعاً! أنا حاضرة. بس قوليلي — عايزاني أعمل إيه بالظبط؟"<br>
+                        <strong>مريم:</strong> "يعني... وجبة. أي وجبة."<br>
+                        <strong>أم محمد:</strong> "وتيجي تاخديها امتى؟"<br>
+                        <strong>مريم:</strong> "هبقى أقولك."<br>
+                        <strong>أم محمد:</strong> "طيب..."
+                    </div>
+
+                    <div class="situation-dialogue" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong style="color: #ef4444;">مرّت 5 أيام. مريم ماتصلتش.</strong><br><br>
+                        <strong>أم محمد</strong> (لبنتها): "مريم دي كانت عايزة إيه بالظبط؟ مافهمتش."
+                    </div>
+
+                    <div class="answer-section">
+                        <div class="answer-label">التصنيف:</div>
+                        <div class="answer-options">
+                            <div class="answer-checkbox">⬜ تفريط</div>
+                            <div class="answer-checkbox">⬜ توازن</div>
+                            <div class="answer-checkbox">⬜ إفراط</div>
+                        </div>
+                        <div class="answer-label" style="margin-top: 1.5rem;">ليه؟</div>
+                        <div class="answer-line"></div>
+                        <div class="answer-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 35: Activity - Situation 2 -->
+        <div class="slide">
+            <div class="activity-sheet">
+                <div class="activity-title">📋 الموقف الثاني</div>
+                
+                <div class="situation-block">
+                    <div class="situation-title">مسؤول الشراكات وصاحب السوبر ماركت</div>
+                    
+                    <div class="situation-dialogue">
+                        <strong style="color: var(--golden);">طارق</strong> مسؤول شراكات. زار سوبر ماركت كبير في المنطقة.
+                    </div>
+
+                    <div class="situation-dialogue">
+                        <strong>طارق:</strong> "صباح الخير! أنا من صناع الحياة — عندنا مبادرة عيش وملح."<br>
+                        <strong>صاحب السوبر ماركت:</strong> "سمعت عنها. إيه المطلوب؟"<br>
+                        <strong>طارق:</strong> "حضرتك تقدر تتبرع بمواد غذائية — أرز، مكرونة، زيت — وإحنا ندخلها في المطابخ ونطلعها وجبات."<br>
+                        <strong>صاحب السوبر ماركت:</strong> "تمام. بس أنا عايز أعرف — هتاخدوا كام وكل قد إيه؟"<br>
+                        <strong>طارق:</strong> "الحقيقة مش متأكد لسه — بس إن شاء الله هيكون كويس."<br>
+                        <strong>صاحب السوبر ماركت:</strong> "كويس يعني إيه؟ أنا محتاج أرقام عشان أرتب مخزوني."<br>
+                        <strong>طارق:</strong> "هبقى أبعتلك تفاصيل."<br>
+                        <strong>صاحب السوبر ماركت:</strong> "طيب، مستنيك."
+                    </div>
+
+                    <div class="situation-dialogue" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong style="color: #ef4444;">طارق ماتواصلش تاني.</strong>
+                    </div>
+
+                    <div class="answer-section">
+                        <div class="answer-label">التصنيف:</div>
+                        <div class="answer-options">
+                            <div class="answer-checkbox">⬜ تفريط</div>
+                            <div class="answer-checkbox">⬜ توازن</div>
+                            <div class="answer-checkbox">⬜ إفراط</div>
+                        </div>
+                        <div class="answer-label" style="margin-top: 1.5rem;">ليه؟</div>
+                        <div class="answer-line"></div>
+                        <div class="answer-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 36: Activity - Situation 3 -->
+        <div class="slide">
+            <div class="activity-sheet">
+                <div class="activity-title">📋 الموقف الثالث</div>
+                
+                <div class="situation-block">
+                    <div class="situation-title">مسؤول الجمعيات والجمعية المتحمسة</div>
+                    
+                    <div class="situation-dialogue">
+                        <strong style="color: var(--golden);">دعاء</strong> مسؤولة جمعيات. زارت جمعية <strong>"النهضة"</strong> — مديرتها متحمسة جداً.
+                    </div>
+
+                    <div class="situation-dialogue">
+                        <strong>دعاء:</strong> "المبادرة اسمها عيش وملح — وإحنا حابين نتعاون معاكم."<br>
+                        <strong>المديرة:</strong> "أنا موافقة! بس قوليلي — إيه اللي هتعملوه لينا؟"<br>
+                        <strong>دعاء:</strong> "هنوفرلكم الأطباق — ده أول حاجة. وهنديكم قائمة بأسر من صناع الحياة في المنطقة. وهنبعت متطوعين يساعدوا في التوزيع. وكل أسبوع هتواصل معاكي نتابع مع بعض."<br>
+                        <strong>المديرة:</strong> "وبالنسبة للدعم المالي؟"<br>
+                        <strong>دعاء:</strong> "بصراحة — الدعم المالي المباشر مش في إيدي أضمنه دلوقتي. لو أي حاجة اتغيرت هبلغك فوراً — بس مش عايزة أوعدك بحاجة مش متأكدة منها."<br>
+                        <strong>المديرة:</strong> "أنا مقدرة صراحتك. يلا نبدأ!"
+                    </div>
+
+                    <div class="answer-section">
+                        <div class="answer-label">التصنيف:</div>
+                        <div class="answer-options">
+                            <div class="answer-checkbox">⬜ تفريط</div>
+                            <div class="answer-checkbox">⬜ توازن</div>
+                            <div class="answer-checkbox">⬜ إفراط</div>
+                        </div>
+                        <div class="answer-label" style="margin-top: 1.5rem;">ليه؟</div>
+                        <div class="answer-line"></div>
+                        <div class="answer-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 37: Activity - Situation 4 -->
+        <div class="slide">
+            <div class="activity-sheet">
+                <div class="activity-title">📋 الموقف الرابع</div>
+                
+                <div class="situation-block">
+                    <div class="situation-title">المتطوع والمتبرع المنتظم</div>
+                    
+                    <div class="situation-dialogue">
+                        <strong style="color: var(--golden);">سامح</strong> متطوع. عنده متبرع اسمه <strong style="color: var(--golden);">عم فتحي</strong> — بيتبرع بوجبتين كل أسبوع من شهرين.
+                    </div>
+
+                    <div class="situation-dialogue">
+                        سامح بيحب يخلي عم فتحي مبسوط — فكل ما يروح ياخد الوجبات بيقوله:<br><br>
+                        <strong>سامح:</strong> "يا عم فتحي — إنت أحسن متبرع عندنا! الأسر بتدعيلك! الحملة ماكانتش تنجح من غيرك! إنت بتأكل ناس كتير أوي!"
+                    </div>
+
+                    <div class="situation-dialogue" style="background: rgba(245, 158, 11, 0.1);">
+                        عم فتحي في الأول كان مبسوط. بس بعد فترة بدأ يحس:<br>
+                        <em>"هو بيقول كده لأنه فعلاً حاسس كده — ولا بيجاملني عشان ماوقفش؟"</em>
+                    </div>
+
+                    <div class="situation-dialogue">
+                        سامح المرة اللي بعدها قاله:<br><br>
+                        <strong>سامح:</strong> "يا عم فتحي — الناس في الإدارة المركزية سمعوا عنك وعايزين يكرموك!"<br>
+                        <strong>عم فتحي:</strong> "فعلاً؟"<br>
+                        <strong>سامح:</strong> "أيوه — إن شاء الله قريب."
+                    </div>
+
+                    <div class="situation-dialogue" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong style="color: #ef4444;">مرّ شهر. مافيش تكريم.</strong><br><br>
+                        <strong>عم فتحي:</strong> "فين التكريم؟"<br>
+                        <strong>سامح:</strong> "لسه بنرتب."<br><br>
+                        عم فتحي حس إن كل الكلام الحلو كان... <strong style="color: #ef4444;">فاضي</strong>.
+                    </div>
+
+                    <div class="answer-section">
+                        <div class="answer-label">التصنيف:</div>
+                        <div class="answer-options">
+                            <div class="answer-checkbox">⬜ تفريط</div>
+                            <div class="answer-checkbox">⬜ توازن</div>
+                            <div class="answer-checkbox">⬜ إفراط</div>
+                        </div>
+                        <div class="answer-label" style="margin-top: 1.5rem;">ليه؟</div>
+                        <div class="answer-line"></div>
+                        <div class="answer-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 38: Comparison Summary -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">📊</span>
+                    ملخص الأمثلة
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">التفريط</div>
+                        <div class="summary-card-text">
+                            وعد غامض — الفرصة ضاعت
+                        </div>
+                        <div class="summary-card-result">
+                            ❌ "هبقى أكلمك" / "قريب"<br>
+                            مافيش تفاصيل = مافيش ثقة
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-icon">✅</div>
+                        <div class="summary-card-title">التوازن</div>
+                        <div class="summary-card-text">
+                            وعد واقعي ومنظم — الكل مبسوط
+                        </div>
+                        <div class="summary-card-result" style="color: var(--success-green);">
+                            ✓ ميعاد محدد + خطة بديلة<br>
+                            وضوح = ثقة
+                        </div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">الإفراط</div>
+                        <div class="summary-card-text">
+                            وعد أكبر من الطاقة — المتبرعين زعلوا
+                        </div>
+                        <div class="summary-card-result">
+                            ❌ وعدت بـ 8 / نفذت 5<br>
+                            مبالغة = خيبة أمل
+                        </div>
+                    </div>
+                </div>
+
+                <div class="golden-rule" style="margin-top: 3rem;">
+                    <div class="golden-rule-text">
+                        شفتوا الفرق؟<br>
+                        التفريط: وعد غامض — الفرصة ضاعت<br>
+                        الإفراط: وعد أكبر من الطاقة — المتبرعين زعلوا<br>
+                        التوازن: وعد واقعي ومنظم — الكل مبسوط
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 39: Final Conclusion -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">💡</span>
+                    قوة الوعد والوفاء — الخلاصة
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">التفريط</div>
+                        <div class="summary-card-text">
+                            بتوعد وعود <strong>غامضة</strong><br>
+                            أو <strong>مابتوعدش</strong> أصلاً
+                        </div>
+                        <div class="summary-card-result">
+                            ❌ الطرف التاني مش قادر يعتمد عليك
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-card-icon">✅</div>
+                        <div class="summary-card-title">التوازن</div>
+                        <div class="summary-card-text">
+                            بتوعد بـ<strong>اللي تقدر تنفذه</strong><br>
+                            في <strong>ميعاد واضح</strong> — وبتنفذ
+                        </div>
+                        <div class="summary-card-result" style="color: var(--success-green);">
+                            ✓ ثقة بتتبنى مع كل وعد
+                        </div>
+                    </div>
+
+                    <div class="summary-card negative">
+                        <div class="summary-card-icon">⚠️</div>
+                        <div class="summary-card-title">الإفراط</div>
+                        <div class="summary-card-text">
+                            بتوعد بحاجات <strong>أكبر من طاقتك</strong><br>
+                            عشان تقنع
+                        </div>
+                        <div class="summary-card-result">
+                            ❌ خيبة أمل — وسمعة بتتأثر
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 40: The Bridge Analogy -->
+        <div class="slide">
+            <div class="content-section">
+                <div class="section-title">
+                    <span class="section-icon">🌉</span>
+                    فكّروا في ده...
+                </div>
+
+                <div class="highlight-box" style="padding: 3rem; margin: 3rem 0;">
+                    <div class="text-content" style="font-size: 2.8rem; line-height: 2; text-align: center;">
+                        في حملة عيش وملح — <br>
+                        <strong style="color: var(--golden);">كل وعد بتنفذه بيبني جسر</strong><br>
+                        و<strong style="color: #ef4444;">كل وعد بتكسره بيهد جسر</strong>
+                    </div>
+                </div>
+
+                <div class="bullet-list" style="margin: 3rem 0;">
+                    <li>المتبرع اللي بتوعده وبتنفذ — <strong style="color: var(--success-green);">هيفضل يتبرع</strong></li>
+                    <li>المطعم اللي بتوعده وبتنفذ — <strong style="color: var(--success-green);">هيفضل شريك</strong></li>
+                    <li>الجمعية اللي بتوعدها وبتنفذ — <strong style="color: var(--success-green);">هتفتحلك باب جمعيات تانية</strong></li>
+                </div>
+
+                <div class="result-box" style="margin-top: 3rem;">
+                    <div class="result-title">
+                        <span>⚠️</span>
+                        والعكس صحيح
+                    </div>
+                    <div class="result-text" style="font-size: 2.3rem;">
+                        كل وعد مكسور = جسر مهدوم = فرصة ضايعة
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 41: The Golden Rule - Final -->
+        <div class="slide">
+            <div class="power-banner" style="padding: 4rem;">
+                <div class="power-quote" style="font-size: 3rem; line-height: 1.8;">
+                    القاعدة الذهبية
+                </div>
+            </div>
+
+            <div class="golden-rule" style="margin: 4rem 0; padding: 4rem;">
+                <div class="golden-rule-text" style="font-size: 3.5rem; line-height: 1.8;">
+                    وعد أقل<br>
+                    —<br>
+                    نفّذ أكتر<br>
+                    —<br>
+                    والفرق هيكون واضح
+                </div>
+            </div>
+
+            <div class="result-box">
+                <div class="result-text" style="font-size: 2.5rem; text-align: center;">
+                    <strong style="color: var(--golden);">الناس بتحب اللي بيفاجئها بالزيادة</strong><br>
+                    مش اللي بيخيب ظنها بالنقص
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 3rem; text-align: center;">
+                <div class="text-content" style="font-size: 2.5rem;">
+                    <strong style="color: var(--success-green);">يلا نروح للقوة التالتة ✨</strong>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="prevSlide()">← السابق</button>
+        <button class="nav-btn" onclick="nextSlide()">التالي →</button>
+    </div>
+
+    <script>
+        // Create stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Slide navigation
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateSlideCounter() {
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateSlideCounter();
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+        });
+
+        updateSlideCounter();
+    </script>
+</body>
+</html>
