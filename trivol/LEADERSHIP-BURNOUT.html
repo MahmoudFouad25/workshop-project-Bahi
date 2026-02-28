@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لما الجذوة تخمد</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ember: #E8542F;
+  --ember-glow: #FF6B35;
+  --ember-deep: #C2301B;
+  --ash: #2A2A2E;
+  --smoke: #8A8A8F;
+  --night: #0D0D10;
+  --night-soft: #15151A;
+  --warm-white: #F5E6D3;
+  --gold: #D4A853;
+  --gold-soft: #B8944A;
+  --cyan-cool: #5BB5C5;
+  --green-life: #6BBF59;
+  --purple-belong: #9B72CF;
+  --font-display: 'Amiri', serif;
+  --font-body: 'Tajawal', sans-serif;
+  --font-ui: 'Cairo', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--night);
+  color: var(--warm-white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ========== EMBER PARTICLES ========== */
+#particles-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ========== PROGRESS BAR ========== */
+#progress-bar {
+  position: fixed;
+  top: 0; right: 0;
+  width: 4px;
+  height: 0%;
+  background: linear-gradient(to bottom, var(--ember), var(--gold));
+  z-index: 1000;
+  transition: height 0.3s ease;
+  box-shadow: 0 0 12px var(--ember-glow);
+}
+
+/* ========== SLIDE COUNTER ========== */
+#slide-counter {
+  position: fixed;
+  bottom: 30px; left: 30px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--smoke);
+  z-index: 1000;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+/* ========== NAV DOTS ========== */
+#nav-dots {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.nav-dot.active {
+  background: var(--ember);
+  border-color: var(--ember-glow);
+  box-shadow: 0 0 10px var(--ember), 0 0 20px rgba(232,84,47,0.3);
+  transform: scale(1.3);
+}
+
+.nav-dot:hover {
+  background: var(--gold);
+  transform: scale(1.2);
+}
+
+/* ========== SECTIONS ========== */
+.slide {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  scroll-snap-align: start;
+  overflow: hidden;
+  padding: 60px 40px;
+}
+
+.slide-content {
+  max-width: 1100px;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slide-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== SLIDE 1: TITLE ========== */
+.slide-title {
+  background: radial-gradient(ellipse at center bottom, rgba(232,84,47,0.12) 0%, var(--night) 70%);
+}
+
+.title-main {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--warm-white);
+  margin-bottom: 20px;
+  text-shadow: 0 0 60px rgba(232,84,47,0.3);
+}
+
+.title-main .ember-word {
+  color: var(--ember);
+  position: relative;
+  display: inline-block;
+}
+
+.title-main .ember-word::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; right: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(to left, var(--ember), transparent);
+}
+
+.title-sub {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  text-align: center;
+  color: var(--smoke);
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+}
+
+.title-meta {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: rgba(245,230,211,0.4);
+}
+
+.title-meta span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ember-line {
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(to left, var(--ember), var(--gold), transparent);
+  margin: 30px auto;
+}
+
+/* Flicker animation for title */
+@keyframes flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 60px rgba(232,84,47,0.3); }
+  50% { opacity: 0.95; text-shadow: 0 0 80px rgba(232,84,47,0.5), 0 0 120px rgba(232,84,47,0.2); }
+}
+
+.title-main .ember-word {
+  animation: flicker 3s ease-in-out infinite;
+}
+
+/* ========== SLIDE 2: ENERGY SCALE ========== */
+.slide-energy {
+  background: radial-gradient(ellipse at top right, rgba(212,168,83,0.08) 0%, var(--night) 60%);
+}
+
+.big-number {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 700;
+  text-align: center;
+  color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 0 60px rgba(212,168,83,0.2);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+}
+
+.slide-content.visible .big-number {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.energy-label {
+  font-family: var(--font-body);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  text-align: center;
+  color: var(--warm-white);
+  margin-top: 20px;
+  font-weight: 300;
+}
+
+.energy-scale {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+  direction: ltr;
+}
+
+.scale-dot {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.5s ease;
+  border: 2px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.3);
+}
+
+.scale-dot.low { background: rgba(232,84,47,0.15); border-color: var(--ember-deep); color: var(--ember); }
+.scale-dot.mid { background: rgba(212,168,83,0.15); border-color: var(--gold-soft); color: var(--gold); }
+.scale-dot.high { background: rgba(107,191,89,0.15); border-color: var(--green-life); color: var(--green-life); }
+
+.energy-question {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 1.1rem;
+  color: var(--smoke);
+  font-style: italic;
+  font-family: var(--font-display);
+}
+
+/* ========== SLIDE 3: DEFINITION ========== */
+.slide-definition {
+  background: radial-gradient(ellipse at bottom left, rgba(232,84,47,0.06) 0%, var(--night) 60%);
+}
+
+.def-badge {
+  display: inline-block;
+  padding: 8px 24px;
+  border: 1px solid var(--ember);
+  border-radius: 30px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--ember);
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.def-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 30px;
+}
+
+.def-title .highlight {
+  color: var(--ember);
+}
+
+.def-body {
+  font-size: 1.2rem;
+  line-height: 2;
+  color: rgba(245,230,211,0.8);
+  max-width: 800px;
+}
+
+.stat-callout {
+  margin-top: 40px;
+  padding: 30px 40px;
+  background: rgba(232,84,47,0.06);
+  border-right: 4px solid var(--ember);
+  border-radius: 0 12px 12px 0;
+  font-family: var(--font-ui);
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--ember);
+  font-family: var(--font-display);
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: var(--smoke);
+  margin-top: 5px;
+}
+
+/* ========== SLIDE 4: THREE DIMENSIONS ========== */
+.slide-dimensions {
+  background: var(--night);
+}
+
+.dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.dimension-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.slide-content.visible .dimension-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-content.visible .dimension-card:nth-child(1) { transition-delay: 0.2s; }
+.slide-content.visible .dimension-card:nth-child(2) { transition-delay: 0.4s; }
+.slide-content.visible .dimension-card:nth-child(3) { transition-delay: 0.6s; }
+
+.dimension-card:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(-5px);
+}
+
+.dimension-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 100%; height: 4px;
+}
+
+.dimension-card.exhaustion::before { background: linear-gradient(to left, var(--ember), transparent); }
+.dimension-card.cynicism::before { background: linear-gradient(to left, var(--gold), transparent); }
+.dimension-card.inefficacy::before { background: linear-gradient(to left, var(--smoke), transparent); }
+
+.dim-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.dim-title-ar {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.dim-title-en {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--smoke);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.dim-desc {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(245,230,211,0.7);
+}
+
+/* ========== SLIDE 5: STRESS vs BURNOUT ========== */
+.slide-comparison {
+  background: var(--night);
+}
+
+.comparison-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: stretch;
+  margin-top: 40px;
+}
+
+.compare-col {
+  padding: 50px 40px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.compare-col.stress {
+  background: rgba(212,168,83,0.06);
+  border: 1px solid rgba(212,168,83,0.15);
+}
+
+.compare-col.burnout {
+  background: rgba(232,84,47,0.06);
+  border: 1px solid rgba(232,84,47,0.15);
+}
+
+.compare-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  font-family: var(--font-ui);
+  font-size: 1.2rem;
+  color: var(--smoke);
+  font-weight: 700;
+}
+
+.compare-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.compare-col.stress .compare-title { color: var(--gold); }
+.compare-col.burnout .compare-title { color: var(--ember); }
+
+.compare-item {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(245,230,211,0.8);
+}
+
+.compare-item:last-child { border-bottom: none; }
+
+.compare-key {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  font-family: var(--font-ui);
+}
+
+.compare-col.stress .compare-key { color: var(--gold-soft); }
+.compare-col.burnout .compare-key { color: var(--ember); }
+
+/* ========== SLIDE 6: THREE DOORS INTRO ========== */
+.slide-doors-intro {
+  background: radial-gradient(ellipse at center, rgba(232,84,47,0.05) 0%, var(--night) 70%);
+}
+
+.doors-visual {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 50px;
+}
+
+.door {
+  width: 180px;
+  height: 280px;
+  border-radius: 90px 90px 0 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: default;
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+.slide-content.visible .door {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-content.visible .door:nth-child(1) { transition-delay: 0.3s; }
+.slide-content.visible .door:nth-child(2) { transition-delay: 0.5s; }
+.slide-content.visible .door:nth-child(3) { transition-delay: 0.7s; }
+
+.door:hover { transform: translateY(-10px) scale(1.03); }
+
+.door.door-stability {
+  background: linear-gradient(to bottom, rgba(91,181,197,0.15), rgba(91,181,197,0.03));
+  border: 1px solid rgba(91,181,197,0.3);
+  box-shadow: 0 20px 60px rgba(91,181,197,0.1);
+}
+
+.door.door-vitality {
+  background: linear-gradient(to bottom, rgba(232,84,47,0.15), rgba(232,84,47,0.03));
+  border: 1px solid rgba(232,84,47,0.3);
+  box-shadow: 0 20px 60px rgba(232,84,47,0.1);
+}
+
+.door.door-belonging {
+  background: linear-gradient(to bottom, rgba(155,114,207,0.15), rgba(155,114,207,0.03));
+  border: 1px solid rgba(155,114,207,0.3);
+  box-shadow: 0 20px 60px rgba(155,114,207,0.1);
+}
+
+.door-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.door-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.door-desc {
+  font-size: 0.85rem;
+  color: rgba(245,230,211,0.6);
+  line-height: 1.6;
+}
+
+.door.door-stability .door-name { color: var(--cyan-cool); }
+.door.door-vitality .door-name { color: var(--ember-glow); }
+.door.door-belonging .door-name { color: var(--purple-belong); }
+
+/* ========== SLIDE 7: EXERCISE ========== */
+.slide-exercise {
+  background: var(--night-soft);
+}
+
+.exercise-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.exercise-group {
+  padding: 30px;
+  border-radius: 16px;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slide-content.visible .exercise-group {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-content.visible .exercise-group:nth-child(1) { transition-delay: 0.2s; }
+.slide-content.visible .exercise-group:nth-child(2) { transition-delay: 0.5s; }
+.slide-content.visible .exercise-group:nth-child(3) { transition-delay: 0.8s; }
+
+.exercise-group.group-a {
+  background: rgba(91,181,197,0.06);
+  border: 1px solid rgba(91,181,197,0.15);
+}
+.exercise-group.group-b {
+  background: rgba(232,84,47,0.06);
+  border: 1px solid rgba(232,84,47,0.15);
+}
+.exercise-group.group-c {
+  background: rgba(155,114,207,0.06);
+  border: 1px solid rgba(155,114,207,0.15);
+}
+
+.group-label {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.group-a .group-label { color: var(--cyan-cool); }
+.group-b .group-label { color: var(--ember-glow); }
+.group-c .group-label { color: var(--purple-belong); }
+
+.exercise-statement {
+  padding: 10px 0;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(245,230,211,0.85);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.stmt-num {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  opacity: 0.4;
+  min-width: 30px;
+}
+
+/* ========== SLIDES 8-10: INDIVIDUAL DOORS ========== */
+.slide-door-detail {
+  position: relative;
+}
+
+.slide-door-detail.stability {
+  background: radial-gradient(ellipse at top right, rgba(91,181,197,0.08) 0%, var(--night) 60%);
+}
+
+.slide-door-detail.vitality {
+  background: radial-gradient(ellipse at top right, rgba(232,84,47,0.08) 0%, var(--night) 60%);
+}
+
+.slide-door-detail.belonging {
+  background: radial-gradient(ellipse at top right, rgba(155,114,207,0.08) 0%, var(--night) 60%);
+}
+
+.door-detail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-bottom: 25px;
+}
+
+.stability .door-detail-badge { background: rgba(91,181,197,0.1); border: 1px solid rgba(91,181,197,0.3); color: var(--cyan-cool); }
+.vitality .door-detail-badge { background: rgba(232,84,47,0.1); border: 1px solid rgba(232,84,47,0.3); color: var(--ember-glow); }
+.belonging .door-detail-badge { background: rgba(155,114,207,0.1); border: 1px solid rgba(155,114,207,0.3); color: var(--purple-belong); }
+
+.door-detail-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.door-detail-desc {
+  font-size: 1.15rem;
+  line-height: 2;
+  color: rgba(245,230,211,0.8);
+  max-width: 850px;
+  margin-bottom: 30px;
+}
+
+.warning-sign {
+  padding: 25px 30px;
+  border-radius: 12px;
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.stability .warning-sign { background: rgba(91,181,197,0.06); border-right: 3px solid var(--cyan-cool); }
+.vitality .warning-sign { background: rgba(232,84,47,0.06); border-right: 3px solid var(--ember-glow); }
+.belonging .warning-sign { background: rgba(155,114,207,0.06); border-right: 3px solid var(--purple-belong); }
+
+.warning-icon { font-size: 1.5rem; }
+
+.warning-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(245,230,211,0.7);
+}
+
+.warning-label {
+  font-weight: 700;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.stability .warning-label { color: var(--cyan-cool); }
+.vitality .warning-label { color: var(--ember-glow); }
+.belonging .warning-label { color: var(--purple-belong); }
+
+/* ========== SLIDE 11: SHIELD ========== */
+.slide-shield {
+  background: radial-gradient(ellipse at center, rgba(212,168,83,0.06) 0%, var(--night) 60%);
+}
+
+.shield-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin-top: 40px;
+}
+
+.shield-layer {
+  width: 100%;
+  max-width: 700px;
+  padding: 35px 40px;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slide-content.visible .shield-layer {
+  opacity: 1;
+}
+
+.slide-content.visible .shield-layer:nth-child(1) { transition-delay: 0.3s; transform: translateY(0); }
+.slide-content.visible .shield-layer:nth-child(2) { transition-delay: 0.6s; transform: translateY(0); }
+.slide-content.visible .shield-layer:nth-child(3) { transition-delay: 0.9s; transform: translateY(0); }
+
+.shield-layer:nth-child(1) {
+  background: rgba(232,84,47,0.08);
+  border: 1px solid rgba(232,84,47,0.2);
+  border-radius: 100px 100px 20px 20px;
+  transform: translateY(30px);
+}
+
+.shield-layer:nth-child(2) {
+  background: rgba(212,168,83,0.08);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 20px;
+  margin-top: -5px;
+  transform: translateY(30px);
+}
+
+.shield-layer:nth-child(3) {
+  background: rgba(107,191,89,0.08);
+  border: 1px solid rgba(107,191,89,0.2);
+  border-radius: 20px 20px 100px 100px;
+  margin-top: -5px;
+  transform: translateY(30px);
+}
+
+.shield-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.shield-layer:nth-child(1) .shield-num { color: var(--ember); }
+.shield-layer:nth-child(2) .shield-num { color: var(--gold); }
+.shield-layer:nth-child(3) .shield-num { color: var(--green-life); }
+
+.shield-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.shield-desc {
+  font-size: 0.95rem;
+  color: rgba(245,230,211,0.6);
+  line-height: 1.6;
+}
+
+/* ========== SLIDE 12: RESCUE PLAN ========== */
+.slide-rescue {
+  background: radial-gradient(ellipse at bottom, rgba(107,191,89,0.06) 0%, var(--night) 60%);
+}
+
+.rescue-questions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.rescue-q {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 35px 30px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slide-content.visible .rescue-q {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slide-content.visible .rescue-q:nth-child(1) { transition-delay: 0.2s; }
+.slide-content.visible .rescue-q:nth-child(2) { transition-delay: 0.4s; }
+.slide-content.visible .rescue-q:nth-child(3) { transition-delay: 0.6s; }
+.slide-content.visible .rescue-q:nth-child(4) { transition-delay: 0.8s; }
+
+.rescue-q:hover {
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.05);
+}
+
+.rescue-num {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--ember);
+  opacity: 0.5;
+  margin-bottom: 10px;
+}
+
+.rescue-question {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.rescue-hint {
+  font-size: 0.9rem;
+  color: var(--smoke);
+  line-height: 1.6;
+}
+
+/* ========== SLIDE 13: CLOSING ========== */
+.slide-closing {
+  background: radial-gradient(ellipse at center bottom, rgba(232,84,47,0.1) 0%, var(--night) 70%);
+  text-align: center;
+}
+
+.closing-quote {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  color: var(--warm-white);
+}
+
+.closing-addition {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: var(--ember);
+  margin-bottom: 50px;
+  font-weight: 700;
+}
+
+.closing-tasks {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.closing-task {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 25px 30px;
+  max-width: 280px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.slide-content.visible .closing-task {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-content.visible .closing-task:nth-child(1) { transition-delay: 0.3s; }
+.slide-content.visible .closing-task:nth-child(2) { transition-delay: 0.5s; }
+.slide-content.visible .closing-task:nth-child(3) { transition-delay: 0.7s; }
+
+.task-icon { font-size: 2rem; margin-bottom: 12px; }
+
+.task-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(245,230,211,0.8);
+}
+
+/* ========== SECTION HEADERS ========== */
+.section-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.section-label {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  color: var(--ember);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ========== BREATHING SLIDE ========== */
+.slide-breathing {
+  background: radial-gradient(ellipse at center, rgba(107,191,89,0.05) 0%, var(--night) 60%);
+  text-align: center;
+}
+
+.breathing-circle {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 2px solid rgba(107,191,89,0.3);
+  margin: 40px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--green-life);
+  animation: breathe 19s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(107,191,89,0.1);
+}
+
+@keyframes breathe {
+  0% { transform: scale(1); box-shadow: 0 0 40px rgba(107,191,89,0.1); }
+  10.5% { transform: scale(1); }
+  21% { transform: scale(1.4); box-shadow: 0 0 80px rgba(107,191,89,0.2); }
+  57.9% { transform: scale(1.4); box-shadow: 0 0 80px rgba(107,191,89,0.2); }
+  100% { transform: scale(1); box-shadow: 0 0 40px rgba(107,191,89,0.1); }
+}
+
+.breathing-label {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  color: var(--smoke);
+  margin-top: 20px;
+}
+
+.breathing-steps {
+  font-size: 2rem;
+  font-family: var(--font-display);
+  color: var(--green-life);
+  margin-top: 15px;
+  font-weight: 700;
+}
+
+/* ========== SLIDE: TRIVOL CONTEXT ========== */
+.slide-trivol {
+  background: var(--night);
+}
+
+.trivol-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.trivol-card {
+  padding: 30px 25px;
+  border-radius: 16px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.slide-content.visible .trivol-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-content.visible .trivol-card:nth-child(1) { transition-delay: 0.2s; }
+.slide-content.visible .trivol-card:nth-child(2) { transition-delay: 0.4s; }
+.slide-content.visible .trivol-card:nth-child(3) { transition-delay: 0.6s; }
+
+.trivol-card.tc-stability {
+  background: rgba(91,181,197,0.06);
+  border: 1px solid rgba(91,181,197,0.15);
+}
+.trivol-card.tc-vitality {
+  background: rgba(232,84,47,0.06);
+  border: 1px solid rgba(232,84,47,0.15);
+}
+.trivol-card.tc-belonging {
+  background: rgba(155,114,207,0.06);
+  border: 1px solid rgba(155,114,207,0.15);
+}
+
+.trivol-card-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.tc-stability .trivol-card-title { color: var(--cyan-cool); }
+.tc-vitality .trivol-card-title { color: var(--ember-glow); }
+.tc-belonging .trivol-card-title { color: var(--purple-belong); }
+
+.trivol-card-text {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: rgba(245,230,211,0.75);
+}
+
+/* ========== FULLSCREEN BUTTON ========== */
+#fullscreen-btn {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  z-index: 1000;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--smoke);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+#fullscreen-btn:hover {
+  background: rgba(232,84,47,0.15);
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 900px) {
+  .dimensions-grid,
+  .comparison-container,
+  .rescue-questions,
+  .trivol-cards { grid-template-columns: 1fr; }
+  
+  .doors-visual { flex-direction: column; align-items: center; }
+  
+  .door { width: 80%; max-width: 260px; height: auto; min-height: 180px; border-radius: 30px; }
+  
+  .compare-divider { padding: 15px 0; }
+  
+  .closing-tasks { flex-direction: column; align-items: center; }
+  
+  .slide { padding: 40px 20px; }
+  
+  #nav-dots { display: none; }
+}
+
+/* ========== KEYBOARD HINT ========== */
+.keyboard-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeHint 5s ease forwards;
+}
+
+@keyframes fadeHint {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+.key-icon {
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 5px;
+  font-size: 0.7rem;
+}
+
+/* ========== GRAIN OVERLAY ========== */
+.grain-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* ========== VIGNETTE ========== */
+.vignette {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+}
+</style>
+</head>
+<body>
+
+<div class="grain-overlay"></div>
+<div class="vignette"></div>
+<canvas id="particles-canvas"></canvas>
+<div id="progress-bar"></div>
+
+<div id="nav-dots"></div>
+
+<div id="slide-counter"></div>
+
+<button id="fullscreen-btn" title="وضع ملء الشاشة">⛶</button>
+
+<div class="keyboard-hint">
+  <span class="key-icon">↑</span>
+  <span class="key-icon">↓</span>
+  للتنقل بين الشرائح
+</div>
+
+<!-- ============ SLIDE 1: TITLE ============ -->
+<section class="slide slide-title" id="slide-1">
+  <div class="slide-content">
+    <div class="title-sub">برنامج TRiVol — صناع الحياة</div>
+    <h1 class="title-main">
+      لما <span class="ember-word">الجذوة</span> تخمد
+    </h1>
+    <div class="title-sub">إزاي تعرف إنك بتحترق… قبل ما تخلص</div>
+    <div class="ember-line"></div>
+    <div class="title-meta">
+      <span>🎙️ ويبينار تفاعلي</span>
+      <span>⏱️ ٩٠ دقيقة</span>
+      <span>👥 ١٨٠ قائد شاب</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: ENERGY SCALE ============ -->
+<section class="slide slide-energy" id="slide-2">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">كسر الجليد</div>
+    </div>
+    <div class="big-number">١ — ١٠</div>
+    <div class="energy-label">طاقتك النهاردة كام؟</div>
+    <div class="energy-scale">
+      <div class="scale-dot low">1</div>
+      <div class="scale-dot low">2</div>
+      <div class="scale-dot low">3</div>
+      <div class="scale-dot mid">4</div>
+      <div class="scale-dot mid">5</div>
+      <div class="scale-dot mid">6</div>
+      <div class="scale-dot mid">7</div>
+      <div class="scale-dot high">8</div>
+      <div class="scale-dot high">9</div>
+      <div class="scale-dot high">10</div>
+    </div>
+    <div class="energy-question">
+      "السؤال مش ليه الطاقة نزلت؟ — السؤال: نزلت من فين؟"
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: DEFINITION ============ -->
+<section class="slide slide-definition" id="slide-3">
+  <div class="slide-content">
+    <div class="def-badge">WHO — 2019</div>
+    <h2 class="def-title">
+      خمود الجذوة — <span class="highlight">ظاهرة مهنية</span><br>مش ضعف شخصي
+    </h2>
+    <div class="def-body">
+      الاحتراق النفسي مش مجرد تعب. منظمة الصحة العالمية اعترفت بيه رسمياً كظاهرة مهنية. وده بيحصل للناس الشاطرة والمخلصة تحديداً — مش للكسالى.
+    </div>
+    <div class="stat-callout">
+      <div class="stat-number">٪٧٢</div>
+      <div class="stat-label">من الشباب في سنكم بيمروا بالاحتراق في مرحلة ما — يعني حوالي ١٣٠ منكم</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: THREE DIMENSIONS ============ -->
+<section class="slide slide-dimensions" id="slide-4">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">نموذج Maslach</div>
+      <h2 class="section-title">الأبعاد الثلاثة للاحتراق</h2>
+    </div>
+    <div class="dimensions-grid">
+      <div class="dimension-card exhaustion">
+        <div class="dim-icon">🔥</div>
+        <div class="dim-title-ar">الإنهاك</div>
+        <div class="dim-title-en">EXHAUSTION</div>
+        <div class="dim-desc">مش تعب عادي — ده التعب اللي حتى لو نمت ١٢ ساعة بتصحى تعبان. طاقتك الجسدية والعاطفية والذهنية كلها نازلة. خزان فاضي ومحدش بيملاه.</div>
+      </div>
+      <div class="dimension-card cynicism">
+        <div class="dim-icon">🌫️</div>
+        <div class="dim-title-ar">السخرية</div>
+        <div class="dim-title-en">CYNICISM</div>
+        <div class="dim-desc">في البداية: "أنا هغير العالم!" دلوقتي: "مفيش فايدة." بتشوف كل حاجة سلبي. الناس مش ملتزمة. المشاريع مش هتنجح. ليه بتعب أصلاً.</div>
+      </div>
+      <div class="dimension-card inefficacy">
+        <div class="dim-icon">🪞</div>
+        <div class="dim-title-ar">فقدان الإحساس بالإنجاز</div>
+        <div class="dim-title-en">REDUCED EFFICACY</div>
+        <div class="dim-desc">بتحس إنك مش بتعمل حاجة مفيدة. مهما عملت مش كفاية. بدأت تشك في نفسك وقدراتك. بتبص على اللي عملته وتقول: "مش كفاية."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: STRESS vs BURNOUT ============ -->
+<section class="slide slide-comparison" id="slide-5">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">فرق جوهري</div>
+      <h2 class="section-title">الضغط ≠ الاحتراق</h2>
+    </div>
+    <div class="comparison-container">
+      <div class="compare-col stress">
+        <div class="compare-title">الضغط</div>
+        <div class="compare-item">
+          <span class="compare-key">الإحساس</span>
+          بتحس بكل حاجة بشكل مكثف — توتر، قلق، ضغط
+        </div>
+        <div class="compare-item">
+          <span class="compare-key">الأمل</span>
+          "لو خلصت المشروع ده هرتاح"
+        </div>
+        <div class="compare-item">
+          <span class="compare-key">التأثير</span>
+          بيأثر على الجسم
+        </div>
+        <div class="compare-item">
+          <span class="compare-key">الحل</span>
+          محتاج تنظيم
+        </div>
+      </div>
+      <div class="compare-divider">VS</div>
+      <div class="compare-col burnout">
+        <div class="compare-title">الاحتراق</div>
+        <div class="compare-item">
+          <span class="compare-key">الإحساس</span>
+          مبقيتش حاسس بأي حاجة أصلاً — زي ما حد قفل السويتش
+        </div>
+        <div class="compare-item">
+          <span class="compare-key">الأمل</span>
+          "مفيش أي حاجة هتخليني أرتاح"
+        </div>
+        <div class="compare-item">
+          <span class="compare-key">التأثير</span>
+          بيأثر على المعنى — "أنا بعمل ده ليه أصلاً؟"
+        </div>
+        <div class="compare-item">
+          <span class="compare-key">الحل</span>
+          جرس إنذار حقيقي
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: THREE DOORS INTRO ============ -->
+<section class="slide slide-doors-intro" id="slide-6">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">الاحتراق مش طريق واحد</div>
+      <h2 class="section-title">ثلاث طاقات… ثلاثة أبواب</h2>
+    </div>
+    <div style="text-align:center; color: var(--smoke); font-size: 1.1rem; margin-top: 15px; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.8;">
+      جوا كل واحد فيكم ثلاث طاقات أساسية. واحدة فيهم أقوى — وهي اللي بتستنزف الأول. هي الباب اللي الاحتراق بيدخل منه.
+    </div>
+    <div class="doors-visual">
+      <div class="door door-stability">
+        <div class="door-icon">🏛️</div>
+        <div class="door-name">التماسك</div>
+        <div class="door-desc">هل أنا بخير؟ هل أنا قادر أتماسك وأكمل؟</div>
+      </div>
+      <div class="door door-vitality">
+        <div class="door-icon">🔥</div>
+        <div class="door-name">الحيوية</div>
+        <div class="door-desc">هل أنا حاسس بحاجة حقيقية؟ هل فيه شرارة جوايا؟</div>
+      </div>
+      <div class="door door-belonging">
+        <div class="door-icon">🤝</div>
+        <div class="door-name">الانتماء</div>
+        <div class="door-desc">هل أنا منتمي؟ هل ليّ قيمة هنا؟</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: EXERCISE ============ -->
+<section class="slide slide-exercise" id="slide-7">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">تمرين اكتشاف ذاتي</div>
+      <h2 class="section-title">اكتشف بابك — من ١ لـ ٥</h2>
+    </div>
+    <div class="exercise-groups">
+      <div class="exercise-group group-a">
+        <div class="group-label">المجموعة أ — التماسك 🏛️</div>
+        <div class="exercise-statement"><span class="stmt-num">١</span> لما بكون تحت ضغط، أول حاجة بتتأثر هي نومي أو أكلي أو صحتي</div>
+        <div class="exercise-statement"><span class="stmt-num">٢</span> بحس إني فقدت السيطرة على حياتي — مش قادر أنظم وقتي أو طاقتي</div>
+        <div class="exercise-statement"><span class="stmt-num">٣</span> بخاف إني لو وقفت أو بطّأت، كل حاجة هتنهار</div>
+      </div>
+      <div class="exercise-group group-b">
+        <div class="group-label">المجموعة ب — الحيوية 🔥</div>
+        <div class="exercise-statement"><span class="stmt-num">٤</span> مبقيتش حاسس بنفس الحماس اللي كان عندي — الشرارة طفيت</div>
+        <div class="exercise-statement"><span class="stmt-num">٥</span> بحس إن كل حاجة بقت "عادية" ومفيش حاجة بتحركني من جوه</div>
+        <div class="exercise-statement"><span class="stmt-num">٦</span> بشتاق لإحساس إني حي فعلاً — مش بس موجود</div>
+      </div>
+      <div class="exercise-group group-c">
+        <div class="group-label">المجموعة ج — الانتماء 🤝</div>
+        <div class="exercise-statement"><span class="stmt-num">٧</span> بحس إن محدش شايف المجهود اللي بعمله</div>
+        <div class="exercise-statement"><span class="stmt-num">٨</span> بحس إني لو غبت بكرة محدش هيلاحظ أو يسأل</div>
+        <div class="exercise-statement"><span class="stmt-num">٩</span> بديت أحس بمرارة من المجموعة — بدّي أكتر ما بآخد</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: DOOR - STABILITY ============ -->
+<section class="slide slide-door-detail stability" id="slide-8">
+  <div class="slide-content">
+    <div class="door-detail-badge">🏛️ الباب الأول</div>
+    <h2 class="door-detail-title">باب التماسك — "لما النظام ينهار"</h2>
+    <div class="door-detail-desc">
+      كان شخص منظم ومتماسك. كل حاجة عنده بنظام. نومه منتظم وأكله منتظم وشغله منتظم. بيتحمل ضغط كبير وبيقول "أنا كويس." وبيحمل غيره كمان.
+      <br><br>
+      وفجأة… النظام بيبدأ يفلت. النوم بيختل. الأكل بيبقى عشوائي. مبقاش قادر يخلص أي حاجة. مش لأنه كسلان — لأن النظام الداخلي اللي كان شايله وقع.
+    </div>
+    <div class="warning-sign">
+      <div class="warning-icon">⚡</div>
+      <div>
+        <span class="warning-label">جرس الإنذار المبكر</span>
+        <div class="warning-text">لما تبدأ تفقد الروتين. لما النوم يختل. لما الترتيب يضيع. لما تحس إنك فقدت السيطرة على التفاصيل اليومية.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: DOOR - VITALITY ============ -->
+<section class="slide slide-door-detail vitality" id="slide-9">
+  <div class="slide-content">
+    <div class="door-detail-badge">🔥 الباب الثاني</div>
+    <h2 class="door-detail-title">باب الحيوية — "لما النار تخمد"</h2>
+    <div class="door-detail-desc">
+      كان إنسان مشتعل. كل حاجة بيعملها بشغف. لما يتكلم عن صناع الحياة عينيه بتلمع. لما يشتغل في مشروع بينسى الدنيا. حماسه بيعدي لكل اللي حواليه.
+      <br><br>
+      وفجأة… الشرارة اتطفت. مبقاش حاسس بأي حاجة. كل حاجة بقت "عادية." مش زعلان — مطفّي. زي الشمعة اللي بتنوّر بكل قوتها لحد ما تنتهي.
+    </div>
+    <div class="warning-sign">
+      <div class="warning-icon">⚡</div>
+      <div>
+        <span class="warning-label">جرس الإنذار المبكر</span>
+        <div class="warning-text">لما تبدأ تحس إن الحاجات اللي كانت بتحمسك بقت عادية. مش كارثية — عادية. الخمود بيبدأ كتبلّد بطيء… مش كانفجار مفاجئ.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: DOOR - BELONGING ============ -->
+<section class="slide slide-door-detail belonging" id="slide-10">
+  <div class="slide-content">
+    <div class="door-detail-badge">🤝 الباب الثالث</div>
+    <h2 class="door-detail-title">باب الانتماء — "لما المكان يتآكل"</h2>
+    <div class="door-detail-desc">
+      كان الشخص اللي شايل الفريق على كتفه. اللي بيقول "أيوه" لكل حاجة. بيجري يساعد كل واحد. همّه الناس قبل نفسه.
+      <br><br>
+      وفجأة… بدأ يحس بمرارة. بيدّي ومحدش شايفه. لو غاب بكرة محدش هيلاحظ. الحب اللي مبيتقدّرش بيتحول لمرارة.
+    </div>
+    <div class="warning-sign">
+      <div class="warning-icon">⚡</div>
+      <div>
+        <span class="warning-label">جرس الإنذار المبكر</span>
+        <div class="warning-text">لما تبدأ تقارن مجهودك بمجهود غيرك وتحس بالظلم. لما تسمع كلمة تقدير لحد تاني وتحس بوخزة. لما تبدأ تعد: "أنا عملت كذا ومحدش قالي شكراً."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: TRIVOL CONTEXT ============ -->
+<section class="slide slide-trivol" id="slide-11">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">في سياقكم أنتو</div>
+      <h2 class="section-title">الأبواب الثلاثة مفتوحة عليكم في TRiVol</h2>
+    </div>
+    <div class="trivol-cards">
+      <div class="trivol-card tc-stability">
+        <div class="trivol-card-title">🏛️ باب التماسك</div>
+        <div class="trivol-card-text">
+          ١١ وحدة تدريبية + مهام + منتورينج + مشاريع. وكلكم عندكم جامعة أو شغل أو حياة جنب كده. الحمل كبير على النظام ومواردكم محدودة.
+        </div>
+      </div>
+      <div class="trivol-card tc-vitality">
+        <div class="trivol-card-title">🔥 باب الحيوية</div>
+        <div class="trivol-card-text">
+          جيتو بحماس كبير — بس الحماس ممكن يتحول لعبء لما تحسوا إنكم لازم تفضلوا متحمسين طول الوقت. الحماس بييجي ويروح وده طبيعي.
+        </div>
+      </div>
+      <div class="trivol-card tc-belonging">
+        <div class="trivol-card-title">🤝 باب الانتماء</div>
+        <div class="trivol-card-text">
+          ١٨٠ شخص و٩ منتورز. فيه ناس بتدّي أكتر وبتحس إنها مش بتتقدّر. وفيه ناس بتسأل: "أنا ليّ دور هنا ولا مجرد رقم؟"
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12: BREATHING ============ -->
+<section class="slide slide-breathing" id="slide-12">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">استراحة مايكرو</div>
+      <h2 class="section-title">تنفس ٤ — ٧ — ٨</h2>
+    </div>
+    <div class="breathing-circle">
+      <span id="breath-text">تنفس</span>
+    </div>
+    <div class="breathing-label">أداة بتكلم الجهاز العصبي مباشرة وبتقوله: "أنت في أمان"</div>
+    <div class="breathing-steps">
+      شهيق ٤ ثواني — حبس ٧ ثواني — زفير ٨ ثواني
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: SHIELD ============ -->
+<section class="slide slide-shield" id="slide-13">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">بناء المناعة</div>
+      <h2 class="section-title">درع الجذوة — ٣ طبقات</h2>
+    </div>
+    <div class="shield-visual">
+      <div class="shield-layer">
+        <div class="shield-num">١</div>
+        <div class="shield-name">الوعي بالباب</div>
+        <div class="shield-desc">"اعرف من فين بتنزف" — اسأل نفسك كل يوم السؤال الصح حسب بابك</div>
+      </div>
+      <div class="shield-layer">
+        <div class="shield-num">٢</div>
+        <div class="shield-name">ضبط الإيقاع</div>
+        <div class="shield-desc">"نمط المد والجزر" — مش انفجار وانهيار. راحة قبل ما تحتاج ترتاح</div>
+      </div>
+      <div class="shield-layer">
+        <div class="shield-num">٣</div>
+        <div class="shield-name">الاتصال الحقيقي</div>
+        <div class="shield-desc">"محدش بيحترق لوحده" — شخص واحد تقدر تكون صادق معاه ١٠٠٪</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14: RESCUE PLAN ============ -->
+<section class="slide slide-rescue" id="slide-14">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">الجزء العملي</div>
+      <h2 class="section-title">خطة الإنقاذ الشخصية</h2>
+    </div>
+    <div class="rescue-questions">
+      <div class="rescue-q">
+        <div class="rescue-num">١</div>
+        <div class="rescue-question">بابي هو…</div>
+        <div class="rescue-hint">تماسك ولا حيوية ولا انتماء؟</div>
+      </div>
+      <div class="rescue-q">
+        <div class="rescue-num">٢</div>
+        <div class="rescue-question">أكتر حاجة بتستنزفني؟</div>
+        <div class="rescue-hint">حاجة واحدة محددة — مش "كل حاجة"</div>
+      </div>
+      <div class="rescue-q">
+        <div class="rescue-num">٣</div>
+        <div class="rescue-question">حاجة واحدة بسيطة الأسبوع ده؟</div>
+        <div class="rescue-hint">بسيطة. ممكنة. تقدر تعملها فعلاً</div>
+      </div>
+      <div class="rescue-q">
+        <div class="rescue-num">٤</div>
+        <div class="rescue-question">مين اللي هتكلمه بصراحة؟</div>
+        <div class="rescue-hint">اسم محدد — مش "هدور على حد"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 15: CLOSING ============ -->
+<section class="slide slide-closing" id="slide-15">
+  <div class="slide-content">
+    <div class="section-header">
+      <div class="section-label">الختام</div>
+    </div>
+    <div class="closing-quote">
+      "ومن يتهيب صعود الجبال… يعش أبد الدهر بين الحفر"
+    </div>
+    <div class="closing-addition">
+      ومن يصعد الجبال من غير ما يرتاح… مش هيوصل القمة
+    </div>
+    <div class="ember-line"></div>
+    <div class="closing-tasks">
+      <div class="closing-task">
+        <div class="task-icon">✅</div>
+        <div class="task-text">نفّذ النقطة الثالتة من خطتك — قبل نهاية الأسبوع ده</div>
+      </div>
+      <div class="closing-task">
+        <div class="task-icon">💬</div>
+        <div class="task-text">شارك المنتور بتاعك بالخطة كاملة — بابك واللي بيستنزفك واللي هتعمله</div>
+      </div>
+      <div class="closing-task">
+        <div class="task-icon">🌬️</div>
+        <div class="task-text">تمرين ٤-٧-٨ مرة كل يوم قبل النوم — الأسبوع ده — وشوف الفرق</div>
+      </div>
+    </div>
+    <div style="margin-top: 60px; color: var(--smoke); font-family: var(--font-display); font-size: 1.1rem;">
+      الاتساق أقوى من الكثافة<br>
+      <span style="color: var(--ember);">شمعة كل يوم أقوى من حريقة مرة في السنة</span>
+    </div>
+  </div>
+</section>
+
+
+<script>
+// ========== EMBER PARTICLES ==========
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + 10;
+    this.size = Math.random() * 3 + 0.5;
+    this.speedY = -(Math.random() * 0.8 + 0.2);
+    this.speedX = (Math.random() - 0.5) * 0.5;
+    this.opacity = Math.random() * 0.6 + 0.2;
+    this.life = 0;
+    this.maxLife = Math.random() * 400 + 200;
+    const colors = ['232,84,47', '212,168,83', '255,107,53', '200,60,30'];
+    this.color = colors[Math.floor(Math.random() * colors.length)];
+  }
+  update() {
+    this.x += this.speedX + Math.sin(this.life * 0.02) * 0.3;
+    this.y += this.speedY;
+    this.life++;
+    if (this.life > this.maxLife * 0.7) {
+      this.opacity -= 0.003;
+    }
+    if (this.opacity <= 0 || this.y < -20) {
+      this.reset();
+    }
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${this.color}, ${this.opacity * 0.2})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 50; i++) {
+  const p = new Particle();
+  p.y = Math.random() * canvas.height;
+  p.life = Math.random() * p.maxLife;
+  particles.push(p);
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ========== SLIDE NAVIGATION ==========
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+const progressBar = document.getElementById('progress-bar');
+const slideCounter = document.getElementById('slide-counter');
+const navDotsContainer = document.getElementById('nav-dots');
+
+// Create nav dots
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot';
+  dot.addEventListener('click', () => {
+    slides[i].scrollIntoView({ behavior: 'smooth' });
+  });
+  navDotsContainer.appendChild(dot);
+});
+
+const navDots = document.querySelectorAll('.nav-dot');
+
+// Intersection Observer for visibility
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelector('.slide-content').classList.add('visible');
+      const idx = Array.from(slides).indexOf(entry.target);
+      navDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      slideCounter.textContent = `${idx + 1} / ${totalSlides}`;
+      progressBar.style.height = `${((idx + 1) / totalSlides) * 100}%`;
+    }
+  });
+}, { threshold: 0.4 });
+
+slides.forEach(s => observer.observe(s));
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  let currentIdx = 0;
+  slides.forEach((s, i) => {
+    const rect = s.getBoundingClientRect();
+    if (rect.top >= -100 && rect.top < window.innerHeight / 2) currentIdx = i;
+  });
+
+  if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+    e.preventDefault();
+    if (currentIdx < totalSlides - 1) slides[currentIdx + 1].scrollIntoView({ behavior: 'smooth' });
+  }
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+    e.preventDefault();
+    if (currentIdx > 0) slides[currentIdx - 1].scrollIntoView({ behavior: 'smooth' });
+  }
+  if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({ behavior: 'smooth' }); }
+  if (e.key === 'End') { e.preventDefault(); slides[totalSlides - 1].scrollIntoView({ behavior: 'smooth' }); }
+});
+
+// Fullscreen
+document.getElementById('fullscreen-btn').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+// Breathing animation text
+const breathText = document.getElementById('breath-text');
+const breathCycle = ['شهيق…', 'شهيق…', 'شهيق…', 'شهيق…', 'حبس…', 'حبس…', 'حبس…', 'حبس…', 'حبس…', 'حبس…', 'حبس…', 'زفير…', 'زفير…', 'زفير…', 'زفير…', 'زفير…', 'زفير…', 'زفير…', 'زفير…'];
+let breathIdx = 0;
+setInterval(() => {
+  breathText.textContent = breathCycle[breathIdx % breathCycle.length];
+  breathIdx++;
+}, 1000);
+</script>
+
+</body>
+</html>
